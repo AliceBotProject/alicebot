@@ -3,7 +3,7 @@
 CQHTTP 消息
 ============
 """
-from typing import Any, Literal, Optional, TypeVar, Union, Mapping, Iterable
+from typing import Literal, Optional, TypeVar, Union
 
 from alicebot.message import Message, MessageSegment
 
@@ -14,16 +14,11 @@ T_CQHTTPMessageSegment = TypeVar('T_CQHTTPMessageSegment', bound='CQHTTPMessageS
 class CQHTTPMessage(Message):
     """CQHTTP 消息"""
 
-    @staticmethod
-    def _construct(msg: Union[str, Mapping, Iterable[Mapping], Any]) -> Iterable[T_CQHTTPMessageSegment]:
-        if isinstance(msg, Mapping):
-            yield CQHTTPMessageSegment(msg['type'], msg.get('data') or {})
-        elif isinstance(msg, Iterable) and not isinstance(msg, str):
-            for seg in msg:
-                yield CQHTTPMessageSegment(seg['type'], seg.get('data') or {})
-        elif isinstance(msg, str):
-            yield CQHTTPMessageSegment.text(msg)
-        return
+    def _set_message_segment_class(self):
+        self._message_segment_class = CQHTTPMessageSegment
+
+    def _str_to_message_segment(self, msg) -> T_CQHTTPMessageSegment:
+        return CQHTTPMessageSegment.text(msg)
 
     def is_text(self) -> bool:
         """
@@ -47,16 +42,13 @@ class CQHTTPMessage(Message):
 class CQHTTPMessageSegment(MessageSegment):
     """CQHTTP 消息字段"""
 
+    def _set_message_class(self):
+        self._message_class = CQHTTPMessage
+
     def __str__(self) -> str:
         if self.type == 'text':
             return self.data.get('text', '')
         return self.get_cqcode()
-
-    def __add__(self, other) -> T_CQHTTPMessage:
-        return CQHTTPMessage(self) + other
-
-    def __radd__(self, other) -> T_CQHTTPMessage:
-        return CQHTTPMessage(other) + self
 
     def is_text(self) -> bool:
         """

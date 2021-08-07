@@ -9,7 +9,7 @@ import json
 import dataclasses
 from copy import copy, deepcopy
 from dataclasses import dataclass, field
-from typing import Any, Dict, Mapping, Union, TypeVar, Iterable
+from typing import Any, Dict, Mapping, Union, TypeVar, Iterable, Iterator
 
 T_Message = TypeVar('T_Message', bound='Message')
 T_MessageSegment = TypeVar('T_MessageSegment', bound='MessageSegment')
@@ -19,50 +19,70 @@ class Message(list):
     """
     消息。
     本类是 ``list`` 的子类，同时重写了 ``__init__()`` 方法，可以直接处理 str, Mapping, Iterable[Mapping], T_MessageSegment, T_Message。
-    其中 str 的支持需要适配器开发者重写 ``_construct()`` 方法实现，若开发者实现了 MessageSegment 的子类也需要重写 ``_construct()`` 方法。
+    其中 str 的支持需要适配器开发者重写 ``_set_message_class()`` 方法实现。
     本类重写了 ``+`` 和 ``+=`` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
+    若开发者实现了 MessageSegment 的子类则需要重写 ``_set_message_segment_class()`` 方法，
+        并在 MessageSegment 的子类中重写 ``_set_message_class()`` 方法。
     """
 
     def __init__(self,
                  message: Union[str, None, Mapping, Iterable[Mapping], T_MessageSegment, T_Message, Any] = None,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self._set_message_segment_class()
         if message is None:
             return
-        elif isinstance(message, Message):
+        elif isinstance(message, self.__class__):
             self.extend(message)
-        elif isinstance(message, MessageSegment):
+        elif isinstance(message, self._message_segment_class):
             self.append(message)
         else:
             self.extend(self._construct(message))
 
+    def _set_message_segment_class(self):
+        """
+        若开发者实现了 MessageSegment 的子类则需要重写此方法。
+        格式应为 self._message_segment_class = NewMessageSegment 。
+        """
+        self._message_segment_class = MessageSegment
+
     @classmethod
     def __get_validators__(cls):
-        """pydantic自定义校验器"""
+        """
+        pydantic自定义校验器
+        """
         yield cls._validate
 
     @classmethod
     def _validate(cls, value):
         return cls(value)
 
-    @staticmethod
-    def _construct(msg: Union[str, Mapping, Iterable[Mapping], Any]) -> Iterable[T_MessageSegment]:
+    def _construct(self, msg: Union[str, Mapping, Iterable[Mapping], Any]) -> Iterator[T_MessageSegment]:
         """
         用于将 str, Mapping, Iterable[Mapping] 等类型转换为 MessageSegment。
-        用于pydantic数据解析和方便用户使用，子类应重写此方法以支持 str 及支持新的消息字段。
+        用于 pydantic 数据解析和方便用户使用。
 
         :param msg: 要解析为 MessageSegment 的数据。
         :return: MessageSegment 生成器。
         :rtype: Iterable[T_MessageSegment]
         """
         if isinstance(msg, Mapping):
-            yield MessageSegment(msg['type'], msg.get('data') or {})
+            yield self._message_segment_class(msg['type'], msg.get('data') or {})
+        elif isinstance(msg, str):
+            yield self._str_to_message_segment(msg)
         elif isinstance(msg, Iterable) and not isinstance(msg, str):
             for seg in msg:
-                yield MessageSegment(seg['type'], seg.get('data') or {})
-        elif isinstance(msg, str):
-            raise NotImplementedError
+                yield next(self._construct(seg))
         return
+
+    def _str_to_message_segment(self, msg) -> T_MessageSegment:
+        """
+        用于将 str 转换为 MessageSegment，子类应重写此方法以支持 str 及支持新的消息字段类。
+
+        :return: 由 str 转换的 MessageSegment。
+        :rtype: T_MessageSegment
+        """
+        raise NotImplementedError
 
     def __repr__(self) -> str:
         return 'Message:[{}]'.format(','.join(map(lambda x: repr(x), self)))
@@ -84,7 +104,7 @@ class Message(list):
     def __iadd__(self: T_Message, other: Union[T_Message, T_MessageSegment, str]) -> T_Message:
         if isinstance(other, type(self)):
             self.extend(other)
-        if isinstance(other, MessageSegment):
+        if isinstance(other, self._message_segment_class):
             self.append(other)
         elif isinstance(other, str):
             self.extend(self._construct(other))
@@ -150,7 +170,8 @@ class Message(list):
         """
         temp_msg = self.deepcopy()
         if not (type(old) == type(new) == str) and \
-                not (type(old) == MessageSegment and (type(new) == MessageSegment or new is None)):
+                not (isinstance(old, self._message_segment_class) and
+                     (isinstance(new, self._message_segment_class) or new is None)):
             raise ValueError()
         if type(old) == str:
             for index, item in enumerate(temp_msg):
@@ -168,7 +189,7 @@ class Message(list):
                             count -= temp
         else:
             if new is None:
-                temp_msg = Message(filter(lambda x: x != old, temp_msg))
+                temp_msg = self.__class__(filter(lambda x: x != old, temp_msg))
             for index, item in enumerate(temp_msg):
                 if count == 0:
                     break
@@ -183,6 +204,7 @@ class MessageSegment(Mapping):
     消息字段。
     本类实现了所有映射类型的方法，这些方法全部是对 ``data`` 属性的操作。
     本类重写了 ``+`` 和 ``+=`` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算，返回 Message 对象。
+    若开发者实现了 Message 和 MessageSegment 的子类则需要重写 ``_set_message_class()`` 方法。
     """
     type: str
     """
@@ -192,6 +214,16 @@ class MessageSegment(Mapping):
     """
     消息字段内容。
     """
+
+    def __post_init__(self):
+        self._set_message_class()
+
+    def _set_message_class(self):
+        """
+        若开发者实现了 Message 和 MessageSegment 的子类则需要重写此方法。
+        格式应为 self._message_class = NewMessage 。
+        """
+        self._message_class = Message
 
     def __str__(self) -> str:
         return str(self.data)
@@ -224,10 +256,10 @@ class MessageSegment(Mapping):
         return not self.__eq__(other)
 
     def __add__(self, other):
-        return Message(self) + other
+        return self._message_class(self) + other
 
     def __radd__(self, other):
-        return Message(other) + self
+        return self._message_class(other) + self
 
     def get(self, key: str, default=None):
         return getattr(self.data, key, default)

@@ -34,8 +34,6 @@ class Message(list):
             return
         elif isinstance(message, self.__class__):
             self.extend(message)
-        elif isinstance(message, self._message_segment_class):
-            self.append(message)
         else:
             self.extend(self._construct(message))
 
@@ -49,7 +47,7 @@ class Message(list):
     @classmethod
     def __get_validators__(cls):
         """
-        pydantic自定义校验器
+        pydantic 自定义校验器
         """
         yield cls._validate
 
@@ -66,7 +64,9 @@ class Message(list):
         :return: MessageSegment 生成器。
         :rtype: Iterable[T_MessageSegment]
         """
-        if isinstance(msg, Mapping):
+        if isinstance(msg, self._message_segment_class):
+            yield msg
+        elif isinstance(msg, Mapping):
             yield self._message_segment_class(msg['type'], msg.get('data') or {})
         elif isinstance(msg, str):
             yield self._str_to_message_segment(msg)

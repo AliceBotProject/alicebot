@@ -3,7 +3,7 @@
 CQHTTP 异常
 ============
 """
-from alicebot.exception import AdapterException
+from alicebot.exception import AdapterException, AdapterTimeout
 
 
 class CQHTTPException(AdapterException):
@@ -36,7 +36,7 @@ class ApiNotAvailable(ActionFailed):
     """
 
 
-class ApiTimeout(AdapterException):
+class ApiTimeout(AdapterTimeout):
     """
     API 请求响应超时。
     """

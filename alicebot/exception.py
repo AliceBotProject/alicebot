@@ -42,6 +42,13 @@ class AdapterException(AliceBotException):
     pass
 
 
+class AdapterTimeout(AdapterException):
+    """
+    适配器相关函数出现超时时抛出。
+    """
+    pass
+
+
 class LoadModuleError(AliceBotException):
     """
     加载模块错误，在指定模块中找不到特定类型的类或模块中存在多个符合条件的类时抛出。

@@ -61,6 +61,13 @@ class Plugin(ABC):
         """
         return self.adapter.bot
 
+    @property
+    def config(self):
+        """
+        :return: 机器人配置。
+        """
+        return self.bot.config
+
     def stop(self):
         """
         停止当前事件传播。
@@ -85,14 +92,14 @@ class Plugin(ABC):
                   timeout: Optional[Union[int, float]] = None) -> Optional['T_Event']:
         """
         获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
-        当适配器接收到超过最大消息数的事件后仍未满足 func 的条件时，返回 ``None`` 。
 
         :param func: (optional) 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 ``True`` 时返回当前事件。
             当为 ``None`` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
         :param max_try_times: 最大事件数。
         :param timeout: 超时。
         :return: 返回满足 func 条件的事件。
-        :rtype: Optional['T_Event']
+        :rtype: 'T_Event'
+        :exception AdapterTimeout: 超过最大事件数或超时。
         """
         return await self.adapter.get(self.event, func, max_try_times, timeout)
 

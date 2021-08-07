@@ -167,6 +167,7 @@ class Bot:
         for plugin_priority in sorted(self.plugins_priority_dict.keys()):
             try:
                 logger.debug(f'Checking for matching plugins with priority {plugin_priority!r}')
+                stop = False
                 for _plugin in self.plugins_priority_dict[plugin_priority]:
                     try:
                         _plugin = _plugin(current_event)
@@ -175,16 +176,16 @@ class Bot:
                             await _plugin.handle()
                             if _plugin.block:
                                 raise StopException()
-                    except SkipException or StopException as e:
-                        raise e
+                    except SkipException:
+                        # 插件要求跳过自身继续当前事件传播
+                        continue
+                    except StopException:
+                        # 插件要求停止当前事件传播
+                        stop = True
                     except Exception as e:
                         logger.error(f'Exception in plugin "{_plugin}": {e!r}')
-            except StopException:
-                # 插件要求停止当前事件传播
-                break
-            except SkipException:
-                # 插件要求跳过自身继续当前事件传播
-                continue
+                if stop:
+                    break
             except Exception as e:
                 logger.error(f'Exception in handling event {current_event!r}: {e!r}')
             logger.info(f'Event Finished')

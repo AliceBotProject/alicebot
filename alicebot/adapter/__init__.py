@@ -6,11 +6,12 @@
 """
 import time
 import asyncio
+from functools import wraps
 from abc import ABC, abstractmethod
-from functools import wraps, partial
 from typing import Awaitable, List, Callable, TypeVar, Union, Optional, TYPE_CHECKING
 
 from alicebot.log import logger
+from alicebot.exception import AdapterTimeout
 
 if TYPE_CHECKING:
     from alicebot import Bot
@@ -96,10 +97,9 @@ class AbstractAdapter(ABC):
     async def get(self, current_event: 'T_Event',
                   func: Optional[Callable[['T_Event'], Union[bool, Awaitable[bool]]]] = None,
                   max_try_times: Optional[int] = None,
-                  timeout: Optional[Union[int, float]] = None) -> Optional['T_Event']:
+                  timeout: Optional[Union[int, float]] = None) -> 'T_Event':
         """
         获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
-        当适配器接收到超过最大消息数的事件后仍未满足 func 的条件时返回 ``None`` 。
 
         :param current_event: 当前事件，方法将仅检索此事件后接收到的事件。
         :param func: (optional) 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 ``True`` 时返回当前事件。
@@ -107,28 +107,32 @@ class AbstractAdapter(ABC):
         :param max_try_times: 最大事件数。
         :param timeout: 超时。
         :return: 返回满足 func 条件的事件。
-        :rtype: Optional['T_Event']
+        :rtype: 'T_Event'
+        :exception AdapterTimeout: 超过最大事件数或超时。
         """
 
         async def always_true(_):
             return True
 
-        def run_sync(_func):
+        def async_wrapper(_func):
             @wraps(_func)
             async def _wrapper(*args, **kwargs):
-                return await self.bot.loop.run_in_executor(None, partial(_func, *args, **kwargs))
+                return _func(*args, **kwargs)
 
             return _wrapper
+
+        def while_condition():
+            return not self.bot.should_exit and (max_try_times is None or (try_times < max_try_times)) and (
+                    timeout is None or (time.time() - start_time < timeout))
 
         if func is None:
             func = always_true
         elif not asyncio.iscoroutinefunction(func):
-            func = run_sync(func)
+            func = async_wrapper(func)
 
         try_times = 0
         start_time = time.time()
-        while not self.bot.should_exit and (max_try_times is None or (try_times < max_try_times)) and (
-                timeout is None or (time.time() - start_time < timeout)):
+        while while_condition():
             try:
                 index = self.event_queue.index(current_event)
             except ValueError:
@@ -141,8 +145,9 @@ class AbstractAdapter(ABC):
                     else:
                         self.handle_event(event)
             self.wait_for_get = True
-            while self.wait_for_get and not self.bot.should_exit:
+            while self.wait_for_get and while_condition():
                 await asyncio.sleep(0)
             try_times += 1
 
-        return None
+        if not self.bot.should_exit:
+            raise AdapterTimeout

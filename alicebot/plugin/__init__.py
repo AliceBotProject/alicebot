@@ -37,6 +37,13 @@ class Plugin(ABC):
 
     def __init__(self, event):
         self.event = event
+        self.__post_init__()
+
+    def __post_init__(self):
+        """
+        用于初始化后处理，被 ``__init__()`` 方法调用。
+        """
+        pass
 
     @property
     def name(self) -> str:

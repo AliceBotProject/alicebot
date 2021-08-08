@@ -173,9 +173,11 @@ class Bot:
                         _plugin = _plugin(current_event)
                         if await _plugin.rule():
                             logger.info(f'Event will be handled by {_plugin!r}')
-                            await _plugin.handle()
-                            if _plugin.block:
-                                raise StopException()
+                            try:
+                                await _plugin.handle()
+                            finally:
+                                if _plugin.block:
+                                    stop = True
                     except SkipException:
                         # 插件要求跳过自身继续当前事件传播
                         continue

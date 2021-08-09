@@ -127,6 +127,8 @@ class WebSocketServerAdapter(AbstractAdapter, metaclass=ABCMeta):
         await self.site.start()
 
     async def shutdown(self):
+        await self.websocket.close()
+        await self.site.stop()
         await self.runner.cleanup()
 
     async def handle_response(self, request: web.Request):
@@ -136,8 +138,6 @@ class WebSocketServerAdapter(AbstractAdapter, metaclass=ABCMeta):
 
         msg: aiohttp.WSMessage
         async for msg in ws:
-            if self.bot.should_exit:
-                break
             if msg.type == aiohttp.WSMsgType.TEXT:
                 await self.handle_ws_response(msg)
             elif msg.type == aiohttp.WSMsgType.ERROR:

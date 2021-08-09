@@ -12,8 +12,10 @@
 
 消息。
 本类是 `list` 的子类，同时重写了 `__init__()` 方法，可以直接处理 str, Mapping, Iterable[Mapping], T_MessageSegment, T_Message。
-其中 str 的支持需要适配器开发者重写 `_construct()` 方法实现，若开发者实现了 MessageSegment 的子类也需要重写 `_construct()` 方法。
+其中 str 的支持需要适配器开发者重写 `_set_message_class()` 方法实现。
 本类重写了 `+` 和 `+=` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
+若开发者实现了 MessageSegment 的子类则需要重写 `_set_message_segment_class()` 方法，
+并在 MessageSegment 的子类中重写 `_set_message_class()` 方法。
 
 
 ### `copy()`
@@ -53,6 +55,8 @@
 ### `startswith(prefix, start=None, end=None)`
 
 实现类似字符串的 `startswith()` 方法。
+当 `prefix` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 `startswith()` 方法。
+当 `prefix` 类型是 T_MessageSegment 时，`start` 和 `end` 参数将不其作用，会判断列表的第一个消息字段是否和 `prefix` 相等。
 
 
 * **参数**
@@ -83,6 +87,8 @@
 ### `endswith(suffix, start=None, end=None)`
 
 实现类似字符串的 `endswith()` 方法。
+当 `suffix` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 `endswith()` 方法。
+当 `suffix` 类型是 T_MessageSegment 时，`start` 和 `end` 参数将不其作用，会判断列表的最后一个消息字段是否和 `suffix` 相等。
 
 
 * **参数**
@@ -142,6 +148,7 @@
 消息字段。
 本类实现了所有映射类型的方法，这些方法全部是对 `data` 属性的操作。
 本类重写了 `+` 和 `+=` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算，返回 Message 对象。
+若开发者实现了 Message 和 MessageSegment 的子类则需要重写 `_set_message_class()` 方法。
 
 
 ### `type`

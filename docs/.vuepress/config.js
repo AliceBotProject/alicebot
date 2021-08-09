@@ -47,11 +47,23 @@ module.exports = {
         sidebar: {
           '/guide/': [
             {
-              title: '快速开始',
+              title: '基础',
               collapsable: false,
-              sidebar: 'auto',
-              children: ['']
-            }
+              children: [
+                '',
+                'getting-started',
+                'basic-config',
+                'plugin-basics'
+              ]
+            },
+            {
+              title: '进阶',
+              collapsable: false,
+              children: [
+                'plugin-advanced',
+                'builtin-message'
+              ]
+            },
           ],
           '/api/': [
             {
@@ -92,7 +104,12 @@ module.exports = {
       serviceWorker: true,
       updatePopup: true
     }],
-    ['@vuepress/medium-zoom', true]
+    ['@vuepress/medium-zoom', true],
+    ['container', {
+      type: 'vue',
+      before: '<pre class="vue-container"><code>',
+      after: '</code></pre>'
+    }]
   ]
 }
 

@@ -41,6 +41,13 @@
 由适配器抛出的异常基类，所有适配器抛出的异常都应该继承自此类。
 
 
+## _exception_ `AdapterTimeout`
+
+基类：`alicebot.exception.AdapterException`
+
+适配器相关函数出现超时时抛出。
+
+
 ## _exception_ `LoadModuleError`
 
 基类：`alicebot.exception.AliceBotException`

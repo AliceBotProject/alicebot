@@ -99,7 +99,7 @@ class Bot:
                 for sig in HANDLED_SIGNALS:
                     signal.signal(sig, self.handle_exit)
 
-        # 更新config，合并入来自Plugin和Adapter的Config
+        # 更新 config，合并入来自 Plugin 和 Adapter 的 Config
         if self._config_update_dict and self.config_json:
             self.config = create_model('Config', **self._config_update_dict, __base__=MainConfig)(**self.config_json)
 
@@ -119,7 +119,7 @@ class Bot:
                 try:
                     await _adapter.startup()
                 except Exception as e:
-                    logger.error(f'Startup _adapter {_adapter!r} failed: {e!r}')
+                    logger.error(f'Startup adapter {_adapter!r} failed: {e!r}')
             for _adapter in self.adapters:
                 self.loop.create_task(_adapter.safe_run())
             await self.main_loop()

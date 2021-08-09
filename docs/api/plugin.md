@@ -67,6 +67,15 @@
 
 
 
+### _property_ `config`
+
+
+* **返回**
+
+    机器人配置。
+
+
+
 ### `stop()`
 
 停止当前事件传播。
@@ -85,7 +94,6 @@
 ### _async_ `get(func=None, max_try_times=None, timeout=None)`
 
 获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
-当适配器接收到超过最大消息数的事件后仍未满足 func 的条件时，返回 `None` 。
 
 
 * **参数**
@@ -110,7 +118,13 @@
 
 * **返回类型**
 
-    Optional[‘T_Event’]
+    ‘T_Event’
+
+
+
+* **引发**
+
+    [**AdapterTimeout**](exception.md#alicebot.exception.AdapterTimeout) – 超过最大事件数或超时。
 
 
 

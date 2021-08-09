@@ -34,7 +34,7 @@
 
 AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种协议适配，可以轻松地编写易用学习和使用的插件来拓展其功能。
 
-本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，您可以在 [Why AliceBot?](#Why AliceBot?) 小节中查看这两个项目的异同，以便您选择更适合您的机器人框架。
+本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，您可以在 [对比](#对比) 小节中查看这两个项目的异同，以便您选择更适合您的机器人框架。
 
 ## 特点
 
@@ -83,7 +83,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
 
 更多信息请参阅 AliceBot [文档](https://docs.alicebot.dev/)。
 
-## Why AliceBot?
+## 对比
 
 本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，以下介绍两者的异同。
 

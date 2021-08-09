@@ -1,7 +1,11 @@
 {
     "plugins": null,
-    "plugin_dir": [
-        "plugins"
-    ],
-    "adapters": null
+    "plugin_dir": ["plugins"],
+    "adapters": ["alicebot.adapter.cqhttp"],
+    "cqhttp": {
+        "host": "127.0.0.1",
+        "port": 8080,
+        "url": "/cqhttp/ws",
+        "api_timeout": 100
+    }
 }

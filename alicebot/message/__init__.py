@@ -22,7 +22,7 @@ class Message(list):
     其中 str 的支持需要适配器开发者重写 ``_set_message_class()`` 方法实现。
     本类重写了 ``+`` 和 ``+=`` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
     若开发者实现了 MessageSegment 的子类则需要重写 ``_set_message_segment_class()`` 方法，
-        并在 MessageSegment 的子类中重写 ``_set_message_class()`` 方法。
+    并在 MessageSegment 的子类中重写 ``_set_message_class()`` 方法。
     """
 
     def __init__(self,

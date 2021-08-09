@@ -130,9 +130,11 @@ class Message(list):
         """
         return deepcopy(self)
 
-    def startswith(self, prefix: str, start=None, end=None) -> bool:
+    def startswith(self, prefix: Union[str, T_MessageSegment], start=None, end=None) -> bool:
         """
         实现类似字符串的 ``startswith()`` 方法。
+        当 ``prefix`` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 ``startswith()`` 方法。
+        当 ``prefix`` 类型是 T_MessageSegment 时，``start`` 和 ``end`` 参数将不其作用，会判断列表的第一个消息字段是否和 ``prefix`` 相等。
 
         :param prefix: 前缀。
         :param start: 开始检查位置。
@@ -140,11 +142,19 @@ class Message(list):
         :return: 检查结果。
         :rtype: bool
         """
-        return str(self).startswith(prefix, start, end)
+        if isinstance(prefix, str):
+            return str(self).startswith(prefix, start, end)
+        elif isinstance(prefix, self._message_segment_class):
+            if len(self) == 0:
+                return False
+            return self[0] == prefix
+        raise TypeError(f'first arg must be str or {self._message_segment_class}，not {type(prefix)}')
 
-    def endswith(self, suffix: str, start=None, end=None) -> bool:
+    def endswith(self, suffix: Union[str, T_MessageSegment], start=None, end=None) -> bool:
         """
         实现类似字符串的 ``endswith()`` 方法。
+        当 ``suffix`` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 ``endswith()`` 方法。
+        当 ``suffix`` 类型是 T_MessageSegment 时，``start`` 和 ``end`` 参数将不其作用，会判断列表的最后一个消息字段是否和 ``suffix`` 相等。
 
         :param suffix: 后缀。
         :param start: 开始检查位置。
@@ -152,7 +162,13 @@ class Message(list):
         :return: 检查结果。
         :rtype: bool
         """
-        return str(self).endswith(suffix, start, end)
+        if isinstance(suffix, str):
+            return str(self).endswith(suffix, start, end)
+        elif isinstance(suffix, self._message_segment_class):
+            if len(self) == 0:
+                return False
+            return self[-1] == suffix
+        raise TypeError(f'first arg must be str or {self._message_segment_class}，not {type(suffix)}')
 
     def replace(self,
                 old: Union[str, T_MessageSegment],

@@ -29,7 +29,12 @@ class Event(ABC, BaseModel):
     handled: bool = False
     """
     表示事件是否被处理过了，用于适配器处理。
-    注意：请勿手动更改此属性的值。
+    警告：请勿手动更改此属性的值。
+    """
+    next_event: Any = None
+    """
+    下一个事件，用于适配器处理。
+    警告：请勿手动更改此属性的值。
     """
 
     def __str__(self) -> str:

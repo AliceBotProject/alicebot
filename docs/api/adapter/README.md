@@ -5,6 +5,14 @@
 所有协议适配器都必须继承自 `AbstractAdapter` 基类。
 
 
+## _class_ `EventQueue`
+
+基类：`object`
+
+事件队列。
+使用限定长度的链队列。
+
+
 ## _class_ `AbstractAdapter`
 
 基类：`abc.ABC`
@@ -17,11 +25,6 @@
 适配器的名称。
 
 
-### `event_queue`
-
-事件队列，用于 `get()` 方法。
-
-
 ### `max_event_queue_len`
 
 最大事件队列长度。
@@ -30,6 +33,11 @@
 ### `wait_for_get`
 
 当此属性为 `Ture` 时，`handle_event()` 将不对当前事件进行传播和处理，用于 `get()` 方法。
+
+
+### `event_queue`
+
+事件队列，用于 `get()` 方法。
 
 
 ### `bot`

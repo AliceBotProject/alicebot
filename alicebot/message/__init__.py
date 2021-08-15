@@ -19,7 +19,7 @@ class Message(list):
     """
     消息。
     本类是 ``list`` 的子类，同时重写了 ``__init__()`` 方法，可以直接处理 str, Mapping, Iterable[Mapping], T_MessageSegment, T_Message。
-    其中 str 的支持需要适配器开发者重写 ``_set_message_class()`` 方法实现。
+    其中 str 的支持需要适配器开发者重写 ``_str_to_message_segment()`` 方法实现。
     本类重写了 ``+`` 和 ``+=`` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
     若开发者实现了 MessageSegment 的子类则需要重写 ``_set_message_segment_class()`` 方法，
     并在 MessageSegment 的子类中重写 ``_set_message_class()`` 方法。

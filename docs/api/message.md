@@ -143,7 +143,7 @@
 
 ## _class_ `MessageSegment`
 
-基类：`collections.abc.Mapping`, `typing.Generic`
+基类：`Mapping`
 
 消息字段。
 本类实现了所有映射类型的方法，这些方法全部是对 `data` 属性的操作。

@@ -38,7 +38,7 @@ CQHTTP 消息
 
 ## _class_ `CQHTTPMessageSegment`
 
-基类：[`alicebot.message.MessageSegment`](../../message.md#alicebot.message.MessageSegment)
+基类：`Mapping`
 
 CQHTTP 消息字段
 

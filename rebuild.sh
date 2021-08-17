@@ -4,7 +4,7 @@ function build_install() {
   rm -rf dist
   poetry build
   for file in ./dist/*.whl; do
-    pip install --force-reinstall "$file"
+    pip install --upgrade --no-deps --force-reinstall "$file"
   done
 }
 

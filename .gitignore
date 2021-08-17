@@ -131,6 +131,7 @@ dmypy.json
 # Node
 node_modules/
 .vuepress/dist
+
 # Project
 .idea
 .vscode

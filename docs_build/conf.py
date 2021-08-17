@@ -10,19 +10,15 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-import os
-import sys
-
-sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+# import os
+# import sys
+# sys.path.insert(0, os.path.abspath('.'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'AliceBot'
 copyright = '2021, st1020'
 author = 'st1020'
-
-# The full version, including alpha/beta/rc tags
-release = '0.1.0'
 
 # -- General configuration ---------------------------------------------------
 

@@ -5,6 +5,7 @@ import pkgutil
 
 module_name = 'alicebot'
 docs_build_folder = 'docs_build'
+source_working_dir = os.getcwd()
 
 
 def clean_docs_build_folder(folder):
@@ -22,9 +23,9 @@ def clean_docs_build_folder(folder):
 
 
 def build_rst(folder):
-    os.makedirs(folder.replace(module_name, docs_build_folder), exist_ok=True)
+    os.makedirs(os.path.join(source_working_dir, folder.replace(module_name, docs_build_folder)), exist_ok=True)
     result = []
-    for module_info in pkgutil.iter_modules([folder]):
+    for module_info in pkgutil.iter_modules([os.path.join(os.getcwd(), folder)]):
         if module_info.ispkg:
             if list(pkgutil.iter_modules([os.path.join(folder, module_info.name)])):
                 build_rst(os.path.join(folder, module_info.name))
@@ -32,11 +33,13 @@ def build_rst(folder):
                 result.append(module_info.name)
         else:
             result.append(module_info.name)
-    with open(os.path.join(folder.replace(module_name, docs_build_folder), 'README.rst'), 'w', encoding='utf8') as f:
+    with open(os.path.join(source_working_dir, folder.replace(module_name, docs_build_folder), 'README.rst'), 'w',
+              encoding='utf8') as f:
         f.write('{}\n==========================================\n\n.. automodule:: {}\n   :members:\n'
                 .format(*[folder.replace('/', '.')] * 2))
     for i in result:
-        with open(os.path.join(folder.replace(module_name, docs_build_folder), i + '.rst'), 'w', encoding='utf8') as f:
+        with open(os.path.join(source_working_dir, folder.replace(module_name, docs_build_folder), i + '.rst'), 'w',
+                  encoding='utf8') as f:
             f.write('{}\n==========================================\n\n.. automodule:: {}\n   :members:\n'
                     .format(*[os.path.join(folder, i).replace('/', '.')] * 2))
 
@@ -51,4 +54,11 @@ if __name__ == '__main__':
         shutil.rmtree(os.path.join(docs_build_folder, '_build'))
     clean_docs_build_folder(docs_build_folder)
     build_rst(module_name)
+    with os.scandir(os.path.abspath('packages')) as it:
+        entry: os.DirEntry
+        for entry in it:
+            if not entry.name.startswith('.') and entry.is_dir():
+                os.chdir(entry.path)
+                build_rst(os.path.join('alicebot', 'adapter'))
+
     print('Done!')

@@ -39,15 +39,15 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-    async def handle(self) -> None:
-        try:
-          	# do something
-            pass
-        finally:
-          	self.stop()
+	async def handle(self) -> None:
+		try:
+			# do something
+			pass
+		finally:
+			self.stop()
 
-    async def rule(self) -> bool:
-        return True
+	async def rule(self) -> bool:
+		return True
 
 ```
 
@@ -65,19 +65,19 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-    async def handle(self) -> None:
-      	print(self.config.test_plugin.a)
-        print(self.config.test_plugin.b)
-        pass
+	async def handle(self) -> None:
+		print(self.config.test_plugin.a)
+		print(self.config.test_plugin.b)
+		pass
 
-    async def rule(self) -> bool:
-        return True
+	async def rule(self) -> bool:
+		return True
 
 
 class Config(BaseModel):
-    __config_name__ = 'test_plugin'
-    a: str = 'test'
-    b: int = 1
+	__config_name__ = 'test_plugin'
+	a: str = 'test'
+	b: int = 1
 
 ```
 
@@ -139,14 +139,14 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-    def __post_init__(self):
-    		pass
+	def __post_init__(self):
+			pass
 
-    async def handle(self) -> None:
-        pass
+	async def handle(self) -> None:
+		pass
 
-    async def rule(self) -> bool:
-        return True
+	async def rule(self) -> bool:
+		return True
 
 ```
 

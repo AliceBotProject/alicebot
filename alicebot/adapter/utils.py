@@ -108,10 +108,10 @@ class WebSocketServerAdapter(AbstractAdapter, metaclass=ABCMeta):
     """
     WebSocket 服务端适配器示例。
     """
-    app: web.Application
-    runner: web.AppRunner
-    site: web.TCPSite
-    websocket: web.WebSocketResponse
+    app: web.Application = None
+    runner: web.AppRunner = None
+    site: web.TCPSite = None
+    websocket: web.WebSocketResponse = None
     host: str
     port: int
     url: str
@@ -127,9 +127,12 @@ class WebSocketServerAdapter(AbstractAdapter, metaclass=ABCMeta):
         await self.site.start()
 
     async def shutdown(self):
-        await self.websocket.close()
-        await self.site.stop()
-        await self.runner.cleanup()
+        if self.websocket is not None:
+            await self.websocket.close()
+        if self.site is not None:
+            await self.site.stop()
+        if self.runner is not None:
+            await self.runner.cleanup()
 
     async def handle_response(self, request: web.Request):
         ws = web.WebSocketResponse()

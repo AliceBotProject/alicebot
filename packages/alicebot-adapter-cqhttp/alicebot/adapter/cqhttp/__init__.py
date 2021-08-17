@@ -23,7 +23,7 @@ from alicebot.message import DataclassEncoder
 
 from .config import Config
 from .event import get_event_class
-from .message import CQHTTPMessage, CQHTTPMessageSegment
+from .message import CQHTTPMessage
 from .exception import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
 
 if TYPE_CHECKING:
@@ -36,10 +36,10 @@ class CQHTTPAdapter(AbstractAdapter):
     在插件中可以直接使用 ``self.adapter.xxx_api(**params)`` 调用名称为 ``xxx_api`` 的 API，和调用 ``call_api()`` 方法相同。
     """
     name: str = 'cqhttp'
-    app: web.Application
-    runner: web.AppRunner
-    site: web.TCPSite
-    websocket: web.WebSocketResponse
+    app: web.Application = None
+    runner: web.AppRunner = None
+    site: web.TCPSite = None
+    websocket: web.WebSocketResponse = None
     api_response: List[Dict[str, Any]] = []
     wait_for_get_api_response: bool = False
     _api_id: int = 0
@@ -74,9 +74,12 @@ class CQHTTPAdapter(AbstractAdapter):
         """
         清理 aiohttp AppRunner。
         """
-        await self.websocket.close()
-        await self.site.stop()
-        await self.runner.cleanup()
+        if self.websocket is not None:
+            await self.websocket.close()
+        if self.site is not None:
+            await self.site.stop()
+        if self.runner is not None:
+            await self.runner.cleanup()
 
     async def handle_response(self, request: web.Request):
         """

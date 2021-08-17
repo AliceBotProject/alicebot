@@ -139,14 +139,14 @@ class AbstractAdapter(ABC):
 
     async def startup(self):
         """
-        在适配器开始运行前运行的方法。
+        在适配器开始运行前运行的方法，用于初始化适配器。
         AliceBot 依次运行并等待所有适配器的 ``startup()`` 方法，待运行完毕后再创建 ``run()`` 任务。
         """
         pass
 
     async def shutdown(self):
         """
-        在适配器结束后运行后运行的方法。
+        在适配器结束运行时运行的方法，用于安全地关闭适配器。
         AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 ``shutdown()`` 方法。当强制退出时此方法可能未被执行。
         """
         pass

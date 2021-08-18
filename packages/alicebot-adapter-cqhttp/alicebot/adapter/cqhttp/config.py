@@ -24,7 +24,7 @@ class Config(BaseModel):
     """
     url: str = '/cqhttp/ws'
     """
-    WebSockets 路径，需和客户端配置相同。
+    WebSocket 路径，需和客户端配置相同。
     """
     api_timeout: int = 1000
     """

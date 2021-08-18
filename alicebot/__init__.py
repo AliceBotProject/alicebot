@@ -6,12 +6,10 @@ import threading
 from itertools import chain
 from typing import Any, List, Dict, Iterable, Tuple, Type, TypeVar, Optional, TYPE_CHECKING
 
-from pydantic import create_model, ValidationError
+from pydantic import BaseModel, ValidationError, create_model
 
 from alicebot.log import logger
-from alicebot.plugin import Plugin
-from alicebot.adapter import AbstractAdapter
-from alicebot.config import MainConfig, BaseModel, config_file
+from alicebot.config import MainConfig, config_file, config
 from alicebot.exception import StopException, SkipException, LoadModuleError
 from alicebot.load_module import load_module, ModulePathFinder, load_modules_from_dir
 
@@ -32,7 +30,6 @@ class Bot:
     """
     AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 ``Config`` ，加载适配器 ``Adapter`` 和插件 ``Plugin``，并进行事件分发。
     """
-    config = None
     config_json: Dict[str, Any] = {}
     loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
     should_exit: bool = False
@@ -74,6 +71,14 @@ class Bot:
         if self.config.adapters:
             for _adapter in self.config.adapters:
                 self.load_adapter(_adapter)
+
+    @property
+    def config(self):
+        return config.get()
+
+    @config.setter
+    def config(self, value):
+        config.set(value)
 
     @property
     def plugins(self) -> List['T_Plugin']:
@@ -210,6 +215,7 @@ class Bot:
         :return: 被加载的插件类。
         :rtype: Optional[Type['T_Plugin']]
         """
+        from alicebot.plugin import Plugin
         try:
             plugin_class, config_class = load_module(name, Plugin, None)
             self._load_plugin(plugin_class)
@@ -228,6 +234,7 @@ class Bot:
         :return: 被加载的适配器类。
         :rtype: Optional[Type['T_Adapter']]
         """
+        from alicebot.adapter import AbstractAdapter
         try:
             adapter_class, config_class = load_module(name, AbstractAdapter, self)
             self.adapters.append(adapter_class(self))
@@ -245,6 +252,7 @@ class Bot:
 
         :param path: 由储存插件的路径文本组成的列表。 ``['path/of/plugins/', '/home/xxx/alicebot/plugins']``
         """
+        from alicebot.plugin import Plugin
         for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin, None):
             try:
                 self._load_plugin(module)

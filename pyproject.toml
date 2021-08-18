@@ -27,13 +27,10 @@ aiohttp = "^3.7.0"
 loguru = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
-# only docs duild dependencies there
 sphinx = "3.5.4"
 sphinx-markdown-builder = { git = "https://github.com/st1020/sphinx-markdown-builder.git" }
-# alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
-# for now, can not use "poetry install" to install namespace package which defined in PEP 420.
-# because "poetry install" use .pth file when install local package, PEP 420 namespace package only works on installation via pip.
-# see: https://packaging.python.org/guides/packaging-namespace-packages/
+alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
+alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }
 
 [tool.poetry.extras]
 cqhttp = ["alicebot-adapter-cqhttp"]

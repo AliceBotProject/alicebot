@@ -11,6 +11,7 @@ from abc import ABC, abstractmethod
 from typing import Awaitable, Callable, TypeVar, Union, Optional, TYPE_CHECKING
 
 from alicebot.log import logger
+from alicebot.config import config
 from alicebot.exception import AdapterTimeout
 
 if TYPE_CHECKING:
@@ -19,12 +20,18 @@ if TYPE_CHECKING:
 
 T_Adapter = TypeVar('T_Adapter', bound='AbstractAdapter')
 
+current_config = config.get()
+if current_config is not None and current_config.dev_env:
+    # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
+    __import__('pkg_resources').declare_namespace(__name__)
+
 
 class EventQueue:
     """
     事件队列。
     使用限定长度的链队列。
     """
+
     def __init__(self, max_len=None):
         self._head: ['T_Event'] = None
         self._rear: ['T_Event'] = None

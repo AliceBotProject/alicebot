@@ -22,10 +22,14 @@ classifiers = [
 packages = [
     { include = "alicebot" }
 ]
+exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
 alicebot = "^0.1.1"
+
+[tool.poetry.dev-dependencies]
+alicebot = { path = "../../", develop = true }
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

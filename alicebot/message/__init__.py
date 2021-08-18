@@ -67,15 +67,24 @@ class Message(list):
         if isinstance(msg, self._message_segment_class):
             yield msg
         elif isinstance(msg, Mapping):
-            yield self._message_segment_class(msg['type'], msg.get('data') or {})
+            yield self._mapping_to_message_segment(msg)
         elif isinstance(msg, str):
             yield self._str_to_message_segment(msg)
-        elif isinstance(msg, Iterable) and not isinstance(msg, str):
+        elif isinstance(msg, Iterable):
             for seg in msg:
-                yield next(self._construct(seg))
+                yield self._mapping_to_message_segment(seg)
         return
 
-    def _str_to_message_segment(self, msg) -> T_MessageSegment:
+    def _mapping_to_message_segment(self, msg: Mapping) -> T_MessageSegment:
+        """
+        用于将 Mapping 转换为 MessageSegment，如有需要，子类可重写此方法以更改对 Mapping 的默认行为。
+
+        :return: 由 Mapping 转换的 MessageSegment。
+        :rtype: T_MessageSegment
+        """
+        return self._message_segment_class(**msg)
+
+    def _str_to_message_segment(self, msg: str) -> T_MessageSegment:
         """
         用于将 str 转换为 MessageSegment，子类应重写此方法以支持 str 及支持新的消息字段类。
 

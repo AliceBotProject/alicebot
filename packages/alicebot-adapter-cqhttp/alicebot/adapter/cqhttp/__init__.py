@@ -150,6 +150,8 @@ class CQHTTPAdapter(AbstractAdapter):
         """
         self.wait_for_get_api_response = False
         self.api_response.append(msg)
+        if len(self.api_response) > self.max_event_queue_len:
+            self.api_response.pop(0)
 
     async def call_api(self, api: str, **params) -> Optional[Dict[str, Any]]:
         """
@@ -164,6 +166,10 @@ class CQHTTPAdapter(AbstractAdapter):
         :exception ActionFailed: API 请求响应 failed， API 操作失败。
         :exception ApiTimeout: API 请求响应超时。
         """
+
+        def while_condition():
+            return not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout)
+
         api_echo = self._get_api_echo()
         try:
             await self.websocket.send_str(json.dumps({
@@ -174,12 +180,8 @@ class CQHTTPAdapter(AbstractAdapter):
         except Exception:
             raise NetworkError
 
-        timeout = self.config.api_timeout
         start_time = time.time()
-        self.wait_for_get_api_response = True
-        while not self.bot.should_exit and (time.time() - start_time < timeout):
-            while self.wait_for_get_api_response and not self.bot.should_exit:
-                await asyncio.sleep(0)
+        while while_condition():
             for index, resp in enumerate(self.api_response):
                 if resp['echo'] == api_echo:
                     if resp.get('retcode') == 1404:
@@ -187,6 +189,9 @@ class CQHTTPAdapter(AbstractAdapter):
                     if resp.get('status') == 'failed':
                         raise ActionFailed(resp=resp)
                     return self.api_response.pop(index).get('data')
+            self.wait_for_get_api_response = True
+            while self.wait_for_get_api_response and while_condition():
+                await asyncio.sleep(0)
 
         if not self.bot.should_exit:
             raise ApiTimeout

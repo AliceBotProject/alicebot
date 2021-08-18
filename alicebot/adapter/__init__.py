@@ -12,6 +12,7 @@ from typing import Awaitable, Callable, TypeVar, Union, Optional, TYPE_CHECKING
 
 from alicebot.log import logger
 from alicebot.config import config
+from alicebot.utils import LinkedQueue
 from alicebot.exception import AdapterTimeout
 
 if TYPE_CHECKING:
@@ -26,76 +27,10 @@ if current_config is not None and current_config.dev_env:
     __import__('pkg_resources').declare_namespace(__name__)
 
 
-class EventQueue:
-    """
-    事件队列。
-    使用限定长度的链队列。
-    """
-
-    def __init__(self, max_len=None):
-        self._head: ['T_Event'] = None
-        self._rear: ['T_Event'] = None
-        self._len: int = 0
-
-        self.max_len = max_len
-
-    def __len__(self):
-        return self._len
-
-    def push(self, event: 'T_Event') -> None:
-        if self._head is None:
-            self._head = event
-            self._rear = event
-            self._len = 1
-            return
-        self._rear.next_event = event
-        self._rear = event
-        self._len += 1
-        while self._len > self.max_len:
-            self.pop()
-
-    def pop(self):
-        if self._head is None:
-            raise ValueError('EventQueue is empty.')
-        temp = self._head
-        self._head = self._head.next_event
-        temp.next_event = None
-        if self._head is None:
-            self._rear = None
-        self._len -= 1
-        return temp
-
-    def top(self) -> ['T_Event']:
-        return self._head
-
-    def append(self, obj: 'T_Event'):
-        self.push(obj)
-
-    def clear(self):
-        self._head = None
-        self._rear = None
-        self._len = None
-
-    def index(self, obj: 'T_Event', start=None, end=None):
-        for index, item in enumerate(self):
-            if item == obj and (start is None or start <= index) and (end is None or index <= end):
-                return index
-        raise ValueError(f'{obj} is not in EventQueue')
-
-    def __contains__(self, item):
-        try:
-            self.index(item)
-        except ValueError:
-            return False
-        else:
-            return True
-
-    def __iter__(self):
-        point = self._head
-        while point.next_event is not None:
-            yield point
-            point = point.next_event
-        yield point
+class EventQueue(LinkedQueue['T_Event']):
+    def __init__(self, max_len: Optional[int] = None):
+        super().__init__(max_len=max_len,
+                         next_alias='next_event')
 
 
 class AbstractAdapter(ABC):

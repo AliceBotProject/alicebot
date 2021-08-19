@@ -197,24 +197,24 @@ class CQHTTPAdapter(AbstractAdapter):
             raise ApiTimeout
 
     async def send(self,
-                   _message: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'],
+                   message_: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'],
                    message_type: Literal['private', 'group'],
-                   _id: int) -> Optional[Dict[str, Any]]:
+                   id_: int) -> Optional[Dict[str, Any]]:
         """
         发送消息，调用 send_private_msg 或 send_group_msg API 发送消息。
 
-        :param _message: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'。
+        :param message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'。
             将使用 ``CQHTTPMessage`` 进行封装。
         :param message_type: 消息类型。应该是 private 或者 group。
-        :param _id: 发送对象的 ID ，QQ 号码或者群号码。
+        :param id_: 发送对象的 ID ，QQ 号码或者群号码。
         :return: API 响应。
         :rtype: Optional[Dict[str, Any]]
         :exception TypeError: message_type 不是 'private' 或 'group'。
         :exception ...: 同 ``call_api()`` 方法。
         """
         if message_type == 'private':
-            return await self.send_private_msg(user_id=_id, message=CQHTTPMessage(_message))
+            return await self.send_private_msg(user_id=id_, message=CQHTTPMessage(message_))
         elif message_type == 'group':
-            return await self.send_group_msg(group_id=_id, message=CQHTTPMessage(_message))
+            return await self.send_group_msg(group_id=id_, message=CQHTTPMessage(message_))
         else:
             raise TypeError('message_type must be "private" or "group"')

@@ -22,7 +22,7 @@ class NetworkError(CQHTTPException):
 
 class ActionFailed(CQHTTPException):
     """
-    API 请求成功响应，当响应表示 API 操作失败。
+    API 请求成功响应，但响应表示 API 操作失败。
     :param resp: 返回的响应。
     """
 

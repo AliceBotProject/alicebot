@@ -23,6 +23,7 @@ class CQHTTPMessage(Message):
     def is_text(self) -> bool:
         """
         :return: 是否是纯文本消息。
+        :rtype: bool
         """
         for ms in self:
             if not ms.is_text():

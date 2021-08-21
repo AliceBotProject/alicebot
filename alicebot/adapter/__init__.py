@@ -49,18 +49,14 @@ class AbstractAdapter(ABC):
     """
     事件队列，用于 ``get()`` 方法。
     """
-    max_event_queue_len: int = 1024
-    """
-    最大事件队列长度。
-    """
     wait_for_get: bool = False
     """
     当此属性为 ``Ture`` 时，``handle_event()`` 将不对当前事件进行传播和处理，用于 ``get()`` 方法。
     """
 
     def __init__(self, bot: 'Bot'):
-        self.event_queue = EventQueue(max_len=self.max_event_queue_len)
         self.bot: 'Bot' = bot
+        self.event_queue = EventQueue(max_len=self.bot.config.max_event_queue_len)
 
     async def safe_run(self):
         """
@@ -162,3 +158,9 @@ class AbstractAdapter(ABC):
         self.wait_for_get = False
         if not self.bot.should_exit:
             raise AdapterTimeout
+
+    async def send(self, *args, **kwargs):
+        """
+        发送消息，需要适配器开发者实现。
+        """
+        raise NotImplementedError

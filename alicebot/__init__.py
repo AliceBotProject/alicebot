@@ -4,7 +4,7 @@ import signal
 import asyncio
 import threading
 from itertools import chain
-from typing import Any, List, Dict, Iterable, Tuple, Type, TypeVar, Optional, TYPE_CHECKING
+from typing import Any, List, Dict, Iterable, Tuple, Type, Optional, TYPE_CHECKING
 
 from pydantic import BaseModel, ValidationError, create_model
 
@@ -22,8 +22,6 @@ HANDLED_SIGNALS = (
     signal.SIGINT,  # Unix signal 2. Sent by Ctrl+C.
     signal.SIGTERM,  # Unix signal 15. Sent by `kill <pid>`.
 )
-
-_T = TypeVar('_T')
 
 
 class Bot:
@@ -257,10 +255,12 @@ class Bot:
             try:
                 self._load_plugin(module)
             except Exception as e:
+                # noinspection PyUnresolvedReferences
                 logger.error(
                     f'Import plugin "{module_info.name}" from path "{module_info.module_finder.path}" failed: {e!r}')
             else:
                 self._update_config(config_class)
+                # noinspection PyUnresolvedReferences
                 logger.info(
                     f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"')
 

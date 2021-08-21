@@ -4,7 +4,7 @@ CQHTTP 事件
 ============
 """
 import inspect
-from typing import Literal, Optional, Type, TypeVar, Union, Mapping, Iterable, TYPE_CHECKING
+from typing import Any, Dict, Literal, Optional, Type, TypeVar, Union, Mapping, Iterable, TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
@@ -91,14 +91,16 @@ class MessageEvent(CQHTTPEvent):
         """
         return self.message.get_plain_text()
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage']):
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping],
+                                      'T_CQHTTPMessageSegment', 'T_CQHTTPMessage']) -> Dict[str, Any]:
         """
         回复消息。
 
         :param msg: 回复消息的内容，同 ``call_api()`` 方法。
         :return: API 请求响应。
+        :rtype: Dict[str, Any]
         """
-        pass
+        raise NotImplementedError
 
 
 class PrivateMessageEvent(MessageEvent):
@@ -107,7 +109,8 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal['private']
     sub_type: Literal['friend', 'group', 'other']
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage']):
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping],
+                                      'T_CQHTTPMessageSegment', 'T_CQHTTPMessage']) -> Dict[str, Any]:
         return await self.adapter.send_private_msg(user_id=self.user_id, message=CQHTTPMessage(msg))
 
 
@@ -119,7 +122,8 @@ class GroupMessageEvent(MessageEvent):
     group_id: int
     anonymous: Optional[Anonymous] = None
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage']):
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping],
+                                      'T_CQHTTPMessageSegment', 'T_CQHTTPMessage']) -> Dict[str, Any]:
         return await self.adapter.send_group_msg(group_id=self.group_id, message=CQHTTPMessage(msg))
 
 
@@ -241,11 +245,23 @@ class RequestEvent(CQHTTPEvent):
     post_type: Literal['request']
     request_type: str
 
-    async def approve(self):
-        pass
+    async def approve(self) -> Dict[str, Any]:
+        """
+        同意请求。
 
-    async def refuse(self):
-        pass
+        :return: API 请求响应。
+        :rtype: Dict[str, Any]
+        """
+        raise NotImplementedError
+
+    async def refuse(self) -> Dict[str, Any]:
+        """
+        拒绝请求。
+
+        :return: API 请求响应。
+        :rtype: Dict[str, Any]
+        """
+        raise NotImplementedError
 
 
 class FriendRequestEvent(RequestEvent):
@@ -256,21 +272,17 @@ class FriendRequestEvent(RequestEvent):
     comment: str
     flag: str
 
-    async def approve(self, remark: str = ''):
+    async def approve(self, remark: str = '') -> Dict[str, Any]:
         """
         同意请求。
 
         :param remark: (optional) 好友备注。
         :return: API 请求响应。
+        :rtype: Dict[str, Any]
         """
         return await self.adapter.set_friend_add_request(flag=self.flag, approve=True, remark=remark)
 
-    async def refuse(self):
-        """
-        拒绝请求。
-
-        :return: API 请求响应。
-        """
+    async def refuse(self) -> Dict[str, Any]:
         return await self.adapter.set_friend_add_request(flag=self.flag, approve=False)
 
 
@@ -284,20 +296,16 @@ class GroupRequestEvent(RequestEvent):
     comment: str
     flag: str
 
-    async def approve(self):
-        """
-        同意请求。
-
-        :return: API 请求响应。
-        """
+    async def approve(self) -> Dict[str, Any]:
         return await self.adapter.set_group_add_request(flag=self.flag, sub_type=self.sub_type, approve=True)
 
-    async def refuse(self, reason: str = ''):
+    async def refuse(self, reason: str = '') -> Dict[str, Any]:
         """
         拒绝请求。
 
         :param reason: (optional) 拒绝原因。
         :return: API 请求响应。
+        :rtype: Dict[str, Any]
         """
         return await self.adapter.set_group_add_request(flag=self.flag,
                                                         sub_type=self.sub_type,
@@ -339,10 +347,11 @@ for model in globals().values():
 def get_event_class(post_type: str, event_type: str, sub_type: Optional[str] = None) -> Type[T_CQHTTPEvent]:
     """
     根据接收到的消息类型返回对应的事件类。
+
     :param post_type: 请求类型。
     :param event_type: 事件类型。
     :param sub_type: (optional) 子类型。
-    :return: 返回事件类。
+    :return: 对应的事件类。
     :rtype: Type[T_CQHTTPEvent]
     """
     if sub_type is None:

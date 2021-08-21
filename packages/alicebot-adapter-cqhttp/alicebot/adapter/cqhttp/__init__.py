@@ -12,7 +12,7 @@ import time
 import json
 import asyncio
 from functools import partial
-from typing import Any, Dict, Iterable, List, Literal, Optional, Union, Mapping, TYPE_CHECKING
+from typing import Any, Dict, Iterable, List, Literal, Union, Mapping, TYPE_CHECKING
 
 import aiohttp
 from aiohttp import web
@@ -108,7 +108,8 @@ class CQHTTPAdapter(AbstractAdapter):
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 logger.error(f'WebSocket connection closed with exception {ws.exception()!r}')
 
-        logger.warning(f'WebSocket connection closed!')
+        if not self.bot.should_exit:
+            logger.warning(f'WebSocket connection closed!')
 
         return ws
 
@@ -150,17 +151,17 @@ class CQHTTPAdapter(AbstractAdapter):
         """
         self.wait_for_get_api_response = False
         self.api_response.append(msg)
-        if len(self.api_response) > self.max_event_queue_len:
+        if len(self.api_response) > self.bot.config.max_event_queue_len:
             self.api_response.pop(0)
 
-    async def call_api(self, api: str, **params) -> Optional[Dict[str, Any]]:
+    async def call_api(self, api: str, **params) -> Dict[str, Any]:
         """
         调用 CQHTTP API，协程会等待直到获得 API 响应。
 
         :param api: API 名称。
         :param params: API 参数。
         :return: API 响应中的 data 字段。
-        :rtype: Optional[Dict[str, Any]]
+        :rtype: Dict[str, Any]
         :exception NetworkError: 网络错误。
         :exception ApiNotAvailable: API 请求响应 404， API 不可用。
         :exception ActionFailed: API 请求响应 failed， API 操作失败。
@@ -199,7 +200,7 @@ class CQHTTPAdapter(AbstractAdapter):
     async def send(self,
                    message_: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'],
                    message_type: Literal['private', 'group'],
-                   id_: int) -> Optional[Dict[str, Any]]:
+                   id_: int) -> Dict[str, Any]:
         """
         发送消息，调用 send_private_msg 或 send_group_msg API 发送消息。
 
@@ -208,7 +209,7 @@ class CQHTTPAdapter(AbstractAdapter):
         :param message_type: 消息类型。应该是 private 或者 group。
         :param id_: 发送对象的 ID ，QQ 号码或者群号码。
         :return: API 响应。
-        :rtype: Optional[Dict[str, Any]]
+        :rtype: Dict[str, Any]
         :exception TypeError: message_type 不是 'private' 或 'group'。
         :exception ...: 同 ``call_api()`` 方法。
         """

@@ -5,19 +5,18 @@ Mirai 消息
 """
 import json
 import dataclasses
-from typing import Any, Dict, List, TypeVar, Optional
+from typing import Any, Dict, List, Type, Optional
 
 from alicebot.message import Message, MessageSegment
 
-T_MiraiMessage = TypeVar('T_MiraiMessage', bound='MiraiMessage')
-T_MiraiMessageSegment = TypeVar('T_MiraiMessageSegment', bound='MiraiMessageSegment')
 
+class MiraiMessage(Message['MiraiMessageSegment']):
 
-class MiraiMessage(Message):
-    def _set_message_segment_class(self):
-        self._message_segment_class = MiraiMessageSegment
+    @property
+    def _message_segment_class(self) -> Type['MiraiMessageSegment']:
+        return MiraiMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> T_MiraiMessageSegment:
+    def _str_to_message_segment(self, msg: str) -> 'MiraiMessageSegment':
         return self._message_segment_class.plain(msg)
 
     def as_message_chain(self) -> List[Dict[str, Any]]:
@@ -49,13 +48,13 @@ class MiraiMessage(Message):
         return ''.join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
 
 
-class MiraiMessageSegment(MessageSegment):
+class MiraiMessageSegment(MessageSegment['MiraiMessage']):
     def __init__(self, type: str, **data):
         super().__init__(type=type,
                          data={k: v for k, v in data.items() if v is not None})
 
-    def _set_message_class(self):
-        self._message_class = MiraiMessage
+    def _message_class(self) -> Type['MiraiMessage']:
+        return MiraiMessage
 
     def __str__(self) -> str:
         if self.type == 'Plain':

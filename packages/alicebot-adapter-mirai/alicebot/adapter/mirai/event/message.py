@@ -4,7 +4,7 @@ from ..message import MiraiMessage
 from .base import MiraiEvent, FriendInfo, GroupMemberInfo, OtherClientSender
 
 if TYPE_CHECKING:
-    from ..message import T_MiraiMessage, T_MiraiMessageSegment
+    from ..message import MiraiMessage, MiraiMessageSegment
 
 
 class MessageEvent(MiraiEvent):
@@ -25,7 +25,7 @@ class MessageEvent(MiraiEvent):
         """
         return self.messageChain.get_plain_text()
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                      quote: bool = False) -> Dict[str, Any]:
         """
         回复消息。
@@ -43,7 +43,7 @@ class FriendMessage(MessageEvent):
     type: Literal['FriendMessage']
     sender: FriendInfo
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                      quote: bool = False) -> Dict[str, Any]:
         if quote:
             return await self.adapter.send(msg,
@@ -61,7 +61,7 @@ class GroupMessage(MessageEvent):
     type: Literal['GroupMessage']
     sender: GroupMemberInfo
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                      quote: bool = False) -> Dict[str, Any]:
         if quote:
             return await self.adapter.send(msg,
@@ -79,7 +79,7 @@ class TempMessage(MessageEvent):
     type: Literal['TempMessage']
     sender: GroupMemberInfo
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                      quote: bool = False) -> Dict[str, Any]:
         if quote:
             return await self.adapter.sendTempMessage(qq=self.sender.id,
@@ -97,7 +97,7 @@ class StrangerMessage(MessageEvent):
     type: Literal['StrangerMessage']
     sender: FriendInfo
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                      quote: bool = False) -> Dict[str, Any]:
         if quote:
             return await self.adapter.send(msg,
@@ -115,6 +115,6 @@ class OtherClientMessage(MessageEvent):
     type: Literal['OtherClientMessage']
     sender: OtherClientSender
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                      quote: bool = False) -> Dict[str, Any]:
         raise NotImplementedError

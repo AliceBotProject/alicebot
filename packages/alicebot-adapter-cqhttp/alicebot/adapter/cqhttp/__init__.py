@@ -27,7 +27,7 @@ from .message import CQHTTPMessage
 from .exception import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
 
 if TYPE_CHECKING:
-    from .message import T_CQHTTPMessage, T_CQHTTPMessageSegment
+    from .message import CQHTTPMessageSegment
 
 
 class CQHTTPAdapter(AbstractAdapter):
@@ -198,13 +198,13 @@ class CQHTTPAdapter(AbstractAdapter):
             raise ApiTimeout
 
     async def send(self,
-                   message_: Union[str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'],
+                   message_: Union[str, Mapping, Iterable[Mapping], 'CQHTTPMessageSegment', 'CQHTTPMessage'],
                    message_type: Literal['private', 'group'],
                    id_: int) -> Dict[str, Any]:
         """
         发送消息，调用 send_private_msg 或 send_group_msg API 发送消息。
 
-        :param message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'T_CQHTTPMessageSegment', 'T_CQHTTPMessage'。
+        :param message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'CQHTTPMessageSegment', 'CQHTTPMessage'。
             将使用 ``CQHTTPMessage`` 进行封装。
         :param message_type: 消息类型。应该是 private 或者 group。
         :param id_: 发送对象的 ID ，QQ 号码或者群号码。

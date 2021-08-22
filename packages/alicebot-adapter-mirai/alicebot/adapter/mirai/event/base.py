@@ -4,6 +4,8 @@ from pydantic import BaseModel
 
 from alicebot.event import Event
 
+from ..message import MiraiMessage, DataclassEncoder
+
 T_MiraiEvent = TypeVar('T_MiraiEvent', bound='MiraiEvent')
 
 Permission = Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']
@@ -45,3 +47,7 @@ class OtherClientSender(BaseModel):
 class MiraiEvent(Event):
     """Mirai 事件基类"""
     type: str
+
+    class Config:
+        extra = 'allow'
+        json_encoders = {MiraiMessage: DataclassEncoder}

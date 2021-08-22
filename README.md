@@ -44,7 +44,8 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
 
 目前 AliceBot 官方维护了以下协议适配：
 
-- 基于 WebSocket 的 [OneBot (CQHTTP) 协议](https://github.com/nonebot/nonebot2/blob/master/README.md) （支持QQ等）
+- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) （支持QQ等）[反向 WebSocket](https://github.com/botuniverse/onebot/blob/master/v11/specs/communication/ws-reverse.md) 连接方式
+- [mirai-api-http 协议](https://github.com/project-mirai/mirai-api-http) 2.0+ [ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/WebsocketAdapter.md) 和 [reverse-ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/ReverseWebsocketAdapter.md) 连接方式
 
 更多协议正在适配中 ...
 

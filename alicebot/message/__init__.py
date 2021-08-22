@@ -9,27 +9,26 @@ import json
 import dataclasses
 from copy import copy, deepcopy
 from dataclasses import dataclass, field
-from typing import Any, Dict, Mapping, Union, TypeVar, Iterable, Iterator
+from typing import Any, Dict, Generic, List, Mapping, Union, Type, TypeVar, Iterable, Iterator
 
 T_Message = TypeVar('T_Message', bound='Message')
 T_MessageSegment = TypeVar('T_MessageSegment', bound='MessageSegment')
 
 
-class Message(list):
+class Message(List[T_MessageSegment]):
     """
     消息。
-    本类是 ``list`` 的子类，同时重写了 ``__init__()`` 方法，可以直接处理 str, Mapping, Iterable[Mapping], T_MessageSegment, T_Message。
+    本类是 ``List`` 的子类，并重写了 ``__init__()`` 方法，可以直接处理 str, Mapping, Iterable[Mapping], T_MessageSegment, T_Message。
     其中 str 的支持需要适配器开发者重写 ``_str_to_message_segment()`` 方法实现。
     本类重写了 ``+`` 和 ``+=`` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
-    若开发者实现了 MessageSegment 的子类则需要重写 ``_set_message_segment_class()`` 方法，
-    并在 MessageSegment 的子类中重写 ``_set_message_class()`` 方法。
+    若开发者实现了 MessageSegment 的子类则需要重写 ``_message_segment_class()`` 方法，
+    并在 MessageSegment 的子类中重写 ``_message_class()`` 方法。
     """
 
     def __init__(self,
                  message: Union[str, None, Mapping, Iterable[Mapping], T_MessageSegment, T_Message, Any] = None,
                  *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._set_message_segment_class()
         if message is None:
             return
         elif isinstance(message, self.__class__):
@@ -37,12 +36,15 @@ class Message(list):
         else:
             self.extend(self._construct(message))
 
-    def _set_message_segment_class(self):
+    @property
+    def _message_segment_class(self) -> Type[T_MessageSegment]:
         """
         若开发者实现了 MessageSegment 的子类则需要重写此方法。
-        格式应为 self._message_segment_class = NewMessageSegment 。
+
+        :return: MessageSegment 类。
+        :rtype: Type[T_MessageSegment]
         """
-        self._message_segment_class = MessageSegment
+        return MessageSegment
 
     @classmethod
     def __get_validators__(cls):
@@ -179,57 +181,14 @@ class Message(list):
             return self[-1] == suffix
         raise TypeError(f'first arg must be str or {self._message_segment_class}，not {type(suffix)}')
 
-    def replace(self,
-                old: Union[str, T_MessageSegment],
-                new: Union[str, T_MessageSegment, None],
-                count: int = -1) -> T_Message:
-        """
-        实现类似字符串的 ``replace()`` 方法。
-        当 ``old`` 为 str 类型时，``new`` 也必须是 str ，本方法将仅对 ``type`` 为 ``text`` 的消息字段进行处理。
-        当 ``old`` 为 MessageSegment 类型时，``new`` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
-
-        :param old: 被匹配的字符串或消息字段。
-        :param new: 被替换为的字符串或消息字段。
-        :param count: 替换的次数。
-        :return:
-        """
-        temp_msg = self.deepcopy()
-        if not (type(old) == type(new) == str) and \
-                not (isinstance(old, self._message_segment_class) and
-                     (isinstance(new, self._message_segment_class) or new is None)):
-            raise ValueError()
-        if type(old) == str:
-            for index, item in enumerate(temp_msg):
-                if count == 0:
-                    break
-                if item.type == 'text' and old in item.data['text']:
-                    if count == -1:
-                        temp_msg[index].data['text'] = item.data['text'].replace(old, new)
-                    else:
-                        temp = item.data['text'].count(old)
-                        temp_msg[index].data['text'] = item.data['text'].replace(old, new, min(temp, count))
-                        if count <= temp:
-                            count = 0
-                        else:
-                            count -= temp
-        else:
-            if new is None:
-                temp_msg = self.__class__(filter(lambda x: x != old, temp_msg))
-            for index, item in enumerate(temp_msg):
-                if count == 0:
-                    break
-                if item == old:
-                    temp_msg[index] = new
-        return temp_msg
-
 
 @dataclass
-class MessageSegment(Mapping):
+class MessageSegment(Mapping, Generic[T_Message]):
     """
     消息字段。
     本类实现了所有映射类型的方法，这些方法全部是对 ``data`` 属性的操作。
     本类重写了 ``+`` 和 ``+=`` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算，返回 Message 对象。
-    若开发者实现了 Message 和 MessageSegment 的子类则需要重写 ``_set_message_class()`` 方法。
+    若开发者实现了 Message 和 MessageSegment 的子类则需要重写 ``_message_class()`` 方法。
     """
     type: str
     """
@@ -240,15 +199,15 @@ class MessageSegment(Mapping):
     消息字段内容。
     """
 
-    def __post_init__(self):
-        self._set_message_class()
-
-    def _set_message_class(self):
+    @property
+    def _message_class(self) -> Type[T_Message]:
         """
         若开发者实现了 Message 和 MessageSegment 的子类则需要重写此方法。
-        格式应为 self._message_class = NewMessage 。
+
+        :return: Message 类。
+        :rtype: Type[T_Message]
         """
-        self._message_class = Message
+        return Message
 
     def __str__(self) -> str:
         return str(self.data)
@@ -280,10 +239,10 @@ class MessageSegment(Mapping):
     def __ne__(self, other: T_MessageSegment) -> bool:
         return not self.__eq__(other)
 
-    def __add__(self, other):
+    def __add__(self, other) -> T_Message:
         return self._message_class(self) + other
 
-    def __radd__(self, other):
+    def __radd__(self, other) -> T_Message:
         return self._message_class(other) + self
 
     def get(self, key: str, default=None):

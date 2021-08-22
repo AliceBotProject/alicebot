@@ -52,7 +52,7 @@ class MainConfig(BaseModel):
     """
 
     class Config:
-        extra = "allow"
+        extra = 'allow'
 
 
 config = ContextVar('config', default=None)

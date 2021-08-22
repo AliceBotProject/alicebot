@@ -44,5 +44,5 @@ class Event(ABC, BaseModel):
         return self.__str__()
 
     class Config:
-        extra = "allow"
+        extra = 'allow'
         json_encoders = {Message: DataclassEncoder}

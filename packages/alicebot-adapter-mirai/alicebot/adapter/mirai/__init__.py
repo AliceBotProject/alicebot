@@ -28,7 +28,7 @@ from .event import BotEvent, CommandExecutedEvent, MateEvent, get_event_class
 
 if TYPE_CHECKING:
     from .event import T_MiraiEvent
-    from .message import T_MiraiMessage, T_MiraiMessageSegment
+    from .message import MiraiMessageSegment
 
 
 class MiraiAdapter(AbstractAdapter):
@@ -296,14 +296,14 @@ class MiraiAdapter(AbstractAdapter):
             raise ApiTimeout
 
     async def send(self,
-                   message_: Union[str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'],
+                   message_: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                    message_type: Literal['private', 'friend', 'group'],
                    target: int,
                    quote: int = None) -> Dict[str, Any]:
         """
         调用 Mirai API 发送消息。
 
-        :param message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'T_MiraiMessageSegment', 'T_MiraiMessage'。
+        :param message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'。
             将使用 ``MiraiMessage`` 进行封装。
         :param message_type: 消息类型。应该是 private, friend 或者 group。其中 private 和 friend 相同。
         :param target: 发送对象的 ID ，QQ 号码或者群号码。

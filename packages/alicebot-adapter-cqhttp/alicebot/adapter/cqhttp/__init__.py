@@ -63,7 +63,7 @@ class CQHTTPAdapter(AbstractAdapter):
 
     async def run(self):
         """
-        运行 aiohttp WebSockets 服务器。
+        运行 aiohttp WebSocket 服务器。
         """
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
@@ -83,9 +83,9 @@ class CQHTTPAdapter(AbstractAdapter):
 
     async def handle_response(self, request: web.Request):
         """
-        处理 aiohttp WebSockets 服务器的接收。
+        处理 aiohttp WebSocket 服务器的接收。
 
-        :param request: aiohttp WebSockets 服务器的 Request 对象。
+        :param request: aiohttp WebSocket 服务器的 Request 对象。
         """
         ws = web.WebSocketResponse()
         await ws.prepare(request)

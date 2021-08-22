@@ -14,6 +14,12 @@ class Config(BaseModel):
     """
     配置名称。
     """
+    adapter_type: str = 'ws'
+    """
+    适配器类型，需要和 mirai-api-http 配置相同。
+    
+    :type: str
+    """
     host: str = '127.0.0.1'
     """
     本机域名。
@@ -28,7 +34,7 @@ class Config(BaseModel):
     """
     url: str = '/mirai/ws'
     """
-    WebSocket 路径，需和客户端配置相同。
+    WebSocket 路径，需要和 mirai-api-http 配置相同。
     
     :type: str
     """

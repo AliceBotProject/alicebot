@@ -2,8 +2,8 @@
 ==================
 Mirai 协议适配器
 ==================
-本适配器适配了 mirai-api-http 协议。
-本适配器支持 mirai-api-http 的 Reverse Websocket Adapter 模式，此模式于 mirai-api-http 2.0 初次引入，故不本适配器仅支持 mirai-api-http 2.0 及以上版本。
+本适配器适配了 mirai-api-http 协议，仅支持 mirai-api-http 2.0 及以上版本。
+本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
 协议详情请参考: `mirai-api-http`_ 。
 
 .. _mirai-api-http: https://github.com/project-mirai/mirai-api-http
@@ -38,15 +38,21 @@ class MiraiAdapter(AbstractAdapter):
     """
 
     name: str = 'mirai'
+
+    websocket: Union[web.WebSocketResponse, aiohttp.ClientWebSocketResponse] = None
+
+    # ws
+    session: aiohttp.ClientSession = None
+
+    # reverse-ws
     app: web.Application = None
     runner: web.AppRunner = None
     site: web.TCPSite = None
-    websocket: web.WebSocketResponse = None
+
     api_response: List[Dict[str, Any]] = []
     wait_for_get_api_response: bool = False
     api_response_error_code: int = 0
     api_response_error_data: Union[str, Dict[str, Any]] = ''
-    # session_key = None
     _sync_id: int = 0
 
     @property
@@ -61,47 +67,91 @@ class MiraiAdapter(AbstractAdapter):
 
     async def startup(self):
         """
-        创建 aiohttp Application。
+        初始化适配器。
         """
-        self.app = web.Application()
-        self.app.add_routes([web.get(self.config.url, self.handle_response)])
+        if self.config.adapter_type == 'ws':
+            self.session = aiohttp.ClientSession()
+        elif self.config.adapter_type == 'reverse-ws':
+            self.app = web.Application()
+            self.app.add_routes([web.get(self.config.url, self.handle_response)])
+        else:
+            logger.error(f'Config "adapter_type" must be "ws" or "reverse-ws", not {self.config.adapter_type}')
 
     async def run(self):
         """
-        运行 aiohttp WebSockets 服务器。
+        运行适配器。
         """
-        self.runner = web.AppRunner(self.app)
-        await self.runner.setup()
-        self.site = web.TCPSite(self.runner, self.config.host, self.config.port)
-        await self.site.start()
+        if self.config.adapter_type == 'ws':
+            await self.websocket_connect()
+        elif self.config.adapter_type == 'reverse-ws':
+            self.runner = web.AppRunner(self.app)
+            await self.runner.setup()
+            self.site = web.TCPSite(self.runner, self.config.host, self.config.port)
+            await self.site.start()
 
     async def shutdown(self):
         """
-        清理 aiohttp AppRunner。
+        关闭并清理连接。
         """
         if self.websocket is not None:
             await self.websocket.close()
-        if self.site is not None:
-            await self.site.stop()
-        if self.runner is not None:
-            await self.runner.cleanup()
+        if self.config.adapter_type == 'ws':
+            if self.session is not None:
+                await self.session.close()
+        elif self.config.adapter_type == 'reverse-ws':
+            if self.site is not None:
+                await self.site.stop()
+            if self.runner is not None:
+                await self.runner.cleanup()
 
     async def handle_response(self, request: web.Request):
         """
-        处理 aiohttp WebSockets 服务器的接收。
+        处理 aiohttp WebSocket 服务器的接收。
 
-        :param request: aiohttp WebSockets 服务器的 Request 对象。
+        :param request: aiohttp WebSocket 服务器的 Request 对象。
         """
         logger.info(f'WebSocket connected!')
-        ws = web.WebSocketResponse()
-        await ws.prepare(request)
-        self.websocket = ws
+        self.websocket = web.WebSocketResponse()
+        await self.websocket.prepare(request)
+        asyncio.create_task(self.verify_identity())
+        await self.handle_websocket_msg()
+        return self.websocket
 
-        asyncio.create_task(self.create_connection())
+    async def websocket_connect(self):
+        """
+        创建正向 WebSocket 连接。
+        """
+        while not self.bot.should_exit:
+            logger.info('Trying to verify identity and create connection...')
+            try:
+                async with self.session.ws_connect('ws://{}:{}/all?verifyKey={}&qq={}'.format(
+                        self.config.host,
+                        self.config.port,
+                        self.config.verify_key,
+                        self.config.qq
+                )) as self.websocket:
+                    await self.handle_websocket_msg()
+            except aiohttp.ClientError as e:
+                logger.warning(f'Create connection with exception {e!r}, retrying...')
+                await asyncio.sleep(3)
 
+    async def handle_websocket_msg(self):
+        first_websocket_msg = True
         msg: aiohttp.WSMessage
-        async for msg in ws:
+        async for msg in self.websocket:
             if msg.type == aiohttp.WSMsgType.TEXT:
+                if first_websocket_msg:
+                    first_websocket_msg = False
+                    if self.config.adapter_type == 'ws':
+                        # 当 adapter_type 为 ws 时，第一条消息一定是验证消息，不进行处理
+                        msg_dict = msg.json()
+                        if msg_dict.get('data', {}).get('code') == 0:
+                            logger.info(f'Verify success! Session key: {msg_dict.get("data").get("session")}')
+                        else:
+                            logger.warning(f'Verify failed with code {msg_dict.get("code") or msg_dict}, retrying...')
+                            await asyncio.sleep(3)
+                        continue
+
                 try:
                     msg_dict = msg.json()
                 except json.JSONDecodeError:
@@ -117,12 +167,10 @@ class MiraiAdapter(AbstractAdapter):
                     self.handle_non_standard_response(msg_dict)
 
             elif msg.type == aiohttp.WSMsgType.ERROR:
-                logger.error(f'WebSocket connection closed with exception {ws.exception()!r}')
+                logger.error(f'WebSocket connection closed with exception {self.websocket.exception()!r}')
 
         if not self.bot.should_exit:
             logger.warning(f'WebSocket connection closed!')
-
-        return ws
 
     def _get_sync_id(self) -> int:
         self._sync_id = (self._sync_id + 1) % sys.maxsize
@@ -177,14 +225,14 @@ class MiraiAdapter(AbstractAdapter):
             else:
                 logger.error(f'Unknown webSocket message: {data!r}')
 
-    async def create_connection(self):
+    async def verify_identity(self):
         """
         验证身份，创建与 Mirai-api-http 的连接。
         """
-        while True:
+        while not self.bot.should_exit:
             await asyncio.sleep(3)
             try:
-                logger.info(f'Trying to verify identity and create connection...')
+                logger.info('Trying to verify identity and create connection...')
                 await self.call_api('verify', **{
                     'verifyKey': self.config.verify_key,
                     'sessionKey': None,
@@ -194,7 +242,6 @@ class MiraiAdapter(AbstractAdapter):
                 logger.warning(f'Verify failed with code {e.code}, retrying...')
             else:
                 logger.info('Verify success!')
-                return True
 
     async def call_api(self, command: str, sub_command: Optional[str] = None, **content) -> Dict[str, Any]:
         """
@@ -233,7 +280,7 @@ class MiraiAdapter(AbstractAdapter):
         while while_condition():
             for index, resp in enumerate(self.api_response):
                 if resp.get('syncId') == sync_id:
-                    status_code = resp.get('data', {}).get('code', None)
+                    status_code = resp.get('data', {}).get('code')
                     if status_code is not None and status_code != 0:
                         raise ActionFailed(code=status_code, resp=resp)
                     return self.api_response.pop(index).get('data')

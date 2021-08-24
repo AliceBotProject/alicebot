@@ -5,7 +5,7 @@
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 ``Plugin`` 类。
 """
 from abc import ABC, abstractmethod
-from typing import Awaitable, Callable, TypeVar, Union, Optional, TYPE_CHECKING
+from typing import TypeVar, TYPE_CHECKING
 
 from alicebot.exception import StopException, SkipException
 
@@ -37,6 +37,10 @@ class Plugin(ABC):
 
     def __init__(self, event):
         self.event = event
+
+        self.get = self.adapter.get
+        self.send = self.adapter.send
+
         self.__post_init__()
 
     def __post_init__(self):
@@ -86,29 +90,6 @@ class Plugin(ABC):
         跳过自身继续当前事件传播。
         """
         raise SkipException()
-
-    async def send(self, *args, **kwargs):
-        """
-        发送消息，具体实现和参数取决于适配器。
-        """
-        return await self.adapter.send(*args, **kwargs)
-
-    async def get(self,
-                  func: Optional[Callable[['T_Event'], Union[bool, Awaitable[bool]]]] = None,
-                  max_try_times: int = None,
-                  timeout: Optional[Union[int, float]] = None) -> Optional['T_Event']:
-        """
-        获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
-
-        :param func: (optional) 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 ``True`` 时返回当前事件。
-            当为 ``None`` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
-        :param max_try_times: 最大事件数。
-        :param timeout: 超时。
-        :return: 返回满足 func 条件的事件。
-        :rtype: 'T_Event'
-        :exception AdapterTimeout: 超过最大事件数或超时。
-        """
-        return await self.adapter.get(self.event, func, max_try_times, timeout)
 
     @abstractmethod
     async def handle(self) -> None:

@@ -13,16 +13,18 @@ import time
 import json
 import asyncio
 from functools import partial
-from typing import Any, Dict, Iterable, List, Literal, Optional, Union, Mapping, TYPE_CHECKING
+from typing import Any, Dict, Iterable, Literal, Optional, Union, Mapping, TYPE_CHECKING
 
 import aiohttp
 from aiohttp import web
 
 from alicebot.log import logger
+from alicebot.utils import Condition
 from alicebot.adapter import AbstractAdapter
+from alicebot.message import DataclassEncoder
 
 from .config import Config
-from .message import MiraiMessage, DataclassEncoder
+from .message import MiraiMessage
 from .exception import NetworkError, ActionFailed, ApiTimeout
 from .event import BotEvent, CommandExecutedEvent, MateEvent, get_event_class
 
@@ -49,10 +51,7 @@ class MiraiAdapter(AbstractAdapter):
     runner: web.AppRunner = None
     site: web.TCPSite = None
 
-    api_response: List[Dict[str, Any]] = []
-    wait_for_get_api_response: bool = False
-    api_response_error_code: int = 0
-    api_response_error_data: Union[str, Dict[str, Any]] = ''
+    api_response_cond: Condition = Condition()
     _sync_id: int = 0
 
     @property
@@ -136,6 +135,9 @@ class MiraiAdapter(AbstractAdapter):
                 await asyncio.sleep(3)
 
     async def handle_websocket_msg(self):
+        """
+        处理 WebSocket 消息。
+        """
         first_websocket_msg = True
         msg: aiohttp.WSMessage
         async for msg in self.websocket:
@@ -155,16 +157,17 @@ class MiraiAdapter(AbstractAdapter):
                 try:
                     msg_dict = msg.json()
                 except json.JSONDecodeError:
-                    self.handle_non_standard_response(msg.data)
+                    await self.handle_non_standard_response(msg.data)
                     continue
 
                 if 'syncId' in msg_dict:
                     if msg_dict.get('syncId') == '-1':
-                        self.handle_mirai_event(msg_dict.get('data'))
+                        await self.handle_mirai_event(msg_dict.get('data'))
                     else:
-                        self.handle_api_api_response(msg_dict)
+                        async with self.api_response_cond:
+                            self.api_response_cond.notify_all(msg_dict)
                 else:
-                    self.handle_non_standard_response(msg_dict)
+                    await self.handle_non_standard_response(msg_dict)
 
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 logger.error(f'WebSocket connection closed with exception {self.websocket.exception()!r}')
@@ -176,7 +179,7 @@ class MiraiAdapter(AbstractAdapter):
         self._sync_id = (self._sync_id + 1) % sys.maxsize
         return self._sync_id
 
-    def handle_mirai_event(self, msg: Dict[str, Any]):
+    async def handle_mirai_event(self, msg: Dict[str, Any]):
         """
         处理 Mirai 事件。
 
@@ -192,38 +195,31 @@ class MiraiAdapter(AbstractAdapter):
             elif isinstance(mirai_event, CommandExecutedEvent):
                 logger.info(f'Command "{mirai_event.name}" was executed: {mirai_event!r}')
         else:
-            self.handle_event(mirai_event)
+            await self.handle_event(mirai_event)
 
-    def handle_api_api_response(self, msg: Dict[str, Any]):
-        """
-        处理 Mirai API 调用的响应内容。
-
-        :param msg: 接收到的信息。
-        """
-        self.wait_for_get_api_response = False
-        self.api_response.append(msg)
-        if len(self.api_response) > self.bot.config.max_event_queue_len:
-            self.api_response.pop(0)
-
-    def handle_non_standard_response(self, data: Union[str, Dict[str, Any]]):
+    async def handle_non_standard_response(self, data: Union[str, Dict[str, Any]]):
         """
         处理 Mirai 返回的非标准响应。
 
         :param data: 接收到的信息。
         """
-        self.api_response_error_data = data
+        error_code = None
         if isinstance(data, str):
             if data == '指定Bot不存在':
                 # 进行 verify 时具有非标准返回，会返回文本而非 json，测试使用的 mirai-api-http 版本：2.2.0
-                self.api_response_error_code = 2
+                error_code = 2
             else:
                 logger.error(f'WebSocket message parsing error, not json: {data}')
         elif isinstance(data, dict):
             if data.get('code') is not None:
                 # 进行 verify 时具有非标准返回，会返回不具有 syncId 的数据，测试使用的 mirai-api-http 版本：2.2.0
-                self.api_response_error_code = data.get('code')
+                error_code = data.get('code')
             else:
                 logger.error(f'Unknown webSocket message: {data!r}')
+
+        if error_code is not None:
+            async with self.api_response_cond:
+                self.api_response_cond.notify_all((error_code, data))
 
     async def verify_identity(self):
         """
@@ -256,11 +252,6 @@ class MiraiAdapter(AbstractAdapter):
         :exception ActionFailed: API 操作失败。
         :exception ApiTimeout: API 请求响应超时。
         """
-
-        def while_condition():
-            return not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout) and \
-                   not self.api_response_error_code
-
         # content['sessionKey'] = self.session_key
         # content = {key: value
         #            for key, value in content.items()
@@ -277,22 +268,22 @@ class MiraiAdapter(AbstractAdapter):
             raise NetworkError
 
         start_time = time.time()
-        while while_condition():
-            for index, resp in enumerate(self.api_response):
+        while not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout):
+            async with self.api_response_cond:
+                try:
+                    resp = await asyncio.wait_for(self.api_response_cond.wait(),
+                                                  timeout=start_time + self.config.api_timeout - time.time())
+                except asyncio.TimeoutError:
+                    break
+                if isinstance(resp, tuple):
+                    raise ActionFailed(code=resp[0], resp=resp[1])
                 if resp.get('syncId') == sync_id:
                     status_code = resp.get('data', {}).get('code')
                     if status_code is not None and status_code != 0:
                         raise ActionFailed(code=status_code, resp=resp)
-                    return self.api_response.pop(index).get('data')
-            self.wait_for_get_api_response = True
-            while self.wait_for_get_api_response and while_condition():
-                await asyncio.sleep(0)
+                    return resp.get('data')
 
-        if self.api_response_error_code:
-            temp = self.api_response_error_code
-            self.api_response_error_code = 0
-            raise ActionFailed(code=temp, resp=None)
-        elif not self.bot.should_exit:
+        if not self.bot.should_exit:
             raise ApiTimeout
 
     async def send(self,

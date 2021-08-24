@@ -12,7 +12,7 @@ from typing import Awaitable, Callable, TypeVar, Union, Optional, TYPE_CHECKING
 
 from alicebot.log import logger
 from alicebot.config import config
-from alicebot.utils import LinkedQueue
+from alicebot.utils import Condition
 from alicebot.exception import AdapterTimeout
 
 if TYPE_CHECKING:
@@ -27,12 +27,6 @@ if current_config is not None and current_config.dev_env:
     __import__('pkg_resources').declare_namespace(__name__)
 
 
-class EventQueue(LinkedQueue['T_Event']):
-    def __init__(self, max_len: Optional[int] = None):
-        super().__init__(max_len=max_len,
-                         next_alias='next_event')
-
-
 class AbstractAdapter(ABC):
     """
     协议适配器基类。
@@ -45,18 +39,14 @@ class AbstractAdapter(ABC):
     """
     当前的机器人对象。
     """
-    event_queue: EventQueue
+    cond: Condition
     """
-    事件队列，用于 ``get()`` 方法。
-    """
-    wait_for_get: bool = False
-    """
-    当此属性为 ``Ture`` 时，``handle_event()`` 将不对当前事件进行传播和处理，用于 ``get()`` 方法。
+    Condition 对象，用于事件处理。
     """
 
     def __init__(self, bot: 'Bot'):
         self.bot: 'Bot' = bot
-        self.event_queue = EventQueue(max_len=self.bot.config.max_event_queue_len)
+        self.cond = Condition()
 
     async def safe_run(self):
         """
@@ -89,27 +79,34 @@ class AbstractAdapter(ABC):
         """
         pass
 
-    def handle_event(self, event: 'T_Event'):
+    async def handle_event(self, event: 'T_Event'):
         """
-        调用 ``Bot`` 对象进行事件处理，并维护一个事件队列用于 ``get()`` 方法，所有适配器在接收到事件后必须使用此方法进行事件处理。
+        进行事件处理。
+
         :param event: 待处理的事件。
         """
         logger.info(f'Adapter {self.__class__.__name__} received: {event!r}')
-        self.event_queue.push(event)
-        if self.wait_for_get:
-            self.wait_for_get = False
-        else:
-            event.handled = True
-            self.bot.loop.create_task(self.bot.handle_event(event))
+        self.bot.loop.create_task(self._handle_event())
+        await asyncio.sleep(0)
+        async with self.cond:
+            self.cond.notify_all(event)
 
-    async def get(self, current_event: 'T_Event',
+    async def _handle_event(self):
+        """
+        调用 ``Bot`` 对象进行事件处理，将在所有正在等待的 ``get()`` 方法处理后没有被捕获时被调用。
+        """
+        async with self.cond:
+            event = await self.cond.wait()
+        if not event.handled:
+            await self.bot.handle_event(event)
+
+    async def get(self,
                   func: Optional[Callable[['T_Event'], Union[bool, Awaitable[bool]]]] = None,
                   max_try_times: Optional[int] = None,
                   timeout: Optional[Union[int, float]] = None) -> 'T_Event':
         """
         获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
-        :param current_event: 当前事件，方法将仅检索此事件后接收到的事件。
         :param func: (optional) 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 ``True`` 时返回当前事件。
             当为 ``None`` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
         :param max_try_times: 最大事件数。
@@ -129,10 +126,6 @@ class AbstractAdapter(ABC):
 
             return _wrapper
 
-        def while_condition():
-            return not self.bot.should_exit and (max_try_times is None or (try_times < max_try_times)) and (
-                    timeout is None or (time.time() - start_time < timeout))
-
         if func is None:
             func = always_true
         elif not asyncio.iscoroutinefunction(func):
@@ -140,22 +133,22 @@ class AbstractAdapter(ABC):
 
         try_times = 0
         start_time = time.time()
-        event = current_event
-        while while_condition():
-            while event.next_event is not None:
-                event = event.next_event
+        while not self.bot.should_exit and (max_try_times is None or (try_times < max_try_times)) and \
+                (timeout is None or (time.time() - start_time < timeout)):
+            async with self.cond:
+                if timeout is None:
+                    event = await self.cond.wait()
+                else:
+                    try:
+                        event = await asyncio.wait_for(self.cond.wait(), timeout=start_time + timeout - time.time())
+                    except asyncio.TimeoutError:
+                        break
                 if not event.handled:
                     if await func(event):
                         event.handled = True
                         return event
-                    else:
-                        self.handle_event(event)
-            self.wait_for_get = True
-            while self.wait_for_get and while_condition():
-                await asyncio.sleep(0)
-            try_times += 1
+                try_times += 1
 
-        self.wait_for_get = False
         if not self.bot.should_exit:
             raise AdapterTimeout
 

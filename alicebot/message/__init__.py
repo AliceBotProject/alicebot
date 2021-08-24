@@ -209,6 +209,15 @@ class MessageSegment(Mapping, Generic[T_Message]):
         """
         return Message
 
+    def as_dict(self) -> Dict[str, Any]:
+        """
+        将当前对象解析为 Dict 对象，开发者可重写本方法以适配特殊的解析方式。
+
+        :return: Dict 对象。
+        :rtype: Dict[str, Any]
+        """
+        return dataclasses.asdict(self)
+
     def __str__(self) -> str:
         return str(self.data)
 
@@ -283,5 +292,5 @@ class DataclassEncoder(json.JSONEncoder):
 
     def default(self, o):
         if dataclasses.is_dataclass(o):
-            return dataclasses.asdict(o)
+            return o.as_dict()
         return super().default(o)

@@ -4,10 +4,9 @@ Mirai 消息
 ============
 """
 import json
-import dataclasses
 from typing import Any, Dict, List, Type, Optional
 
-from alicebot.message import Message, MessageSegment
+from alicebot.message import Message, MessageSegment, DataclassEncoder
 
 
 class MiraiMessage(Message['MiraiMessageSegment']):
@@ -139,14 +138,3 @@ class MiraiMessageSegment(MessageSegment['MiraiMessage']):
                     brief: str):
         return cls(type='MusicShare', kind=kind, title=title, summary=summary, jumpUrl=jump_url, pictureUrl=picture_url,
                    musicUrl=music_url, brief=brief)
-
-
-class DataclassEncoder(json.JSONEncoder):
-    """
-    用于解析 MiraiMessageSegment 的 JSONEncoder 类。
-    """
-
-    def default(self, o):
-        if dataclasses.is_dataclass(o):
-            return o.as_dict()
-        return super().default(o)

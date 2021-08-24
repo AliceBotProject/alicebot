@@ -36,7 +36,7 @@ class HttpServerTestAdapter(HttpServerAdapter):
         event = HttpServerTestEvent(adapter=self,
                                     type='message',
                                     message=Message(MessageSegment(type='text', data={'text': await request.text()})))
-        self.handle_event(event)
+        await self.handle_event(event)
 
         return web.Response()
 

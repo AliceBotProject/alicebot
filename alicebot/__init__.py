@@ -215,7 +215,7 @@ class Bot:
         """
         from alicebot.plugin import Plugin
         try:
-            plugin_class, config_class = load_module(name, Plugin, None)
+            plugin_class, config_class = load_module(name, Plugin)
             self._load_plugin(plugin_class)
         except Exception as e:
             logger.error(f'Import plugin "{name}" failed: {e!r}')
@@ -234,7 +234,7 @@ class Bot:
         """
         from alicebot.adapter import AbstractAdapter
         try:
-            adapter_class, config_class = load_module(name, AbstractAdapter, self)
+            adapter_class, config_class = load_module(name, AbstractAdapter)
             self.adapters.append(adapter_class(self))
         except Exception as e:
             logger.error(f'Load adapter "{name}" failed: {e!r}')
@@ -251,7 +251,7 @@ class Bot:
         :param path: 由储存插件的路径文本组成的列表。 ``['path/of/plugins/', '/home/xxx/alicebot/plugins']``
         """
         from alicebot.plugin import Plugin
-        for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin, None):
+        for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin):
             try:
                 self._load_plugin(module)
             except Exception as e:

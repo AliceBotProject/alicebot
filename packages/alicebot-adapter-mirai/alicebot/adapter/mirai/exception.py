@@ -31,7 +31,7 @@ class ActionFailed(MiraiException):
         self.resp = resp
 
 
-class ApiTimeout(AdapterTimeout):
+class ApiTimeout(MiraiException, AdapterTimeout):
     """
     API 请求响应超时。
     """

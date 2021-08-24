@@ -12,12 +12,13 @@ import time
 import json
 import asyncio
 from functools import partial
-from typing import Any, Dict, Iterable, List, Literal, Union, Mapping, TYPE_CHECKING
+from typing import Any, Dict, Iterable, Literal, Union, Mapping, TYPE_CHECKING
 
 import aiohttp
 from aiohttp import web
 
 from alicebot.log import logger
+from alicebot.utils import Condition
 from alicebot.adapter import AbstractAdapter
 from alicebot.message import DataclassEncoder
 
@@ -40,8 +41,7 @@ class CQHTTPAdapter(AbstractAdapter):
     runner: web.AppRunner = None
     site: web.TCPSite = None
     websocket: web.WebSocketResponse = None
-    api_response: List[Dict[str, Any]] = []
-    wait_for_get_api_response: bool = False
+    api_response_cond: Condition = Condition()
     _api_id: int = 0
 
     @property
@@ -101,9 +101,10 @@ class CQHTTPAdapter(AbstractAdapter):
                     continue
 
                 if 'post_type' in msg_dict:
-                    self.handle_cqhttp_event(msg_dict)
+                    await self.handle_cqhttp_event(msg_dict)
                 else:
-                    self.handle_api_api_response(msg_dict)
+                    async with self.api_response_cond:
+                        self.api_response_cond.notify_all(msg_dict)
 
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 logger.error(f'WebSocket connection closed with exception {ws.exception()!r}')
@@ -117,7 +118,7 @@ class CQHTTPAdapter(AbstractAdapter):
         self._api_id = (self._api_id + 1) % sys.maxsize
         return self._api_id
 
-    def handle_cqhttp_event(self, msg: Dict[str, Any]):
+    async def handle_cqhttp_event(self, msg: Dict[str, Any]):
         """
         处理 CQHTTP 事件。
 
@@ -141,18 +142,7 @@ class CQHTTPAdapter(AbstractAdapter):
                 else:
                     logger.error(f'CQHTTP Bot status is not good: {cqhttp_event.status.dict()}')
         else:
-            self.handle_event(cqhttp_event)
-
-    def handle_api_api_response(self, msg: Dict[str, Any]):
-        """
-        处理 CQHTTP API 调用的响应内容。
-
-        :param msg: 接收到的信息。
-        """
-        self.wait_for_get_api_response = False
-        self.api_response.append(msg)
-        if len(self.api_response) > self.bot.config.max_event_queue_len:
-            self.api_response.pop(0)
+            await self.handle_event(cqhttp_event)
 
     async def call_api(self, api: str, **params) -> Dict[str, Any]:
         """
@@ -167,10 +157,6 @@ class CQHTTPAdapter(AbstractAdapter):
         :exception ActionFailed: API 请求响应 failed， API 操作失败。
         :exception ApiTimeout: API 请求响应超时。
         """
-
-        def while_condition():
-            return not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout)
-
         api_echo = self._get_api_echo()
         try:
             await self.websocket.send_str(json.dumps({
@@ -182,17 +168,19 @@ class CQHTTPAdapter(AbstractAdapter):
             raise NetworkError
 
         start_time = time.time()
-        while while_condition():
-            for index, resp in enumerate(self.api_response):
+        while not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout):
+            async with self.api_response_cond:
+                try:
+                    resp = await asyncio.wait_for(self.api_response_cond.wait(),
+                                                  timeout=start_time + self.config.api_timeout - time.time())
+                except asyncio.TimeoutError:
+                    break
                 if resp['echo'] == api_echo:
                     if resp.get('retcode') == 1404:
                         raise ApiNotAvailable(resp=resp)
                     if resp.get('status') == 'failed':
                         raise ActionFailed(resp=resp)
-                    return self.api_response.pop(index).get('data')
-            self.wait_for_get_api_response = True
-            while self.wait_for_get_api_response and while_condition():
-                await asyncio.sleep(0)
+                    return resp.get('data')
 
         if not self.bot.should_exit:
             raise ApiTimeout

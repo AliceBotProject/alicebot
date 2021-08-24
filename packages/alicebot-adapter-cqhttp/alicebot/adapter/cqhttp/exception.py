@@ -36,7 +36,7 @@ class ApiNotAvailable(ActionFailed):
     """
 
 
-class ApiTimeout(AdapterTimeout):
+class ApiTimeout(CQHTTPException, AdapterTimeout):
     """
     API 请求响应超时。
     """

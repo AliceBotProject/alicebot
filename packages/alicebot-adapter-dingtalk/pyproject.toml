@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "alicebot-adapter-dingtalk"
+version = "0.1.0"
+description = "DingTalk adapter for AliceBot."
+license = "MIT"
+authors = ["st1020 <stone_1020@qq.com>"]
+readme = "README.md"
+homepage = "https://docs.alicebot.dev/"
+repository = "https://github.com/st1020/alicebot"
+documentation = "https://docs.alicebot.dev/"
+keywords = ["bot", "chatbot", "dingtalk"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat"
+]
+packages = [
+    { include = "alicebot" }
+]
+exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+alicebot = "^0.1.1"
+
+[tool.poetry.dev-dependencies]
+alicebot = { path = "../../", develop = true }
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

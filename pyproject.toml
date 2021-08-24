@@ -31,10 +31,13 @@ sphinx = "3.5.4"
 sphinx-markdown-builder = { git = "https://github.com/st1020/sphinx-markdown-builder.git" }
 alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
 alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }
+alicebot-adapter-dingtalk = { path = "./packages/alicebot-adapter-dingtalk", develop = true }
 
 [tool.poetry.extras]
 cqhttp = ["alicebot-adapter-cqhttp"]
-all = ["alicebot-adapter-cqhttp"]
+mirai = ["alicebot-adapter-mirai"]
+dingtalk = ["alicebot-adapter-dingtalk"]
+all = ["alicebot-adapter-cqhttp", "alicebot-adapter-mirai", "alicebot-adapter-dingtalk"]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

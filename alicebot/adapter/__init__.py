@@ -85,7 +85,7 @@ class AbstractAdapter(ABC):
 
         :param event: 待处理的事件。
         """
-        logger.info(f'Adapter {self.__class__.__name__} received: {event!r}')
+        logger.info(f'Adapter {self.name} received: {event!r}')
         self.bot.loop.create_task(self._handle_event())
         await asyncio.sleep(0)
         async with self.cond:

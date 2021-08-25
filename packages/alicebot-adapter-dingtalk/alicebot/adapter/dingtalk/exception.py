@@ -20,6 +20,13 @@ class NetworkError(DingTalkException):
     pass
 
 
+class WebhookExpiredError(DingTalkException):
+    """
+    Webhook 地址已到期。
+    """
+    pass
+
+
 class ApiTimeout(DingTalkException, AdapterTimeout):
     """
     API 请求响应超时。

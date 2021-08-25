@@ -3,13 +3,15 @@
 DingTalk 事件
 ============
 """
-from typing import Dict, List, Literal, Optional, Union
+import time
+from typing import Any, Dict, List, Literal, Optional, Union
 
 from pydantic import BaseModel, Field, validator
 
 from alicebot.event import Event
 
 from .message import DingTalkMessage
+from .exception import WebhookExpiredError
 
 
 class UserInfo(BaseModel):
@@ -49,30 +51,26 @@ class DingTalkEvent(Event):
     response_at: Union[None, Dict, DingTalkMessage] = None
 
     @validator('message', always=True)
-    def set_ts_now(cls, v, values, **kwargs):
+    def set_ts_now(cls, v, values, **kwargs):  # noqa
         return DingTalkMessage.text(values['text'].content)
 
-    async def replay(self, msg: Union[str, Dict, DingTalkMessage], at: Union[None, Dict, DingTalkMessage] = None):
+    async def replay(self,
+                     msg: Union[str, Dict, DingTalkMessage],
+                     at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
+        """
+        回复消息。
 
-        if isinstance(msg, DingTalkMessage):
-            pass
-        elif isinstance(msg, dict):
-            msg = DingTalkMessage.raw(msg)
-        elif isinstance(msg, str):
-            msg = DingTalkMessage.text(msg)
+        :param msg: 回复消息的内容，可以是 str, Dict 或 DingTalkMessage。
+        :param at: 回复消息时 At 的对象，必须时 at 类型的 DingTalkMessage，或者符合标准的 Dict。
+        :return: 调用 Webhook 地址后钉钉服务器的响应。
+        :rtype: Dict
+        :exception WebhookExpiredError: 当前事件的 Webhook 地址已经过期。
+        :exception ...: 同 ``DingTalkAdapter.send()`` 方法。
+        """
+        if self.sessionWebhookExpiredTime > time.time() * 1000:
+            return await self.adapter.send(webhook=self.sessionWebhook,
+                                           conversation_type=self.conversationType,
+                                           msg=msg,
+                                           at=at)
         else:
-            raise TypeError(f'msg must be str, Dict or DingTalkMessage, not {type(msg)!r}')
-
-        if at is not None:
-            if isinstance(at, DingTalkMessage):
-                if at.type == 'at':
-                    pass
-                else:
-                    raise ValueError(f'at.type must be "at", not {at.type}')
-            elif isinstance(at, dict):
-                at = DingTalkMessage.raw(at)
-            else:
-                raise TypeError(f'at must be Dict or DingTalkMessage, not {type(at)!r}')
-
-        self.response_msg = msg
-        self.response_at = at
+            raise WebhookExpiredError

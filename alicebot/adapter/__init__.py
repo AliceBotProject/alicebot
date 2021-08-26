@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from alicebot import Bot
     from alicebot.event import T_Event
 
-T_Adapter = TypeVar('T_Adapter', bound='Adapter')
+T_Adapter = TypeVar('T_Adapter', bound='BaseAdapter')
 
 current_config = config.get()
 if current_config is not None and current_config.dev_env:
@@ -27,9 +27,9 @@ if current_config is not None and current_config.dev_env:
     __import__('pkg_resources').declare_namespace(__name__)
 
 
-class Adapter(ABC):
+class BaseAdapter(ABC):
     """
-    协议适配器基类。
+    协议适配器基类，仅实现最基础的适配器功能，通常情况下，适配器开发者开发的适配器应继承自 ``Adapter`` 而非本类。
     """
     name: str
     """
@@ -39,14 +39,9 @@ class Adapter(ABC):
     """
     当前的机器人对象。
     """
-    cond: Condition
-    """
-    Condition 对象，用于事件处理。
-    """
 
     def __init__(self, bot: 'Bot'):
         self.bot: 'Bot' = bot
-        self.cond = Condition()
 
     async def safe_run(self):
         """
@@ -78,6 +73,20 @@ class Adapter(ABC):
         AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 ``shutdown()`` 方法。当强制退出时此方法可能未被执行。
         """
         pass
+
+
+class Adapter(BaseAdapter, ABC):
+    """
+    协议适配器基类，在 ``BaseAdapter`` 的基础上提供了 ``handle_event()`` 和 ``get()`` 等方法，通常情况下推荐使用。
+    """
+    cond: Condition
+    """
+    Condition 对象，用于事件处理。
+    """
+
+    def __init__(self, bot: 'Bot'):
+        super().__init__(bot)
+        self.cond = Condition()
 
     async def handle_event(self, event: 'T_Event'):
         """

@@ -11,12 +11,14 @@ from pydantic import BaseModel, ValidationError, create_model
 from alicebot.log import logger
 from alicebot.config import MainConfig, config_file, config
 from alicebot.exception import StopException, SkipException, LoadModuleError
-from alicebot.load_module import load_module, ModulePathFinder, load_modules_from_dir
+from alicebot.load_module import ModulePathFinder, load_module, load_modules_from_dir
 
 if TYPE_CHECKING:
     from alicebot.event import T_Event
     from alicebot.plugin import T_Plugin
     from alicebot.adapter import T_Adapter
+
+__all__ = ['Bot']
 
 HANDLED_SIGNALS = (
     signal.SIGINT,  # Unix signal 2. Sent by Ctrl+C.
@@ -202,8 +204,7 @@ class Bot:
             else:
                 self.plugins_priority_dict[plugin_class.priority] = [plugin_class]
         else:
-            logger.error(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
-            raise LoadModuleError()
+            raise LoadModuleError(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
 
     def load_plugin(self, name: str) -> Optional[Type['T_Plugin']]:
         """
@@ -224,24 +225,24 @@ class Bot:
             logger.info(f'Succeeded to import plugin "{name}"')
             return plugin_class
 
-    def load_adapter(self, name: str) -> Optional[Type['T_Adapter']]:
+    def load_adapter(self, name: str) -> Optional['T_Adapter']:
         """
         加载单个适配器。
 
         :param name: 适配器名称，格式和 Python ``import`` 语句相同，
-        :return: 被加载的适配器类。
-        :rtype: Optional[Type['T_Adapter']]
+        :return: 被加载的适配器对象。
+        :rtype: Optional['T_Adapter']
         """
-        from alicebot.adapter import Adapter
+        from alicebot.adapter import BaseAdapter
         try:
-            adapter_class, config_class = load_module(name, Adapter)
-            self.adapters.append(adapter_class(self))
+            adapter_object, config_class = load_module(name, BaseAdapter, True, self)
         except Exception as e:
             logger.error(f'Load adapter "{name}" failed: {e!r}')
         else:
+            self.adapters.append(adapter_object)
             self._update_config(config_class)
             logger.info(f'Succeeded to load adapter "{name}"')
-            return adapter_class
+            return adapter_object
 
     def load_plugins_from_dir(self, path: Iterable[str]):
         """

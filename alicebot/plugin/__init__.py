@@ -38,8 +38,8 @@ class Plugin(ABC):
     def __init__(self, event):
         self.event = event
 
-        self.get = self.adapter.get
-        self.send = self.adapter.send
+        self.get = getattr(self.adapter, 'get', None)
+        self.send = getattr(self.adapter, 'send', None)
 
         self.__post_init__()
 

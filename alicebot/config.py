@@ -44,13 +44,6 @@ class MainConfig(BaseModel):
     :type: bool
     """
 
-    max_event_queue_len: int = 1024
-    """
-    适配器的最大事件队列长达，此配置会影响所有的适配器。
-    
-    :type: int
-    """
-
     class Config:
         extra = 'allow'
 

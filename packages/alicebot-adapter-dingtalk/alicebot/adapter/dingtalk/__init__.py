@@ -17,7 +17,7 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.log import logger
-from alicebot.adapter import AbstractAdapter
+from alicebot.adapter import Adapter
 
 from .config import Config
 from .event import DingTalkEvent
@@ -25,7 +25,7 @@ from .message import DingTalkMessage
 from .exception import ApiTimeout, NetworkError
 
 
-class DingTalkAdapter(AbstractAdapter):
+class DingTalkAdapter(Adapter):
     """
     钉钉协议适配器。
     """

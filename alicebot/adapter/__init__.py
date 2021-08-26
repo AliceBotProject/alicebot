@@ -2,7 +2,7 @@
 ============
 协议适配器
 ============
-所有协议适配器都必须继承自 ``AbstractAdapter`` 基类。
+所有协议适配器都必须继承自 ``Adapter`` 基类。
 """
 import time
 import asyncio
@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from alicebot import Bot
     from alicebot.event import T_Event
 
-T_Adapter = TypeVar('T_Adapter', bound='AbstractAdapter')
+T_Adapter = TypeVar('T_Adapter', bound='Adapter')
 
 current_config = config.get()
 if current_config is not None and current_config.dev_env:
@@ -27,7 +27,7 @@ if current_config is not None and current_config.dev_env:
     __import__('pkg_resources').declare_namespace(__name__)
 
 
-class AbstractAdapter(ABC):
+class Adapter(ABC):
     """
     协议适配器基类。
     """

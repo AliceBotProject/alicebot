@@ -19,7 +19,7 @@ from aiohttp import web
 
 from alicebot.log import logger
 from alicebot.utils import Condition
-from alicebot.adapter import AbstractAdapter
+from alicebot.adapter import Adapter
 from alicebot.message import DataclassEncoder
 
 from .config import Config
@@ -31,7 +31,7 @@ if TYPE_CHECKING:
     from .message import CQHTTPMessageSegment
 
 
-class CQHTTPAdapter(AbstractAdapter):
+class CQHTTPAdapter(Adapter):
     """
     CQHTTP 协议适配器。
     在插件中可以直接使用 ``self.adapter.xxx_api(**params)`` 调用名称为 ``xxx_api`` 的 API，和调用 ``call_api()`` 方法相同。

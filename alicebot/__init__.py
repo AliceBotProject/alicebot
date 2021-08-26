@@ -232,9 +232,9 @@ class Bot:
         :return: 被加载的适配器类。
         :rtype: Optional[Type['T_Adapter']]
         """
-        from alicebot.adapter import AbstractAdapter
+        from alicebot.adapter import Adapter
         try:
-            adapter_class, config_class = load_module(name, AbstractAdapter)
+            adapter_class, config_class = load_module(name, Adapter)
             self.adapters.append(adapter_class(self))
         except Exception as e:
             logger.error(f'Load adapter "{name}" failed: {e!r}')

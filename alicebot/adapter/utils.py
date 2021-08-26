@@ -11,10 +11,10 @@ from abc import ABCMeta, abstractmethod
 import aiohttp
 from aiohttp import web
 
-from alicebot.adapter import AbstractAdapter
+from alicebot.adapter import Adapter
 
 
-class PollingAdapter(AbstractAdapter, metaclass=ABCMeta):
+class PollingAdapter(Adapter, metaclass=ABCMeta):
     """
     轮询式适配器示例。
     """
@@ -51,7 +51,7 @@ class HttpClientAdapter(PollingAdapter, metaclass=ABCMeta):
         await self.session.close()
 
 
-class WebSocketClientAdapter(AbstractAdapter, metaclass=ABCMeta):
+class WebSocketClientAdapter(Adapter, metaclass=ABCMeta):
     """
     WebSocket 客户端适配器示例。
     """
@@ -73,7 +73,7 @@ class WebSocketClientAdapter(AbstractAdapter, metaclass=ABCMeta):
         pass
 
 
-class HttpServerAdapter(AbstractAdapter, metaclass=ABCMeta):
+class HttpServerAdapter(Adapter, metaclass=ABCMeta):
     """
     HTTP 服务端适配器示例。
     """
@@ -104,7 +104,7 @@ class HttpServerAdapter(AbstractAdapter, metaclass=ABCMeta):
         pass
 
 
-class WebSocketServerAdapter(AbstractAdapter, metaclass=ABCMeta):
+class WebSocketServerAdapter(Adapter, metaclass=ABCMeta):
     """
     WebSocket 服务端适配器示例。
     """

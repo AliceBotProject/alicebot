@@ -81,10 +81,10 @@ class Bot:
         config.set(value)
 
     @property
-    def plugins(self) -> List['T_Plugin']:
+    def plugins(self) -> List[Type['T_Plugin']]:
         """
         :return: 当前已经加载的插件的列表。
-        :rtype: List['T_Plugin']
+        :rtype: List[Type['T_Plugin']]
         """
         return list(chain(*self.plugins_priority_dict.values()))
 
@@ -276,3 +276,16 @@ class Bot:
 
         if config_class is not None:
             self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, _get_default_value())
+
+    def get_loaded_adapter_by_name(self, name: str) -> 'T_Adapter':
+        """
+        按照名称获取已经加载的适配器。
+
+        :param name: 适配器名称。
+        :return: 获取到的适配器对象。
+        :exception LookupError: 找不到此名称的适配器对象。
+        """
+        for _adapter in self.adapters:
+            if _adapter.name == name:
+                return _adapter
+        raise LookupError

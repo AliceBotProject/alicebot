@@ -26,6 +26,97 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "alicebot-adapter-apscheduler"
+version = "0.1.0"
+description = "APScheduler adapter for AliceBot."
+category = "dev"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+alicebot = "^0.1.1"
+apscheduler = "^3.7"
+
+[package.source]
+type = "directory"
+url = "packages/alicebot-adapter-apscheduler"
+
+[[package]]
+name = "alicebot-adapter-cqhttp"
+version = "0.1.1"
+description = "OneBot(CQHTTP) adapter for AliceBot."
+category = "dev"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+alicebot = "^0.1.1"
+
+[package.source]
+type = "directory"
+url = "packages/alicebot-adapter-cqhttp"
+
+[[package]]
+name = "alicebot-adapter-dingtalk"
+version = "0.1.0"
+description = "DingTalk adapter for AliceBot."
+category = "dev"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+alicebot = "^0.1.1"
+
+[package.source]
+type = "directory"
+url = "packages/alicebot-adapter-dingtalk"
+
+[[package]]
+name = "alicebot-adapter-mirai"
+version = "0.1.0"
+description = "Mirai adapter for AliceBot."
+category = "dev"
+optional = false
+python-versions = "^3.7"
+develop = true
+
+[package.dependencies]
+alicebot = "^0.1.1"
+
+[package.source]
+type = "directory"
+url = "packages/alicebot-adapter-mirai"
+
+[[package]]
+name = "apscheduler"
+version = "3.7.0"
+description = "In-process task scheduler with Cron-like capabilities"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*, <4"
+
+[package.dependencies]
+pytz = "*"
+six = ">=1.4.0"
+tzlocal = ">=2.0,<3.0"
+
+[package.extras]
+asyncio = ["trollius"]
+doc = ["sphinx", "sphinx-rtd-theme"]
+gevent = ["gevent"]
+mongodb = ["pymongo (>=3.0)"]
+redis = ["redis (>=3.0)"]
+rethinkdb = ["rethinkdb (>=2.4.0)"]
+sqlalchemy = ["sqlalchemy (>=0.8)"]
+testing = ["pytest (<6)", "pytest-cov", "pytest-tornado5", "mock", "pytest-asyncio (<0.6)", "pytest-asyncio"]
+tornado = ["tornado (>=4.3)"]
+twisted = ["twisted"]
+zookeeper = ["kazoo"]
+
+[[package]]
 name = "async-timeout"
 version = "3.0.1"
 description = "Timeout context manager for asyncio programs"
@@ -250,6 +341,14 @@ socks = ["PySocks (>=1.5.6,!=1.5.7)", "win-inet-pton"]
 use_chardet_on_py3 = ["chardet (>=3.0.2,<5)"]
 
 [[package]]
+name = "six"
+version = "1.16.0"
+description = "Python 2 and 3 compatibility utilities"
+category = "dev"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[[package]]
 name = "snowballstemmer"
 version = "2.1.0"
 description = "This package provides 29 stemmers for 28 languages generated from Snowball algorithms."
@@ -390,6 +489,17 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "tzlocal"
+version = "2.1"
+description = "tzinfo object for the local timezone"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pytz = "*"
+
+[[package]]
 name = "unify"
 version = "0.5"
 description = "Modifies strings to all use the same (single/double) quote where possible."
@@ -455,12 +565,15 @@ typing-extensions = {version = ">=3.7.4", markers = "python_version < \"3.8\""}
 
 [extras]
 all = []
+apscheduler = []
 cqhttp = []
+dingtalk = []
+mirai = []
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "27fd38647e1447f6315d09010419a908ec6f84a35ba7c418ec9d7cb744958245"
+content-hash = "f5f30470b9316142c63f367ff7acdf3c7d117e79f76ff3aef8a923a993511304"
 
 [metadata.files]
 aiohttp = [
@@ -505,6 +618,14 @@ aiohttp = [
 alabaster = [
     {file = "alabaster-0.7.12-py2.py3-none-any.whl", hash = "sha256:446438bdcca0e05bd45ea2de1668c1d9b032e1a9154c2c259092d77031ddd359"},
     {file = "alabaster-0.7.12.tar.gz", hash = "sha256:a661d72d58e6ea8a57f7a86e37d86716863ee5e92788398526d58b26a4e4dc02"},
+]
+alicebot-adapter-apscheduler = []
+alicebot-adapter-cqhttp = []
+alicebot-adapter-dingtalk = []
+alicebot-adapter-mirai = []
+apscheduler = [
+    {file = "APScheduler-3.7.0-py2.py3-none-any.whl", hash = "sha256:c06cc796d5bb9eb3c4f77727f6223476eb67749e7eea074d1587550702a7fbe3"},
+    {file = "APScheduler-3.7.0.tar.gz", hash = "sha256:1cab7f2521e107d07127b042155b632b7a1cd5e02c34be5a28ff62f77c900c6a"},
 ]
 async-timeout = [
     {file = "async-timeout-3.0.1.tar.gz", hash = "sha256:0c3c816a028d47f659d6ff5c745cb2acf1f966da1fe5c19c77a70282b25f4c5f"},
@@ -701,6 +822,10 @@ requests = [
     {file = "requests-2.26.0-py2.py3-none-any.whl", hash = "sha256:6c1246513ecd5ecd4528a0906f910e8f0f9c6b8ec72030dc9fd154dc1a6efd24"},
     {file = "requests-2.26.0.tar.gz", hash = "sha256:b8aa58f8cf793ffd8782d3d8cb19e66ef36f7aba4353eec859e74678b01b07a7"},
 ]
+six = [
+    {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
+    {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+]
 snowballstemmer = [
     {file = "snowballstemmer-2.1.0-py2.py3-none-any.whl", hash = "sha256:b51b447bea85f9968c13b650126a888aabd4cb4463fca868ec596826325dedc2"},
     {file = "snowballstemmer-2.1.0.tar.gz", hash = "sha256:e997baa4f2e9139951b6f4c631bad912dfd3c792467e2f03d7239464af90e914"},
@@ -738,6 +863,10 @@ typing-extensions = [
     {file = "typing_extensions-3.10.0.0-py2-none-any.whl", hash = "sha256:0ac0f89795dd19de6b97debb0c6af1c70987fd80a2d62d1958f7e56fcc31b497"},
     {file = "typing_extensions-3.10.0.0-py3-none-any.whl", hash = "sha256:779383f6086d90c99ae41cf0ff39aac8a7937a9283ce0a414e5dd782f4c94a84"},
     {file = "typing_extensions-3.10.0.0.tar.gz", hash = "sha256:50b6f157849174217d0656f99dc82fe932884fb250826c18350e159ec6cdf342"},
+]
+tzlocal = [
+    {file = "tzlocal-2.1-py2.py3-none-any.whl", hash = "sha256:e2cb6c6b5b604af38597403e9852872d7f534962ae2954c7f35efcb1ccacf4a4"},
+    {file = "tzlocal-2.1.tar.gz", hash = "sha256:643c97c5294aedc737780a49d9df30889321cbe1204eac2c2ec6134035a92e44"},
 ]
 unify = [
     {file = "unify-0.5.tar.gz", hash = "sha256:8ddce812b2457212b7598fe574c9e6eb3ad69710f445391338270c7f8a71723c"},

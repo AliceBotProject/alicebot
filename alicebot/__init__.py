@@ -4,7 +4,7 @@ import signal
 import asyncio
 import threading
 from itertools import chain
-from typing import Any, List, Dict, Iterable, Tuple, Type, Optional, TYPE_CHECKING
+from typing import Any, Awaitable, Callable, Dict, List, Iterable, Tuple, Type, NoReturn, Optional, TYPE_CHECKING
 
 from pydantic import BaseModel, ValidationError, create_model
 
@@ -37,6 +37,14 @@ class Bot:
     plugins_priority_dict: Dict[int, List[Type['T_Plugin']]] = {}
     _module_path_finder: ModulePathFinder = ModulePathFinder()
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]] = {}
+
+    _bot_run_hook: List[Callable[['Bot'], Awaitable[NoReturn]]] = []
+    _bot_exit_hook: List[Callable[['Bot'], NoReturn]] = []
+    _adapter_startup_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]] = []
+    _adapter_run_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]] = []
+    _adapter_shutdown_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]] = []
+    _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
+    _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
 
     def __init__(self, config_file_: Optional[str] = None):
         """
@@ -119,17 +127,28 @@ class Bot:
                 self.loop.close()
 
     async def _run(self):
+        for _hook_func in self._bot_run_hook:
+            await _hook_func(self)
+
         try:
             for _adapter in self.adapters:
+                for _hook_func in self._adapter_startup_hook:
+                    await _hook_func(_adapter)
                 try:
                     await _adapter.startup()
                 except Exception as e:
                     logger.error(f'Startup adapter {_adapter!r} failed: {e!r}')
+
             for _adapter in self.adapters:
+                for _hook_func in self._adapter_run_hook:
+                    await _hook_func(_adapter)
                 self.loop.create_task(_adapter.safe_run())
+
             await self.main_loop()
         finally:
             for _adapter in self.adapters:
+                for _hook_func in self._adapter_shutdown_hook:
+                    await _hook_func(_adapter)
                 await _adapter.shutdown()
 
     async def main_loop(self):
@@ -141,6 +160,8 @@ class Bot:
         当机器人收到退出信号时，根据情况进行处理。
         """
         logger.info(f'Stopping AliceBot...')
+        for _hook_func in self._bot_exit_hook:
+            _hook_func(self)
         if self.should_exit:
             logger.warning(f'Force Exit AliceBot...')
             sys.exit()
@@ -169,6 +190,10 @@ class Bot:
         """
         if current_event is None:
             return
+
+        for _hook_func in self._event_preprocessor_hook:
+            await _hook_func(current_event)
+
         for plugin_priority in sorted(self.plugins_priority_dict.keys()):
             try:
                 logger.debug(f'Checking for matching plugins with priority {plugin_priority!r}')
@@ -195,7 +220,11 @@ class Bot:
                     break
             except Exception as e:
                 logger.error(f'Exception in handling event {current_event!r}: {e!r}')
-            logger.info(f'Event Finished')
+
+        for _hook_func in self._event_postprocessor_hook:
+            await _hook_func(current_event)
+
+        logger.info(f'Event Finished')
 
     def _load_plugin(self, plugin_class: Type['T_Plugin']):
         if type(plugin_class.priority) is int and plugin_class.priority >= 0:
@@ -289,3 +318,87 @@ class Bot:
             if _adapter.name == name:
                 return _adapter
         raise LookupError
+
+    def bot_run_hook(self, func: Callable[['Bot'], Awaitable[NoReturn]]) -> \
+            Callable[['Bot'], Awaitable[NoReturn]]:
+        """
+        注册一个 Bot 启动时的函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['Bot'], Awaitable[NoReturn]]
+        """
+        self._bot_run_hook.append(func)
+        return func
+
+    def bot_exit_hook(self, func: Callable[['Bot'], Awaitable[NoReturn]]) -> \
+            Callable[['Bot'], Awaitable[NoReturn]]:
+        """
+        注册一个 Bot 退出时的函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['Bot'], Awaitable[NoReturn]]
+        """
+        self._bot_exit_hook.append(func)
+        return func
+
+    def adapter_startup_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
+            Callable[['T_Adapter'], Awaitable[NoReturn]]:
+        """
+        注册一个适配器初始化时的函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['T_Adapter'], Awaitable[NoReturn]]
+        """
+        self._adapter_startup_hook.append(func)
+        return func
+
+    def adapter_run_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
+            Callable[['T_Adapter'], Awaitable[NoReturn]]:
+        """
+        注册一个适配器运行时的函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['T_Adapter'], Awaitable[NoReturn]]
+        """
+        self._adapter_run_hook.append(func)
+        return func
+
+    def adapter_shutdown_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
+            Callable[['T_Adapter'], Awaitable[NoReturn]]:
+        """
+        注册一个适配器结束运行时的函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['T_Adapter'], Awaitable[NoReturn]]
+        """
+        self._adapter_shutdown_hook.append(func)
+        return func
+
+    def event_preprocessor_hook(self, func: Callable[['T_Event'], Awaitable[NoReturn]]) -> \
+            Callable[['T_Event'], Awaitable[NoReturn]]:
+        """
+        注册一个事件预处理函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['T_Event'], Awaitable[NoReturn]]
+        """
+        self._event_preprocessor_hook.append(func)
+        return func
+
+    def event_postprocessor_hook(self, func: Callable[['T_Event'], Awaitable[NoReturn]]) -> \
+            Callable[['T_Event'], Awaitable[NoReturn]]:
+        """
+        注册一个事件后处理函数。
+
+        :param func: 被注册的函数。
+        :return: 被注册的函数。
+        :rtype: Callable[['T_Event'], Awaitable[NoReturn]]
+        """
+        self._event_postprocessor_hook.append(func)
+        return func

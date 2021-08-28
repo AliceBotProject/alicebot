@@ -54,11 +54,27 @@ if __name__ == '__main__':
         shutil.rmtree(os.path.join(docs_build_folder, '_build'))
     clean_docs_build_folder(docs_build_folder)
     build_rst(module_name)
+
+    # 处理 packages
     with os.scandir(os.path.abspath('packages')) as it:
         entry: os.DirEntry
         for entry in it:
             if not entry.name.startswith('.') and entry.is_dir():
                 os.chdir(entry.path)
                 build_rst(os.path.join('alicebot', 'adapter'))
+
+    os.chdir(source_working_dir)
+    # 针对 mirai.event 的特殊操作
+    with open(os.path.join(docs_build_folder, 'adapter', 'mirai', 'event', 'README.rst'), 'r') as fp:
+        rst_str = fp.read()
+    with os.scandir(os.path.join(docs_build_folder, 'adapter', 'mirai', 'event')) as it:
+        entry: os.DirEntry
+        for entry in it:
+            if entry.name != 'README.rst' and entry.is_file():
+                with open(entry.path, 'r') as fp:
+                    rst_str += fp.read()
+    shutil.rmtree(os.path.join(docs_build_folder, 'adapter', 'mirai', 'event'))
+    with open(os.path.join(docs_build_folder, 'adapter', 'mirai', 'event.rst'), 'w') as fp:
+        fp.write(rst_str)
 
     print('Done!')

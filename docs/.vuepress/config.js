@@ -92,6 +92,40 @@ module.exports = {
                     {title: 'alicebot.adapter.cqhttp.exception', path: 'adapter/cqhttp/exception'},
                     {title: 'alicebot.adapter.cqhttp.message', path: 'adapter/cqhttp/message'}
                   ]
+                },
+                {
+                  title: 'alicebot.adapter.mirai',
+                  collapsable: false,
+                  path: '/api/adapter/mirai/',
+                  children: [
+                    {title: 'alicebot.adapter.mirai', path: 'adapter/mirai/'},
+                    {title: 'alicebot.adapter.mirai.config', path: 'adapter/mirai/config'},
+                    {title: 'alicebot.adapter.mirai.event', path: 'adapter/mirai/event'},
+                    {title: 'alicebot.adapter.mirai.exception', path: 'adapter/mirai/exception'},
+                    {title: 'alicebot.adapter.mirai.message', path: 'adapter/mirai/message'}
+                  ]
+                },
+                {
+                  title: 'alicebot.adapter.dingtalk',
+                  collapsable: false,
+                  path: '/api/adapter/dingtalk/',
+                  children: [
+                    {title: 'alicebot.adapter.dingtalk', path: 'adapter/dingtalk/'},
+                    {title: 'alicebot.adapter.dingtalk.config', path: 'adapter/dingtalk/config'},
+                    {title: 'alicebot.adapter.dingtalk.event', path: 'adapter/dingtalk/event'},
+                    {title: 'alicebot.adapter.dingtalk.exception', path: 'adapter/dingtalk/exception'},
+                    {title: 'alicebot.adapter.dingtalk.message', path: 'adapter/dingtalk/message'}
+                  ]
+                },
+                {
+                  title: 'alicebot.adapter.apscheduler',
+                  collapsable: false,
+                  path: '/api/adapter/apscheduler/',
+                  children: [
+                    {title: 'alicebot.adapter.apscheduler', path: 'adapter/apscheduler/'},
+                    {title: 'alicebot.adapter.apscheduler.config', path: 'adapter/apscheduler/config'},
+                    {title: 'alicebot.adapter.apscheduler.event', path: 'adapter/apscheduler/event'}
+                  ]
                 }
               ]
             }

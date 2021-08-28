@@ -1,7 +1,7 @@
 """
-============
+=================
 DingTalk 异常
-============
+=================
 """
 from alicebot.exception import AdapterException, AdapterTimeout
 

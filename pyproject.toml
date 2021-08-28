@@ -27,7 +27,7 @@ aiohttp = "^3.7.0"
 loguru = "^0.5.0"
 
 [tool.poetry.dev-dependencies]
-sphinx = "3.5.4"
+sphinx = "^4.0.0"
 sphinx-markdown-builder = { git = "https://github.com/st1020/sphinx-markdown-builder.git" }
 alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
 alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }

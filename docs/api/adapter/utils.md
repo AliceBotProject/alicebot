@@ -7,7 +7,7 @@
 
 ## _class_ `PollingAdapter`
 
-基类：[`alicebot.adapter.AbstractAdapter`](README.md#alicebot.adapter.AbstractAdapter)
+基类：[`alicebot.adapter.Adapter`](README.md#alicebot.adapter.Adapter)
 
 轮询式适配器示例。
 
@@ -21,20 +21,20 @@ HTTP 客户端适配器示例。
 
 ## _class_ `WebSocketClientAdapter`
 
-基类：[`alicebot.adapter.AbstractAdapter`](README.md#alicebot.adapter.AbstractAdapter)
+基类：[`alicebot.adapter.Adapter`](README.md#alicebot.adapter.Adapter)
 
 WebSocket 客户端适配器示例。
 
 
 ## _class_ `HttpServerAdapter`
 
-基类：[`alicebot.adapter.AbstractAdapter`](README.md#alicebot.adapter.AbstractAdapter)
+基类：[`alicebot.adapter.Adapter`](README.md#alicebot.adapter.Adapter)
 
 HTTP 服务端适配器示例。
 
 
 ## _class_ `WebSocketServerAdapter`
 
-基类：[`alicebot.adapter.AbstractAdapter`](README.md#alicebot.adapter.AbstractAdapter)
+基类：[`alicebot.adapter.Adapter`](README.md#alicebot.adapter.Adapter)
 
 WebSocket 服务端适配器示例。

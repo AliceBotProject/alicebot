@@ -10,7 +10,7 @@
 CQHTTP 事件基类
 
 
-### _property_ `to_me`
+### property `to_me: bool`
 
 
 * **返回**
@@ -61,6 +61,12 @@ CQHTTP 事件基类
 * **返回**
 
     API 请求响应。
+
+
+
+* **返回类型**
+
+    Dict[str, Any]
 
 
 
@@ -176,6 +182,40 @@ CQHTTP 事件基类
 请求事件
 
 
+### _async_ `approve()`
+
+同意请求。
+
+
+* **返回**
+
+    API 请求响应。
+
+
+
+* **返回类型**
+
+    Dict[str, Any]
+
+
+
+### _async_ `refuse()`
+
+拒绝请求。
+
+
+* **返回**
+
+    API 请求响应。
+
+
+
+* **返回类型**
+
+    Dict[str, Any]
+
+
+
 ## _class_ `FriendRequestEvent`
 
 基类：`alicebot.adapter.cqhttp.event.RequestEvent`
@@ -200,14 +240,9 @@ CQHTTP 事件基类
 
 
 
-### _async_ `refuse()`
+* **返回类型**
 
-拒绝请求。
-
-
-* **返回**
-
-    API 请求响应。
+    Dict[str, Any]
 
 
 
@@ -216,17 +251,6 @@ CQHTTP 事件基类
 基类：`alicebot.adapter.cqhttp.event.RequestEvent`
 
 加群请求／邀请
-
-
-### _async_ `approve()`
-
-同意请求。
-
-
-* **返回**
-
-    API 请求响应。
-
 
 
 ### _async_ `refuse(reason='')`
@@ -243,6 +267,12 @@ CQHTTP 事件基类
 * **返回**
 
     API 请求响应。
+
+
+
+* **返回类型**
+
+    Dict[str, Any]
 
 
 
@@ -270,8 +300,27 @@ CQHTTP 事件基类
 ## `get_event_class(post_type, event_type, sub_type=None)`
 
 根据接收到的消息类型返回对应的事件类。
-:param post_type: 请求类型。
-:param event_type: 事件类型。
-:param sub_type: (optional) 子类型。
-:return: 返回事件类。
-:rtype: Type[T_CQHTTPEvent]
+
+
+* **参数**
+
+    
+    * **post_type** – 请求类型。
+
+
+    * **event_type** – 事件类型。
+
+
+    * **sub_type** – (optional) 子类型。
+
+
+
+* **返回**
+
+    对应的事件类。
+
+
+
+* **返回类型**
+
+    Type[T_CQHTTPEvent]

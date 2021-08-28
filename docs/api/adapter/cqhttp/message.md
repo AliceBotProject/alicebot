@@ -5,7 +5,7 @@
 
 ## _class_ `CQHTTPMessage`
 
-基类：[`alicebot.message.Message`](../../message.md#alicebot.message.Message)
+基类：[`alicebot.message.Message`](../../message.md#alicebot.message.Message)[‘CQHTTPMessageSegment’]
 
 CQHTTP 消息
 
@@ -16,6 +16,12 @@ CQHTTP 消息
 * **返回**
 
     是否是纯文本消息。
+
+
+
+* **返回类型**
+
+    bool
 
 
 
@@ -36,9 +42,41 @@ CQHTTP 消息
 
 
 
+### `replace(old, new, count=- 1)`
+
+实现类似字符串的 `replace()` 方法。
+当 `old` 为 str 类型时，`new` 也必须是 str ，本方法将仅对 `type` 为 `text` 的消息字段进行处理。
+当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
+
+
+* **参数**
+
+    
+    * **old** – 被匹配的字符串或消息字段。
+
+
+    * **new** – 被替换为的字符串或消息字段。
+
+
+    * **count** – 替换的次数。
+
+
+
+* **返回**
+
+    替换后的消息对象。
+
+
+
+* **返回类型**
+
+    CQHTTPMessage
+
+
+
 ## _class_ `CQHTTPMessageSegment`
 
-基类：`Mapping`
+基类：[`alicebot.message.MessageSegment`](../../message.md#alicebot.message.MessageSegment)[‘CQHTTPMessage’]
 
 CQHTTP 消息字段
 

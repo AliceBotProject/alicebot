@@ -21,7 +21,7 @@ CQHTTP 异常基类。
 
 基类：`alicebot.adapter.cqhttp.exception.CQHTTPException`
 
-API 请求成功响应，当响应表示 API 操作失败。
+API 请求成功响应，但响应表示 API 操作失败。
 :param resp: 返回的响应。
 
 
@@ -34,6 +34,6 @@ API 请求返回 404，表示当前请求的 API 不可用或不存在。
 
 ## _exception_ `ApiTimeout`
 
-基类：[`alicebot.exception.AdapterTimeout`](../../exception.md#alicebot.exception.AdapterTimeout)
+基类：`alicebot.adapter.cqhttp.exception.CQHTTPException`, [`alicebot.exception.AdapterTimeout`](../../exception.md#alicebot.exception.AdapterTimeout)
 
 API 请求响应超时。

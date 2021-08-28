@@ -8,10 +8,9 @@
 用于查找 AliceBot 组件的元路径查找器。
 
 
-## `load_module(name, module_class_type, *args, **kwargs)`
+## `load_module(name, module_class_type, try_instantiate_class=False, *args, **kwargs)`
 
 从模块中查找指定类型的类和 `Config` 。
-查找到指定的类后会尝试使用指定参数示例化类，仅返回能被实例化的类。
 若模块中存在多个符合条件的类，则抛出错误。
 
 
@@ -24,22 +23,25 @@
     * **module_class_type** – 要查找的类型。
 
 
-    * **args** – 实例化类时使用的参数。
+    * **try_instantiate_class** – 是否尝试实例化类，当为 True 时，查找到指定的类后会尝试使用指定参数示例化类，仅返回成功被实例化的对象。
 
 
-    * **kwargs** – 实例化类时使用的参数。
+    * **args** – 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
+
+
+    * **kwargs** – 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
 
 
 
 * **返回**
 
-    `(class, config)` 返回符合条件的类和配置类组成的元组。
+    `(class, config)` 返回符合条件的类和配置类组成的元组，当 `try_instantiate_class` 为 True 时，返回 `(object, config)` 。
 
 
 
 * **返回类型**
 
-    Tuple[Type[_T], Optional[Type[BaseModel]]]
+    Tuple[Union[Type[_T], _T], Optional[Type[BaseModel]]]
 
 
 
@@ -49,7 +51,7 @@
 
 
 
-## `load_modules_from_dir(_module_path_finder, path, module_class_type, *args, **kwargs)`
+## `load_modules_from_dir(_module_path_finder, path, module_class_type)`
 
 从指定路径列表中的所有模块中查找指定类型的类和 `Config` ，以 `_` 开头的插件不会被导入。
 路径可以是相对路径或绝对路径。
@@ -65,12 +67,6 @@
 
 
     * **module_class_type** – 要查找的类型。
-
-
-    * **args** – 实例化类时使用的参数。
-
-
-    * **kwargs** – 实例化类时使用的参数。
 
 
 

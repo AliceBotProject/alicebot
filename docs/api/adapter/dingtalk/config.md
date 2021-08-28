@@ -1,13 +1,13 @@
-# alicebot.adapter.cqhttp.config
+# alicebot.adapter.dingtalk.config
 
-## CQHTTP 配置
+## DingTalk 配置
 
 
 ## _class_ `Config`
 
 基类：`pydantic.main.BaseModel`
 
-CQHTTP 配置类，将在适配器被加载时被混入到机器人主配置中。
+DingTalk 配置类，将在适配器被加载时被混入到机器人主配置中。
 
 
 ### `host`
@@ -34,7 +34,7 @@ CQHTTP 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 ### `url`
 
-WebSocket 路径，需和客户端配置相同。
+路径。
 
 
 * **Type**
@@ -51,3 +51,14 @@ WebSocket 路径，需和客户端配置相同。
 * **Type**
 
     int
+
+
+
+### `app_secret`
+
+机器人的 appSecret。
+
+
+* **Type**
+
+    str

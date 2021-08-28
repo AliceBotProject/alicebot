@@ -2,42 +2,19 @@
 
 ## 协议适配器
 
-所有协议适配器都必须继承自 `AbstractAdapter` 基类。
+所有协议适配器都必须继承自 `Adapter` 基类。
 
 
-## _class_ `EventQueue`
-
-基类：`object`
-
-事件队列。
-使用限定长度的链队列。
-
-
-## _class_ `AbstractAdapter`
+## _class_ `BaseAdapter`
 
 基类：`abc.ABC`
 
-协议适配器基类。
+协议适配器基类，仅实现最基础的适配器功能，通常情况下，适配器开发者开发的适配器应继承自 `Adapter` 而非本类。
 
 
 ### `name`
 
 适配器的名称。
-
-
-### `max_event_queue_len`
-
-最大事件队列长度。
-
-
-### `wait_for_get`
-
-当此属性为 `Ture` 时，`handle_event()` 将不对当前事件进行传播和处理，用于 `get()` 方法。
-
-
-### `event_queue`
-
-事件队列，用于 `get()` 方法。
 
 
 ### `bot`
@@ -58,23 +35,40 @@
 
 ### _async_ `startup()`
 
-在适配器开始运行前运行的方法。
+在适配器开始运行前运行的方法，用于初始化适配器。
 AliceBot 依次运行并等待所有适配器的 `startup()` 方法，待运行完毕后再创建 `run()` 任务。
 
 
 ### _async_ `shutdown()`
 
-在适配器结束后运行后运行的方法。
+在适配器结束运行时运行的方法，用于安全地关闭适配器。
 AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 `shutdown()` 方法。当强制退出时此方法可能未被执行。
 
 
-### `handle_event(event)`
+## _class_ `Adapter`
 
-调用 `Bot` 对象进行事件处理，并维护一个事件队列用于 `get()` 方法，所有适配器在接收到事件后必须使用此方法进行事件处理。
-:param event: 待处理的事件。
+基类：`alicebot.adapter.BaseAdapter`, `abc.ABC`
+
+协议适配器基类，在 `BaseAdapter` 的基础上提供了 `handle_event()` 和 `get()` 等方法，通常情况下推荐使用。
 
 
-### _async_ `get(current_event, func=None, max_try_times=None, timeout=None)`
+### `cond`
+
+Condition 对象，用于事件处理。
+
+
+### _async_ `handle_event(event)`
+
+进行事件处理。
+
+
+* **参数**
+
+    **event** – 待处理的事件。
+
+
+
+### _async_ `get(func=None, max_try_times=None, timeout=None)`
 
 获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
@@ -82,9 +76,6 @@ AliceBot 在接收到系统的结束信号后依次运行并等待所有适配�
 * **参数**
 
     
-    * **current_event** – 当前事件，方法将仅检索此事件后接收到的事件。
-
-
     * **func** – (optional) 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
     当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
 
@@ -111,3 +102,9 @@ AliceBot 在接收到系统的结束信号后依次运行并等待所有适配�
 * **引发**
 
     [**AdapterTimeout**](../exception.md#alicebot.exception.AdapterTimeout) – 超过最大事件数或超时。
+
+
+
+### _async_ `send(*args, **kwargs)`
+
+发送消息，需要适配器开发者实现。

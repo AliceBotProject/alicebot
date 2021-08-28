@@ -28,7 +28,7 @@
 当前正在被此插件处理的事件。
 
 
-### _property_ `name`
+### property `name: str`
 
 
 * **返回**
@@ -43,7 +43,7 @@
 
 
 
-### _property_ `adapter`
+### property `adapter: T_Adapter`
 
 
 * **返回**
@@ -58,7 +58,7 @@
 
 
 
-### _property_ `bot`
+### property `bot: Bot`
 
 
 * **返回**
@@ -67,7 +67,7 @@
 
 
 
-### _property_ `config`
+### property `config`
 
 
 * **返回**
@@ -84,48 +84,6 @@
 ### `skip()`
 
 跳过自身继续当前事件传播。
-
-
-### _async_ `send(*args, **kwargs)`
-
-发送消息，具体实现和参数取决于适配器。
-
-
-### _async_ `get(func=None, max_try_times=None, timeout=None)`
-
-获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
-
-
-* **参数**
-
-    
-    * **func** – (optional) 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
-    当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
-
-
-    * **max_try_times** – 最大事件数。
-
-
-    * **timeout** – 超时。
-
-
-
-* **返回**
-
-    返回满足 func 条件的事件。
-
-
-
-* **返回类型**
-
-    ‘T_Event’
-
-
-
-* **引发**
-
-    [**AdapterTimeout**](exception.md#alicebot.exception.AdapterTimeout) – 超过最大事件数或超时。
-
 
 
 ### _abstract async_ `handle()`

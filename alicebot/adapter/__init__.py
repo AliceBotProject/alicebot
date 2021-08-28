@@ -4,6 +4,7 @@
 ============
 所有协议适配器都必须继承自 ``Adapter`` 基类。
 """
+import os
 import time
 import asyncio
 from functools import wraps
@@ -22,7 +23,7 @@ if TYPE_CHECKING:
 T_Adapter = TypeVar('T_Adapter', bound='BaseAdapter')
 
 current_config = config.get()
-if current_config is not None and current_config.dev_env:
+if os.getenv('dev_env') == '1' or (current_config is not None and current_config.dev_env):
     # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
     __import__('pkg_resources').declare_namespace(__name__)
 

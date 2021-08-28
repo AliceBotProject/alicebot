@@ -331,8 +331,7 @@ class Bot:
         self._bot_run_hook.append(func)
         return func
 
-    def bot_exit_hook(self, func: Callable[['Bot'], Awaitable[NoReturn]]) -> \
-            Callable[['Bot'], Awaitable[NoReturn]]:
+    def bot_exit_hook(self, func: Callable[['Bot'], NoReturn]) -> Callable[['Bot'], NoReturn]:
         """
         注册一个 Bot 退出时的函数。
 
@@ -370,7 +369,7 @@ class Bot:
     def adapter_shutdown_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
             Callable[['T_Adapter'], Awaitable[NoReturn]]:
         """
-        注册一个适配器结束运行时的函数。
+        注册一个适配器关闭时的函数。
 
         :param func: 被注册的函数。
         :return: 被注册的函数。

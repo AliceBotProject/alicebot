@@ -21,6 +21,24 @@ poetry install --no-dev  # 推荐
 pip install .  # 不推荐
 ```
 
+## 安装适配器
+
+AliceBot 本身只是一个聊天机器人框架，需要额外安装对应协议的适配器来支持特定的协议，你可以使用 pip 安装协议适配器：
+
+```sh
+pip install alicebot-adapter-cqhttp
+pip install alicebot-adapter-mirai
+pip install alicebot-adapter-digntalk
+```
+
+或者你也可以在安装 AliceBot 的同时搭配对应的适配器，如：
+
+```sh
+pip install alicebot[all]
+pip install alicebot[cqhttp]
+pip install alicebot[dingtalk]
+```
+
 ## 第一个项目
 
 本文会帮助你从零开始搭建一个简单的 AliceBot 机器人项目。
@@ -110,3 +128,9 @@ AliceBot 推荐的目录结构如下：
 - [node-onebot](https://github.com/takayama-lily/node-onebot) （基于 [oicq](https://github.com/takayama-lily/oicq)）
 
 更多信息详见 [CQHTTP 协议使用指南](./cqhttp.md) 。
+
+你也可以安装其他协议适配器或者尝试自己写一个协议适配器。
+
+## 开发建议
+
+在使用 AliceBot 进行开发时，建议使用具有类型检查的 IDE，如 PyCharm 、 VSCode 等，这可以帮助你充分利用 AliceBot 的类型声明。

@@ -1,8 +1,10 @@
-# 内置消息类
+# 内置消息
 
 AliceBot 内置了一个消息类，并且建议所以适配器开发者尽可能使用，它提供了许多实用的功能，可以方便地构造富文本消息。
 
 AliceBot 内置了 `Message` 和 `MessageSegment` 类，即消息和消息字段。
+
+大多数适配器的消息类均是内置消息类的子类，但又有一些特殊的用法，可以参考适配器的文档。
 
 ## 消息类
 
@@ -16,7 +18,7 @@ mas_seg.type = 'text'
 msg_seg['text'] = 'Hello'
 msg = Message(msg_seg)
 
-msg = Message('Hello')    # 内置的 Message 并不支持这种用法
+msg = Message('Hello')    # 内置的 Message 原生并不支持这种用法
 
 msg = Message(msg)
 ```
@@ -31,13 +33,12 @@ mas_seg.type = 'text'
 msg_seg['text'] = 'Hello'
 
 msg += msg_seg
-msg = msg + 'Hello'    # 内置的 Message 并不支持这种用法
+msg = msg + 'Hello'    # 内置的 Message 原生并不支持这种用法
 ```
 
-实现了 `startswith()`、 `endswith()` 和 `replace()` 方法，类似字符串的对应方法，但可以传入 `MessageSegment` 或 `str` 类型的对象，具体请参考 [API文档](/api/message.md) 。
+实现了 `startswith()` 和 `endswith()` 方法，类似字符串的对应方法，但可以传入 `MessageSegment` 或 `str` 类型的对象，具体请参考 [API文档](/api/message.md) 。
 
 ```python
-msg = msg.replace('a', 'b')
 msg.startswith('a')
 ```
 

@@ -61,7 +61,9 @@ module.exports = {
               collapsable: false,
               children: [
                 'plugin-advanced',
-                'builtin-message'
+                'builtin-message',
+                'scheduler',
+                'hook-function'
               ]
             },
           ],

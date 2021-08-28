@@ -2,7 +2,7 @@
 
 ## 事件传播控制
 
-有时候，我们可能需要对事件的传播进行一些控制，除了基础的定义 `bolck` 属性是否为真来决定此插件执行结束后还是否继续进行事件传播外，AilceBot 还提供了一些方法以供高级的逻辑控制。
+有时候，我们可能需要对事件的传播进行一些控制，除了基础的定义 `bolck` 属性来决定此插件执行结束后是否继续进行事件传播外，AilceBot 还提供了一些方法以供高级的逻辑控制。
 
 ### `skip()` 方法
 
@@ -39,25 +39,21 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-	async def handle(self) -> None:
-		try:
-			# do something
-			pass
-		finally:
-			self.stop()
+    async def handle(self) -> None:
+        try:
+            # do something
+            pass
+        finally:
+            self.stop()
 
-	async def rule(self) -> bool:
-		return True
+    async def rule(self) -> bool:
+        return True
 
 ```
 
-::: tip 提示
-实际上，上面的写法并不完全等同，它会导致即使 `# do something` 部分出现异常，AliceBot 的日志也不会捕获到异常，所以并不推荐这种写法，除非做好了异常的捕获。
-:::
-
 ## 插件配置
 
-在 [基础配置](./basic-config.md) 一节中提到，你可以直接通过 `self.config` 访问当前机器人的配置。但有时我们可能会希望插件会像适配器配置一样放在一个独立的键中，以提高这个插件的可移植性，那么我们可以这样处理：
+在 [基础配置](./basic-config.md) 一节中提到，你可以直接通过 `self.config` 访问当前机器人的配置。但有时我们可能会希望插件配置像适配器配置一样放在一个独立的键中，以提高这个插件的可移植性，那么我们可以这样处理：
 
 ```python
 from pydantic import BaseModel
@@ -65,19 +61,18 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-	async def handle(self) -> None:
-		print(self.config.test_plugin.a)
-		print(self.config.test_plugin.b)
-		pass
+    async def handle(self) -> None:
+        print(self.config.test_plugin.a)
+        print(self.config.test_plugin.b)
 
-	async def rule(self) -> bool:
-		return True
+    async def rule(self) -> bool:
+        return True
 
 
 class Config(BaseModel):
-	__config_name__ = 'test_plugin'
-	a: str = 'test'
-	b: int = 1
+    __config_name__ = 'test_plugin'
+    a: str = 'test'
+    b: int = 1
 
 ```
 
@@ -95,11 +90,11 @@ class Config(BaseModel):
 }
 ```
 
-需要在插件内写一个名称为 `Config` 继承于 `pydantic.BaseModel` 的类，这是一个 `pydantic` 的模型类，具体可以参考 [pydantic 的文档](https://pydantic-docs.helpmanual.io/) ，简而言之，格式为：
+需要在插件内写一个名称为 `Config` 的继承于 `pydantic.BaseModel` 的类，这是一个 `pydantic` 的模型类，具体可以参考 [pydantic 的文档](https://pydantic-docs.helpmanual.io/) ，简而言之，格式为：
 
 `变量名称: 类型[ = 默认值] `
 
-如果不指定默认值，且类型不是 `Optional[...]`， `Union[None, ...]` 或 `Any`，则这个字段是必填的，在非必需的情况下，建议不要在插件中使用必填字段，这会导致不指定这个字段时 AliceBot 不能运行，而不止仅仅是这个插件。
+如果不指定默认值，且类型不是 `Optional[...]`， `Union[None, ...]` 或 `Any`，则这个字段是必填的，在非必需的情况下，建议不要在插件中使用必填字段，这会导致不指定这个字段时，不止仅仅是这个插件，整个 AliceBot 都不能运行。
 
 特别的是，`Config` 类中**必须**要有一个 `__config_name__` 属性，表示这个插件在配置文件中对应的键名。
 
@@ -112,23 +107,19 @@ from .config import Config
 ...
 ```
 
+::: tip 注意
+这个类的类名必须为 `Config` 且必须包含 `__config_name__` 属性。
+:::
+
 ## `send()` 和 `get()` 方法
 
 实际上，`send()` 和 `get()` 方法都是适配器的方法，插件中的只是引用了适配器中的方法。
 
-```python
-async def send(self, *args, **kwargs):
-    return await self.adapter.send(*args, **kwargs)
+所以，你也可以使用 `self.adapter.get()` 代替 `get()` 。
 
-async def get(self,
-              func: Optional[Callable[['T_Event'], Union[bool, Awaitable[bool]]]] = None,
-              max_try_times: int = None,
-              timeout: Optional[Union[int, float]] = None) -> Optional['T_Event']:
-    return await self.adapter.get(self.event, func, max_try_times, timeout)
+`get()` 方法是所有适配器共有的方法，通常情况下，除非适配器有特殊说明，全部支持此方法。
 
-```
-
-其中 `send()` 方法和适配器中的完全相同，但 `get()` 方法中的无需传如当前正在被处理的事件，
+`sned()` 方法是适配器特有的方法，不同的适配器使用方法不同，需要参考适配器文档。
 
 ## 初始化后处理
 
@@ -139,20 +130,20 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-	def __post_init__(self):
-			pass
+    def __post_init__(self):
+        pass
 
-	async def handle(self) -> None:
-		pass
+    async def handle(self) -> None:
+        pass
 
-	async def rule(self) -> bool:
-		return True
+    async def rule(self) -> bool:
+        return True
 
 ```
 
 ## 输出日志
 
-如果你想要在插件中输出到控制台什么东西的话，建议不要直接使用 `print()`，可以这样做：
+如果你想要在插件中输出到控制台什么东西的话，建议不要直接使用 `print()`，可以这样输出日志：
 
 ```python
 from alicebot.plugin import Plugin

@@ -8,11 +8,14 @@ APScheduler 使用方法请参考: `APScheduler`_ 。
 .. _APScheduler: https://apscheduler.readthedocs.io/
 """
 import asyncio
-from typing import Dict, Type, TYPE_CHECKING
+import inspect
+from functools import wraps
+from typing import Any, Dict, Type, TYPE_CHECKING
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.log import logger
+from alicebot.plugin import Plugin
 from alicebot.adapter import BaseAdapter
 
 from .config import Config
@@ -81,3 +84,38 @@ class APSchedulerAdapter(BaseAdapter):
         """
         logger.info(f'APSchedulerEvent set by {plugin_class} is created as scheduled')
         asyncio.create_task(self.bot.handle_event(APSchedulerEvent(adapter=self, plugin_class=plugin_class)))
+
+
+def scheduler_decorator(trigger: str, trigger_args: Dict[str, Any], override_rule: bool = False):
+    """
+    用于为插件类添加计划任务功能的装饰器。
+
+    :param trigger: APScheduler 触发器。
+    :param trigger_args: APScheduler 触发器参数。
+    :param override_rule: 是否重写 rule() 方法，若为 True，则会在 rule() 方法中添加处理本插件定义的计划任务事件的逻辑。
+    """
+
+    def _decorator(cls: Type):
+        if not inspect.isclass(cls):
+            raise TypeError(f'can only decorate class')
+        if not issubclass(cls, Plugin):
+            raise TypeError(f'can only decorate Plugin class')
+        setattr(cls, '__schedule__', True)
+        setattr(cls, 'trigger', trigger)
+        setattr(cls, 'trigger_args', trigger_args)
+        if override_rule:
+            def _rule_decorator(func):
+                @wraps(func)
+                async def _wrapper(self, *args, **kwargs):
+                    if self.event.type == 'apscheduler' and type(self) == self.event.plugin_class:
+                        return True
+                    else:
+                        return await func(self, *args, **kwargs)
+
+                return _wrapper
+
+            handle_func = getattr(cls, 'rule')
+            setattr(cls, 'rule', _rule_decorator(handle_func))
+        return cls
+
+    return _decorator

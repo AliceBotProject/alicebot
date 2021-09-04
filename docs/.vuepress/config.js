@@ -66,6 +66,14 @@ module.exports = {
                 'hook-function'
               ]
             },
+            {
+              title: '协议适配器',
+              collapsable: false,
+              children: [
+                'cqhttp-adapter',
+                'mirai-adapter'
+              ]
+            }
           ],
           '/api/': [
             {

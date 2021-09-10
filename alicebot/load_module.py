@@ -1,6 +1,7 @@
 import inspect
 import pkgutil
 import importlib
+from abc import ABC
 from importlib.abc import MetaPathFinder
 from typing import Iterable, List, Tuple, Type, TypeVar, Optional, Union, TYPE_CHECKING
 from importlib.machinery import PathFinder
@@ -58,7 +59,8 @@ def load_module(name: str,
         module_attr = getattr(module, module_attr)
         if inspect.isclass(module_attr) and \
                 issubclass(module_attr, module_class_type) and \
-                module_attr != module_class_type:
+                module_attr != module_class_type and \
+                ABC not in module_attr.__bases__:
             module_class.append(module_attr)
 
     if try_instantiate_class:

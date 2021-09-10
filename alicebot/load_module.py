@@ -25,7 +25,7 @@ class ModulePathFinder(MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
         if path is None:
             path = []
-        return PathFinder.find_spec(fullname, self.path + path, target)
+        return PathFinder.find_spec(fullname, self.path + list(path), target)
 
 
 def load_module(name: str,

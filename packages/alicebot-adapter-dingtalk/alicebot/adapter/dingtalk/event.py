@@ -54,9 +54,9 @@ class DingTalkEvent(Event):
     def set_ts_now(cls, v, values, **kwargs):  # noqa
         return DingTalkMessage.text(values['text'].content)
 
-    async def replay(self,
-                     msg: Union[str, Dict, DingTalkMessage],
-                     at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
+    async def reply(self,
+                    msg: Union[str, Dict, DingTalkMessage],
+                    at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
         """
         回复消息。
 

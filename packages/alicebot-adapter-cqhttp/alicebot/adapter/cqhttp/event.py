@@ -91,8 +91,8 @@ class MessageEvent(CQHTTPEvent):
         """
         return self.message.get_plain_text()
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping],
-                                      'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
+    async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
+                                     'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
         """
         回复消息。
 
@@ -109,8 +109,8 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal['private']
     sub_type: Literal['friend', 'group', 'other']
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping],
-                                      'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
+    async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
+                                     'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
         return await self.adapter.send_private_msg(user_id=self.user_id, message=CQHTTPMessage(msg))
 
 
@@ -122,8 +122,8 @@ class GroupMessageEvent(MessageEvent):
     group_id: int
     anonymous: Optional[Anonymous] = None
 
-    async def replay(self, msg: Union[str, Mapping, Iterable[Mapping],
-                                      'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
+    async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
+                                     'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
         return await self.adapter.send_group_msg(group_id=self.group_id, message=CQHTTPMessage(msg))
 
 

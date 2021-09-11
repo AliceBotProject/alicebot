@@ -95,7 +95,7 @@ from alicebot.adapter.mirai.message import CQHTTPMessageSegment
 class HalloAlice(Plugin):
     async def handle(self) -> None:
         msg = CQHTTPMessageSegment.plain('Hello, Alice!') + CQHTTPMessageSegment.image(url='https://www.example.org/1.jpg')
-        await self.event.replay(msg)
+        await self.event.reply(msg)
 
     async def rule(self) -> bool:
         if self.adapter.name != 'mirai':

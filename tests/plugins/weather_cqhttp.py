@@ -6,15 +6,15 @@ class Weather(Plugin):
     async def handle(self) -> None:
         args = self.event.get_plain_text().split(' ')
         if len(args) >= 2:
-            await self.event.replay(await self.get_weather(args[1]))
+            await self.event.reply(await self.get_weather(args[1]))
         else:
-            await self.event.replay('请输入想要查询天气的城市：')
+            await self.event.reply('请输入想要查询天气的城市：')
             try:
                 city_event = await self.get(lambda x: x.type == 'message', timeout=10)
             except AdapterTimeout:
                 return
             else:
-                await self.event.replay(await self.get_weather(city_event.get_plain_text()))
+                await self.event.reply(await self.get_weather(city_event.get_plain_text()))
 
     async def rule(self) -> bool:
         if self.adapter.name != 'cqhttp':

@@ -88,7 +88,7 @@ Bot 主动重新登录
 
 
 
-### _async_ `replay(msg, quote=False)`
+### _async_ `reply(msg, quote=False)`
 
 回复消息。
 
@@ -793,7 +793,7 @@ Bot 被邀请入群申请
 
 
 
-### _async_ `replay(msg, quote=False)`
+### _async_ `reply(msg, quote=False)`
 
 回复消息。
 

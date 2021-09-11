@@ -10,7 +10,7 @@
 DingTalk 事件基类
 
 
-### _async_ `replay(msg, at=None)`
+### _async_ `reply(msg, at=None)`
 
 回复消息。
 

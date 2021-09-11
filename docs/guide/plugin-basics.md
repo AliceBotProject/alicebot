@@ -146,16 +146,16 @@ from alicebot.plugin import Plugin
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        await self.event.replay('Hello, Alice!')
+        await self.event.reply('Hello, Alice!')
 
     async def rule(self) -> bool:
         return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
 
 ```
 
-正如上面所说的，当 `rule()` 方法返回 `True` 时， `handle()` 方法将会被调用。这里，我们使用了 `message` 类型的事件的一个方法，`replay()` 用于快捷回复当前消息，而不需要额外指定发送消息的接收者。
+正如上面所说的，当 `rule()` 方法返回 `True` 时， `handle()` 方法将会被调用。这里，我们使用了 `message` 类型的事件的一个方法，`reply()` 用于快捷回复当前消息，而不需要额外指定发送消息的接收者。
 
-`replay()` 方法是一个异步方法，所以在调用它时必须加上 `await` ，表示等待它直到返回结果。
+`reply()` 方法是一个异步方法，所以在调用它时必须加上 `await` ，表示等待它直到返回结果。
 
 下面，让我们再看一个例子来学习更多用法。
 
@@ -170,15 +170,15 @@ class Weather(Plugin):
     async def handle(self) -> None:
         args = self.event.get_plain_text().split(' ')
         if len(args) >= 2:
-            await self.event.replay(await self.get_weather(args[1]))
+            await self.event.reply(await self.get_weather(args[1]))
         else:
-            await self.event.replay('请输入想要查询天气的城市：')
+            await self.event.reply('请输入想要查询天气的城市：')
             try:
                 city_event = await self.get(lambda x: x.type == 'message', timeout=10)
             except AdapterTimeout:
                 return
             else:
-                await self.event.replay(await self.get_weather(city_event.get_plain_text()))
+                await self.event.reply(await self.get_weather(city_event.get_plain_text()))
 
     async def rule(self) -> bool:
         if self.adapter.name != 'cqhttp':

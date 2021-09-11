@@ -47,7 +47,7 @@ CQHTTP 事件基类
 
 
 
-### _async_ `replay(msg)`
+### _async_ `reply(msg)`
 
 回复消息。
 

@@ -77,7 +77,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
    
    class Echo(Plugin):
        async def handle(self) -> None:
-           await self.event.replay(self.event.message.replace('echo ', ''))
+           await self.event.reply(self.event.message.replace('echo ', ''))
    
        async def rule(self) -> bool:
            return self.adapter.name == 'cqhttp' and self.event.type == 'message' and self.event.message.startswith('echo ')

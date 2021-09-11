@@ -57,7 +57,7 @@ from alicebot.plugin import Plugin
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        await self.event.replay(f'Hello, I am {self.config.nickname}!')
+        await self.event.reply(f'Hello, I am {self.config.nickname}!')
 
     async def rule(self) -> bool:
         return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello' and self.event.user_id == self.config.superuser

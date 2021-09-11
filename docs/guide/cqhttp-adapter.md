@@ -72,7 +72,7 @@ from alicebot.adapter.cqhttp.message import CQHTTPMessageSegment
 class HalloAlice(Plugin):
     async def handle(self) -> None:
         msg = CQHTTPMessageSegment.text('Hello, Alice!') + CQHTTPMessageSegment.image('https://www.example.org/1.jpg')
-        await self.event.replay(msg)
+        await self.event.reply(msg)
 
     async def rule(self) -> bool:
         if self.adapter.name != 'cqhttp':

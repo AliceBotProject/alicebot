@@ -14,6 +14,9 @@ from typing import Any, Dict, Generic, List, Mapping, Union, Type, TypeVar, Iter
 T_Message = TypeVar('T_Message', bound='Message')
 T_MessageSegment = TypeVar('T_MessageSegment', bound='MessageSegment')
 
+# 可以转化为 MessageSegment 的类型
+MST = Union[T_MessageSegment, str, Mapping]
+
 
 class Message(List[T_MessageSegment]):
     """
@@ -25,9 +28,7 @@ class Message(List[T_MessageSegment]):
     并在 MessageSegment 的子类中重写 ``_message_class()`` 方法。
     """
 
-    def __init__(self,
-                 message: Union[str, None, Mapping, Iterable[Mapping], T_MessageSegment, T_Message, Any] = None,
-                 *args, **kwargs):
+    def __init__(self, message: Union[None, T_Message, MST, Iterable[MST]] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if message is None:
             return
@@ -57,7 +58,7 @@ class Message(List[T_MessageSegment]):
     def _validate(cls, value):
         return cls(value)
 
-    def _construct(self, msg: Union[str, Mapping, Iterable[Mapping], Any]) -> Iterator[T_MessageSegment]:
+    def _construct(self, msg: Union[MST, Iterable[MST]]) -> Iterator[T_MessageSegment]:
         """
         用于将 str, Mapping, Iterable[Mapping] 等类型转换为 MessageSegment。
         用于 pydantic 数据解析和方便用户使用。
@@ -74,7 +75,12 @@ class Message(List[T_MessageSegment]):
             yield self._str_to_message_segment(msg)
         elif isinstance(msg, Iterable):
             for seg in msg:
-                yield self._mapping_to_message_segment(seg)
+                if isinstance(seg, self._message_segment_class):
+                    yield seg
+                elif isinstance(seg, Mapping):
+                    yield self._mapping_to_message_segment(seg)
+                elif isinstance(seg, str):
+                    yield self._str_to_message_segment(seg)
         return
 
     def _mapping_to_message_segment(self, msg: Mapping) -> T_MessageSegment:

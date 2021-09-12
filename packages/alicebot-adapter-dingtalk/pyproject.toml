@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alicebot-adapter-dingtalk"
-version = "0.1.0"
+version = "0.1.1"
 description = "DingTalk adapter for AliceBot."
 license = "MIT"
 authors = ["st1020 <stone_1020@qq.com>"]

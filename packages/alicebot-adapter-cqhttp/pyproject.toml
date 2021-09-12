@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alicebot-adapter-cqhttp"
-version = "0.1.1"
+version = "0.1.2"
 description = "OneBot(CQHTTP) adapter for AliceBot."
 license = "MIT"
 authors = ["st1020 <stone_1020@qq.com>"]

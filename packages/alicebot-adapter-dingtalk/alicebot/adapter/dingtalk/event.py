@@ -11,7 +11,7 @@ from pydantic import BaseModel, Field, validator
 from alicebot.event import Event
 
 from .message import DingTalkMessage
-from .exception import WebhookExpiredError
+from .exceptions import WebhookExpiredError
 
 
 class UserInfo(BaseModel):

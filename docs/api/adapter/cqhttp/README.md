@@ -90,16 +90,16 @@ CQHTTP 协议适配器。
 * **引发**
 
     
-    * [**NetworkError**](exception.md#alicebot.adapter.cqhttp.exception.NetworkError) – 网络错误。
+    * [**NetworkError**](exceptions.md#alicebot.adapter.cqhttp.exceptions.NetworkError) – 网络错误。
 
 
-    * [**ApiNotAvailable**](exception.md#alicebot.adapter.cqhttp.exception.ApiNotAvailable) – API 请求响应 404， API 不可用。
+    * [**ApiNotAvailable**](exceptions.md#alicebot.adapter.cqhttp.exceptions.ApiNotAvailable) – API 请求响应 404， API 不可用。
 
 
-    * [**ActionFailed**](exception.md#alicebot.adapter.cqhttp.exception.ActionFailed) – API 请求响应 failed， API 操作失败。
+    * [**ActionFailed**](exceptions.md#alicebot.adapter.cqhttp.exceptions.ActionFailed) – API 请求响应 failed， API 操作失败。
 
 
-    * [**ApiTimeout**](exception.md#alicebot.adapter.cqhttp.exception.ApiTimeout) – API 请求响应超时。
+    * [**ApiTimeout**](exceptions.md#alicebot.adapter.cqhttp.exceptions.ApiTimeout) – API 请求响应超时。
 
 
 

@@ -8,7 +8,7 @@ from importlib.machinery import PathFinder
 
 from pydantic import BaseModel
 
-from alicebot.exception import LoadModuleError
+from alicebot.exceptions import LoadModuleError
 
 if TYPE_CHECKING:
     from pkgutil import ModuleInfo

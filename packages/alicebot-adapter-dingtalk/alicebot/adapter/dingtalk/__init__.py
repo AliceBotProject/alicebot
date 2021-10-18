@@ -22,7 +22,7 @@ from alicebot.adapter import Adapter
 from .config import Config
 from .event import DingTalkEvent
 from .message import DingTalkMessage
-from .exception import ApiTimeout, NetworkError
+from .exceptions import ApiTimeout, NetworkError
 
 
 class DingTalkAdapter(Adapter):

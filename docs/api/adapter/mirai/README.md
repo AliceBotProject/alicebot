@@ -120,13 +120,13 @@ Mirai 协议适配器。
 * **引发**
 
     
-    * [**NetworkError**](../cqhttp/exception.md#alicebot.adapter.cqhttp.exception.NetworkError) – 网络错误。
+    * [**NetworkError**](../cqhttp/exceptions.md#alicebot.adapter.cqhttp.exceptions.NetworkError) – 网络错误。
 
 
-    * [**ActionFailed**](../cqhttp/exception.md#alicebot.adapter.cqhttp.exception.ActionFailed) – API 操作失败。
+    * [**ActionFailed**](../cqhttp/exceptions.md#alicebot.adapter.cqhttp.exceptions.ActionFailed) – API 操作失败。
 
 
-    * [**ApiTimeout**](../cqhttp/exception.md#alicebot.adapter.cqhttp.exception.ApiTimeout) – API 请求响应超时。
+    * [**ApiTimeout**](../cqhttp/exceptions.md#alicebot.adapter.cqhttp.exceptions.ApiTimeout) – API 请求响应超时。
 
 
 

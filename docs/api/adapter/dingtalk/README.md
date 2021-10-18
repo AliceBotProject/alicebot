@@ -113,4 +113,4 @@
     * **ValueError** – 传入参数值错误。
 
 
-    * [**NetworkError**](../cqhttp/exception.md#alicebot.adapter.cqhttp.exception.NetworkError) – 调用 Webhook 地址时网络错误。
+    * [**NetworkError**](../cqhttp/exceptions.md#alicebot.adapter.cqhttp.exceptions.NetworkError) – 调用 Webhook 地址时网络错误。

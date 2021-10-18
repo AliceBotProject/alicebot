@@ -101,7 +101,7 @@ Condition 对象，用于事件处理。
 
 * **引发**
 
-    [**AdapterTimeout**](../exception.md#alicebot.exception.AdapterTimeout) – 超过最大事件数或超时。
+    [**AdapterTimeout**](../exceptions.md#alicebot.exceptions.AdapterTimeout) – 超过最大事件数或超时。
 
 
 

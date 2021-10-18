@@ -14,7 +14,7 @@ from typing import Awaitable, Callable, TypeVar, Union, Optional, TYPE_CHECKING
 from alicebot.log import logger
 from alicebot.config import config
 from alicebot.utils import Condition
-from alicebot.exception import AdapterTimeout
+from alicebot.exceptions import AdapterTimeout
 
 if TYPE_CHECKING:
     from alicebot import Bot

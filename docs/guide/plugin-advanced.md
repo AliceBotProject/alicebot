@@ -159,3 +159,16 @@ class TestPlugin(Plugin):
         return True
 
 ```
+
+## 为多个插件的共用部分创建基类
+
+如果你编写了许多个有着不少相同的部分的插件，编写多次相同代码显然不是一个优雅的解决方案，我们可以利用类的继承创建一个所有插件的共用基类。
+
+```python
+from abc import ABC
+
+class BasePlugin(Plugin, ABC):
+    ...
+```
+
+注意：这个插件基类必须像上面那样显式继承自 `abc.ABC` 类。

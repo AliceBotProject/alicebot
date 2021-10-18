@@ -47,7 +47,7 @@
 
 * **引发**
 
-    [**LoadModuleError**](exception.md#alicebot.exception.LoadModuleError) – 当找不到符合条件的类或者模块中存在多个符合条件的类。
+    [**LoadModuleError**](exceptions.md#alicebot.exceptions.LoadModuleError) – 当找不到符合条件的类或者模块中存在多个符合条件的类。
 
 
 

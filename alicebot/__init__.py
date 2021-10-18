@@ -10,7 +10,7 @@ from pydantic import BaseModel, ValidationError, create_model
 
 from alicebot.log import logger
 from alicebot.config import MainConfig, config_file, config
-from alicebot.exception import StopException, SkipException, LoadModuleError
+from alicebot.exceptions import StopException, SkipException, LoadModuleError
 from alicebot.load_module import ModulePathFinder, load_module, load_modules_from_dir
 
 if TYPE_CHECKING:

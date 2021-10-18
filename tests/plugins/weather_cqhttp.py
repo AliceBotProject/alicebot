@@ -1,5 +1,5 @@
 from alicebot.plugin import Plugin
-from alicebot.exception import AdapterTimeout
+from alicebot.exceptions import AdapterTimeout
 
 
 class Weather(Plugin):

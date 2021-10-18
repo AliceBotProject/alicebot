@@ -25,7 +25,7 @@ from alicebot.message import DataclassEncoder
 from .config import Config
 from .event import get_event_class
 from .message import CQHTTPMessage
-from .exception import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
+from .exceptions import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
 
 if TYPE_CHECKING:
     from .message import CQHTTPMessageSegment

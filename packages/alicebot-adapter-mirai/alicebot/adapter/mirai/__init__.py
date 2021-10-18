@@ -25,7 +25,7 @@ from alicebot.message import DataclassEncoder
 
 from .config import Config
 from .message import MiraiMessage
-from .exception import NetworkError, ActionFailed, ApiTimeout
+from .exceptions import NetworkError, ActionFailed, ApiTimeout
 from .event import BotEvent, CommandExecutedEvent, MateEvent, get_event_class
 
 if TYPE_CHECKING:

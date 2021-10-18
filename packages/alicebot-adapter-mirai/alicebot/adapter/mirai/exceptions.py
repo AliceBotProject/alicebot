@@ -3,7 +3,7 @@
 Mirai 异常
 ============
 """
-from alicebot.exception import AdapterException, AdapterTimeout
+from alicebot.exceptions import AdapterException, AdapterTimeout
 
 
 class MiraiException(AdapterException):

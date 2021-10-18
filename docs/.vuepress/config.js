@@ -1,5 +1,3 @@
-// const fs = require("fs");
-// const path = require("path");
 module.exports = {
   title: 'AliceBot',
   description: '简单的 Python 异步多后端聊天机器人框架',
@@ -83,7 +81,7 @@ module.exports = {
                 '',
                 {title: 'alicebot.config', path: 'config'},
                 {title: 'alicebot.event', path: 'event'},
-                {title: 'alicebot.exception', path: 'exception'},
+                {title: 'alicebot.exceptions', path: 'exceptions'},
                 {title: 'alicebot.load_module', path: 'load_module'},
                 {title: 'alicebot.log', path: 'log'},
                 {title: 'alicebot.message', path: 'message'},
@@ -97,7 +95,7 @@ module.exports = {
                     {title: 'alicebot.adapter.cqhttp', path: 'adapter/cqhttp/'},
                     {title: 'alicebot.adapter.cqhttp.config', path: 'adapter/cqhttp/config'},
                     {title: 'alicebot.adapter.cqhttp.event', path: 'adapter/cqhttp/event'},
-                    {title: 'alicebot.adapter.cqhttp.exception', path: 'adapter/cqhttp/exception'},
+                    {title: 'alicebot.adapter.cqhttp.exceptions', path: 'adapter/cqhttp/exceptions'},
                     {title: 'alicebot.adapter.cqhttp.message', path: 'adapter/cqhttp/message'}
                   ]
                 },
@@ -109,7 +107,7 @@ module.exports = {
                     {title: 'alicebot.adapter.mirai', path: 'adapter/mirai/'},
                     {title: 'alicebot.adapter.mirai.config', path: 'adapter/mirai/config'},
                     {title: 'alicebot.adapter.mirai.event', path: 'adapter/mirai/event'},
-                    {title: 'alicebot.adapter.mirai.exception', path: 'adapter/mirai/exception'},
+                    {title: 'alicebot.adapter.mirai.exceptions', path: 'adapter/mirai/exceptions'},
                     {title: 'alicebot.adapter.mirai.message', path: 'adapter/mirai/message'}
                   ]
                 },
@@ -121,7 +119,7 @@ module.exports = {
                     {title: 'alicebot.adapter.dingtalk', path: 'adapter/dingtalk/'},
                     {title: 'alicebot.adapter.dingtalk.config', path: 'adapter/dingtalk/config'},
                     {title: 'alicebot.adapter.dingtalk.event', path: 'adapter/dingtalk/event'},
-                    {title: 'alicebot.adapter.dingtalk.exception', path: 'adapter/dingtalk/exception'},
+                    {title: 'alicebot.adapter.dingtalk.exceptions', path: 'adapter/dingtalk/exceptions'},
                     {title: 'alicebot.adapter.dingtalk.message', path: 'adapter/dingtalk/message'}
                   ]
                 },
@@ -156,16 +154,3 @@ module.exports = {
     }]
   ]
 }
-
-
-// function getSideBar(folder) {
-//   const extension = ['.md'];
-//   return fs
-//     .readdirSync(path.join(`${__dirname}/../${folder}`))
-//     .filter(
-//       (item) =>
-//         item.toLowerCase() !== "readme.md" &&
-//         fs.statSync(path.join(`${__dirname}/../${folder}`, item)).isFile() &&
-//         extension.includes(path.extname(item))
-//     );
-// }

@@ -7,7 +7,7 @@
 from abc import ABC, abstractmethod
 from typing import TypeVar, TYPE_CHECKING
 
-from alicebot.exception import StopException, SkipException
+from alicebot.exceptions import StopException, SkipException
 
 if TYPE_CHECKING:
     from alicebot import Bot

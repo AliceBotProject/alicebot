@@ -40,7 +40,7 @@ DingTalk 事件基类
 * **引发**
 
     
-    * [**WebhookExpiredError**](exception.md#alicebot.adapter.dingtalk.exception.WebhookExpiredError) – 当前事件的 Webhook 地址已经过期。
+    * [**WebhookExpiredError**](exceptions.md#alicebot.adapter.dingtalk.exceptions.WebhookExpiredError) – 当前事件的 Webhook 地址已经过期。
 
 
     * **...** – 同 `DingTalkAdapter.send()` 方法。

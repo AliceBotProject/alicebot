@@ -47,19 +47,19 @@ class Bot:
     _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
     _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
 
-    def __init__(self, config_file_: Optional[str] = 'config.json'):
+    def __init__(self, config_file: Optional[str] = 'config.json'):
         """
         初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
-        :param config_file_: (optional) 指定配置文件，如不指定使用默认的 ``config.json``， 若指定为 None，则不加载配置文件。
+        :param config_file: (optional) 指定配置文件，如不指定使用默认的 ``config.json``， 若指定为 None，则不加载配置文件。
         """
         sys.meta_path.insert(0, self._module_path_finder)
-        if config_file_ is None:
+        if config_file is None:
             self.config = MainConfig()
             return
 
         try:
-            with open(config_file_, 'r', encoding='utf8') as f:
+            with open(config_file, 'r', encoding='utf8') as f:
                 self.config_json = json.load(f)
                 self.config = MainConfig(**self.config_json)
         except OSError as e:

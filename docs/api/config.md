@@ -42,14 +42,3 @@ AliceBot 的主要配置。
 * **Type**
 
     Optional[Set[str]]
-
-
-
-### `dev_env`
-
-当前是否处于开发环境，默认为 false，在使用时请勿设置为 true。
-
-
-* **Type**
-
-    bool

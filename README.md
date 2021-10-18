@@ -32,15 +32,15 @@
 
 ## 简介
 
-AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种协议适配，可以轻松地编写易用学习和使用的插件来拓展其功能。
+AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种协议适配，可以轻松地编写易于学习和使用的插件来拓展其功能。
 
-本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，您可以在 [对比](#对比) 小节中查看这两个项目的异同，以便您选择更适合您的机器人框架。
+本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，您可以在 [对比](#对比) 小节中查看这两个项目的异同，以便您选择更适合自己的机器人框架。
 
 ## 特点
 
 AliceBot 使用了非常灵活且易于使用的插件编写方式，您只需要编写两个方法即可实现一个功能强大的插件。
 
-AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可以自由选择或编写适合您的适配器。
+AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可以自由选择或编写适合您的适配器。
 
 目前 AliceBot 官方维护了以下协议适配：
 
@@ -55,7 +55,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
 1. 安装：
 
    ```bash
-   pip install alicebot
+   pip install alicebot[all]
    ```
 
 2. 第一个 AliceBot 项目：
@@ -63,7 +63,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
    ```python
    from alicebot import Bot
    
-   bot = Bot()
+   bot = Bot(config_file=None)
    bot.load_adapter('alicebot.adapter.cqhttp')
    
    bot.run()
@@ -87,7 +87,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
 
 ## 对比
 
-本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，以下介绍两者的异同。
+本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，以下简单介绍两者的异同。
 
 相同点：
 
@@ -98,7 +98,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
 
 不同点：
 
-- 总的来说，NoneBot 是一个较为全面的机器人框架，而 AliceBot 是一个小巧简洁的机器人框架，它不包含一些复杂的高级特性，但更加灵活且易于学习（作者的观点）。
+- 总的来说，NoneBot 是一个较为全面的机器人框架，而 AliceBot 是一个小巧简洁的机器人框架，它不包含一些复杂的高级特性，但更加灵活且易于学习。
 - NoneBot 在实现上与 WebSocket 通讯协议深度绑定，它需要一个支持 ASGI 服务器协议的驱动框架，而 AliceBot 并不与任何协议绑定，它甚至可以用来驱动您的树莓派智能音箱。当然，如果您只需要一个支持常见网络聊天工具的机器人框架的话，它们并没有什么区别。
 - NoneBot 提供了很多预设规则和权限控制机制，而 AliceBot 则没有提供，由于插件编写方式的不同，AliceBot 选择给您最大的自由，您需要自行编写插件在何时运行的方法（`rule()` 方法），这在绝大部份情况下并不会造成您编写更多的代码或是影响插件的可读性，自行实现也不会非常困难，但如果您真的需要这些高级功能又不想自己实现的话，NoneBot 提供了更好的选择。
 - NoneBot 拥有相对庞大的用户基数和社区规模，也拥有数量众多的插件，而 AliceBot 则是一个新生项目，这意味着如果您使用 NoneBot 您可能会更加容易找到已经编写完毕的您感兴趣的插件，并且您当您遇到问题时也能够更快地查找到相关资料或者获得解答。
@@ -111,5 +111,7 @@ AliceBot 的适配协议并不和任何一种库或网络协议绑定，您可�
 ## 协议与致谢
 
 AliceBot 采用 MIT 许可证开放源代码。
+
+本项目的图标由 迷糊小梦神 绘制，作为本项目的一部分，使用与本项目相同的许可证开放使用。
 
 AliceBot 的 message 模块和 cqhttp 适配器部分参考了 NoneBot 的实现，在此感谢 [NoneBot](https://github.com/nonebot/nonebot2/) 项目。

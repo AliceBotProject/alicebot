@@ -20,7 +20,7 @@ module.exports = {
     ['link', {rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png'}],
     ['link', {rel: 'mask-icon', href: '/icons/safari-pinned-tab.svg', color: '#5bbad5'}],
     ['meta', {name: 'msapplication-TileImage', content: '/icons/mstile-150x150.png'}],
-    ['meta', {name: 'msapplication-TileColor', content: '#da532c'}]
+    ['meta', {name: 'msapplication-TileColor', content: '#2d89ef'}]
   ],
   themeConfig: {
     logo: '/logo.png',

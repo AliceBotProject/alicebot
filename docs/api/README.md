@@ -5,7 +5,7 @@
 
 基类：`object`
 
-AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 `Config` ，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
+AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
 
 
 ### property `plugins: List[Type[T_Plugin]]`

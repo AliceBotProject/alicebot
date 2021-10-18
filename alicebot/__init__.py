@@ -9,7 +9,7 @@ from typing import Any, Awaitable, Callable, Dict, List, Iterable, Tuple, Type, 
 from pydantic import BaseModel, ValidationError, create_model
 
 from alicebot.log import logger
-from alicebot.config import MainConfig, config_file, config
+from alicebot.config import MainConfig
 from alicebot.exceptions import StopException, SkipException, LoadModuleError
 from alicebot.load_module import ModulePathFinder, load_module, load_modules_from_dir
 
@@ -28,8 +28,9 @@ HANDLED_SIGNALS = (
 
 class Bot:
     """
-    AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 ``Config`` ，加载适配器 ``Adapter`` 和插件 ``Plugin``，并进行事件分发。
+    AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 ``Config``，加载适配器 ``Adapter`` 和插件 ``Plugin``，并进行事件分发。
     """
+    config: MainConfig = None
     config_json: Dict[str, Any] = {}
     loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
     should_exit: bool = False
@@ -46,15 +47,17 @@ class Bot:
     _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
     _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
 
-    def __init__(self, config_file_: Optional[str] = None):
+    def __init__(self, config_file_: Optional[str] = 'config.json'):
         """
         初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
-        :param config_file_: (optional) 指定配置文件，如不指定使用默认的 ``config.json`` 。
+        :param config_file_: (optional) 指定配置文件，如不指定使用默认的 ``config.json``， 若指定为 None，则不加载配置文件。
         """
-        if config_file_ is None:
-            config_file_ = config_file
         sys.meta_path.insert(0, self._module_path_finder)
+        if config_file_ is None:
+            self.config = MainConfig()
+            return
+
         try:
             with open(config_file_, 'r', encoding='utf8') as f:
                 self.config_json = json.load(f)
@@ -79,14 +82,6 @@ class Bot:
         if self.config.adapters:
             for _adapter in self.config.adapters:
                 self.load_adapter(_adapter)
-
-    @property
-    def config(self):
-        return config.get()
-
-    @config.setter
-    def config(self, value):
-        config.set(value)
 
     @property
     def plugins(self) -> List[Type['T_Plugin']]:

@@ -7,11 +7,8 @@ AliceBot 使用 pydantic_ 来读取配置。
 .. _pydantic: https://pydantic-docs.helpmanual.io/
 """
 from typing import Set, Optional
-from contextvars import ContextVar
 
 from pydantic import BaseModel
-
-config_file = 'config.json'
 
 
 class MainConfig(BaseModel):
@@ -37,15 +34,5 @@ class MainConfig(BaseModel):
     :type: Optional[Set[str]]
     """
 
-    dev_env: bool = False
-    """
-    当前是否处于开发环境，默认为 false，在使用时请勿设置为 true。
-    
-    :type: bool
-    """
-
     class Config:
         extra = 'allow'
-
-
-config = ContextVar('config', default=None)

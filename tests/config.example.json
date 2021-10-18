@@ -1,5 +1,4 @@
 {
-    "dev_env": true,
     "plugins": null,
     "plugin_dir": ["plugins"],
     "adapters": ["alicebot.adapter.cqhttp"],

@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 
 T_Adapter = TypeVar('T_Adapter', bound='BaseAdapter')
 
-if os.getenv('dev_env') == '1':
+if os.getenv('ALICEBOT_DEV') == '1':
     # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
     __import__('pkg_resources').declare_namespace(__name__)
 

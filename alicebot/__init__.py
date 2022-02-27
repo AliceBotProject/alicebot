@@ -31,7 +31,7 @@ class Bot:
     AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 ``Config``，加载适配器 ``Adapter`` 和插件 ``Plugin``，并进行事件分发。
     """
     config: MainConfig = None
-    config_json: Dict[str, Any] = {}
+    config_dict: Dict[str, Any] = {}
     loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
     should_exit: bool = False
     adapters: List['T_Adapter'] = []
@@ -47,31 +47,38 @@ class Bot:
     _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
     _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
 
-    def __init__(self, config_file: Optional[str] = 'config.json'):
+    def __init__(self, config_file: Optional[str] = 'config.json', config_dict: Optional[Dict] = None):
         """
         初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
-        :param config_file: (optional) 指定配置文件，如不指定使用默认的 ``config.json``， 若指定为 None，则不加载配置文件。
+        :param config_file: (optional) 配置文件，如不指定则使用默认的 ``config.json``， 若指定为 None，则不加载配置文件。
+        :param config_dict: (optional) 配置字典，默认为 None，若指定字典，则会忽略 config_file 配置，不再读取配置文件。
         """
         sys.meta_path.insert(0, self._module_path_finder)
-        if config_file is None:
-            self.config = MainConfig()
-            return
+        if config_dict is None:
+            if config_file is None:
+                self.config = MainConfig()
+                return
+
+            try:
+                with open(config_file, 'r', encoding='utf8') as f:
+                    self.config_dict = json.load(f)
+            except OSError as e:
+                logger.warning(f'Can not open config file: {e!r}')
+            except json.JSONDecodeError as e:
+                logger.warning(f'Read config file failed: {e!r}')
+            except ValueError as e:
+                logger.error(f'Read config file failed: {e!r}')
+        else:
+            self.config_dict = config_dict
 
         try:
-            with open(config_file, 'r', encoding='utf8') as f:
-                self.config_json = json.load(f)
-                self.config = MainConfig(**self.config_json)
-        except OSError as e:
-            logger.warning(f'Can not open config file: {e!r}')
-        except json.JSONDecodeError as e:
-            logger.warning(f'Read config file failed: {e!r}')
+            self.config = MainConfig(**self.config_dict)
         except ValidationError as e:
-            logger.error(f'Config file error: {e!r}')
-        except ValueError as e:
-            logger.error(f'Read config file failed: {e!r}')
+            logger.error(f'Config dict parse error: {e!r}')
 
         if self.config is None:
+            self.config = MainConfig()
             return
 
         if self.config.plugin_dir:
@@ -108,8 +115,8 @@ class Bot:
                     signal.signal(sig, self.handle_exit)
 
         # 更新 config，合并入来自 Plugin 和 Adapter 的 Config
-        if self._config_update_dict and self.config_json:
-            self.config = create_model('Config', **self._config_update_dict, __base__=MainConfig)(**self.config_json)
+        if self._config_update_dict and self.config_dict:
+            self.config = create_model('Config', **self._config_update_dict, __base__=MainConfig)(**self.config_dict)
 
         try:
             self.loop.run_until_complete(self._run())

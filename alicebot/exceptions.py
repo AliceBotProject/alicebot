@@ -14,7 +14,7 @@ class AliceBotException(Exception):
     pass
 
 
-class EventException(AliceBotException):
+class EventException(BaseException):
     """
     事件处理过程中由插件抛出的异常，用于控制事件的传播，会被 AliceBot 自动捕获并处理。
     """

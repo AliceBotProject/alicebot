@@ -5,13 +5,14 @@
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 ``Plugin`` 类。
 """
 from abc import ABC, abstractmethod
-from typing import TypeVar, TYPE_CHECKING
+from typing import TypeVar, NoReturn, TYPE_CHECKING
 
 from alicebot.exceptions import StopException, SkipException
 
 if TYPE_CHECKING:
     from alicebot import Bot
     from alicebot.event import T_Event
+    from alicebot.config import MainConfig
     from alicebot.adapter import T_Adapter
 
 T_Plugin = TypeVar('T_Plugin', bound='Plugin')
@@ -73,19 +74,19 @@ class Plugin(ABC):
         return self.adapter.bot
 
     @property
-    def config(self):
+    def config(self) -> 'MainConfig':
         """
         :return: 机器人配置。
         """
         return self.bot.config
 
-    def stop(self):
+    def stop(self) -> NoReturn:
         """
         停止当前事件传播。
         """
         raise StopException()
 
-    def skip(self):
+    def skip(self) -> NoReturn:
         """
         跳过自身继续当前事件传播。
         """

@@ -109,13 +109,13 @@ pip install alicebot[dingtalk]
 
 AliceBot 推荐的目录结构如下：
 
-::: vue
+```:no-line-numbers
 .
-├── `plugins` _(**插件目录**)_
+├── plugins (插件目录)
 │   └── xxx.py
-├── `config.json` _(**配置文件**)_
+├── config.json (配置文件)
 └── main.py
-:::
+```
 
 其中 `main.py` 和 `config.json` 文件如上文所示。
 

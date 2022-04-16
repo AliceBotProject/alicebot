@@ -2,7 +2,7 @@
 
 AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种协议适配，可以轻松地编写易用学习和使用的插件来拓展其功能。
 
-AliceBot 仅支持 Python 3.7+ 版本。
+AliceBot 仅支持 Python 3.8+ 版本。
 
 ## 它是如何工作的？
 

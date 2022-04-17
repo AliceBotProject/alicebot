@@ -7,7 +7,7 @@ class Condition:
 
     def __init__(self):
         self._loop = asyncio.get_event_loop()
-        lock = asyncio.Lock(loop=self._loop)
+        lock = asyncio.Lock()
         self._lock = lock
         # Export the lock's locked(), acquire() and release() methods.
         self.locked = lock.locked

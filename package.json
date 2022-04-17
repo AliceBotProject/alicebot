@@ -2,15 +2,18 @@
   "name": "alicebot",
   "version": "0.2.1",
   "description": "A simple asynchronous python chat bot framework.",
-  "main": "index.js",
-  "repository": "https://github.com/st1020/alicebot.git",
-  "author": "st1020",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/st1020/alicebot.git"
+  },
+  "author": "st1020 <stone_1020@qq.com>",
+  "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
   "devDependencies": {
-    "@vuepress/plugin-back-to-top": "^1.8.2",
-    "@vuepress/plugin-medium-zoom": "^1.8.2",
-    "@vuepress/plugin-pwa": "^1.8.2",
-    "vuepress": "^1.8.2"
+    "@vuepress/plugin-pwa": "^2.0.0-beta.38",
+    "@vuepress/plugin-pwa-popup": "^2.0.0-beta.38",
+    "@vuepress/plugin-search": "^2.0.0-beta.38",
+    "vuepress": "^2.0.0-beta.39"
   },
   "scripts": {
     "docs:dev": "vuepress dev docs",

@@ -3,8 +3,10 @@ home: true
 heroImage: /logo.png
 heroText: AliceBot
 tagline: 简单的 Python 异步多后端机器人框架
-actionText: 快速上手 →
-actionLink: /guide/
+actions:
+  - text: 快速上手 →
+    link: /guide/
+    type: primary
 features:
 - title: 简洁
   details: 简洁易用的插件和适配器接口，抛弃了所有复杂且难以理解的特性。只需要掌握基础的 Python 知识，即可轻松实现您的绝佳创意。

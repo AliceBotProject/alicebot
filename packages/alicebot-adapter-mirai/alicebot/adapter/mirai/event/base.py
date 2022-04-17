@@ -28,7 +28,7 @@ class GroupInfo(BaseModel):
 
 class GroupMemberInfo(BaseModel):
     id: int
-    memberName = str
+    memberName: str
     permission: Permission
     specialTitle: str
     joinTimestamp: int

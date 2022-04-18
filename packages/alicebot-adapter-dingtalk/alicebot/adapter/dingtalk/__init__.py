@@ -1,11 +1,7 @@
-"""
-=======================
-DingTalk 协议适配器
-=======================
-本适配器适配了钉钉企业自建机器人协议。
-协议详情请参考: `钉钉开放平台`_ 。
+"""DingTalk 协议适配器。
 
-.. _钉钉开放平台: https://developers.dingtalk.com/document/robots/robot-overview
+本适配器适配了钉钉企业自建机器人协议。
+协议详情请参考: [钉钉开放平台](https://developers.dingtalk.com/document/robots/robot-overview) 。
 """
 import time
 import hmac
@@ -26,9 +22,7 @@ from .exceptions import ApiTimeout, NetworkError
 
 
 class DingTalkAdapter(Adapter):
-    """
-    钉钉协议适配器。
-    """
+    """钉钉协议适配器。"""
     name: str = 'dingtalk'
     app: web.Application = None
     runner: web.AppRunner = None
@@ -38,33 +32,25 @@ class DingTalkAdapter(Adapter):
 
     @property
     def config(self):
-        """
-        :return: 本适配器的配置。
-        """
+        """本适配器的配置。"""
         return getattr(self.bot.config, Config.__config_name__)
 
     async def startup(self):
-        """
-        创建 aiohttp Application。
-        """
+        """创建 aiohttp Application。"""
         self.app = web.Application()
         self.app.add_routes([web.post(self.config.url, self.handler)])
 
         self.session = aiohttp.ClientSession()
 
     async def run(self):
-        """
-        运行 aiohttp 服务器。
-        """
+        """运行 aiohttp 服务器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.config.host, self.config.port)
         await self.site.start()
 
     async def shutdown(self):
-        """
-        清理 aiohttp AppRunner。
-        """
+        """清理 aiohttp AppRunner。"""
         if self.session is not None:
             await self.session.close()
         if self.site is not None:
@@ -73,10 +59,10 @@ class DingTalkAdapter(Adapter):
             await self.runner.cleanup()
 
     async def handler(self, request: web.Request):
-        """
-        处理 aiohttp 服务器的接收。
+        """处理 aiohttp 服务器的接收。
 
-        :param request: aiohttp 服务器的 Request 对象。
+        Args:
+            request: aiohttp 服务器的 Request 对象。
         """
         if 'timestamp' not in request.headers or 'sign' not in request.headers:
             logger.error(f'Illegal http header, incomplete http header')
@@ -95,12 +81,13 @@ class DingTalkAdapter(Adapter):
         return web.Response()
 
     def get_sign(self, timestamp: str) -> str:
-        """
-        计算签名。
+        """计算签名。
 
-        :param timestamp: 时间戳。
-        :return: 签名。
-        :rtype: str
+        Args:
+            timestamp: 时间戳。
+
+        Returns:
+            签名。
         """
         hmac_code = hmac.new(self.config.app_secret.encode('utf-8'),
                              '{}\n{}'.format(timestamp, self.config.app_secret).encode('utf-8'),
@@ -112,18 +99,21 @@ class DingTalkAdapter(Adapter):
                    conversation_type: Literal['1', '2'],
                    msg: Union[str, Dict, DingTalkMessage],
                    at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
-        """
-        发送消息。
+        """发送消息。
 
-        :param webhook: Webhook 网址。
-        :param conversation_type: 聊天类型，'1' 表示单聊，'2' 表示群聊。
-        :param msg: 消息。
-        :param at: At 对象，仅在群聊时生效，默认为空。
-        :return: 钉钉服务器的响应。
-        :rtype: Dict[str, Any]
-        :exception TypeError: 传入参数类型错误。
-        :exception ValueError: 传入参数值错误。
-        :exception NetworkError: 调用 Webhook 地址时网络错误。
+        Args:
+            webhook: Webhook 网址。
+            conversation_type: 聊天类型，'1' 表示单聊，'2' 表示群聊。
+            msg: 消息。
+            at: At 对象，仅在群聊时生效，默认为空。
+
+        Returns:
+            钉钉服务器的响应。
+
+        Raises:
+            TypeError: 传入参数类型错误。
+            ValueError: 传入参数值错误。
+            NetworkError: 调用 Webhook 地址时网络错误。
         """
         if isinstance(msg, DingTalkMessage):
             pass

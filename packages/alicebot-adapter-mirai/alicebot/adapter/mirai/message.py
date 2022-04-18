@@ -1,8 +1,4 @@
-"""
-============
-Mirai 消息
-============
-"""
+"""Mirai 适配器消息。"""
 import json
 from typing import Any, Dict, List, Type, Optional
 
@@ -19,18 +15,17 @@ class MiraiMessage(Message['MiraiMessageSegment']):
         return self._message_segment_class.plain(msg)
 
     def as_message_chain(self) -> List[Dict[str, Any]]:
-        """
-        返回符合 Mirai-api-http 标准的 messageChain 数组。
+        """返回符合 Mirai-api-http 标准的 messageChain 数组。
 
-        :return: messageChain 数组。
-        :type: List[Dict[str, Any]]
+        Returns:
+            messageChain 数组。
         """
         return list(map(lambda x: x.as_dict(), self))
 
     def is_text(self) -> bool:
         """
-        :return: 是否是纯文本消息。
-        :rtype: bool
+        Returns:
+            是否是纯文本消息。
         """
         for ms in self[1:]:
             if not ms.is_text():
@@ -38,11 +33,10 @@ class MiraiMessage(Message['MiraiMessageSegment']):
         return True
 
     def get_plain_text(self) -> str:
-        """
-        获取消息中的纯文本部分。
+        """获取消息中的纯文本部分。
 
-        :return: 消息中的纯文本部分。
-        :rtype: str
+        Returns:
+            消息中的纯文本部分。
         """
         return ''.join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
 
@@ -61,18 +55,17 @@ class MiraiMessageSegment(MessageSegment['MiraiMessage']):
         return json.dumps(self, cls=DataclassEncoder)
 
     def as_dict(self) -> Dict[str, Any]:
-        """
-        返回符合 Mirai-api-http 标准的消息字段字典。
+        """返回符合 Mirai-api-http 标准的消息字段字典。
 
-        :return: 符合 Mirai-api-http 标准的消息字段字典。
-        :rtype: Dict[str, Any]
+        Returns:
+            符合 Mirai-api-http 标准的消息字段字典。
         """
         return {'type': self.type, **self.data}
 
     def is_text(self) -> bool:
         """
-        :return: 是否是纯文本消息字段。
-        :rtype: bool
+        Returns:
+            是否是纯文本消息字段。
         """
         return self.type == 'Plain'
 

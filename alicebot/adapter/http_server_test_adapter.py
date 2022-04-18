@@ -1,7 +1,5 @@
-"""
-========================
-HTTP 服务端适配器示例
-========================
+"""HTTP 服务端适配器示例。
+
 这里是一个最简单可以直接使用的 HTTP 服务端适配器示例。
 """
 from typing import Union, TYPE_CHECKING
@@ -17,16 +15,12 @@ if TYPE_CHECKING:
 
 
 class HttpServerTestEvent(Event):
-    """
-    HTTP 服务端示例适配器事件类。
-    """
-    pass
+    """HTTP 服务端示例适配器事件类。"""
+    message: Message
 
 
 class HttpServerTestAdapter(HttpServerAdapter):
-    """
-    HTTP 服务端示例适配器类。
-    """
+    """HTTP 服务端示例适配器类。"""
     get_url: str = '/'
     post_url: str = '/'
     host: str = '127.0.0.1'
@@ -37,7 +31,6 @@ class HttpServerTestAdapter(HttpServerAdapter):
                                     type='message',
                                     message=Message(MessageSegment(type='text', data={'text': await request.text()})))
         await self.handle_event(event)
-
         return web.Response()
 
     @staticmethod

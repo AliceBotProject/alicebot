@@ -1,8 +1,4 @@
-"""
-=================
-DingTalk 事件
-=================
-"""
+"""DingTalk 适配器事件。"""
 import time
 from typing import Any, Dict, List, Literal, Optional, Union
 
@@ -57,15 +53,18 @@ class DingTalkEvent(Event):
     async def reply(self,
                     msg: Union[str, Dict, DingTalkMessage],
                     at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
-        """
-        回复消息。
+        """回复消息。
 
-        :param msg: 回复消息的内容，可以是 str, Dict 或 DingTalkMessage。
-        :param at: 回复消息时 At 的对象，必须时 at 类型的 DingTalkMessage，或者符合标准的 Dict。
-        :return: 调用 Webhook 地址后钉钉服务器的响应。
-        :rtype: Dict
-        :exception WebhookExpiredError: 当前事件的 Webhook 地址已经过期。
-        :exception ...: 同 ``DingTalkAdapter.send()`` 方法。
+        Args:
+            msg: 回复消息的内容，可以是 str, Dict 或 DingTalkMessage。
+            at: 回复消息时 At 的对象，必须时 at 类型的 DingTalkMessage，或者符合标准的 Dict。
+
+        Returns:
+            调用 Webhook 地址后钉钉服务器的响应。
+
+        Raises:
+            WebhookExpiredError: 当前事件的 Webhook 地址已经过期。
+            ...: 同 `DingTalkAdapter.send()` 方法。
         """
         if self.sessionWebhookExpiredTime > time.time() * 1000:
             return await self.adapter.send(webhook=self.sessionWebhook,

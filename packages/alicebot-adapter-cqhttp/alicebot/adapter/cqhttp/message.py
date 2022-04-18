@@ -1,15 +1,11 @@
-"""
-============
-CQHTTP 消息
-============
-"""
+"""CQHTTP 适配器消息。"""
 from typing import Literal, Optional, Type, Union
 
 from alicebot.message import Message, MessageSegment
 
 
 class CQHTTPMessage(Message['CQHTTPMessageSegment']):
-    """CQHTTP 消息"""
+    """CQHTTP 消息。"""
 
     @property
     def _message_segment_class(self) -> Type['CQHTTPMessageSegment']:
@@ -20,8 +16,8 @@ class CQHTTPMessage(Message['CQHTTPMessageSegment']):
 
     def is_text(self) -> bool:
         """
-        :return: 是否是纯文本消息。
-        :rtype: bool
+        Returns:
+            是否是纯文本消息。
         """
         for ms in self:
             if not ms.is_text():
@@ -29,11 +25,10 @@ class CQHTTPMessage(Message['CQHTTPMessageSegment']):
         return True
 
     def get_plain_text(self) -> str:
-        """
-        获取消息中的纯文本部分。
+        """获取消息中的纯文本部分。
 
-        :return: 消息中的纯文本部分。
-        :rtype: str
+        Returns:
+            消息中的纯文本部分。
         """
         return ''.join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
 
@@ -41,16 +36,19 @@ class CQHTTPMessage(Message['CQHTTPMessageSegment']):
                 old: Union[str, 'CQHTTPMessageSegment'],
                 new: Union[str, 'CQHTTPMessageSegment', None],
                 count: int = -1) -> 'CQHTTPMessage':
-        """
-        实现类似字符串的 ``replace()`` 方法。
-        当 ``old`` 为 str 类型时，``new`` 也必须是 str ，本方法将仅对 ``type`` 为 ``text`` 的消息字段进行处理。
-        当 ``old`` 为 MessageSegment 类型时，``new`` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
+        """实现类似字符串的 `replace()` 方法。
 
-        :param old: 被匹配的字符串或消息字段。
-        :param new: 被替换为的字符串或消息字段。
-        :param count: 替换的次数。
-        :return: 替换后的消息对象。
-        :rtype: CQHTTPMessage
+        当 `old` 为 str 类型时，`new` 也必须是 str ，本方法将仅对 `type` 为 `text` 的消息字段进行处理。
+        当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，
+            并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
+
+        Args:
+            old: 被匹配的字符串或消息字段。
+            new: 被替换为的字符串或消息字段。
+            count: 替换的次数。
+
+        Returns:
+            替换后的消息对象。
         """
         temp_msg = self.deepcopy()
         if not (type(old) == type(new) == str) and \
@@ -85,7 +83,7 @@ class CQHTTPMessage(Message['CQHTTPMessageSegment']):
 
 
 class CQHTTPMessageSegment(MessageSegment['CQHTTPMessage']):
-    """CQHTTP 消息字段"""
+    """CQHTTP 消息字段。"""
 
     @property
     def _message_class(self) -> Type['CQHTTPMessage']:
@@ -98,15 +96,15 @@ class CQHTTPMessageSegment(MessageSegment['CQHTTPMessage']):
 
     def is_text(self) -> bool:
         """
-        :return: 是否是纯文本消息字段。
-        :rtype: bool
+        Returns:
+            是否是纯文本消息字段。
         """
         return self.type == 'text'
 
     def get_cqcode(self) -> str:
         """
-        :return: 此消息字段的 CQ 码形式。
-        :rtype: str
+        Returns:
+            此消息字段的 CQ 码形式。
         """
         if self.type == 'text':
             return escape(self.data.get('text', ''), escape_comma=False)
@@ -260,13 +258,14 @@ class CQHTTPMessageSegment(MessageSegment['CQHTTPMessage']):
 
 
 def escape(s: str, *, escape_comma: bool = True) -> str:
-    """
-    对 CQ 码中的特殊字符进行转义。
+    """对 CQ 码中的特殊字符进行转义。
 
-    :param s: 待转义的字符串。
-    :param escape_comma: 是否转义 ``,``。
-    :return: 转义后的字符串。
-    :rtype: str
+    Args:
+        s: 待转义的字符串。
+        escape_comma: 是否转义 `,`。
+
+    Returns:
+        转义后的字符串。
     """
     s = s.replace('&', '&amp;') \
         .replace('[', '&#91;') \

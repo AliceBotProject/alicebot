@@ -1,8 +1,4 @@
-"""
-============
-Mirai 事件
-============
-"""
+"""Mirai 适配器事件。"""
 import inspect
 from typing import Type
 
@@ -18,12 +14,13 @@ _mirai_events = {name: model
 
 
 def get_event_class(event_type: str) -> Type[T_MiraiEvent]:
-    """
-    根据接收到的消息类型返回对应的事件类。
+    """根据接收到的消息类型返回对应的事件类。
 
-    :param event_type: 事件类型。
-    :return: 对应的事件类。
-    :rtype: Type[T_MiraiEvent]
+    Args:
+        event_type: 事件类型。
+
+    Returns:
+        对应的事件类。
     """
     return _mirai_events.get(event_type)
 

@@ -27,33 +27,55 @@ HANDLED_SIGNALS = (
 
 
 class Bot:
-    """
-    AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 ``Config``，加载适配器 ``Adapter`` 和插件 ``Plugin``，并进行事件分发。
+    """AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
+
+    Attributes:
+        config: 机器人配置。
+        config_dict: 机器人配置字典。
+        loop: 事件循环。
+        should_exit: 机器人是否应该进入准备退出状态。
+        adapters: 适配器列表。
+        plugins_priority_dict: 插件优先级字典。
     """
     config: MainConfig = None
-    config_dict: Dict[str, Any] = {}
-    loop: asyncio.AbstractEventLoop = asyncio.get_event_loop()
-    should_exit: bool = False
-    adapters: List['T_Adapter'] = []
-    plugins_priority_dict: Dict[int, List[Type['T_Plugin']]] = {}
-    _module_path_finder: ModulePathFinder = ModulePathFinder()
-    _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]] = {}
+    config_dict: Dict[str, Any]
+    loop: asyncio.AbstractEventLoop
+    should_exit: bool
+    adapters: List['T_Adapter']
+    plugins_priority_dict: Dict[int, List[Type['T_Plugin']]]
+    _module_path_finder: ModulePathFinder
+    _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
 
-    _bot_run_hook: List[Callable[['Bot'], Awaitable[NoReturn]]] = []
-    _bot_exit_hook: List[Callable[['Bot'], NoReturn]] = []
-    _adapter_startup_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]] = []
-    _adapter_run_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]] = []
-    _adapter_shutdown_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]] = []
-    _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
-    _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]] = []
+    _bot_run_hook: List[Callable[['Bot'], Awaitable[NoReturn]]]
+    _bot_exit_hook: List[Callable[['Bot'], NoReturn]]
+    _adapter_startup_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]]
+    _adapter_run_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]]
+    _adapter_shutdown_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]]
+    _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]]
+    _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]]
 
     def __init__(self, config_file: Optional[str] = 'config.json', config_dict: Optional[Dict] = None):
-        """
-        初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
+        """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
-        :param config_file: (optional) 配置文件，如不指定则使用默认的 ``config.json``， 若指定为 None，则不加载配置文件。
-        :param config_dict: (optional) 配置字典，默认为 None，若指定字典，则会忽略 config_file 配置，不再读取配置文件。
+        Args:
+            config_file: 配置文件，如不指定则使用默认的 `config.json`， 若指定为 None，则不加载配置文件。
+            config_dict: 配置字典，默认为 None，若指定字典，则会忽略 config_file 配置，不再读取配置文件。
         """
+        self.loop = asyncio.get_event_loop()
+        self.should_exit = False
+        self.adapters = []
+        self.plugins_priority_dict = {}
+        self._module_path_finder = ModulePathFinder()
+        self._config_update_dict = {}
+
+        self._bot_run_hook = []
+        self._bot_exit_hook = []
+        self._adapter_startup_hook = []
+        self._adapter_run_hook = []
+        self._adapter_shutdown_hook = []
+        self._event_preprocessor_hook = []
+        self._event_postprocessor_hook = []
+
         sys.meta_path.insert(0, self._module_path_finder)
         if config_dict is None:
             if config_file is None:
@@ -92,16 +114,11 @@ class Bot:
 
     @property
     def plugins(self) -> List[Type['T_Plugin']]:
-        """
-        :return: 当前已经加载的插件的列表。
-        :rtype: List[Type['T_Plugin']]
-        """
+        """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
     def run(self):
-        """
-        运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。
-        """
+        """运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。"""
         logger.info('Running AliceBot...')
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
@@ -158,14 +175,12 @@ class Bot:
             await asyncio.sleep(0.1)
 
     def handle_exit(self):
-        """
-        当机器人收到退出信号时，根据情况进行处理。
-        """
-        logger.info(f'Stopping AliceBot...')
+        """当机器人收到退出信号时，根据情况进行处理。"""
+        logger.info('Stopping AliceBot...')
         for _hook_func in self._bot_exit_hook:
             _hook_func(self)
         if self.should_exit:
-            logger.warning(f'Force Exit AliceBot...')
+            logger.warning('Force Exit AliceBot...')
             sys.exit()
         else:
             self.should_exit = True
@@ -184,11 +199,12 @@ class Bot:
                 logger.error('Unhandled exception during event loop shutdown')
 
     async def handle_event(self, current_event: 'T_Event'):
-        """
-        被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 ``stop`` 、 ``skip`` 等信号。
+        """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
+
         此方法不应该被用户手动调用。
 
-        :param current_event: 当前待处理的 ``Event``。
+        Args:
+            current_event: 当前待处理的 `Event`。
         """
         if current_event is None:
             return
@@ -226,7 +242,7 @@ class Bot:
         for _hook_func in self._event_postprocessor_hook:
             await _hook_func(current_event)
 
-        logger.info(f'Event Finished')
+        logger.info('Event Finished')
 
     def _load_plugin(self, plugin_class: Type['T_Plugin']):
         if type(plugin_class.priority) is int and plugin_class.priority >= 0:
@@ -238,12 +254,13 @@ class Bot:
             raise LoadModuleError(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
 
     def load_plugin(self, name: str) -> Optional[Type['T_Plugin']]:
-        """
-        加载单个插件。
+        """加载单个插件。
 
-        :param name: 插件名称，格式和 Python ``import`` 语句相同，
-        :return: 被加载的插件类。
-        :rtype: Optional[Type['T_Plugin']]
+        Args:
+            name: 插件名称，格式和 Python `import` 语句相同。
+
+        Returns:
+            被加载的插件类。
         """
         from alicebot.plugin import Plugin
         try:
@@ -257,12 +274,13 @@ class Bot:
             return plugin_class
 
     def load_adapter(self, name: str) -> Optional['T_Adapter']:
-        """
-        加载单个适配器。
+        """加载单个适配器。
 
-        :param name: 适配器名称，格式和 Python ``import`` 语句相同，
-        :return: 被加载的适配器对象。
-        :rtype: Optional['T_Adapter']
+        Args:
+            name: 适配器名称，格式和 Python `import` 语句相同。
+
+        Returns:
+            被加载的适配器对象。
         """
         from alicebot.adapter import BaseAdapter
         try:
@@ -276,11 +294,10 @@ class Bot:
             return adapter_object
 
     def load_plugins_from_dir(self, path: Iterable[str]):
-        """
-        从指定路径列表中加载插件，以 ``_`` 开头的插件不会被导入。
-        路径可以是相对路径或绝对路径。
+        """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
 
-        :param path: 由储存插件的路径文本组成的列表。 ``['path/of/plugins/', '/home/xxx/alicebot/plugins']``
+        Args:
+            path: 由储存插件的路径文本组成的列表。 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
         from alicebot.plugin import Plugin
         for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin):
@@ -309,97 +326,107 @@ class Bot:
             self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, _get_default_value())
 
     def get_loaded_adapter_by_name(self, name: str) -> 'T_Adapter':
-        """
-        按照名称获取已经加载的适配器。
+        """按照名称获取已经加载的适配器。
 
-        :param name: 适配器名称。
-        :return: 获取到的适配器对象。
-        :exception LookupError: 找不到此名称的适配器对象。
+        Args:
+            name: 适配器名称。
+
+        Returns:
+            获取到的适配器对象。
+
+        Raises:
+            LookupError: 找不到此名称的适配器对象。
         """
         for _adapter in self.adapters:
             if _adapter.name == name:
                 return _adapter
         raise LookupError
 
-    def bot_run_hook(self, func: Callable[['Bot'], Awaitable[NoReturn]]) -> \
-            Callable[['Bot'], Awaitable[NoReturn]]:
-        """
-        注册一个 Bot 启动时的函数。
+    def bot_run_hook(self, func: Callable[['Bot'], Awaitable[NoReturn]]) -> Callable[['Bot'], Awaitable[NoReturn]]:
+        """注册一个 Bot 启动时的函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['Bot'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._bot_run_hook.append(func)
         return func
 
     def bot_exit_hook(self, func: Callable[['Bot'], NoReturn]) -> Callable[['Bot'], NoReturn]:
-        """
-        注册一个 Bot 退出时的函数。
+        """注册一个 Bot 退出时的函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['Bot'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._bot_exit_hook.append(func)
         return func
 
     def adapter_startup_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
             Callable[['T_Adapter'], Awaitable[NoReturn]]:
-        """
-        注册一个适配器初始化时的函数。
+        """注册一个适配器初始化时的函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['T_Adapter'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._adapter_startup_hook.append(func)
         return func
 
     def adapter_run_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
             Callable[['T_Adapter'], Awaitable[NoReturn]]:
-        """
-        注册一个适配器运行时的函数。
+        """注册一个适配器运行时的函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['T_Adapter'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._adapter_run_hook.append(func)
         return func
 
     def adapter_shutdown_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
             Callable[['T_Adapter'], Awaitable[NoReturn]]:
-        """
-        注册一个适配器关闭时的函数。
+        """注册一个适配器关闭时的函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['T_Adapter'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._adapter_shutdown_hook.append(func)
         return func
 
     def event_preprocessor_hook(self, func: Callable[['T_Event'], Awaitable[NoReturn]]) -> \
             Callable[['T_Event'], Awaitable[NoReturn]]:
-        """
-        注册一个事件预处理函数。
+        """注册一个事件预处理函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['T_Event'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._event_preprocessor_hook.append(func)
         return func
 
     def event_postprocessor_hook(self, func: Callable[['T_Event'], Awaitable[NoReturn]]) -> \
             Callable[['T_Event'], Awaitable[NoReturn]]:
-        """
-        注册一个事件后处理函数。
+        """注册一个事件后处理函数。
 
-        :param func: 被注册的函数。
-        :return: 被注册的函数。
-        :rtype: Callable[['T_Event'], Awaitable[NoReturn]]
+        Args:
+            func: 被注册的函数。
+
+        Returns:
+            被注册的函数。
         """
         self._event_postprocessor_hook.append(func)
         return func

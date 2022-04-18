@@ -7,22 +7,24 @@ class RequestEvent(MiraiEvent):
     """申请事件"""
 
     async def approve(self, message: str = '') -> Dict[str, Any]:
-        """
-        同意请求。
+        """同意请求。
 
-        :param message: 回复的信息，默认为空。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            message: 回复的信息，默认为空。
+
+        Returns:
+            API 请求响应。
         """
         raise NotImplementedError
 
     async def refuse(self, message: str = '') -> Dict[str, Any]:
-        """
-        拒绝请求。
+        """拒绝请求。
 
-        :param message: 回复的信息，默认为空。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            message: 回复的信息，默认为空。
+
+        Returns:
+            API 请求响应。
         """
         raise NotImplementedError
 
@@ -44,13 +46,14 @@ class NewFriendRequestEvent(RequestEvent):
                                                              message=message)
 
     async def refuse(self, message: str = '', black_list: bool = False) -> Dict[str, Any]:
-        """
-        拒绝请求。
+        """拒绝请求。
 
-        :param message: 回复的信息，默认为空。
-        :param black_list: 是否加入黑名单，默认为 ``False``。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            message: 回复的信息，默认为空。
+            black_list: 是否加入黑名单，默认为 `False`。
+
+        Returns:
+            API 请求响应。
         """
         return await self.adapter.resp_newFriendRequestEvent(eventId=self.eventId,
                                                              fromId=self.fromId,
@@ -77,13 +80,14 @@ class MemberJoinRequestEvent(RequestEvent):
                                                               message=message)
 
     async def refuse(self, message: str = '', black_list: bool = False) -> Dict[str, Any]:
-        """
-        拒绝请求。
+        """拒绝请求。
 
-        :param message: 回复的信息，默认为空。
-        :param black_list: 是否加入黑名单，默认为 ``False``。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            message: 回复的信息，默认为空。
+            black_list: 是否加入黑名单，默认为 `False`。
+
+        Returns:
+            API 请求响应。
         """
         return await self.adapter.resp_memberJoinRequestEvent(eventId=self.eventId,
                                                               fromId=self.fromId,
@@ -92,13 +96,14 @@ class MemberJoinRequestEvent(RequestEvent):
                                                               message=message)
 
     async def ignore(self, message: str = '', black_list: bool = False) -> Dict[str, Any]:
-        """
-        忽略请求。
+        """忽略请求。
 
-        :param message: 回复的信息，默认为空。
-        :param black_list: 是否加入黑名单，默认为 ``False``。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            message: 回复的信息，默认为空。
+            black_list: 是否加入黑名单，默认为 `False`。
+
+        Returns:
+            API 请求响应。
         """
         return await self.adapter.resp_memberJoinRequestEvent(eventId=self.eventId,
                                                               fromId=self.fromId,

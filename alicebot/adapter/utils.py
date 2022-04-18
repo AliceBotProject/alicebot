@@ -1,7 +1,5 @@
-"""
-==================
-适配器实用工具
-==================
+"""适配器实用工具。
+
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
 import asyncio
@@ -15,9 +13,7 @@ from alicebot.adapter import Adapter
 
 
 class PollingAdapter(Adapter, metaclass=ABCMeta):
-    """
-    轮询式适配器示例。
-    """
+    """轮询式适配器示例。"""
     delay: Union[int, float] = 0.1
     create_task: bool = False
 
@@ -35,9 +31,7 @@ class PollingAdapter(Adapter, metaclass=ABCMeta):
 
 
 class HttpClientAdapter(PollingAdapter, metaclass=ABCMeta):
-    """
-    HTTP 客户端适配器示例。
-    """
+    """HTTP 客户端适配器示例。"""
     session: aiohttp.ClientSession
 
     async def startup(self):
@@ -52,9 +46,7 @@ class HttpClientAdapter(PollingAdapter, metaclass=ABCMeta):
 
 
 class WebSocketClientAdapter(Adapter, metaclass=ABCMeta):
-    """
-    WebSocket 客户端适配器示例。
-    """
+    """WebSocket 客户端适配器示例。"""
     url: str
 
     async def run(self):
@@ -74,9 +66,7 @@ class WebSocketClientAdapter(Adapter, metaclass=ABCMeta):
 
 
 class HttpServerAdapter(Adapter, metaclass=ABCMeta):
-    """
-    HTTP 服务端适配器示例。
-    """
+    """HTTP 服务端适配器示例。"""
     app: web.Application
     runner: web.AppRunner
     site: web.TCPSite
@@ -105,9 +95,7 @@ class HttpServerAdapter(Adapter, metaclass=ABCMeta):
 
 
 class WebSocketServerAdapter(Adapter, metaclass=ABCMeta):
-    """
-    WebSocket 服务端适配器示例。
-    """
+    """WebSocket 服务端适配器示例。"""
     app: web.Application = None
     runner: web.AppRunner = None
     site: web.TCPSite = None

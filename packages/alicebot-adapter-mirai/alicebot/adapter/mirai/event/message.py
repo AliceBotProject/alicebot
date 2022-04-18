@@ -20,20 +20,21 @@ class MessageEvent(MiraiEvent):
 
     def get_plain_text(self) -> str:
         """
-        :return: 消息的纯文本内容。
-        :rtype: str
+        Returns:
+            消息的纯文本内容。
         """
         return self.messageChain.get_plain_text()
 
     async def reply(self, msg: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
                     quote: bool = False) -> Dict[str, Any]:
-        """
-        回复消息。
+        """回复消息。
 
-        :param msg: 回复消息的内容，同 ``call_api()`` 方法。
-        :param quote: 引用消息，默认为 ``False``。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            msg: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
         """
         raise NotImplementedError
 

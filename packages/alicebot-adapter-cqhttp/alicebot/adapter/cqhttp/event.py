@@ -1,8 +1,4 @@
-"""
-============
-CQHTTP 事件
-============
-"""
+"""CQHTTP 适配器事件。"""
 import inspect
 from typing import Any, Dict, Literal, Optional, Type, TypeVar, Union, Mapping, Iterable, TYPE_CHECKING
 
@@ -61,10 +57,7 @@ class CQHTTPEvent(Event):
 
     @property
     def to_me(self) -> bool:
-        """
-        :return: 当前事件的 user_id 是否等于 self_id。
-        :rtype: bool
-        """
+        """当前事件的 user_id 是否等于 self_id。"""
         return getattr(self, 'user_id') == self.self_id
 
 
@@ -85,20 +78,22 @@ class MessageEvent(CQHTTPEvent):
         return f'Event<{self.type}>: "{self.message}"'
 
     def get_plain_text(self) -> str:
-        """
-        :return: 消息的纯文本内容。
-        :rtype: str
+        """获取消息的纯文本内容。
+
+        Returns:
+            消息的纯文本内容。
         """
         return self.message.get_plain_text()
 
     async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
                                      'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
-        """
-        回复消息。
+        """回复消息。
 
-        :param msg: 回复消息的内容，同 ``call_api()`` 方法。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            msg: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
         """
         raise NotImplementedError
 
@@ -246,20 +241,18 @@ class RequestEvent(CQHTTPEvent):
     request_type: str
 
     async def approve(self) -> Dict[str, Any]:
-        """
-        同意请求。
+        """同意请求。
 
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Returns:
+            API 请求响应。
         """
         raise NotImplementedError
 
     async def refuse(self) -> Dict[str, Any]:
-        """
-        拒绝请求。
+        """拒绝请求。
 
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Returns:
+            API 请求响应。
         """
         raise NotImplementedError
 
@@ -273,12 +266,13 @@ class FriendRequestEvent(RequestEvent):
     flag: str
 
     async def approve(self, remark: str = '') -> Dict[str, Any]:
-        """
-        同意请求。
+        """同意请求。
 
-        :param remark: (optional) 好友备注。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            remark: 好友备注。
+
+        Returns:
+            API 请求响应。
         """
         return await self.adapter.set_friend_add_request(flag=self.flag, approve=True, remark=remark)
 
@@ -300,12 +294,13 @@ class GroupRequestEvent(RequestEvent):
         return await self.adapter.set_group_add_request(flag=self.flag, sub_type=self.sub_type, approve=True)
 
     async def refuse(self, reason: str = '') -> Dict[str, Any]:
-        """
-        拒绝请求。
+        """拒绝请求。
 
-        :param reason: (optional) 拒绝原因。
-        :return: API 请求响应。
-        :rtype: Dict[str, Any]
+        Args:
+            reason: 拒绝原因。
+
+        Returns:
+            API 请求响应。
         """
         return await self.adapter.set_group_add_request(flag=self.flag,
                                                         sub_type=self.sub_type,
@@ -337,7 +332,6 @@ class HeartbeatMetaEvent(MetaEvent):
 
 _cqhttp_events = {}
 # define `model` first to avoid globals changing while `for`
-# thanks for NoneBot
 model = None
 for model in globals().values():
     if inspect.isclass(model) and issubclass(model, CQHTTPEvent):
@@ -345,14 +339,15 @@ for model in globals().values():
 
 
 def get_event_class(post_type: str, event_type: str, sub_type: Optional[str] = None) -> Type[T_CQHTTPEvent]:
-    """
-    根据接收到的消息类型返回对应的事件类。
+    """根据接收到的消息类型返回对应的事件类。
 
-    :param post_type: 请求类型。
-    :param event_type: 事件类型。
-    :param sub_type: (optional) 子类型。
-    :return: 对应的事件类。
-    :rtype: Type[T_CQHTTPEvent]
+    Args:
+        post_type: 请求类型。
+        event_type: 事件类型。
+        sub_type: 子类型。
+
+    Returns:
+        对应的事件类。
     """
     if sub_type is None:
         return _cqhttp_events['.'.join((post_type, event_type))]

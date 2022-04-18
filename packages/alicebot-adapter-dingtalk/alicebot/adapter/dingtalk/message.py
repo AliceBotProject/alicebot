@@ -1,8 +1,4 @@
-"""
-=================
-DingTalk 消息
-=================
-"""
+"""DingTalk 适配器消息。"""
 from typing import Any, Dict, List, Optional
 
 from alicebot.message import MessageSegment
@@ -22,11 +18,10 @@ class DingTalkMessage(MessageSegment[None]):
             return super().__str__()
 
     def as_dict(self) -> Dict[str, Dict[str, Any]]:
-        """
-        返回符合钉钉消息标准的消息字段字典。
+        """返回符合钉钉消息标准的消息字段字典。
 
-        :return: 符合钉钉消息标准的消息字段字典。
-        :rtype: Dict[str, Dict[str, Any]]
+        Returns:
+            符合钉钉消息标准的消息字段字典。
         """
         if self.type == 'raw':
             return self.data

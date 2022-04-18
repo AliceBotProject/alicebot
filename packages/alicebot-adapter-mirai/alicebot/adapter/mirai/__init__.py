@@ -1,12 +1,8 @@
-"""
-==================
-Mirai 协议适配器
-==================
+"""Mirai 协议适配器。
+
 本适配器适配了 mirai-api-http 协议，仅支持 mirai-api-http 2.0 及以上版本。
 本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
-协议详情请参考: `mirai-api-http`_ 。
-
-.. _mirai-api-http: https://github.com/project-mirai/mirai-api-http
+协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
 """
 import sys
 import time
@@ -34,9 +30,9 @@ if TYPE_CHECKING:
 
 
 class MiraiAdapter(Adapter):
-    """
-    Mirai 协议适配器。
-    在插件中可以直接使用 ``self.adapter.xxx_api(**params)`` 调用名称为 ``xxx_api`` 的 API，和调用 ``call_api()`` 方法相同。
+    """Mirai 协议适配器。
+
+    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，和调用 `call_api()` 方法相同。
     """
 
     name: str = 'mirai'
@@ -56,18 +52,14 @@ class MiraiAdapter(Adapter):
 
     @property
     def config(self):
-        """
-        :return: 本适配器的配置。
-        """
+        """本适配器的配置。"""
         return getattr(self.bot.config, Config.__config_name__)
 
     def __getattr__(self, item):
         return partial(self.call_api, item)
 
     async def startup(self):
-        """
-        初始化适配器。
-        """
+        """初始化适配器。"""
         if self.config.adapter_type == 'ws':
             self.session = aiohttp.ClientSession()
         elif self.config.adapter_type == 'reverse-ws':
@@ -77,9 +69,7 @@ class MiraiAdapter(Adapter):
             logger.error(f'Config "adapter_type" must be "ws" or "reverse-ws", not {self.config.adapter_type}')
 
     async def run(self):
-        """
-        运行适配器。
-        """
+        """运行适配器。"""
         if self.config.adapter_type == 'ws':
             await self.websocket_connect()
         elif self.config.adapter_type == 'reverse-ws':
@@ -89,9 +79,7 @@ class MiraiAdapter(Adapter):
             await self.site.start()
 
     async def shutdown(self):
-        """
-        关闭并清理连接。
-        """
+        """关闭并清理连接。"""
         if self.websocket is not None:
             await self.websocket.close()
         if self.config.adapter_type == 'ws':
@@ -104,10 +92,10 @@ class MiraiAdapter(Adapter):
                 await self.runner.cleanup()
 
     async def handle_response(self, request: web.Request):
-        """
-        处理 aiohttp WebSocket 服务器的接收。
+        """处理 aiohttp WebSocket 服务器的接收。
 
-        :param request: aiohttp WebSocket 服务器的 Request 对象。
+        Args:
+            request: aiohttp WebSocket 服务器的 Request 对象。
         """
         logger.info(f'WebSocket connected!')
         self.websocket = web.WebSocketResponse()
@@ -117,9 +105,7 @@ class MiraiAdapter(Adapter):
         return self.websocket
 
     async def websocket_connect(self):
-        """
-        创建正向 WebSocket 连接。
-        """
+        """创建正向 WebSocket 连接。"""
         while not self.bot.should_exit:
             logger.info('Trying to verify identity and create connection...')
             try:
@@ -135,9 +121,7 @@ class MiraiAdapter(Adapter):
                 await asyncio.sleep(3)
 
     async def handle_websocket_msg(self):
-        """
-        处理 WebSocket 消息。
-        """
+        """处理 WebSocket 消息。"""
         first_websocket_msg = True
         msg: aiohttp.WSMessage
         async for msg in self.websocket:
@@ -180,10 +164,10 @@ class MiraiAdapter(Adapter):
         return self._sync_id
 
     async def handle_mirai_event(self, msg: Dict[str, Any]):
-        """
-        处理 Mirai 事件。
+        """处理 Mirai 事件。
 
-        :param msg: 接收到的信息。
+        Args:
+            msg: 接收到的信息。
         """
         mirai_event = get_event_class(msg.get('type'))(**msg)
         mirai_event.adapter = self
@@ -198,10 +182,10 @@ class MiraiAdapter(Adapter):
             await self.handle_event(mirai_event)
 
     async def handle_non_standard_response(self, data: Union[str, Dict[str, Any]]):
-        """
-        处理 Mirai 返回的非标准响应。
+        """处理 Mirai 返回的非标准响应。
 
-        :param data: 接收到的信息。
+        Args:
+            data: 接收到的信息。
         """
         error_code = None
         if isinstance(data, str):
@@ -222,9 +206,7 @@ class MiraiAdapter(Adapter):
                 self.api_response_cond.notify_all((error_code, data))
 
     async def verify_identity(self):
-        """
-        验证身份，创建与 Mirai-api-http 的连接。
-        """
+        """验证身份，创建与 Mirai-api-http 的连接。"""
         while not self.bot.should_exit:
             await asyncio.sleep(3)
             try:
@@ -240,17 +222,20 @@ class MiraiAdapter(Adapter):
                 logger.info('Verify success!')
 
     async def call_api(self, command: str, sub_command: Optional[str] = None, **content) -> Dict[str, Any]:
-        """
-        调用 Mirai API，协程会等待直到获得 API 响应。
+        """调用 Mirai API，协程会等待直到获得 API 响应。
 
-        :param command: 命令字。
-        :param sub_command: 子命令字。
-        :param content: 请求内容。
-        :return: API 响应中的 data 字段，即 Mirai-api-http API 通用接口中的内容。
-        :rtype: Dict[str, Any]
-        :exception NetworkError: 网络错误。
-        :exception ActionFailed: API 操作失败。
-        :exception ApiTimeout: API 请求响应超时。
+        Args:
+            command: 命令字。
+            sub_command: 子命令字。
+            **content: 请求内容。
+
+        Returns:
+            API 响应中的 data 字段，即 Mirai-api-http API 通用接口中的内容。
+
+        Raises:
+            NetworkError: 网络错误。
+            ActionFailed: API 操作失败。
+            ApiTimeout: API 请求响应超时。
         """
         # content['sessionKey'] = self.session_key
         # content = {key: value
@@ -291,18 +276,21 @@ class MiraiAdapter(Adapter):
                    message_type: Literal['private', 'friend', 'group'],
                    target: int,
                    quote: int = None) -> Dict[str, Any]:
-        """
-        调用 Mirai API 发送消息。
+        """调用 Mirai API 发送消息。
 
-        :param message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'。
-            将使用 ``MiraiMessage`` 进行封装。
-        :param message_type: 消息类型。应该是 private, friend 或者 group。其中 private 和 friend 相同。
-        :param target: 发送对象的 ID ，QQ 号码或者群号码。
-        :param quote: 引用的消息的 messageId。默认为 ``None`` ，不引用任何消息。
-        :return: API 响应。
-        :rtype: Dict[str, Any]
-        :exception TypeError: message_type 非法。
-        :exception ...: 同 ``call_api()`` 方法。
+        Args:
+            message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'。
+                将使用 `MiraiMessage` 进行封装。
+            message_type: 消息类型。应该是 private, friend 或者 group。其中 private 和 friend 相同。
+            target: 发送对象的 ID ，QQ 号码或者群号码。
+            quote: 引用的消息的 messageId。默认为 `None` ，不引用任何消息。
+
+        Returns:
+            API 响应。
+
+        Raises:
+            TypeError: message_type 非法。
+            ...: 同 `call_api()` 方法。
         """
         if message_type == 'private' or message_type == 'friend':
             return await self.sendFriendMessage(target=target, messageChain=MiraiMessage(message_), quote=quote)

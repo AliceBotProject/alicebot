@@ -52,6 +52,8 @@ export const zh: SidebarConfig = {
       text: 'AliceBot Api Reference',
       children: [
         ...getChildren('/api/'),
+        '/api/event/README.md',
+        '/api/plugin/README.md',
         '/api/adapter/README.md',
         {
           text: 'alicebot.adapter.cqhttp',

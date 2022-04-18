@@ -1,36 +1,31 @@
 # alicebot.adapter.apscheduler.event
 
-## APScheduler 事件
+APScheduler 适配器事件。
 
+## *class* `APSchedulerEvent`(__pydantic_self__, **data) {#APSchedulerEvent}
 
-## _class_ `APSchedulerEvent`
+Bases: `alicebot.event.Event`
 
-基类：[`alicebot.event.Event`](../../event.md#alicebot.event.Event)
+APSchedulerEvent 事件基类。
 
-APSchedulerEvent 事件基类
+- **Attributes**
 
+  - **plugin_class** (*Type*)
 
-### property `job: Job`
+### *readonly property* `job` {#APSchedulerEvent.job}
 
+Type: *Job*
 
-* **返回**
+产生当前事件的 APScheduler Job 对象。
 
-    产生当前事件的 APScheduler Job 对象。
+### *readonly property* `trigger` {#APSchedulerEvent.trigger}
 
+Type: *str*
 
+当前事件对应的 Plugin 的 trigger。
 
-### property `trigger: str`
+### *readonly property* `trigger_args` {#APSchedulerEvent.trigger_args}
 
+Type: *Dict[str, Any]*
 
-* **返回**
-
-    当前事件对应的 Plugin 的 trigger。
-
-
-
-### property `trigger_args: Dict[str, Any]`
-
-
-* **返回**
-
-    当前事件对应的 Plugin 的 trigger_args。
+当前事件对应的 Plugin 的 trigger_args。

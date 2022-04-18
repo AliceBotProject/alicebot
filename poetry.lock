@@ -281,7 +281,7 @@ docstring-parser = "^0.13"
 type = "git"
 url = "https://github.com/st1020/sophia-doc.git"
 reference = "master"
-resolved_reference = "a9f5443d1afc6a9fd4d552baf006351c653f261b"
+resolved_reference = "538791dc771621520f0f20424d8ee86fe48a9cef"
 
 [[package]]
 name = "typing-extensions"

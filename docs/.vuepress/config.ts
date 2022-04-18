@@ -84,4 +84,8 @@ export default defineUserConfig<DefaultThemeOptions>({
       },
     ],
   ],
+
+  extendsMarkdown: (md) => {
+    md.use(require('markdown-it-attrs'))
+  },
 })

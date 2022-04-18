@@ -1,116 +1,94 @@
 # alicebot.adapter.dingtalk
 
-## DingTalk 协议适配器
+DingTalk 协议适配器。
 
 本适配器适配了钉钉企业自建机器人协议。
 协议详情请参考: [钉钉开放平台](https://developers.dingtalk.com/document/robots/robot-overview) 。
 
+## *class* `DingTalkAdapter`(self, bot) {#DingTalkAdapter}
 
-## _class_ `DingTalkAdapter`
-
-基类：[`alicebot.adapter.Adapter`](../README.md#alicebot.adapter.Adapter)
+Bases: `alicebot.adapter.Adapter`
 
 钉钉协议适配器。
 
+- **Arguments**
 
-### property `config`
+  - **bot** (*Bot*)
 
+- **Attributes**
 
-* **返回**
+  - **name** (*str*)
 
-    本适配器的配置。
+  - **app** (*aiohttp.web_app.Application*)
 
+  - **runner** (*aiohttp.web_runner.AppRunner*)
 
+  - **site** (*aiohttp.web_runner.TCPSite*)
 
-### _async_ `startup()`
+  - **session** (*aiohttp.client.ClientSession*)
 
-创建 aiohttp Application。
+### *readonly property* `config` {#DingTalkAdapter.config}
 
+本适配器的配置。
 
-### _async_ `run()`
-
-运行 aiohttp 服务器。
-
-
-### _async_ `shutdown()`
-
-清理 aiohttp AppRunner。
-
-
-### _async_ `handler(request)`
-
-处理 aiohttp 服务器的接收。
-
-
-* **参数**
-
-    **request** – aiohttp 服务器的 Request 对象。
-
-
-
-### `get_sign(timestamp)`
+### *method* `get_sign(self, timestamp)` {#DingTalkAdapter.get_sign}
 
 计算签名。
 
+- **Arguments**
 
-* **参数**
+  - **timestamp** (*str*) - 时间戳。
 
-    **timestamp** – 时间戳。
+- **Returns**
 
+  Type: *str*
 
+  签名。
 
-* **返回**
+### *async method* `handler(self, request)` {#DingTalkAdapter.handler}
 
-    签名。
+处理 aiohttp 服务器的接收。
 
+- **Arguments**
 
+  - **request** (*aiohttp.web_request.Request*) - aiohttp 服务器的 Request 对象。
 
-* **返回类型**
+### *async method* `run(self)` {#DingTalkAdapter.run}
 
-    str
+运行 aiohttp 服务器。
 
-
-
-### _async_ `send(webhook, conversation_type, msg, at=None)`
+### *async method* `send(self, webhook, conversation_type, msg, at = None)` {#DingTalkAdapter.send}
 
 发送消息。
 
+- **Arguments**
 
-* **参数**
+  - **webhook** (*str*) - Webhook 网址。
 
-    
-    * **webhook** – Webhook 网址。
+  - **conversation_type** (*Literal['1', '2']*) - 聊天类型，'1' 表示单聊，'2' 表示群聊。
 
+  - **msg** (*Union[str, Dict, alicebot.adapter.dingtalk.message.DingTalkMessage]*) - 消息。
 
-    * **conversation_type** – 聊天类型，’1’ 表示单聊，’2’ 表示群聊。
+  - **at** (*Union[NoneType, Dict, alicebot.adapter.dingtalk.message.DingTalkMessage]*) - At 对象，仅在群聊时生效，默认为空。
 
+- **Returns**
 
-    * **msg** – 消息。
+  Type: *Dict[str, Any]*
 
+  钉钉服务器的响应。
 
-    * **at** – At 对象，仅在群聊时生效，默认为空。
+- **Raises**
 
+  - **TypeError** - 传入参数类型错误。
 
+  - **ValueError** - 传入参数值错误。
 
-* **返回**
+  - **NetworkError** - 调用 Webhook 地址时网络错误。
 
-    钉钉服务器的响应。
+### *async method* `shutdown(self)` {#DingTalkAdapter.shutdown}
 
+清理 aiohttp AppRunner。
 
+### *async method* `startup(self)` {#DingTalkAdapter.startup}
 
-* **返回类型**
-
-    Dict[str, Any]
-
-
-
-* **引发**
-
-    
-    * **TypeError** – 传入参数类型错误。
-
-
-    * **ValueError** – 传入参数值错误。
-
-
-    * [**NetworkError**](../cqhttp/exceptions.md#alicebot.adapter.cqhttp.exceptions.NetworkError) – 调用 Webhook 地址时网络错误。
+创建 aiohttp Application。

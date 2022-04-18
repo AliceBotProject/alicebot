@@ -1,31 +1,27 @@
 # alicebot.adapter.dingtalk.exceptions
 
-## DingTalk 异常
+DingTalk 适配器异常。
 
+## *class* `DingTalkException`(self, /, *args, **kwargs) {#DingTalkException}
 
-## _exception_ `DingTalkException`
-
-基类：[`alicebot.exceptions.AdapterException`](../../exceptions.md#alicebot.exceptions.AdapterException)
+Bases: `alicebot.exceptions.AdapterException`
 
 DingTalk 异常基类。
 
+## *class* `NetworkError`(self, /, *args, **kwargs) {#NetworkError}
 
-## _exception_ `NetworkError`
-
-基类：`alicebot.adapter.dingtalk.exceptions.DingTalkException`
+Bases: `alicebot.adapter.dingtalk.exceptions.DingTalkException`
 
 网络异常。
 
+## *class* `WebhookExpiredError`(self, /, *args, **kwargs) {#WebhookExpiredError}
 
-## _exception_ `WebhookExpiredError`
-
-基类：`alicebot.adapter.dingtalk.exceptions.DingTalkException`
+Bases: `alicebot.adapter.dingtalk.exceptions.DingTalkException`
 
 Webhook 地址已到期。
 
+## *class* `ApiTimeout`(self, /, *args, **kwargs) {#ApiTimeout}
 
-## _exception_ `ApiTimeout`
-
-基类：`alicebot.adapter.dingtalk.exceptions.DingTalkException`, [`alicebot.exceptions.AdapterTimeout`](../../exceptions.md#alicebot.exceptions.AdapterTimeout)
+Bases: `alicebot.adapter.dingtalk.exceptions.DingTalkException`, `alicebot.exceptions.AdapterTimeout`
 
 API 请求响应超时。

@@ -138,3 +138,4 @@ node_modules/
 docs_build/**/*.rst
 docs_build/_build
 /tests/config.json
+/docs/api/**/*.md

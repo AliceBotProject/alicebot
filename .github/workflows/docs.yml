@@ -51,5 +51,6 @@ jobs:
           repo: st1020/docs.alicebot.dev
           target_branch: master
           build_dir: docs/.vuepress/dist
+          fqdn: docs.alicebot.dev
         env:
           GH_PAT: ${{ secrets.GH_PAGES_TOKEN }}

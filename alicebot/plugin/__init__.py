@@ -28,8 +28,13 @@ class Plugin(ABC):
     priority: int = 0
     block: bool = False
 
-    def __init__(self, event):
+    def __init__(self, event: 'T_Event'):
         self.event = event
+
+        if not hasattr(self, 'priority'):
+            self.priority = 0
+        if not hasattr(self, 'priority'):
+            self.block = False
 
         self.get = getattr(self.adapter, 'get', None)
         self.send = getattr(self.adapter, 'send', None)

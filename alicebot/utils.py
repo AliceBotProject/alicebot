@@ -6,7 +6,7 @@ class Condition:
     """类似于 asyncio.Condition ，但允许在 notify() 时传递值，并由 wait() 返回。"""
 
     def __init__(self):
-        self._loop = asyncio.get_event_loop()
+        self._loop = asyncio.get_running_loop()
         lock = asyncio.Lock()
         self._lock = lock
         # Export the lock's locked(), acquire() and release() methods.

@@ -47,7 +47,7 @@ class MiraiAdapter(Adapter):
     runner: web.AppRunner = None
     site: web.TCPSite = None
 
-    api_response_cond: Condition = Condition()
+    api_response_cond: Condition = None
     _sync_id: int = 0
 
     @property
@@ -60,6 +60,7 @@ class MiraiAdapter(Adapter):
 
     async def startup(self):
         """初始化适配器。"""
+        self.api_response_cond = Condition()
         if self.config.adapter_type == 'ws':
             self.session = aiohttp.ClientSession()
         elif self.config.adapter_type == 'reverse-ws':

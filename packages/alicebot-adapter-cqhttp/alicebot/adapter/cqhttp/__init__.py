@@ -37,7 +37,7 @@ class CQHTTPAdapter(Adapter):
     runner: web.AppRunner = None
     site: web.TCPSite = None
     websocket: web.WebSocketResponse = None
-    api_response_cond: Condition = Condition()
+    api_response_cond: Condition = None
     _api_id: int = 0
 
     @property
@@ -50,6 +50,7 @@ class CQHTTPAdapter(Adapter):
 
     async def startup(self):
         """创建 aiohttp Application。"""
+        self.api_response_cond = Condition()
         self.app = web.Application()
         self.app.add_routes([web.get(self.config.url, self.handle_response)])
 

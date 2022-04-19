@@ -54,6 +54,13 @@ class BaseAdapter(ABC):
         """
         raise NotImplementedError
 
+    async def __startup__(self):
+        """在适配器开始运行前运行的方法，用于初始化适配器。
+
+        注意： 此方法仅用于适配器基类初始化，不应被适配器开发者重写，适配器开发者应当使用 `startup()` 方法。
+        """
+        pass
+
     async def startup(self):
         """在适配器开始运行前运行的方法，用于初始化适配器。
 
@@ -77,8 +84,7 @@ class Adapter(BaseAdapter, ABC):
     """
     cond: Condition
 
-    def __init__(self, bot: 'Bot'):
-        super().__init__(bot)
+    async def __startup__(self):
         self.cond = Condition()
 
     async def handle_event(self, event: 'T_Event'):
@@ -88,7 +94,7 @@ class Adapter(BaseAdapter, ABC):
             event: 待处理的事件。
         """
         logger.info(f'Adapter {self.name} received: {event!r}')
-        self.bot.loop.create_task(self._handle_event())
+        asyncio.create_task(self._handle_event())
         await asyncio.sleep(0)
         async with self.cond:
             self.cond.notify_all(event)

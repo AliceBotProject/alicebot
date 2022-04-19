@@ -32,14 +32,12 @@ class Bot:
     Attributes:
         config: 机器人配置。
         config_dict: 机器人配置字典。
-        loop: 事件循环。
         should_exit: 机器人是否应该进入准备退出状态。
         adapters: 适配器列表。
         plugins_priority_dict: 插件优先级字典。
     """
     config: MainConfig = None
     config_dict: Dict[str, Any]
-    loop: asyncio.AbstractEventLoop
     should_exit: bool
     adapters: List['T_Adapter']
     plugins_priority_dict: Dict[int, List[Type['T_Plugin']]]
@@ -61,7 +59,6 @@ class Bot:
             config_file: 配置文件，如不指定则使用默认的 `config.json`， 若指定为 None，则不加载配置文件。
             config_dict: 配置字典，默认为 None，若指定字典，则会忽略 config_file 配置，不再读取配置文件。
         """
-        self.loop = asyncio.get_event_loop()
         self.should_exit = False
         self.adapters = []
         self.plugins_priority_dict = {}
@@ -118,14 +115,19 @@ class Bot:
         return list(chain(*self.plugins_priority_dict.values()))
 
     def run(self):
-        """运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。"""
+        """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
+        asyncio.run(self._run())
+
+    async def _run(self):
+        """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
         logger.info('Running AliceBot...')
+        loop = asyncio.get_running_loop()
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。
             try:
                 for sig in HANDLED_SIGNALS:
-                    self.loop.add_signal_handler(sig, self.handle_exit)
+                    loop.add_signal_handler(sig, self.handle_exit)
             except NotImplementedError:
                 # add_signal_handler 仅在 Unix 下可用，以下对于 Windows。
                 for sig in HANDLED_SIGNALS:
@@ -135,17 +137,6 @@ class Bot:
         if self._config_update_dict and self.config_dict:
             self.config = create_model('Config', **self._config_update_dict, __base__=MainConfig)(**self.config_dict)
 
-        try:
-            self.loop.run_until_complete(self._run())
-        finally:
-            try:
-                self._cancel_all_tasks()
-                self.loop.run_until_complete(self.loop.shutdown_asyncgens())
-            finally:
-                asyncio.set_event_loop(None)
-                self.loop.close()
-
-    async def _run(self):
         for _hook_func in self._bot_run_hook:
             await _hook_func(self)
 
@@ -154,6 +145,7 @@ class Bot:
                 for _hook_func in self._adapter_startup_hook:
                     await _hook_func(_adapter)
                 try:
+                    await _adapter.__startup__()
                     await _adapter.startup()
                 except Exception as e:
                     logger.error(f'Startup adapter {_adapter!r} failed: {e!r}')
@@ -161,7 +153,7 @@ class Bot:
             for _adapter in self.adapters:
                 for _hook_func in self._adapter_run_hook:
                     await _hook_func(_adapter)
-                self.loop.create_task(_adapter.safe_run())
+                loop.create_task(_adapter.safe_run())
 
             await self.main_loop()
         finally:
@@ -184,19 +176,6 @@ class Bot:
             sys.exit()
         else:
             self.should_exit = True
-
-    def _cancel_all_tasks(self):
-        to_cancel = asyncio.all_tasks(self.loop)
-        if not to_cancel:
-            return
-        for task in to_cancel:
-            task.cancel()
-        self.loop.run_until_complete(asyncio.gather(*to_cancel, loop=self.loop, return_exceptions=True))
-        for task in to_cancel:
-            if task.cancelled():
-                continue
-            if task.exception() is not None:
-                logger.error('Unhandled exception during event loop shutdown')
 
     async def handle_event(self, current_event: 'T_Event'):
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。

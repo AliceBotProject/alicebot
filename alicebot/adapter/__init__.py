@@ -142,7 +142,7 @@ class Adapter(BaseAdapter, ABC):
 
         try_times = 0
         start_time = time.time()
-        while not self.bot.should_exit and (max_try_times is None or (try_times < max_try_times)) and \
+        while (not self.bot.should_exit.is_set()) and (max_try_times is None or (try_times < max_try_times)) and \
                 (timeout is None or (time.time() - start_time < timeout)):
             async with self.cond:
                 if timeout is None:
@@ -158,7 +158,7 @@ class Adapter(BaseAdapter, ABC):
                         return event
                 try_times += 1
 
-        if not self.bot.should_exit:
+        if not self.bot.should_exit.is_set():
             raise AdapterTimeout
 
     async def send(self, *args, **kwargs):

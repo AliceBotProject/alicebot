@@ -18,7 +18,7 @@ class PollingAdapter(Adapter, metaclass=ABCMeta):
     create_task: bool = False
 
     async def run(self):
-        while not self.bot.should_exit:
+        while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.delay)
             if self.create_task:
                 asyncio.create_task(self.on_tick())
@@ -54,7 +54,7 @@ class WebSocketClientAdapter(Adapter, metaclass=ABCMeta):
             async with session.ws_connect(self.url) as ws:
                 msg: aiohttp.WSMessage
                 async for msg in ws:
-                    if self.bot.should_exit:
+                    if self.bot.should_exit.is_set():
                         break
                     if msg.type == aiohttp.WSMsgType.ERROR:
                         break

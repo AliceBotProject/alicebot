@@ -107,7 +107,7 @@ class MiraiAdapter(Adapter):
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""
-        while not self.bot.should_exit:
+        while not self.bot.should_exit.is_set():
             logger.info('Trying to verify identity and create connection...')
             try:
                 async with self.session.ws_connect('ws://{}:{}/all?verifyKey={}&qq={}'.format(
@@ -157,7 +157,7 @@ class MiraiAdapter(Adapter):
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 logger.error(f'WebSocket connection closed with exception {self.websocket.exception()!r}')
 
-        if not self.bot.should_exit:
+        if not self.bot.should_exit.is_set():
             logger.warning(f'WebSocket connection closed!')
 
     def _get_sync_id(self) -> int:
@@ -208,7 +208,7 @@ class MiraiAdapter(Adapter):
 
     async def verify_identity(self):
         """验证身份，创建与 Mirai-api-http 的连接。"""
-        while not self.bot.should_exit:
+        while not self.bot.should_exit.is_set():
             await asyncio.sleep(3)
             try:
                 logger.info('Trying to verify identity and create connection...')
@@ -254,7 +254,7 @@ class MiraiAdapter(Adapter):
             raise NetworkError
 
         start_time = time.time()
-        while not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout):
+        while not self.bot.should_exit.is_set() and (time.time() - start_time < self.config.api_timeout):
             async with self.api_response_cond:
                 try:
                     resp = await asyncio.wait_for(self.api_response_cond.wait(),
@@ -269,7 +269,7 @@ class MiraiAdapter(Adapter):
                         raise ActionFailed(code=status_code, resp=resp)
                     return resp.get('data')
 
-        if not self.bot.should_exit:
+        if not self.bot.should_exit.is_set():
             raise ApiTimeout
 
     async def send(self,

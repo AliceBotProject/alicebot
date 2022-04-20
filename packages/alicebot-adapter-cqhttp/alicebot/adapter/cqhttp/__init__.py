@@ -98,7 +98,7 @@ class CQHTTPAdapter(Adapter):
             elif msg.type == aiohttp.WSMsgType.ERROR:
                 logger.error(f'WebSocket connection closed with exception {ws.exception()!r}')
 
-        if not self.bot.should_exit:
+        if not self.bot.should_exit.is_set():
             logger.warning('WebSocket connection closed!')
 
         return ws
@@ -160,7 +160,7 @@ class CQHTTPAdapter(Adapter):
             raise NetworkError
 
         start_time = time.time()
-        while not self.bot.should_exit and (time.time() - start_time < self.config.api_timeout):
+        while (not self.bot.should_exit.is_set()) and (time.time() - start_time < self.config.api_timeout):
             async with self.api_response_cond:
                 try:
                     resp = await asyncio.wait_for(self.api_response_cond.wait(),
@@ -174,7 +174,7 @@ class CQHTTPAdapter(Adapter):
                         raise ActionFailed(resp=resp)
                     return resp.get('data')
 
-        if not self.bot.should_exit:
+        if not self.bot.should_exit.is_set():
             raise ApiTimeout
 
     async def send(self,

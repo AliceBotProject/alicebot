@@ -38,7 +38,7 @@ class Bot:
     """
     config: MainConfig = None
     config_dict: Dict[str, Any]
-    should_exit: bool
+    should_exit: asyncio.Event
     adapters: List['T_Adapter']
     plugins_priority_dict: Dict[int, List[Type['T_Plugin']]]
     _module_path_finder: ModulePathFinder
@@ -59,7 +59,6 @@ class Bot:
             config_file: 配置文件，如不指定则使用默认的 `config.json`， 若指定为 None，则不加载配置文件。
             config_dict: 配置字典，默认为 None，若指定字典，则会忽略 config_file 配置，不再读取配置文件。
         """
-        self.should_exit = False
         self.adapters = []
         self.plugins_priority_dict = {}
         self._module_path_finder = ModulePathFinder()
@@ -122,6 +121,7 @@ class Bot:
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
         logger.info('Running AliceBot...')
         loop = asyncio.get_running_loop()
+        self.should_exit = asyncio.Event()
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。
@@ -155,27 +155,23 @@ class Bot:
                     await _hook_func(_adapter)
                 loop.create_task(_adapter.safe_run())
 
-            await self.main_loop()
+            await self.should_exit.wait()
         finally:
             for _adapter in self.adapters:
                 for _hook_func in self._adapter_shutdown_hook:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
 
-    async def main_loop(self):
-        while not self.should_exit:
-            await asyncio.sleep(0.1)
-
     def handle_exit(self):
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info('Stopping AliceBot...')
         for _hook_func in self._bot_exit_hook:
             _hook_func(self)
-        if self.should_exit:
+        if self.should_exit.is_set():
             logger.warning('Force Exit AliceBot...')
             sys.exit()
         else:
-            self.should_exit = True
+            self.should_exit.set()
 
     async def handle_event(self, current_event: 'T_Event'):
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。

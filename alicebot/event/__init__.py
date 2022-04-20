@@ -20,12 +20,12 @@ class Event(ABC, BaseModel):
     Attributes:
         adapter: 产生当前事件的适配器对象。
         type: 事件类型。
-        handled: 表示事件是否被处理过了，用于适配器处理。
+        __handled__: 表示事件是否被处理过了，用于适配器处理。
             警告：请勿手动更改此属性的值。
     """
     adapter: Any
     type: Optional[str]
-    handled: bool = False
+    __handled__: bool = False
 
     def __str__(self) -> str:
         return f'Event<{self.type}>'

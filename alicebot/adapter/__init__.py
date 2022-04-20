@@ -104,8 +104,9 @@ class Adapter(BaseAdapter, ABC):
     async def _handle_event(self):
         """调用 `Bot` 对象进行事件处理，将在所有正在等待的 `get()` 方法处理后没有被捕获时被调用。"""
         async with self.cond:
+            event: 'T_Event'
             event = await self.cond.wait()
-        if not event.handled:
+        if not event.__handled__:
             await self.bot.handle_event(event)
 
     async def get(self,
@@ -144,8 +145,13 @@ class Adapter(BaseAdapter, ABC):
 
         try_times = 0
         start_time = time.time()
-        while (not self.bot.should_exit.is_set()) and (max_try_times is None or (try_times < max_try_times)) and \
-                (timeout is None or (time.time() - start_time < timeout)):
+        event: 'T_Event'
+        while not self.bot.should_exit.is_set():
+            if max_try_times is not None and try_times > max_try_times:
+                break
+            if timeout is not None and time.time() - start_time > timeout:
+                break
+
             async with self.cond:
                 if timeout is None:
                     event = await self.cond.wait()
@@ -154,10 +160,12 @@ class Adapter(BaseAdapter, ABC):
                         event = await asyncio.wait_for(self.cond.wait(), timeout=start_time + timeout - time.time())
                     except asyncio.TimeoutError:
                         break
-                if not event.handled:
+
+                if not event.__handled__:
                     if await func(event):
-                        event.handled = True
+                        event.__handled__ = True
                         return event
+
                 try_times += 1
 
         if not self.bot.should_exit.is_set():

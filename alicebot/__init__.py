@@ -162,7 +162,7 @@ class Bot:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
 
-    def handle_exit(self):
+    def handle_exit(self, *args):  # noqa
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info('Stopping AliceBot...')
         for _hook_func in self._bot_exit_hook:

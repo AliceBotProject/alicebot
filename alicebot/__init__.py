@@ -127,11 +127,11 @@ class Bot:
             # Signal 仅能在主线程中被处理。
             try:
                 for sig in HANDLED_SIGNALS:
-                    loop.add_signal_handler(sig, self.handle_exit)
+                    loop.add_signal_handler(sig, self._handle_exit)
             except NotImplementedError:
                 # add_signal_handler 仅在 Unix 下可用，以下对于 Windows。
                 for sig in HANDLED_SIGNALS:
-                    signal.signal(sig, self.handle_exit)
+                    signal.signal(sig, self._handle_exit)
 
         # 更新 config，合并入来自 Plugin 和 Adapter 的 Config
         if self._config_update_dict and self.config_dict:
@@ -162,7 +162,7 @@ class Bot:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
 
-    def handle_exit(self, *args):  # noqa
+    def _handle_exit(self, *args):  # noqa
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info('Stopping AliceBot...')
         for _hook_func in self._bot_exit_hook:
@@ -289,16 +289,13 @@ class Bot:
                     f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"')
 
     def _update_config(self, config_class: Optional[Type['BaseModel']]):
-        def _get_default_value():
-            try:
-                _config = config_class()
-            except ValidationError:
-                return ...
-            else:
-                return _config
-
-        if config_class is not None:
-            self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, _get_default_value())
+        if config_class is None:
+            return
+        try:
+            default_value = config_class()
+        except ValidationError:
+            default_value = ...
+        self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, default_value)
 
     def get_loaded_adapter_by_name(self, name: str) -> 'T_Adapter':
         """按照名称获取已经加载的适配器。

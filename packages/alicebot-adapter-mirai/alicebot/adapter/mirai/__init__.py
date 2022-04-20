@@ -28,6 +28,8 @@ if TYPE_CHECKING:
     from .event import T_MiraiEvent
     from .message import MiraiMessageSegment
 
+__all__ = ['MiraiAdapter']
+
 
 class MiraiAdapter(Adapter):
     """Mirai 协议适配器。

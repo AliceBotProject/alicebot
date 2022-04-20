@@ -13,6 +13,8 @@ if TYPE_CHECKING:
     from alicebot.config import MainConfig
     from alicebot.adapter import T_Adapter
 
+__all__ = ['T_Plugin', 'Plugin']
+
 T_Plugin = TypeVar('T_Plugin', bound='Plugin')
 
 

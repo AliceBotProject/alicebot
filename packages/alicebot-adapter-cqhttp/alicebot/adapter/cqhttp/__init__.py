@@ -26,6 +26,8 @@ from .exceptions import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
 if TYPE_CHECKING:
     from .message import CQHTTPMessageSegment
 
+__all__ = ['CQHTTPAdapter']
+
 
 class CQHTTPAdapter(Adapter):
     """CQHTTP 协议适配器。

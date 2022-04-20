@@ -15,6 +15,8 @@ from alicebot.exceptions import LoadModuleError
 if TYPE_CHECKING:
     from pkgutil import ModuleInfo
 
+__all__ = ['Condition', 'ModulePathFinder', 'load_module', 'load_modules_from_dir']
+
 _T = TypeVar('_T')
 
 

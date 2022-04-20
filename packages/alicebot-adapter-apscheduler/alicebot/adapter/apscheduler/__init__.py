@@ -21,6 +21,8 @@ if TYPE_CHECKING:
     from alicebot.plugin import T_Plugin
     from apscheduler.job import Job
 
+__all__ = ['APSchedulerAdapter', 'scheduler_decorator']
+
 
 class APSchedulerAdapter(BaseAdapter):
     name: str = 'apscheduler'

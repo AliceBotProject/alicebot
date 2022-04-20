@@ -17,6 +17,8 @@ if TYPE_CHECKING:
     from alicebot import Bot
     from alicebot.event import T_Event
 
+__all__ = ['T_Adapter', 'BaseAdapter', 'Adapter']
+
 T_Adapter = TypeVar('T_Adapter', bound='BaseAdapter')
 
 if os.getenv('ALICEBOT_DEV') == '1':

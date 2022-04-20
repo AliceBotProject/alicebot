@@ -6,6 +6,8 @@ from typing import Set, Optional
 
 from pydantic import BaseModel
 
+__all__ = ['MainConfig']
+
 
 class MainConfig(BaseModel):
     """AliceBot 的主要配置。

@@ -20,6 +20,8 @@ from .event import DingTalkEvent
 from .message import DingTalkMessage
 from .exceptions import ApiTimeout, NetworkError
 
+__all__ = ['DingTalkAdapter']
+
 
 class DingTalkAdapter(Adapter):
     """钉钉协议适配器。"""

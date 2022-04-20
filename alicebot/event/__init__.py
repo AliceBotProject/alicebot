@@ -9,6 +9,8 @@ from pydantic import BaseModel
 
 from alicebot.message import Message, DataclassEncoder
 
+__all__ = ['T_Event', 'Event']
+
 T_Event = TypeVar('T_Event', bound='Event')
 
 

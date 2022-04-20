@@ -11,7 +11,7 @@ from pydantic import BaseModel, ValidationError, create_model
 from alicebot.log import logger
 from alicebot.config import MainConfig
 from alicebot.exceptions import StopException, SkipException, LoadModuleError
-from alicebot.load_module import ModulePathFinder, load_module, load_modules_from_dir
+from alicebot.utils import ModulePathFinder, load_module, load_modules_from_dir
 
 if TYPE_CHECKING:
     from alicebot.event import T_Event

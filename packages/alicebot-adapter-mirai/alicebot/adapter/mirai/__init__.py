@@ -9,7 +9,7 @@ import time
 import json
 import asyncio
 from functools import partial
-from typing import Any, Dict, Iterable, Literal, Optional, Union, Mapping, TYPE_CHECKING
+from typing import Any, Dict, Literal, Optional, Union, TYPE_CHECKING
 
 import aiohttp
 from aiohttp import web
@@ -26,7 +26,7 @@ from .event import BotEvent, CommandExecutedEvent, MateEvent, get_event_class
 
 if TYPE_CHECKING:
     from .event import T_MiraiEvent
-    from .message import MiraiMessageSegment
+    from .message import T_MiraiMSG
 
 __all__ = ['MiraiAdapter']
 
@@ -275,7 +275,7 @@ class MiraiAdapter(Adapter):
             raise ApiTimeout
 
     async def send(self,
-                   message_: Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'],
+                   message_: 'T_MiraiMSG',
                    message_type: Literal['private', 'friend', 'group'],
                    target: int,
                    quote: int = None) -> Dict[str, Any]:

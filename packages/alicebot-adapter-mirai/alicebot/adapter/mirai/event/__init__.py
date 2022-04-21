@@ -8,9 +8,11 @@ from .message import *
 from .notice import *
 from .request import *
 
-_mirai_events = {name: model
-                 for name, model in globals().items()
-                 if inspect.isclass(model) and issubclass(model, MiraiEvent)}
+_mirai_events = {
+    name: model
+    for name, model in globals().items()
+    if inspect.isclass(model) and issubclass(model, MiraiEvent)
+}
 
 
 def get_event_class(event_type: str) -> Type[T_MiraiEvent]:

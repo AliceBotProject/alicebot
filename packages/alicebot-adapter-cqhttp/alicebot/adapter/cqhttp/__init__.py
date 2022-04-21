@@ -8,7 +8,7 @@ import time
 import json
 import asyncio
 from functools import partial
-from typing import Any, Dict, Iterable, Literal, Union, Mapping, TYPE_CHECKING
+from typing import Any, Dict, Literal, TYPE_CHECKING
 
 import aiohttp
 from aiohttp import web
@@ -24,7 +24,7 @@ from .message import CQHTTPMessage
 from .exceptions import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
 
 if TYPE_CHECKING:
-    from .message import CQHTTPMessageSegment
+    from .message import T_CQMSG
 
 __all__ = ['CQHTTPAdapter']
 
@@ -162,7 +162,9 @@ class CQHTTPAdapter(Adapter):
             raise NetworkError
 
         start_time = time.time()
-        while (not self.bot.should_exit.is_set()) and (time.time() - start_time < self.config.api_timeout):
+        while not self.bot.should_exit.is_set():
+            if time.time() - start_time > self.config.api_timeout:
+                break
             async with self.api_response_cond:
                 try:
                     resp = await asyncio.wait_for(self.api_response_cond.wait(),
@@ -179,10 +181,7 @@ class CQHTTPAdapter(Adapter):
         if not self.bot.should_exit.is_set():
             raise ApiTimeout
 
-    async def send(self,
-                   message_: Union[str, Mapping, Iterable[Mapping], 'CQHTTPMessageSegment', 'CQHTTPMessage'],
-                   message_type: Literal['private', 'group'],
-                   id_: int) -> Dict[str, Any]:
+    async def send(self, message_: 'T_CQMSG', message_type: Literal['private', 'group'], id_: int) -> Dict[str, Any]:
         """发送消息，调用 send_private_msg 或 send_group_msg API 发送消息。
 
         Args:

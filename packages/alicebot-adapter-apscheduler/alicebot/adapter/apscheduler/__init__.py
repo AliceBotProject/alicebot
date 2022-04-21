@@ -55,7 +55,8 @@ class APSchedulerAdapter(BaseAdapter):
                                                                                   **plugin.trigger_args)
                     except Exception as e:
                         logger.error(
-                            f'Plugin {plugin.__name__} add_job filed, please check trigger and trigger_args: {e}')
+                            f'Plugin {plugin.__name__} add_job filed, please check trigger and trigger_args: {e}'
+                        )
                     else:
                         logger.info(f'Plugin {plugin.__name__} has been scheduled to run')
 

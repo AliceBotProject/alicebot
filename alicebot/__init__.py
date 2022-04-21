@@ -281,12 +281,14 @@ class Bot:
             except Exception as e:
                 # noinspection PyUnresolvedReferences
                 logger.error(
-                    f'Import plugin "{module_info.name}" from path "{module_info.module_finder.path}" failed: {e!r}')
+                    f'Import plugin "{module_info.name}" from path "{module_info.module_finder.path}" failed: {e!r}'
+                )
             else:
                 self._update_config(config_class)
                 # noinspection PyUnresolvedReferences
                 logger.info(
-                    f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"')
+                    f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"'
+                )
 
     def _update_config(self, config_class: Optional[Type['BaseModel']]):
         if config_class is None:
@@ -338,8 +340,9 @@ class Bot:
         self._bot_exit_hook.append(func)
         return func
 
-    def adapter_startup_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
-            Callable[['T_Adapter'], Awaitable[NoReturn]]:
+    def adapter_startup_hook(
+            self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]
+    ) -> Callable[['T_Adapter'], Awaitable[NoReturn]]:
         """注册一个适配器初始化时的函数。
 
         Args:
@@ -351,8 +354,9 @@ class Bot:
         self._adapter_startup_hook.append(func)
         return func
 
-    def adapter_run_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
-            Callable[['T_Adapter'], Awaitable[NoReturn]]:
+    def adapter_run_hook(
+            self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]
+    ) -> Callable[['T_Adapter'], Awaitable[NoReturn]]:
         """注册一个适配器运行时的函数。
 
         Args:
@@ -364,8 +368,9 @@ class Bot:
         self._adapter_run_hook.append(func)
         return func
 
-    def adapter_shutdown_hook(self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]) -> \
-            Callable[['T_Adapter'], Awaitable[NoReturn]]:
+    def adapter_shutdown_hook(
+            self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]
+    ) -> Callable[['T_Adapter'], Awaitable[NoReturn]]:
         """注册一个适配器关闭时的函数。
 
         Args:
@@ -377,8 +382,9 @@ class Bot:
         self._adapter_shutdown_hook.append(func)
         return func
 
-    def event_preprocessor_hook(self, func: Callable[['T_Event'], Awaitable[NoReturn]]) -> \
-            Callable[['T_Event'], Awaitable[NoReturn]]:
+    def event_preprocessor_hook(
+            self, func: Callable[['T_Event'], Awaitable[NoReturn]]
+    ) -> Callable[['T_Event'], Awaitable[NoReturn]]:
         """注册一个事件预处理函数。
 
         Args:
@@ -390,8 +396,9 @@ class Bot:
         self._event_preprocessor_hook.append(func)
         return func
 
-    def event_postprocessor_hook(self, func: Callable[['T_Event'], Awaitable[NoReturn]]) -> \
-            Callable[['T_Event'], Awaitable[NoReturn]]:
+    def event_postprocessor_hook(
+            self, func: Callable[['T_Event'], Awaitable[NoReturn]]
+    ) -> Callable[['T_Event'], Awaitable[NoReturn]]:
         """注册一个事件后处理函数。
 
         Args:

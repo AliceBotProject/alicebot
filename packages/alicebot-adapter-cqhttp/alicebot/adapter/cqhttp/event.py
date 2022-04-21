@@ -1,6 +1,6 @@
 """CQHTTP 适配器事件。"""
 import inspect
-from typing import Any, Dict, Literal, Optional, Type, TypeVar, Union, Mapping, Iterable, TYPE_CHECKING
+from typing import Any, Dict, Literal, Optional, Type, TypeVar, TYPE_CHECKING
 
 from pydantic import BaseModel, Field
 
@@ -9,7 +9,7 @@ from alicebot.event import Event
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
-    from .message import CQHTTPMessageSegment
+    from .message import T_CQMSG
 
 T_CQHTTPEvent = TypeVar('T_CQHTTPEvent', bound='CQHTTPEvent')
 
@@ -85,8 +85,7 @@ class MessageEvent(CQHTTPEvent):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
-                                     'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
+    async def reply(self, msg: 'T_CQMSG') -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -104,8 +103,7 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal['private']
     sub_type: Literal['friend', 'group', 'other']
 
-    async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
-                                     'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
+    async def reply(self, msg: 'T_CQMSG') -> Dict[str, Any]:
         return await self.adapter.send_private_msg(user_id=self.user_id, message=CQHTTPMessage(msg))
 
 
@@ -117,8 +115,7 @@ class GroupMessageEvent(MessageEvent):
     group_id: int
     anonymous: Optional[Anonymous] = None
 
-    async def reply(self, msg: Union[str, Mapping, Iterable[Mapping],
-                                     'CQHTTPMessageSegment', 'CQHTTPMessage']) -> Dict[str, Any]:
+    async def reply(self, msg: 'T_CQMSG') -> Dict[str, Any]:
         return await self.adapter.send_group_msg(group_id=self.group_id, message=CQHTTPMessage(msg))
 
 
@@ -302,9 +299,7 @@ class GroupRequestEvent(RequestEvent):
         Returns:
             API 请求响应。
         """
-        return await self.adapter.set_group_add_request(flag=self.flag,
-                                                        sub_type=self.sub_type,
-                                                        approve=False,
+        return await self.adapter.set_group_add_request(flag=self.flag, sub_type=self.sub_type, approve=False,
                                                         reason=reason)
 
 
@@ -330,12 +325,11 @@ class HeartbeatMetaEvent(MetaEvent):
     interval: int
 
 
-_cqhttp_events = {}
-# define `model` first to avoid globals changing while `for`
-model = None
-for model in globals().values():
-    if inspect.isclass(model) and issubclass(model, CQHTTPEvent):
-        _cqhttp_events[model.__event__] = model
+_cqhttp_events = {
+    model.__event__: model
+    for model in globals().values()
+    if inspect.isclass(model) and issubclass(model, CQHTTPEvent)
+}
 
 
 def get_event_class(post_type: str, event_type: str, sub_type: Optional[str] = None) -> Type[T_CQHTTPEvent]:
@@ -352,4 +346,5 @@ def get_event_class(post_type: str, event_type: str, sub_type: Optional[str] = N
     if sub_type is None:
         return _cqhttp_events['.'.join((post_type, event_type))]
     return _cqhttp_events.get(
-        '.'.join((post_type, event_type, sub_type))) or _cqhttp_events['.'.join((post_type, event_type))]
+        '.'.join((post_type, event_type, sub_type))
+    ) or _cqhttp_events['.'.join((post_type, event_type))]

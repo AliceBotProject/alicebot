@@ -1,8 +1,12 @@
 """Mirai 适配器消息。"""
 import json
-from typing import Any, Dict, List, Type, Optional
+from typing import Any, Dict, List, Type, Optional, Union, Mapping, Iterable
 
 from alicebot.message import Message, MessageSegment, DataclassEncoder
+
+__all__ = ['T_MiraiMSG', 'MiraiMessage', 'MiraiMessageSegment']
+
+T_MiraiMSG = Union[str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage']
 
 
 class MiraiMessage(Message['MiraiMessageSegment']):

@@ -1,7 +1,11 @@
 """CQHTTP 适配器消息。"""
-from typing import Literal, Optional, Type, Union
+from typing import Literal, Optional, Type, Union, Mapping, Iterable
 
 from alicebot.message import Message, MessageSegment
+
+__all__ = ['T_CQMSG', 'CQHTTPMessage', 'CQHTTPMessageSegment', 'escape']
+
+T_CQMSG = Union[str, Mapping, Iterable[Mapping], 'CQHTTPMessageSegment', 'CQHTTPMessage']
 
 
 class CQHTTPMessage(Message['CQHTTPMessageSegment']):

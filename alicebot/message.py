@@ -9,11 +9,13 @@ from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from typing import Any, Dict, Generic, List, Mapping, Union, Type, TypeVar, Iterable, Iterator
 
+__all__ = ['T_Message', 'T_MessageSegment', 'T_MS', 'Message', 'MessageSegment', 'DataclassEncoder']
+
 T_Message = TypeVar('T_Message', bound='Message')
 T_MessageSegment = TypeVar('T_MessageSegment', bound='MessageSegment')
 
 # 可以转化为 MessageSegment 的类型
-MST = Union[T_MessageSegment, str, Mapping]
+T_MS = Union[T_MessageSegment, str, Mapping]
 
 
 class Message(List[T_MessageSegment]):
@@ -26,7 +28,7 @@ class Message(List[T_MessageSegment]):
     并在 MessageSegment 的子类中重写 `_message_class()` 方法。
     """
 
-    def __init__(self, message: Union[None, T_Message, MST, Iterable[MST]] = None, *args, **kwargs):
+    def __init__(self, message: Union[None, T_Message, T_MS, Iterable[T_MS]] = None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if message is None:
             return
@@ -53,7 +55,7 @@ class Message(List[T_MessageSegment]):
     def _validate(cls, value):
         return cls(value)
 
-    def _construct(self, msg: Union[MST, Iterable[MST]]) -> Iterator[T_MessageSegment]:
+    def _construct(self, msg: Union[T_MS, Iterable[T_MS]]) -> Iterator[T_MessageSegment]:
         """用于将 str, Mapping, Iterable[Mapping] 等类型转换为 MessageSegment。用于 pydantic 数据解析和方便用户使用。
 
         Args:

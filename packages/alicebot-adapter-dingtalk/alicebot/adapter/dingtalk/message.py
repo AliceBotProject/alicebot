@@ -3,6 +3,8 @@ from typing import Any, Dict, List, Optional
 
 from alicebot.message import MessageSegment
 
+__all__ = ['DingTalkMessage']
+
 
 class DingTalkMessage(MessageSegment[None]):
     """DingTalk 消息"""

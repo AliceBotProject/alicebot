@@ -3,9 +3,9 @@
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
 from abc import ABC, abstractmethod
-from typing import Any, NoReturn, TYPE_CHECKING
+from typing import Generic, NoReturn, TYPE_CHECKING
 
-from alicebot.typing import T_Event, T_Adapter
+from alicebot.typing import T_Event, T_Adapter, T_State
 from alicebot.exceptions import StopException, SkipException
 
 if TYPE_CHECKING:
@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 __all__ = ['Plugin']
 
 
-class Plugin(ABC):
+class Plugin(ABC, Generic[T_Event, T_State]):
     """所有 AliceBot 插件的基类。
 
     Attributes:
@@ -73,11 +73,11 @@ class Plugin(ABC):
         raise SkipException()
 
     @property
-    def state(self) -> Any:
+    def state(self) -> T_State:
         return self.bot.plugin_state[self.__class__]
 
     @state.setter
-    def state(self, value: Any):
+    def state(self, value: T_State):
         self.bot.plugin_state[self.__class__] = value
 
     @abstractmethod

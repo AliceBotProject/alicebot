@@ -3,19 +3,16 @@
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
 from abc import ABC, abstractmethod
-from typing import Any, TypeVar, NoReturn, TYPE_CHECKING
+from typing import Any, NoReturn, TYPE_CHECKING
 
+from alicebot.typing import T_Event, T_Adapter
 from alicebot.exceptions import StopException, SkipException
 
 if TYPE_CHECKING:
     from alicebot import Bot
-    from alicebot.event import T_Event
     from alicebot.config import MainConfig
-    from alicebot.adapter import T_Adapter
 
-__all__ = ['T_Plugin', 'Plugin']
-
-T_Plugin = TypeVar('T_Plugin', bound='Plugin')
+__all__ = ['Plugin']
 
 
 class Plugin(ABC):
@@ -26,11 +23,11 @@ class Plugin(ABC):
         priority: 插件的优先级，数字越小表示优先级越高，默认为 0。
         block: 插件执行结束后是否阻止事件的传播。True 表示阻止。
     """
-    event: 'T_Event'
+    event: T_Event
     priority: int = 0
     block: bool = False
 
-    def __init__(self, event: 'T_Event'):
+    def __init__(self, event: T_Event):
         self.event = event
 
         if not hasattr(self, 'priority'):
@@ -53,7 +50,7 @@ class Plugin(ABC):
         return self.__class__.__name__
 
     @property
-    def adapter(self) -> 'T_Adapter':
+    def adapter(self) -> T_Adapter:
         """产生当前事件的适配器对象。"""
         return self.event.adapter
 
@@ -80,7 +77,7 @@ class Plugin(ABC):
         return self.bot.plugin_state[self.__class__]
 
     @state.setter
-    def state(self, value):
+    def state(self, value: Any):
         self.bot.plugin_state[self.__class__] = value
 
     @abstractmethod

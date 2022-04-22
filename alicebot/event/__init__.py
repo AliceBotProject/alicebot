@@ -3,15 +3,13 @@
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
 from abc import ABC
-from typing import Any, Optional, TypeVar
+from typing import Any, Optional
 
 from pydantic import BaseModel
 
 from alicebot.message import Message, DataclassEncoder
 
-__all__ = ['T_Event', 'Event']
-
-T_Event = TypeVar('T_Event', bound='Event')
+__all__ = ['Event']
 
 
 class Event(ABC, BaseModel):

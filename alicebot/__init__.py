@@ -5,7 +5,7 @@ import asyncio
 import threading
 from itertools import chain
 from collections import defaultdict
-from typing import Any, Awaitable, Callable, Dict, List, Iterable, Tuple, Type, NoReturn, Optional, TYPE_CHECKING
+from typing import Any, Dict, List, Iterable, Tuple, Type, Optional
 
 from pydantic import BaseModel, ValidationError, create_model
 
@@ -15,11 +15,7 @@ from alicebot.config import MainConfig
 from alicebot.adapter import BaseAdapter
 from alicebot.exceptions import StopException, SkipException, LoadModuleError
 from alicebot.utils import ModulePathFinder, load_module, load_modules_from_dir
-
-if TYPE_CHECKING:
-    from alicebot.event import T_Event
-    from alicebot.plugin import T_Plugin
-    from alicebot.adapter import T_Adapter
+from alicebot.typing import T_Event, T_Plugin, T_Adapter, T_BotHook, T_BotExitHook, T_AdapterHook, T_EventHook
 
 __all__ = ['Bot']
 
@@ -42,21 +38,21 @@ class Bot:
     config: MainConfig = None
     config_dict: Dict[str, Any]
     should_exit: asyncio.Event
-    adapters: List['T_Adapter']
-    plugins_priority_dict: Dict[int, List[Type['T_Plugin']]]
-    plugin_state: Dict['type(T_Plugin)', Any]
+    adapters: List[T_Adapter]
+    plugins_priority_dict: Dict[int, List[Type[T_Plugin]]]
+    plugin_state: Dict[Type[T_Plugin], Any]
     global_state: Dict[Any, Any]
 
     _module_path_finder: ModulePathFinder
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
 
-    _bot_run_hook: List[Callable[['Bot'], Awaitable[NoReturn]]]
-    _bot_exit_hook: List[Callable[['Bot'], NoReturn]]
-    _adapter_startup_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]]
-    _adapter_run_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]]
-    _adapter_shutdown_hook: List[Callable[['T_Adapter'], Awaitable[NoReturn]]]
-    _event_preprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]]
-    _event_postprocessor_hook: List[Callable[['T_Event'], Awaitable[NoReturn]]]
+    _bot_run_hook: List[T_BotHook]
+    _bot_exit_hook: List[T_BotExitHook]
+    _adapter_startup_hook: List[T_AdapterHook]
+    _adapter_run_hook: List[T_AdapterHook]
+    _adapter_shutdown_hook: List[T_AdapterHook]
+    _event_preprocessor_hook: List[T_EventHook]
+    _event_postprocessor_hook: List[T_EventHook]
 
     def __init__(self, config_file: Optional[str] = 'config.json', config_dict: Optional[Dict] = None):
         """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
@@ -117,7 +113,7 @@ class Bot:
                 self.load_adapter(_adapter)
 
     @property
-    def plugins(self) -> List[Type['T_Plugin']]:
+    def plugins(self) -> List[Type[T_Plugin]]:
         """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
@@ -181,7 +177,7 @@ class Bot:
         else:
             self.should_exit.set()
 
-    async def handle_event(self, current_event: 'T_Event'):
+    async def handle_event(self, current_event: T_Event):
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
         此方法不应该被用户手动调用。
@@ -227,7 +223,7 @@ class Bot:
 
         logger.info('Event Finished')
 
-    def _load_plugin(self, plugin_class: Type['T_Plugin']):
+    def _load_plugin(self, plugin_class: Type[T_Plugin]):
         if type(plugin_class.priority) is int and plugin_class.priority >= 0:
             if plugin_class.priority in self.plugins_priority_dict:
                 self.plugins_priority_dict[plugin_class.priority].append(plugin_class)
@@ -236,7 +232,7 @@ class Bot:
         else:
             raise LoadModuleError(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
 
-    def load_plugin(self, name: str) -> Optional[Type['T_Plugin']]:
+    def load_plugin(self, name: str) -> Optional[Type[T_Plugin]]:
         """加载单个插件。
 
         Args:
@@ -255,7 +251,7 @@ class Bot:
             logger.info(f'Succeeded to import plugin "{name}"')
             return plugin_class
 
-    def load_adapter(self, name: str) -> Optional['T_Adapter']:
+    def load_adapter(self, name: str) -> Optional[T_Adapter]:
         """加载单个适配器。
 
         Args:
@@ -295,7 +291,7 @@ class Bot:
                     f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"'
                 )
 
-    def _update_config(self, config_class: Optional[Type['BaseModel']]):
+    def _update_config(self, config_class: Optional[Type[BaseModel]]):
         if config_class is None:
             return
         try:
@@ -304,7 +300,7 @@ class Bot:
             default_value = ...
         self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, default_value)
 
-    def get_loaded_adapter_by_name(self, name: str) -> 'T_Adapter':
+    def get_loaded_adapter_by_name(self, name: str) -> T_Adapter:
         """按照名称获取已经加载的适配器。
 
         Args:
@@ -321,7 +317,7 @@ class Bot:
                 return _adapter
         raise LookupError
 
-    def bot_run_hook(self, func: Callable[['Bot'], Awaitable[NoReturn]]) -> Callable[['Bot'], Awaitable[NoReturn]]:
+    def bot_run_hook(self, func: T_BotHook) -> T_BotHook:
         """注册一个 Bot 启动时的函数。
 
         Args:
@@ -333,7 +329,7 @@ class Bot:
         self._bot_run_hook.append(func)
         return func
 
-    def bot_exit_hook(self, func: Callable[['Bot'], NoReturn]) -> Callable[['Bot'], NoReturn]:
+    def bot_exit_hook(self, func: T_BotExitHook) -> T_BotExitHook:
         """注册一个 Bot 退出时的函数。
 
         Args:
@@ -345,9 +341,7 @@ class Bot:
         self._bot_exit_hook.append(func)
         return func
 
-    def adapter_startup_hook(
-            self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]
-    ) -> Callable[['T_Adapter'], Awaitable[NoReturn]]:
+    def adapter_startup_hook(self, func: T_AdapterHook) -> T_AdapterHook:
         """注册一个适配器初始化时的函数。
 
         Args:
@@ -359,9 +353,7 @@ class Bot:
         self._adapter_startup_hook.append(func)
         return func
 
-    def adapter_run_hook(
-            self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]
-    ) -> Callable[['T_Adapter'], Awaitable[NoReturn]]:
+    def adapter_run_hook(self, func: T_AdapterHook) -> T_AdapterHook:
         """注册一个适配器运行时的函数。
 
         Args:
@@ -373,9 +365,7 @@ class Bot:
         self._adapter_run_hook.append(func)
         return func
 
-    def adapter_shutdown_hook(
-            self, func: Callable[['T_Adapter'], Awaitable[NoReturn]]
-    ) -> Callable[['T_Adapter'], Awaitable[NoReturn]]:
+    def adapter_shutdown_hook(self, func: T_AdapterHook) -> T_AdapterHook:
         """注册一个适配器关闭时的函数。
 
         Args:
@@ -387,9 +377,7 @@ class Bot:
         self._adapter_shutdown_hook.append(func)
         return func
 
-    def event_preprocessor_hook(
-            self, func: Callable[['T_Event'], Awaitable[NoReturn]]
-    ) -> Callable[['T_Event'], Awaitable[NoReturn]]:
+    def event_preprocessor_hook(self, func: T_EventHook) -> T_EventHook:
         """注册一个事件预处理函数。
 
         Args:
@@ -401,9 +389,7 @@ class Bot:
         self._event_preprocessor_hook.append(func)
         return func
 
-    def event_postprocessor_hook(
-            self, func: Callable[['T_Event'], Awaitable[NoReturn]]
-    ) -> Callable[['T_Event'], Awaitable[NoReturn]]:
+    def event_postprocessor_hook(self, func: T_EventHook) -> T_EventHook:
         """注册一个事件后处理函数。
 
         Args:

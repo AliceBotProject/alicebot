@@ -7,19 +7,17 @@ import time
 import asyncio
 from functools import wraps
 from abc import ABC, abstractmethod
-from typing import Awaitable, Callable, TypeVar, Union, Optional, TYPE_CHECKING
+from typing import Awaitable, Callable, Union, Optional, TYPE_CHECKING
 
 from alicebot.log import logger
+from alicebot.typing import T_Event
 from alicebot.utils import Condition
 from alicebot.exceptions import AdapterTimeout
 
 if TYPE_CHECKING:
     from alicebot import Bot
-    from alicebot.event import T_Event
 
-__all__ = ['T_Adapter', 'BaseAdapter', 'Adapter']
-
-T_Adapter = TypeVar('T_Adapter', bound='BaseAdapter')
+__all__ = ['BaseAdapter', 'Adapter']
 
 if os.getenv('ALICEBOT_DEV') == '1':
     # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
@@ -89,7 +87,7 @@ class Adapter(BaseAdapter, ABC):
     async def __startup__(self):
         self.cond = Condition()
 
-    async def handle_event(self, event: 'T_Event'):
+    async def handle_event(self, event: T_Event):
         """进行事件处理。
 
         Args:
@@ -104,15 +102,15 @@ class Adapter(BaseAdapter, ABC):
     async def _handle_event(self):
         """调用 `Bot` 对象进行事件处理，将在所有正在等待的 `get()` 方法处理后没有被捕获时被调用。"""
         async with self.cond:
-            event: 'T_Event'
+            event: T_Event
             event = await self.cond.wait()
         if not event.__handled__:
             await self.bot.handle_event(event)
 
     async def get(self,
-                  func: Optional[Callable[['T_Event'], Union[bool, Awaitable[bool]]]] = None,
+                  func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
                   max_try_times: Optional[int] = None,
-                  timeout: Optional[Union[int, float]] = None) -> 'T_Event':
+                  timeout: Optional[Union[int, float]] = None) -> T_Event:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         Args:
@@ -145,7 +143,7 @@ class Adapter(BaseAdapter, ABC):
 
         try_times = 0
         start_time = time.time()
-        event: 'T_Event'
+        event: T_Event
         while not self.bot.should_exit.is_set():
             if max_try_times is not None and try_times > max_try_times:
                 break

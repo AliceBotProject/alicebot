@@ -3,7 +3,7 @@
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
 from abc import ABC, abstractmethod
-from typing import TypeVar, NoReturn, TYPE_CHECKING
+from typing import Any, TypeVar, NoReturn, TYPE_CHECKING
 
 from alicebot.exceptions import StopException, SkipException
 
@@ -74,6 +74,14 @@ class Plugin(ABC):
     def skip(self) -> NoReturn:
         """跳过自身继续当前事件传播。"""
         raise SkipException()
+
+    @property
+    def state(self) -> Any:
+        return self.bot.plugin_state[self.__class__]
+
+    @state.setter
+    def state(self, value):
+        self.bot.plugin_state[self.__class__] = value
 
     @abstractmethod
     async def handle(self) -> None:

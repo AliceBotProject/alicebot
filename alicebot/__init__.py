@@ -4,12 +4,15 @@ import signal
 import asyncio
 import threading
 from itertools import chain
+from collections import defaultdict
 from typing import Any, Awaitable, Callable, Dict, List, Iterable, Tuple, Type, NoReturn, Optional, TYPE_CHECKING
 
 from pydantic import BaseModel, ValidationError, create_model
 
 from alicebot.log import logger
+from alicebot.plugin import Plugin
 from alicebot.config import MainConfig
+from alicebot.adapter import BaseAdapter
 from alicebot.exceptions import StopException, SkipException, LoadModuleError
 from alicebot.utils import ModulePathFinder, load_module, load_modules_from_dir
 
@@ -41,6 +44,9 @@ class Bot:
     should_exit: asyncio.Event
     adapters: List['T_Adapter']
     plugins_priority_dict: Dict[int, List[Type['T_Plugin']]]
+    plugin_state: Dict['type(T_Plugin)', Any]
+    global_state: Dict[Any, Any]
+
     _module_path_finder: ModulePathFinder
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
 
@@ -61,6 +67,8 @@ class Bot:
         """
         self.adapters = []
         self.plugins_priority_dict = {}
+        self.plugin_state = defaultdict(lambda: None)
+        self.global_state = {}
         self._module_path_finder = ModulePathFinder()
         self._config_update_dict = {}
 
@@ -237,7 +245,6 @@ class Bot:
         Returns:
             被加载的插件类。
         """
-        from alicebot.plugin import Plugin
         try:
             plugin_class, config_class = load_module(name, Plugin)
             self._load_plugin(plugin_class)
@@ -257,7 +264,6 @@ class Bot:
         Returns:
             被加载的适配器对象。
         """
-        from alicebot.adapter import BaseAdapter
         try:
             adapter_object, config_class = load_module(name, BaseAdapter, True, self)
         except Exception as e:
@@ -274,7 +280,6 @@ class Bot:
         Args:
             path: 由储存插件的路径文本组成的列表。 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
-        from alicebot.plugin import Plugin
         for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin):
             try:
                 self._load_plugin(module)

@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from alicebot.message import T_Message, T_MessageSegment
 
 
-class HttpServerTestEvent(Event):
+class HttpServerTestEvent(Event['HttpServerTestAdapter']):
     """HTTP 服务端示例适配器事件类。"""
     message: Message
 

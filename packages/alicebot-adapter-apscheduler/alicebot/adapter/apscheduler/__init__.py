@@ -41,17 +41,21 @@ class APSchedulerAdapter(Adapter):
         for plugin in self.bot.plugins:
             if not hasattr(plugin, '__schedule__'):
                 continue
+
             if not hasattr(plugin, 'trigger') or not hasattr(plugin, 'trigger_args'):
                 logger.error(f'Plugin {plugin.__name__} __schedule__ is True, but did not set trigger or trigger_args')
                 continue
-            if not isinstance(plugin.trigger, str) or not isinstance(plugin.trigger_args, dict):
+
+            trigger = getattr(plugin, 'trigger')
+            trigger_args = getattr(plugin, 'trigger_args')
+
+            if not isinstance(trigger, str) or not isinstance(trigger_args, dict):
                 logger.error(f'Plugin {plugin.__name__} trigger or trigger_args type error')
                 continue
+
             try:
-                self.plugin_class_to_job[plugin] = self.scheduler.add_job(self.create_event,
-                                                                          args=(plugin,),
-                                                                          trigger=plugin.trigger,
-                                                                          **plugin.trigger_args)
+                self.plugin_class_to_job[plugin] = self.scheduler.add_job(self.create_event, args=(plugin,),
+                                                                          trigger=trigger, **trigger_args)
             except Exception as e:
                 logger.error(f'Plugin {plugin.__name__} add_job filed, please check trigger and trigger_args: {e}')
             else:

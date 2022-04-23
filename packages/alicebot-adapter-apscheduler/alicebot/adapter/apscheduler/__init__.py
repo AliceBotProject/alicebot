@@ -6,8 +6,9 @@ APScheduler 使用方法请参考: [APScheduler](https://apscheduler.readthedocs
 import asyncio
 import inspect
 from functools import wraps
-from typing import Any, Dict, Type, TYPE_CHECKING
+from typing import Any, Dict, Type
 
+from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.log import logger
@@ -17,17 +18,13 @@ from alicebot.adapter import Adapter
 from .config import Config
 from .event import APSchedulerEvent
 
-if TYPE_CHECKING:
-    from alicebot.typing import T_Plugin
-    from apscheduler.job import Job
-
 __all__ = ['APSchedulerAdapter', 'scheduler_decorator']
 
 
 class APSchedulerAdapter(Adapter):
     name: str = 'apscheduler'
-    scheduler: AsyncIOScheduler = None
-    plugin_class_to_job: Dict[Type['T_Plugin'], 'Job'] = {}
+    scheduler: AsyncIOScheduler
+    plugin_class_to_job: Dict[Type[Plugin], Job]
 
     @property
     def config(self):
@@ -37,28 +34,28 @@ class APSchedulerAdapter(Adapter):
     async def startup(self):
         """创建 AsyncIOScheduler 对象。"""
         self.scheduler = AsyncIOScheduler(self.config.scheduler_config)
+        self.plugin_class_to_job = {}
 
     async def run(self):
         """启动调度器。"""
         for plugin in self.bot.plugins:
-            if getattr(plugin, '__schedule__', False):
-                if getattr(plugin, 'trigger', None) is None or getattr(plugin, 'trigger_args', None) is None:
-                    logger.error(
-                        f'Plugin {plugin.__name__} __schedule__ is True, but did not set trigger or trigger_args')
-                elif not isinstance(plugin.trigger, str) or not isinstance(plugin.trigger_args, dict):
-                    logger.error(f'Plugin {plugin.__name__} trigger or trigger_args type error')
-                else:
-                    try:
-                        self.plugin_class_to_job[plugin] = self.scheduler.add_job(self.create_event,
-                                                                                  args=(plugin,),
-                                                                                  trigger=plugin.trigger,
-                                                                                  **plugin.trigger_args)
-                    except Exception as e:
-                        logger.error(
-                            f'Plugin {plugin.__name__} add_job filed, please check trigger and trigger_args: {e}'
-                        )
-                    else:
-                        logger.info(f'Plugin {plugin.__name__} has been scheduled to run')
+            if not hasattr(plugin, '__schedule__'):
+                continue
+            if not hasattr(plugin, 'trigger') or not hasattr(plugin, 'trigger_args'):
+                logger.error(f'Plugin {plugin.__name__} __schedule__ is True, but did not set trigger or trigger_args')
+                continue
+            if not isinstance(plugin.trigger, str) or not isinstance(plugin.trigger_args, dict):
+                logger.error(f'Plugin {plugin.__name__} trigger or trigger_args type error')
+                continue
+            try:
+                self.plugin_class_to_job[plugin] = self.scheduler.add_job(self.create_event,
+                                                                          args=(plugin,),
+                                                                          trigger=plugin.trigger,
+                                                                          **plugin.trigger_args)
+            except Exception as e:
+                logger.error(f'Plugin {plugin.__name__} add_job filed, please check trigger and trigger_args: {e}')
+            else:
+                logger.info(f'Plugin {plugin.__name__} has been scheduled to run')
 
         self.scheduler.start()
 
@@ -67,7 +64,7 @@ class APSchedulerAdapter(Adapter):
         if self.scheduler is not None:
             self.scheduler.shutdown()
 
-    async def create_event(self, plugin_class: Type['T_Plugin']):
+    async def create_event(self, plugin_class: Type[Plugin]):
         """创建 APSchedulerEvent 事件。
 
         Args:

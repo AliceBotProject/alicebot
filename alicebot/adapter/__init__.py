@@ -3,29 +3,25 @@
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
 import os
-import time
-import asyncio
 from functools import wraps
 from abc import ABC, abstractmethod
 from typing import Awaitable, Callable, Union, Optional, TYPE_CHECKING
 
 from alicebot.log import logger
 from alicebot.typing import T_Event
-from alicebot.utils import Condition
-from alicebot.exceptions import GetEventTimeout
 
 if TYPE_CHECKING:
     from alicebot import Bot
 
-__all__ = ['BaseAdapter', 'Adapter']
+__all__ = ['Adapter']
 
 if os.getenv('ALICEBOT_DEV') == '1':
     # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
     __import__('pkg_resources').declare_namespace(__name__)
 
 
-class BaseAdapter(ABC):
-    """协议适配器基类，仅实现最基础的适配器功能，通常情况下，适配器开发者开发的适配器应继承自 `Adapter` 而非本类。
+class Adapter(ABC):
+    """协议适配器基类。
 
     Attributes:
         name: 适配器的名称。
@@ -38,6 +34,7 @@ class BaseAdapter(ABC):
         if not hasattr(self, 'name'):
             self.name = self.__class__.__name__
         self.bot: 'Bot' = bot
+        self.handle_event = self.bot.handle_event
 
     async def safe_run(self):
         """附带有异常处理地安全运行适配器。"""
@@ -54,13 +51,6 @@ class BaseAdapter(ABC):
         """
         raise NotImplementedError
 
-    async def __startup__(self):
-        """在适配器开始运行前运行的方法，用于初始化适配器。
-
-        注意： 此方法仅用于适配器基类初始化，不应被适配器开发者重写，适配器开发者应当使用 `startup()` 方法。
-        """
-        pass
-
     async def startup(self):
         """在适配器开始运行前运行的方法，用于初始化适配器。
 
@@ -75,42 +65,18 @@ class BaseAdapter(ABC):
         """
         pass
 
-
-class Adapter(BaseAdapter, ABC):
-    """协议适配器基类，在 `BaseAdapter` 的基础上提供了 `handle_event()` 和 `get()` 等方法，通常情况下推荐使用。
-
-    Attributes:
-        cond: Condition 对象，用于事件处理。
-    """
-    cond: Condition[T_Event]
-
-    async def __startup__(self):
-        self.cond = Condition()
-
-    async def handle_event(self, event: T_Event):
-        """进行事件处理。
-
-        Args:
-            event: 待处理的事件。
-        """
-        logger.info(f'Adapter {self.name} received: {event!r}')
-        asyncio.create_task(self._handle_event())
-        await asyncio.sleep(0)
-        async with self.cond:
-            self.cond.notify_all(event)
-
-    async def _handle_event(self):
-        """调用 `Bot` 对象进行事件处理，将在所有正在等待的 `get()` 方法处理后没有被捕获时被调用。"""
-        async with self.cond:
-            event = await self.cond.wait()
-        if not event.__handled__:
-            await self.bot.handle_event(event)
+    async def send(self, *args, **kwargs):
+        """发送消息，需要适配器开发者实现。"""
+        raise NotImplementedError
 
     async def get(self,
                   func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+                  *,
                   max_try_times: Optional[int] = None,
                   timeout: Optional[Union[int, float]] = None) -> T_Event:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
+
+        类似 Bot 类的 get() 方法，但是隐含了判断产生 event 的适配器是本适配器。
 
         Args:
             func: 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
@@ -125,48 +91,16 @@ class Adapter(BaseAdapter, ABC):
             GetEventTimeout: 超过最大事件数或超时。
         """
 
-        async def always_true(_):
-            return True
-
-        def async_wrapper(_func):
+        def func_wrapper(_func):
             @wraps(_func)
-            async def _wrapper(*args, **kwargs):
-                return _func(*args, **kwargs)
+            async def _wrapper(_event: T_Event):
+                if _event.adapter is not self:
+                    return False
+                return _func(_event)
 
             return _wrapper
 
-        if func is None:
-            func = always_true
-        elif not asyncio.iscoroutinefunction(func):
-            func = async_wrapper(func)
+        if func is not None:
+            func = func_wrapper(func)
 
-        try_times = 0
-        start_time = time.time()
-        while not self.bot.should_exit.is_set():
-            if max_try_times is not None and try_times > max_try_times:
-                break
-            if timeout is not None and time.time() - start_time > timeout:
-                break
-
-            async with self.cond:
-                if timeout is None:
-                    event = await self.cond.wait()
-                else:
-                    try:
-                        event = await asyncio.wait_for(self.cond.wait(), timeout=start_time + timeout - time.time())
-                    except asyncio.TimeoutError:
-                        break
-
-                if not event.__handled__:
-                    if await func(event):
-                        event.__handled__ = True
-                        return event
-
-                try_times += 1
-
-        if not self.bot.should_exit.is_set():
-            raise GetEventTimeout
-
-    async def send(self, *args, **kwargs):
-        """发送消息，需要适配器开发者实现。"""
-        raise NotImplementedError
+        return await self.bot.get(func, max_try_times=max_try_times, timeout=timeout)

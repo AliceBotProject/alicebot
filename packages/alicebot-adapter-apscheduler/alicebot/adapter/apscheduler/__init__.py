@@ -12,19 +12,19 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.log import logger
 from alicebot.plugin import Plugin
-from alicebot.adapter import BaseAdapter
+from alicebot.adapter import Adapter
 
 from .config import Config
 from .event import APSchedulerEvent
 
 if TYPE_CHECKING:
-    from alicebot.plugin import T_Plugin
+    from alicebot.typing import T_Plugin
     from apscheduler.job import Job
 
 __all__ = ['APSchedulerAdapter', 'scheduler_decorator']
 
 
-class APSchedulerAdapter(BaseAdapter):
+class APSchedulerAdapter(Adapter):
     name: str = 'apscheduler'
     scheduler: AsyncIOScheduler = None
     plugin_class_to_job: Dict[Type['T_Plugin'], 'Job'] = {}
@@ -74,7 +74,14 @@ class APSchedulerAdapter(BaseAdapter):
             plugin_class: Plugin 类。
         """
         logger.info(f'APSchedulerEvent set by {plugin_class} is created as scheduled')
-        asyncio.create_task(self.bot.handle_event(APSchedulerEvent(adapter=self, plugin_class=plugin_class)))
+        asyncio.create_task(self.bot.handle_event(
+            APSchedulerEvent(adapter=self, plugin_class=plugin_class),
+            handle_get=False,
+            show_log=False
+        ))
+
+    async def send(self, *args, **kwargs):
+        raise NotImplementedError
 
 
 def scheduler_decorator(trigger: str, trigger_args: Dict[str, Any], override_rule: bool = False):

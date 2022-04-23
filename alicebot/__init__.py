@@ -1,20 +1,22 @@
 import sys
+import time
 import json
 import signal
 import asyncio
 import threading
 from itertools import chain
+from functools import wraps
 from collections import defaultdict
-from typing import Any, Dict, List, Iterable, Tuple, Type, Optional
+from typing import Any, Awaitable, Callable, Dict, List, Iterable, Union, Tuple, Type, Optional
 
 from pydantic import BaseModel, ValidationError, create_model
 
 from alicebot.log import logger
 from alicebot.plugin import Plugin
+from alicebot.adapter import Adapter
 from alicebot.config import MainConfig
-from alicebot.adapter import BaseAdapter
-from alicebot.exceptions import StopException, SkipException, LoadModuleError
-from alicebot.utils import ModulePathFinder, load_module, load_modules_from_dir
+from alicebot.utils import Condition, ModulePathFinder, load_module, load_modules_from_dir
+from alicebot.exceptions import StopException, SkipException, LoadModuleError, GetEventTimeout
 from alicebot.typing import T_Event, T_Plugin, T_Adapter, T_BotHook, T_BotExitHook, T_AdapterHook, T_EventHook
 
 __all__ = ['Bot']
@@ -42,6 +44,8 @@ class Bot:
     plugins_priority_dict: Dict[int, List[Type[T_Plugin]]]
     plugin_state: Dict[Type[T_Plugin], Any]
     global_state: Dict[Any, Any]
+
+    _condition: Condition[T_Event]
 
     _module_path_finder: ModulePathFinder
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
@@ -125,7 +129,10 @@ class Bot:
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
         logger.info('Running AliceBot...')
         loop = asyncio.get_running_loop()
+
         self.should_exit = asyncio.Event()
+        self._condition = Condition()
+
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。
@@ -149,7 +156,6 @@ class Bot:
                 for _hook_func in self._adapter_startup_hook:
                     await _hook_func(_adapter)
                 try:
-                    await _adapter.__startup__()
                     await _adapter.startup()
                 except Exception as e:
                     logger.error(f'Startup adapter {_adapter!r} failed: {e!r}')
@@ -177,16 +183,33 @@ class Bot:
         else:
             self.should_exit.set()
 
-    async def handle_event(self, current_event: T_Event):
+    async def handle_event(self, current_event: T_Event, *, handle_get: bool = True, show_log: bool = True):
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
         此方法不应该被用户手动调用。
 
         Args:
             current_event: 当前待处理的 `Event`。
+            handle_get: 当前事件是否可以被 get 方法捕获，默认为 True。
+            show_log: 是否在日志中显示，默认为 True。
         """
+        if show_log:
+            logger.info(f'Adapter {current_event.adapter.name} received: {current_event!r}')
+
+        if handle_get:
+            asyncio.create_task(self._handle_event())
+            await asyncio.sleep(0)
+            async with self._condition:
+                self._condition.notify_all(current_event)
+        else:
+            asyncio.create_task(self._handle_event(current_event))
+
+    async def _handle_event(self, current_event: Optional[T_Event] = None):
         if current_event is None:
-            return
+            async with self._condition:
+                current_event = await self._condition.wait()
+            if current_event.__handled__:
+                return
 
         for _hook_func in self._event_preprocessor_hook:
             await _hook_func(current_event)
@@ -222,6 +245,69 @@ class Bot:
             await _hook_func(current_event)
 
         logger.info('Event Finished')
+
+    async def get(self,
+                  func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+                  *,
+                  max_try_times: Optional[int] = None,
+                  timeout: Optional[Union[int, float]] = None) -> T_Event:
+        """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
+
+        Args:
+            func: 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
+                当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
+            max_try_times: 最大事件数。
+            timeout: 超时时间。
+
+        Returns:
+            返回满足 func 条件的事件。
+
+        Raises:
+            GetEventTimeout: 超过最大事件数或超时。
+        """
+
+        async def always_true(_):
+            return True
+
+        def async_wrapper(_func):
+            @wraps(_func)
+            async def _wrapper(_event):
+                return _func(_event)
+
+            return _wrapper
+
+        if func is None:
+            func = always_true
+        elif not asyncio.iscoroutinefunction(func):
+            func = async_wrapper(func)
+
+        try_times = 0
+        start_time = time.time()
+        while not self.should_exit.is_set():
+            if max_try_times is not None and try_times > max_try_times:
+                break
+            if timeout is not None and time.time() - start_time > timeout:
+                break
+
+            async with self._condition:
+                if timeout is None:
+                    event = await self._condition.wait()
+                else:
+                    try:
+                        event = await asyncio.wait_for(self._condition.wait(),
+                                                       timeout=start_time + timeout - time.time())
+                    except asyncio.TimeoutError:
+                        break
+
+                if not event.__handled__:
+                    if await func(event):
+                        event.__handled__ = True
+                        return event
+
+                try_times += 1
+
+        if not self.should_exit.is_set():
+            raise GetEventTimeout
 
     def _load_plugin(self, plugin_class: Type[T_Plugin]):
         if type(plugin_class.priority) is int and plugin_class.priority >= 0:
@@ -261,7 +347,7 @@ class Bot:
             被加载的适配器对象。
         """
         try:
-            adapter_object, config_class = load_module(name, BaseAdapter, True, self)
+            adapter_object, config_class = load_module(name, Adapter, True, self)
         except Exception as e:
             logger.error(f'Load adapter "{name}" failed: {e!r}')
         else:

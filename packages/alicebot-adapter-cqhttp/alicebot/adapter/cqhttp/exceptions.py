@@ -1,5 +1,5 @@
 """CQHTTP 适配器异常。"""
-from alicebot.exceptions import AdapterException, AdapterTimeout
+from alicebot.exceptions import AdapterException
 
 
 class CQHTTPException(AdapterException):
@@ -28,6 +28,6 @@ class ApiNotAvailable(ActionFailed):
     pass
 
 
-class ApiTimeout(CQHTTPException, AdapterTimeout):
+class ApiTimeout(CQHTTPException):
     """API 请求响应超时。"""
     pass

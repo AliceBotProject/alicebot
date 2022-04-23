@@ -12,7 +12,7 @@ from typing import Awaitable, Callable, Union, Optional, TYPE_CHECKING
 from alicebot.log import logger
 from alicebot.typing import T_Event
 from alicebot.utils import Condition
-from alicebot.exceptions import AdapterTimeout
+from alicebot.exceptions import GetEventTimeout
 
 if TYPE_CHECKING:
     from alicebot import Bot
@@ -122,7 +122,7 @@ class Adapter(BaseAdapter, ABC):
             返回满足 func 条件的事件。
 
         Raises:
-            AdapterTimeout: 超过最大事件数或超时。
+            GetEventTimeout: 超过最大事件数或超时。
         """
 
         async def always_true(_):
@@ -165,7 +165,7 @@ class Adapter(BaseAdapter, ABC):
                 try_times += 1
 
         if not self.bot.should_exit.is_set():
-            raise AdapterTimeout
+            raise GetEventTimeout
 
     async def send(self, *args, **kwargs):
         """发送消息，需要适配器开发者实现。"""

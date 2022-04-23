@@ -168,7 +168,7 @@ class HalloAlice(Plugin):
 
 ```python
 from alicebot.plugin import Plugin
-from alicebot.exceptions import AdapterTimeout
+from alicebot.exceptions import GetEventTimeout
 
 
 class Weather(Plugin):
@@ -180,7 +180,7 @@ class Weather(Plugin):
             await self.event.reply('请输入想要查询天气的城市：')
             try:
                 city_event = await self.get(lambda x: x.type == 'message', timeout=10)
-            except AdapterTimeout:
+            except GetEventTimeout:
                 return
             else:
                 await self.event.reply(await self.get_weather(city_event.get_plain_text()))
@@ -207,7 +207,7 @@ class Weather(Plugin):
 
 简而言之，它就是用于获取符合条件的事件的，同样的，它也是一个异步方法，请使用 `await` 等待。
 
-需要注意的是， `get()` 方法可以指定超时时间，以避免插件一直等待获取事件，当超时发生时，它会引发 `alicebot.exception.AdapterTimeout` 异常，请留心对这种情况的处理。
+需要注意的是， `get()` 方法可以指定超时时间，以避免插件一直等待获取事件，当超时发生时，它会引发 `alicebot.exception.GetEventTimeout` 异常，请留心对这种情况的处理。
 
 此外，这里的 `get_weather()` 方法并没有接入真正的天气数据，你可以使用任意的天气 API 代替，但请注意，在进行网络请求时需要使用基于协程异步的网络库，如 aiohttp 或 httpx ，而不能使用如 requests
 等同步的网络请求库，这会导致程序被阻塞。

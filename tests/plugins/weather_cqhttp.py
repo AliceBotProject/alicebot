@@ -1,5 +1,5 @@
 from alicebot.plugin import Plugin
-from alicebot.exceptions import AdapterTimeout
+from alicebot.exceptions import GetEventTimeout
 
 
 class Weather(Plugin):
@@ -11,7 +11,7 @@ class Weather(Plugin):
             await self.event.reply('请输入想要查询天气的城市：')
             try:
                 city_event = await self.get(lambda x: x.type == 'message', timeout=10)
-            except AdapterTimeout:
+            except GetEventTimeout:
                 return
             else:
                 await self.event.reply(await self.get_weather(city_event.get_plain_text()))

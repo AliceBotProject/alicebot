@@ -1,5 +1,5 @@
 """DingTalk 适配器异常。"""
-from alicebot.exceptions import AdapterException, AdapterTimeout
+from alicebot.exceptions import AdapterException
 
 
 class DingTalkException(AdapterException):
@@ -17,6 +17,6 @@ class WebhookExpiredError(DingTalkException):
     pass
 
 
-class ApiTimeout(DingTalkException, AdapterTimeout):
+class ApiTimeout(DingTalkException):
     """API 请求响应超时。"""
     pass

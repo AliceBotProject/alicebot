@@ -1,6 +1,6 @@
 """Mirai 适配器异常。
 """
-from alicebot.exceptions import AdapterException, AdapterTimeout
+from alicebot.exceptions import AdapterException
 
 
 class MiraiException(AdapterException):
@@ -26,6 +26,6 @@ class ActionFailed(MiraiException):
         self.resp = resp
 
 
-class ApiTimeout(MiraiException, AdapterTimeout):
+class ApiTimeout(MiraiException):
     """API 请求响应超时。"""
     pass

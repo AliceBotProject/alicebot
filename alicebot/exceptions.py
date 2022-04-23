@@ -5,11 +5,6 @@
 """
 
 
-class AliceBotException(Exception):
-    """所有 AliceBot 发生的异常的基类。"""
-    pass
-
-
 class EventException(BaseException):
     """事件处理过程中由插件抛出的异常，用于控制事件的传播，会被 AliceBot 自动捕获并处理。"""
     pass
@@ -25,13 +20,18 @@ class StopException(EventException):
     pass
 
 
-class AdapterException(AliceBotException):
-    """由适配器抛出的异常基类，所有适配器抛出的异常都应该继承自此类。"""
+class AliceBotException(Exception):
+    """所有 AliceBot 发生的异常的基类。"""
     pass
 
 
-class AdapterTimeout(AdapterException):
-    """适配器相关函数出现超时时抛出。"""
+class GetEventTimeout(AliceBotException):
+    """当 get 方法超时使被抛出。"""
+    pass
+
+
+class AdapterException(AliceBotException):
+    """由适配器抛出的异常基类，所有适配器抛出的异常都应该继承自此类。"""
     pass
 
 

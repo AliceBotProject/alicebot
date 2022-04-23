@@ -15,9 +15,9 @@ from alicebot.log import logger
 from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
 from alicebot.config import MainConfig
+from alicebot.typing import T_Event, T_BotHook, T_BotExitHook, T_AdapterHook, T_EventHook
 from alicebot.utils import Condition, ModulePathFinder, load_module, load_modules_from_dir
 from alicebot.exceptions import StopException, SkipException, LoadModuleError, GetEventTimeout
-from alicebot.typing import T_Event, T_Plugin, T_Adapter, T_BotHook, T_BotExitHook, T_AdapterHook, T_EventHook
 
 __all__ = ['Bot']
 
@@ -40,9 +40,9 @@ class Bot:
     config: MainConfig = None
     config_dict: Dict[str, Any]
     should_exit: asyncio.Event
-    adapters: List[T_Adapter]
-    plugins_priority_dict: Dict[int, List[Type[T_Plugin]]]
-    plugin_state: Dict[Type[T_Plugin], Any]
+    adapters: List[Adapter]
+    plugins_priority_dict: Dict[int, List[Type[Plugin]]]
+    plugin_state: Dict[Type[Plugin], Any]
     global_state: Dict[Any, Any]
 
     _condition: Condition[T_Event]
@@ -117,7 +117,7 @@ class Bot:
                 self.load_adapter(_adapter)
 
     @property
-    def plugins(self) -> List[Type[T_Plugin]]:
+    def plugins(self) -> List[Type[Plugin]]:
         """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
@@ -309,7 +309,7 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def _load_plugin(self, plugin_class: Type[T_Plugin]):
+    def _load_plugin(self, plugin_class: Type[Plugin]):
         if type(plugin_class.priority) is int and plugin_class.priority >= 0:
             if plugin_class.priority in self.plugins_priority_dict:
                 self.plugins_priority_dict[plugin_class.priority].append(plugin_class)
@@ -318,7 +318,7 @@ class Bot:
         else:
             raise LoadModuleError(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
 
-    def load_plugin(self, name: str) -> Optional[Type[T_Plugin]]:
+    def load_plugin(self, name: str) -> Optional[Type[Plugin]]:
         """加载单个插件。
 
         Args:
@@ -337,7 +337,7 @@ class Bot:
             logger.info(f'Succeeded to import plugin "{name}"')
             return plugin_class
 
-    def load_adapter(self, name: str) -> Optional[T_Adapter]:
+    def load_adapter(self, name: str) -> Optional[Adapter]:
         """加载单个适配器。
 
         Args:
@@ -386,7 +386,7 @@ class Bot:
             default_value = ...
         self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, default_value)
 
-    def get_loaded_adapter_by_name(self, name: str) -> T_Adapter:
+    def get_loaded_adapter_by_name(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。
 
         Args:

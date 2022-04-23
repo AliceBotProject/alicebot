@@ -3,13 +3,12 @@
 实现了常用的基本消息 `Message` 和消息字段 `MessageSegment` 模型供适配器使用。
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 """
-import json
 import dataclasses
 from copy import copy, deepcopy
 from dataclasses import dataclass, field
 from typing import Any, Dict, Generic, List, Mapping, Union, Type, TypeVar, Iterable, Iterator
 
-__all__ = ['T_Message', 'T_MessageSegment', 'T_MS', 'Message', 'MessageSegment', 'DataclassEncoder']
+__all__ = ['T_Message', 'T_MessageSegment', 'T_MS', 'Message', 'MessageSegment']
 
 T_Message = TypeVar('T_Message', bound='Message')
 T_MessageSegment = TypeVar('T_MessageSegment', bound='MessageSegment')
@@ -286,12 +285,3 @@ class MessageSegment(Mapping, Generic[T_Message]):
             自身的深复制。
         """
         return deepcopy(self)
-
-
-class DataclassEncoder(json.JSONEncoder):
-    """用于解析 MessageSegment 的 JSONEncoder 类。"""
-
-    def default(self, o):
-        if dataclasses.is_dataclass(o):
-            return o.as_dict()
-        return super().default(o)

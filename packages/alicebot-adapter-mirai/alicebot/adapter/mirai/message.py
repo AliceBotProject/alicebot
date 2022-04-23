@@ -2,7 +2,8 @@
 import json
 from typing import Any, Dict, List, Type, Optional, Union, Mapping, Iterable
 
-from alicebot.message import Message, MessageSegment, DataclassEncoder
+from alicebot.utils import DataclassEncoder
+from alicebot.message import Message, MessageSegment
 
 __all__ = ['T_MiraiMSG', 'MiraiMessage', 'MiraiMessageSegment']
 

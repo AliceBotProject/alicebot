@@ -15,9 +15,8 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.log import logger
-from alicebot.utils import Condition
 from alicebot.adapter import Adapter
-from alicebot.message import DataclassEncoder
+from alicebot.utils import Condition, DataclassEncoder
 
 from .config import Config
 from .message import MiraiMessage

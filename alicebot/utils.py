@@ -1,8 +1,10 @@
+import json
 import asyncio
 import inspect
 import pkgutil
 import importlib
 import collections
+import dataclasses
 from abc import ABC
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
@@ -15,7 +17,7 @@ from alicebot.exceptions import LoadModuleError
 if TYPE_CHECKING:
     from pkgutil import ModuleInfo
 
-__all__ = ['Condition', 'ModulePathFinder', 'load_module', 'load_modules_from_dir']
+__all__ = ['Condition', 'ModulePathFinder', 'load_module', 'load_modules_from_dir', 'DataclassEncoder']
 
 _T = TypeVar('_T')
 
@@ -187,3 +189,12 @@ def load_modules_from_dir(
         except LoadModuleError:
             continue
     return modules
+
+
+class DataclassEncoder(json.JSONEncoder):
+    """用于解析 MessageSegment 的 JSONEncoder 类。"""
+
+    def default(self, o):
+        if dataclasses.is_dataclass(o):
+            return o.as_dict()
+        return super().default(o)

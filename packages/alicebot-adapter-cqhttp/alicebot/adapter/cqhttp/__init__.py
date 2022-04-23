@@ -14,9 +14,8 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.log import logger
-from alicebot.utils import Condition
+from alicebot.utils import Condition, DataclassEncoder
 from alicebot.adapter import Adapter
-from alicebot.message import DataclassEncoder
 
 from .config import Config
 from .event import get_event_class

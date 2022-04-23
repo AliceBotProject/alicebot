@@ -7,7 +7,8 @@ from typing import Any, Optional
 
 from pydantic import BaseModel
 
-from alicebot.message import Message, DataclassEncoder
+from alicebot.message import Message
+from alicebot.utils import DataclassEncoder
 
 __all__ = ['Event']
 

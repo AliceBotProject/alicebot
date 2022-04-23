@@ -6,7 +6,7 @@ import collections
 from abc import ABC
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import Iterable, List, Tuple, Type, TypeVar, Optional, Union, TYPE_CHECKING
+from typing import Callable, Generic, Iterable, List, Tuple, Type, TypeVar, Optional, Union, TYPE_CHECKING
 
 from pydantic import BaseModel
 
@@ -20,7 +20,7 @@ __all__ = ['Condition', 'ModulePathFinder', 'load_module', 'load_modules_from_di
 _T = TypeVar('_T')
 
 
-class Condition:
+class Condition(Generic[_T]):
     """类似于 asyncio.Condition ，但允许在 notify() 时传递值，并由 wait() 返回。"""
 
     def __init__(self):
@@ -50,7 +50,7 @@ class Condition:
             extra = f'{extra}, waiters:{len(self._waiters)}'
         return f'<{res[1:-1]} [{extra}]>'
 
-    async def wait(self):
+    async def wait(self) -> _T:
         if not self.locked():
             raise RuntimeError('cannot wait on un-acquired lock')
 
@@ -76,14 +76,14 @@ class Condition:
             if cancelled:
                 raise asyncio.CancelledError
 
-    async def wait_for(self, predicate):
+    async def wait_for(self, predicate: Callable[..., bool]) -> bool:
         result = predicate()
         while not result:
             await self.wait()
             result = predicate()
         return result
 
-    def notify(self, value=None, n=1):
+    def notify(self, value: _T = None, n: int = 1):
         if not self.locked():
             raise RuntimeError('cannot notify on un-acquired lock')
 
@@ -96,7 +96,7 @@ class Condition:
                 idx += 1
                 fut.set_result(value)
 
-    def notify_all(self, value=None):
+    def notify_all(self, value: _T = None):
         self.notify(value, len(self._waiters))
 
 

@@ -82,7 +82,7 @@ class Adapter(BaseAdapter, ABC):
     Attributes:
         cond: Condition 对象，用于事件处理。
     """
-    cond: Condition
+    cond: Condition[T_Event]
 
     async def __startup__(self):
         self.cond = Condition()
@@ -102,7 +102,6 @@ class Adapter(BaseAdapter, ABC):
     async def _handle_event(self):
         """调用 `Bot` 对象进行事件处理，将在所有正在等待的 `get()` 方法处理后没有被捕获时被调用。"""
         async with self.cond:
-            event: T_Event
             event = await self.cond.wait()
         if not event.__handled__:
             await self.bot.handle_event(event)
@@ -143,7 +142,6 @@ class Adapter(BaseAdapter, ABC):
 
         try_times = 0
         start_time = time.time()
-        event: T_Event
         while not self.bot.should_exit.is_set():
             if max_try_times is not None and try_times > max_try_times:
                 break

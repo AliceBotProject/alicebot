@@ -9,4 +9,8 @@ class GlobalStateTest1(Plugin):
         await self.event.reply(f'add: {self.bot.global_state["count"]}')
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'cqhttp' and self.event.type == 'message' and self.event.message.startswith('add')
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return self.event.message.startswith('add')

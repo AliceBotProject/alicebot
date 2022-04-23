@@ -6,4 +6,6 @@ class HalloAlice(Plugin):
         await self.event.reply('Hello, Alice!')
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'dingtalk' and str(self.event.message).strip().lower() == 'hello'
+        if self.event.adapter.name != 'dingtalk':
+            return False
+        return str(self.event.message).strip().lower() == 'hello'

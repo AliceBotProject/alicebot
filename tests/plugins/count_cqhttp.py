@@ -9,4 +9,8 @@ class Count(Plugin):
         await self.event.reply(f'count: {self.state}')
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'cqhttp' and self.event.type == 'message' and self.event.message.startswith('count')
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return self.event.message.startswith('count')

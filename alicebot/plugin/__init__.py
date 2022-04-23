@@ -5,7 +5,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, NoReturn, TYPE_CHECKING
 
-from alicebot.typing import T_Event, T_Adapter, T_State
+from alicebot.typing import T_Event, T_State
 from alicebot.exceptions import StopException, SkipException
 
 if TYPE_CHECKING:
@@ -35,8 +35,7 @@ class Plugin(ABC, Generic[T_Event, T_State]):
         if not hasattr(self, 'priority'):
             self.block = False
 
-        self.get = getattr(self.adapter, 'get', None)
-        self.send = getattr(self.adapter, 'send', None)
+        self.get = self.bot.get
 
         self.__post_init__()
 
@@ -50,14 +49,9 @@ class Plugin(ABC, Generic[T_Event, T_State]):
         return self.__class__.__name__
 
     @property
-    def adapter(self) -> T_Adapter:
-        """产生当前事件的适配器对象。"""
-        return self.event.adapter
-
-    @property
     def bot(self) -> 'Bot':
         """机器人对象。"""
-        return self.adapter.bot
+        return self.event.adapter.bot
 
     @property
     def config(self) -> 'MainConfig':

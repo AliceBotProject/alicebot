@@ -10,14 +10,14 @@ class Weather(Plugin):
         else:
             await self.event.reply('请输入想要查询天气的城市：')
             try:
-                city_event = await self.get(lambda x: x.type == 'message', timeout=10)
+                city_event = await self.event.adapter.get(lambda x: x.type == 'message', timeout=10)
             except GetEventTimeout:
                 return
             else:
                 await self.event.reply(await self.get_weather(city_event.get_plain_text()))
 
     async def rule(self) -> bool:
-        if self.adapter.name != 'cqhttp':
+        if self.event.adapter.name != 'cqhttp':
             return False
         if self.event.type != 'message':
             return False

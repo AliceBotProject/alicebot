@@ -6,5 +6,8 @@ class HalloAlice(Plugin):
         await self.event.reply('Hello, Alice!')
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'cqhttp' and self.event.type == 'message' and \
-               str(self.event.message).lower() == 'hello'
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return str(self.event.message).lower() == 'hello'

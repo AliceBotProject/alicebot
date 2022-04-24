@@ -1,6 +1,6 @@
 """DingTalk 适配器事件。"""
 import time
-from typing import Any, Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union, TYPE_CHECKING
 
 from pydantic import BaseModel, Field, validator
 
@@ -8,6 +8,9 @@ from alicebot.event import Event
 
 from .message import DingTalkMessage
 from .exceptions import WebhookExpiredError
+
+if TYPE_CHECKING:
+    from . import DingTalkAdapter  # noqa
 
 
 class UserInfo(BaseModel):
@@ -19,7 +22,7 @@ class Text(BaseModel):
     content: str
 
 
-class DingTalkEvent(Event):
+class DingTalkEvent(Event['DingTalkAdapter']):
     """DingTalk 事件基类"""
     type: Optional[str] = Field(alias='msgtype')
 

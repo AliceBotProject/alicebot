@@ -9,6 +9,7 @@ from alicebot.event import Event
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
+    from . import CQHTTPAdapter  # noqa
     from .message import T_CQMSG
 
 T_CQHTTPEvent = TypeVar('T_CQHTTPEvent', bound='CQHTTPEvent')
@@ -47,7 +48,7 @@ class Status(BaseModel):
         extra = 'allow'
 
 
-class CQHTTPEvent(Event):
+class CQHTTPEvent(Event['CQHTTPAdapter']):
     """CQHTTP 事件基类"""
     __event__ = ''
     type: Optional[str] = Field(alias='post_type')

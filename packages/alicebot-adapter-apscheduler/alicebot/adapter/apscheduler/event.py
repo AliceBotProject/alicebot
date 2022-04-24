@@ -2,15 +2,17 @@
 from typing import Any, Dict, Type, TYPE_CHECKING
 
 from alicebot.event import Event
+from alicebot.plugin import Plugin
 
 if TYPE_CHECKING:
     from apscheduler.job import Job
+    from . import APSchedulerAdapter  # noqa
 
 
-class APSchedulerEvent(Event):
+class APSchedulerEvent(Event['APSchedulerAdapter']):
     """APSchedulerEvent 事件基类。"""
     type = 'apscheduler'
-    plugin_class: Type
+    plugin_class: Type[Plugin]
 
     @property
     def job(self) -> 'Job':

@@ -1,8 +1,11 @@
-from typing import Literal, TypeVar
+from typing import Literal, TypeVar, TYPE_CHECKING
 
 from pydantic import BaseModel
 
 from alicebot.event import Event
+
+if TYPE_CHECKING:
+    from .. import MiraiAdapter  # noqa
 
 T_MiraiEvent = TypeVar('T_MiraiEvent', bound='MiraiEvent')
 
@@ -42,6 +45,6 @@ class OtherClientSender(BaseModel):
     platform: str
 
 
-class MiraiEvent(Event):
+class MiraiEvent(Event['MiraiAdapter']):
     """Mirai 事件基类"""
     type: str

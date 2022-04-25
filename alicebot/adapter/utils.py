@@ -3,12 +3,13 @@
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
 import asyncio
-from typing import Union
+from typing import Union, Literal
 from abc import ABCMeta, abstractmethod
 
 import aiohttp
 from aiohttp import web
 
+from alicebot.log import logger
 from alicebot.adapter import Adapter
 
 
@@ -139,3 +140,99 @@ class WebSocketServerAdapter(Adapter, metaclass=ABCMeta):
     @abstractmethod
     async def handle_ws_response(self, msg: aiohttp.WSMessage):
         pass
+
+
+class WebSocketAdapter(Adapter, metaclass=ABCMeta):
+    """WebSocket 适配器示例。
+
+    同时支持 WebSocket 客户端和服务端。
+    """
+    websocket: Union[web.WebSocketResponse, aiohttp.ClientWebSocketResponse] = None
+
+    # ws
+    session: aiohttp.ClientSession = None
+
+    # reverse-ws
+    app: web.Application = None
+    runner: web.AppRunner = None
+    site: web.TCPSite = None
+
+    # config
+    adapter_type: Literal['ws', 'reverse-ws']
+    host: str
+    port: int
+    url: str
+    reconnect_interval: int = 3
+
+    async def startup(self):
+        """初始化适配器。"""
+        if self.adapter_type == 'ws':
+            self.session = aiohttp.ClientSession()
+        elif self.adapter_type == 'reverse-ws':
+            self.app = web.Application()
+            self.app.add_routes([web.get(self.url, self.handle_reverse_ws_response)])
+        else:
+            logger.error(f'Config "adapter_type" must be "ws" or "reverse-ws", not {self.adapter_type}')
+
+    async def run(self):
+        """运行适配器。"""
+        if self.adapter_type == 'ws':
+            while True:
+                try:
+                    await self.websocket_connect()
+                except aiohttp.ClientError as e:
+                    logger.error(f'WebSocket connection error: {e!r}')
+                if self.bot.should_exit.is_set():
+                    break
+                await asyncio.sleep(self.reconnect_interval)
+        elif self.adapter_type == 'reverse-ws':
+            self.runner = web.AppRunner(self.app)
+            await self.runner.setup()
+            self.site = web.TCPSite(self.runner, self.host, self.port)
+            await self.site.start()
+
+    async def shutdown(self):
+        """关闭并清理连接。"""
+        if self.websocket is not None:
+            await self.websocket.close()
+        if self.adapter_type == 'ws':
+            if self.session is not None:
+                await self.session.close()
+        elif self.adapter_type == 'reverse-ws':
+            if self.site is not None:
+                await self.site.stop()
+            if self.runner is not None:
+                await self.runner.cleanup()
+
+    async def handle_reverse_ws_response(self, request: web.Request):
+        """处理 aiohttp WebSocket 服务器的接收。"""
+        self.websocket = web.WebSocketResponse()
+        await self.websocket.prepare(request)
+        await self.reverse_ws_connection_hook()
+        await self.handle_websocket()
+        return self.websocket
+
+    async def reverse_ws_connection_hook(self):
+        """反向 WebSocket 连接建立时的钩子函数。"""
+        logger.info(f'WebSocket connected!')
+
+    async def websocket_connect(self):
+        """创建正向 WebSocket 连接。"""
+        logger.info('Tying to connect to WebSocket server...')
+        async with self.session.ws_connect(f'ws://{self.host}:{self.port}{self.url}') as self.websocket:
+            await self.handle_websocket()
+
+    async def handle_websocket(self):
+        """处理 WebSocket。"""
+        if self.websocket.closed:
+            return
+        async for msg in self.websocket:
+            msg: aiohttp.WSMessage
+            await self.handle_websocket_msg(msg)
+        if not self.bot.should_exit.is_set():
+            logger.warning('WebSocket connection closed!')
+
+    @abstractmethod
+    async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
+        """处理 WebSocket 消息。"""
+        raise NotImplementedError

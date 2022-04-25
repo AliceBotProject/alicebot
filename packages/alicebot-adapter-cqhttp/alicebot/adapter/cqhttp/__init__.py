@@ -11,11 +11,10 @@ from functools import partial
 from typing import Any, Dict, Literal, TYPE_CHECKING
 
 import aiohttp
-from aiohttp import web
 
 from alicebot.log import logger
+from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.utils import Condition, DataclassEncoder
-from alicebot.adapter import Adapter
 
 from .config import Config
 from .event import get_event_class
@@ -28,16 +27,8 @@ if TYPE_CHECKING:
 __all__ = ['CQHTTPAdapter']
 
 
-class CQHTTPAdapter(Adapter):
-    """CQHTTP 协议适配器。
-    
-    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，和调用 `call_api()` 方法相同。
-    """
-    name: str = 'cqhttp'
-    app: web.Application = None
-    runner: web.AppRunner = None
-    site: web.TCPSite = None
-    websocket: web.WebSocketResponse = None
+class CQHTTPAdapter(WebSocketAdapter):
+    name = 'cqhttp'
     api_response_cond: Condition = None
     _api_id: int = 0
 
@@ -50,59 +41,50 @@ class CQHTTPAdapter(Adapter):
         return partial(self.call_api, item)
 
     async def startup(self):
-        """创建 aiohttp Application。"""
+        """初始化适配器。"""
+        self.adapter_type = self.config.adapter_type
+        if self.adapter_type == 'ws-reverse':
+            self.adapter_type = 'reverse-ws'
+        self.host = self.config.host
+        self.port = self.config.port
+        self.url = self.config.url
+        self.reconnect_interval = self.config.reconnect_interval
         self.api_response_cond = Condition()
-        self.app = web.Application()
-        self.app.add_routes([web.get(self.config.url, self.handle_response)])
+        await super().startup()
 
-    async def run(self):
-        """运行 aiohttp WebSocket 服务器。"""
-        self.runner = web.AppRunner(self.app)
-        await self.runner.setup()
-        self.site = web.TCPSite(self.runner, self.config.host, self.config.port)
-        await self.site.start()
+    async def reverse_ws_connection_hook(self):
+        """反向 WebSocket 连接建立时的钩子函数。"""
+        logger.info(f'WebSocket connected!')
+        if self.config.access_token:
+            if self.websocket.headers.get('Authorization', '') != f'Bearer {self.config.access_token}':
+                await self.websocket.close()
 
-    async def shutdown(self):
-        """清理 aiohttp AppRunner。"""
-        if self.websocket is not None:
-            await self.websocket.close()
-        if self.site is not None:
-            await self.site.stop()
-        if self.runner is not None:
-            await self.runner.cleanup()
+    async def websocket_connect(self):
+        """创建正向 WebSocket 连接。"""
+        logger.info('Tying to connect to WebSocket server...')
+        async with self.session.ws_connect(
+                f'ws://{self.host}:{self.port}/',
+                headers={'Authorization': f'Bearer {self.config.access_token}'} if self.config.access_token else None
+        ) as self.websocket:
+            await self.handle_websocket()
 
-    async def handle_response(self, request: web.Request):
-        """处理 aiohttp WebSocket 服务器的接收。
+    async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
+        """处理 WebSocket 消息。"""
+        if msg.type == aiohttp.WSMsgType.TEXT:
+            try:
+                msg_dict = msg.json()
+            except json.JSONDecodeError as e:
+                logger.error(f'WebSocket message parsing error, not json: {e!r}')
+                return
 
-        Args:
-            request: aiohttp WebSocket 服务器的 Request 对象。
-        """
-        ws = web.WebSocketResponse()
-        await ws.prepare(request)
-        self.websocket = ws
+            if 'post_type' in msg_dict:
+                await self.handle_cqhttp_event(msg_dict)
+            else:
+                async with self.api_response_cond:
+                    self.api_response_cond.notify_all(msg_dict)
 
-        msg: aiohttp.WSMessage
-        async for msg in ws:
-            if msg.type == aiohttp.WSMsgType.TEXT:
-                try:
-                    msg_dict = msg.json()
-                except json.JSONDecodeError as e:
-                    logger.error(f'WebSocket message parsing error, not json: {e!r}')
-                    continue
-
-                if 'post_type' in msg_dict:
-                    await self.handle_cqhttp_event(msg_dict)
-                else:
-                    async with self.api_response_cond:
-                        self.api_response_cond.notify_all(msg_dict)
-
-            elif msg.type == aiohttp.WSMsgType.ERROR:
-                logger.error(f'WebSocket connection closed with exception {ws.exception()!r}')
-
-        if not self.bot.should_exit.is_set():
-            logger.warning('WebSocket connection closed!')
-
-        return ws
+        elif msg.type == aiohttp.WSMsgType.ERROR:
+            logger.error(f'WebSocket connection closed with exception {self.websocket.exception()!r}')
 
     def _get_api_echo(self) -> int:
         self._api_id = (self._api_id + 1) % sys.maxsize

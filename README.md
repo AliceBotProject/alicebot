@@ -44,9 +44,9 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 
 目前 AliceBot 官方维护了以下协议适配：
 
-- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) （支持QQ等）[反向 WebSocket](https://github.com/botuniverse/onebot/blob/master/v11/specs/communication/ws-reverse.md) 连接方式
+- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) （支持QQ等）[ws](https://github.com/botuniverse/onebot-11/blob/master/communication/ws.md) 和 [ws-reverse](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 连接方式
 - [mirai-api-http 协议](https://github.com/project-mirai/mirai-api-http) 2.0+ [ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/WebsocketAdapter.md) 和 [reverse-ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/ReverseWebsocketAdapter.md) 连接方式
-- [钉钉](https://developers.dingtalk.com/document/robots/robot-overview) 企业机器人的outgoing（回调）连接方式
+- [钉钉](https://developers.dingtalk.com/document/robots/robot-overview) 企业机器人的 outgoing （回调）连接方式
 
 更多协议正在适配中 ...
 
@@ -80,7 +80,11 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
            await self.event.reply(self.event.message.replace('echo ', ''))
    
        async def rule(self) -> bool:
-           return self.adapter.name == 'cqhttp' and self.event.type == 'message' and self.event.message.startswith('echo ')
+           if self.event.adapter.name != 'cqhttp':
+               return False
+           if self.event.type != 'message':
+               return False
+           return self.event.message.startswith('echo ')
    ```
 
 更多信息请参阅 AliceBot [文档](https://docs.alicebot.dev/)。
@@ -114,4 +118,4 @@ AliceBot 采用 MIT 许可证开放源代码。
 
 本项目的图标由 迷糊小梦神 绘制，作为本项目的一部分，使用与本项目相同的许可证开放使用。
 
-AliceBot 的 message 模块和 cqhttp 适配器部分参考了 NoneBot 的实现，在此感谢 [NoneBot](https://github.com/nonebot/nonebot2/) 项目。
+AliceBot 的 message 模块部分参考了 NoneBot 的实现，在此感谢 [NoneBot](https://github.com/nonebot/nonebot2/) 项目。

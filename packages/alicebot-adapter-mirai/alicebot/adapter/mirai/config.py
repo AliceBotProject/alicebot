@@ -20,6 +20,7 @@ class Config(BaseModel):
     host: str = '127.0.0.1'
     port: int = 8080
     url: str = '/mirai/ws'
+    reconnect_interval: int = 3
     api_timeout: int = 1000
     verify_key: str = ''
     qq: int = 10001

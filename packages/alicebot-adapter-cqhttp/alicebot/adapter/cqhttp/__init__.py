@@ -101,8 +101,7 @@ class CQHTTPAdapter(WebSocketAdapter):
         sub_type = msg.get('sub_type', None)
         event_class = get_event_class(post_type, event_type, sub_type)
 
-        cqhttp_event = event_class(**msg)
-        cqhttp_event.adapter = self
+        cqhttp_event = event_class(adapter=self, **msg)
 
         if cqhttp_event.post_type == 'meta_event':
             # meta_event 不交由插件处理

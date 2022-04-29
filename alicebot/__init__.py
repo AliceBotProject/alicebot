@@ -309,12 +309,19 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def _load_plugin(self, plugin_class: Type[Plugin]):
+    def load_plugin_from_class(self, plugin_class: Type[Plugin], config_class: Type[BaseModel] = None) -> None:
+        """从插件类中手动加载插件。
+
+        Args:
+            plugin_class: 插件类。
+            config_class: 配置类。
+        """
         if type(plugin_class.priority) is int and plugin_class.priority >= 0:
             if plugin_class.priority in self.plugins_priority_dict:
                 self.plugins_priority_dict[plugin_class.priority].append(plugin_class)
             else:
                 self.plugins_priority_dict[plugin_class.priority] = [plugin_class]
+            self._update_config(config_class)
         else:
             raise LoadModuleError(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
 
@@ -329,11 +336,10 @@ class Bot:
         """
         try:
             plugin_class, config_class = load_module(name, Plugin)
-            self._load_plugin(plugin_class)
+            self.load_plugin_from_class(plugin_class, config_class)
         except Exception as e:
             logger.error(f'Import plugin "{name}" failed: {e!r}')
         else:
-            self._update_config(config_class)
             logger.info(f'Succeeded to import plugin "{name}"')
             return plugin_class
 
@@ -364,14 +370,13 @@ class Bot:
         """
         for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin):
             try:
-                self._load_plugin(module)
+                self.load_plugin_from_class(module)
             except Exception as e:
                 # noinspection PyUnresolvedReferences
                 logger.error(
                     f'Import plugin "{module_info.name}" from path "{module_info.module_finder.path}" failed: {e!r}'
                 )
             else:
-                self._update_config(config_class)
                 # noinspection PyUnresolvedReferences
                 logger.info(
                     f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"'

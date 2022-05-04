@@ -18,73 +18,6 @@ class CQHTTPMessage(Message['CQHTTPMessageSegment']):
     def _str_to_message_segment(self, msg) -> 'CQHTTPMessageSegment':
         return CQHTTPMessageSegment.text(msg)
 
-    def is_text(self) -> bool:
-        """
-        Returns:
-            是否是纯文本消息。
-        """
-        for ms in self:
-            if not ms.is_text():
-                return False
-        return True
-
-    def get_plain_text(self) -> str:
-        """获取消息中的纯文本部分。
-
-        Returns:
-            消息中的纯文本部分。
-        """
-        return ''.join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
-
-    def replace(self,
-                old: Union[str, 'CQHTTPMessageSegment'],
-                new: Union[str, 'CQHTTPMessageSegment', None],
-                count: int = -1) -> 'CQHTTPMessage':
-        """实现类似字符串的 `replace()` 方法。
-
-        当 `old` 为 str 类型时，`new` 也必须是 str ，本方法将仅对 `type` 为 `text` 的消息字段进行处理。
-        当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，
-            并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
-
-        Args:
-            old: 被匹配的字符串或消息字段。
-            new: 被替换为的字符串或消息字段。
-            count: 替换的次数。
-
-        Returns:
-            替换后的消息对象。
-        """
-        temp_msg = self.deepcopy()
-        if not (type(old) == type(new) == str) and \
-                not (isinstance(old, self._message_segment_class) and
-                     (isinstance(new, self._message_segment_class) or new is None)):
-            raise TypeError()
-        if type(old) == str:
-            for index, item in enumerate(temp_msg):
-                if count == 0:
-                    break
-                if item.type == 'text' and old in item.data['text']:
-                    if count == -1:
-                        temp_msg[index].data['text'] = item.data['text'].replace(old, new)
-                    else:
-                        temp = item.data['text'].count(old)
-                        temp_msg[index].data['text'] = item.data['text'].replace(old, new, min(temp, count))
-                        if count <= temp:
-                            count = 0
-                        else:
-                            count -= temp
-        else:
-            if new is None:
-                temp_msg = self.__class__(filter(lambda x: x != old, temp_msg))
-            else:
-                for index, item in enumerate(temp_msg):
-                    if count == 0:
-                        break
-                    if item == old:
-                        temp_msg[index] = new
-                        count -= 1
-        return temp_msg
-
 
 class CQHTTPMessageSegment(MessageSegment['CQHTTPMessage']):
     """CQHTTP 消息字段。"""
@@ -97,13 +30,6 @@ class CQHTTPMessageSegment(MessageSegment['CQHTTPMessage']):
         if self.type == 'text':
             return self.data.get('text', '')
         return self.get_cqcode()
-
-    def is_text(self) -> bool:
-        """
-        Returns:
-            是否是纯文本消息字段。
-        """
-        return self.type == 'text'
 
     def get_cqcode(self) -> str:
         """

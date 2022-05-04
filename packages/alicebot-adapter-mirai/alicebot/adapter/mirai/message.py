@@ -27,24 +27,6 @@ class MiraiMessage(Message['MiraiMessageSegment']):
         """
         return list(map(lambda x: x.as_dict(), self))
 
-    def is_text(self) -> bool:
-        """
-        Returns:
-            是否是纯文本消息。
-        """
-        for ms in self[1:]:
-            if not ms.is_text():
-                return False
-        return True
-
-    def get_plain_text(self) -> str:
-        """获取消息中的纯文本部分。
-
-        Returns:
-            消息中的纯文本部分。
-        """
-        return ''.join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
-
 
 class MiraiMessageSegment(MessageSegment['MiraiMessage']):
     def __init__(self, type: str, **data):

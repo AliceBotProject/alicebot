@@ -71,13 +71,8 @@ class Message(List[T_MessageSegment]):
             yield self._str_to_message_segment(msg)
         elif isinstance(msg, Iterable):
             for seg in msg:
-                if isinstance(seg, self._message_segment_class):
-                    yield seg
-                elif isinstance(seg, Mapping):
-                    yield self._mapping_to_message_segment(seg)
-                elif isinstance(seg, str):
-                    yield self._str_to_message_segment(seg)
-        return
+                for i in self._construct(seg):
+                    yield i
 
     def _mapping_to_message_segment(self, msg: Mapping) -> T_MessageSegment:
         """用于将 Mapping 转换为 MessageSegment，如有需要，子类可重写此方法以更改对 Mapping 的默认行为。
@@ -128,6 +123,21 @@ class Message(List[T_MessageSegment]):
         else:
             raise TypeError(f"unsupported operand type(s) for +: '{type(self)!r}' and '{type(other)!r}'")
         return self
+
+    def is_text(self) -> bool:
+        """
+        Returns:
+            是否是纯文本消息。
+        """
+        return all(map(lambda x: x.is_text(), self))
+
+    def get_plain_text(self) -> str:
+        """获取消息中的纯文本部分。
+
+        Returns:
+            消息中的纯文本部分。
+        """
+        return ''.join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
 
     def copy(self) -> T_Message:
         """返回自身的浅复制。
@@ -189,6 +199,72 @@ class Message(List[T_MessageSegment]):
             return self[-1] == suffix
         raise TypeError(f'first arg must be str or {self._message_segment_class}，not {type(suffix)}')
 
+    def replace(self,
+                old: Union[str, T_MessageSegment],
+                new: Union[str, T_MessageSegment, None],
+                count: int = -1) -> T_Message:
+        """实现类似字符串的 `replace()` 方法。
+
+        当 `old` 为 str 类型时，`new` 也必须是 str ，本方法将仅对 `is_text()` 为 True 的消息字段进行处理。
+        当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，
+            并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
+
+        Args:
+            old: 被匹配的字符串或消息字段。
+            new: 被替换为的字符串或消息字段。
+            count: 替换的次数。
+
+        Returns:
+            替换后的消息对象。
+        """
+        if type(old) == str:
+            if type(new) != str:
+                raise TypeError('when type of old is str, type of new must be str.')
+            return self._replace_str(old, new, count)
+        elif isinstance(old, self._message_segment_class):
+            if not (isinstance(new, self._message_segment_class) or new is None):
+                raise TypeError('when type of old is MessageSegment, type of new must be MessageSegment or None.')
+            temp_msg = self.deepcopy()
+            for index, item in enumerate(temp_msg):
+                if count == 0:
+                    break
+                if item == old:
+                    temp_msg[index] = new
+                    count -= 1
+            if new is None:
+                temp_msg = self.__class__(filter(lambda x: x is not None, self))
+            return temp_msg
+        else:
+            raise TypeError('type of old must be str or MessageSegment')
+
+    def _replace_str(self, old: str, new: str, count: int = -1) -> T_Message:
+        """实现类似字符串的 `replace()` 方法。
+
+        本方法将被 `replace()` 方法调用以处理 str 类型的替换，默认将 MessageSegment 对象的 data['text'] 视为存放纯文本的位置。
+        适配器开发者可自行重写此方法以适配其他情况。
+
+        Args:
+            old: 被匹配的字符串或消息字段。
+            new: 被替换为的字符串或消息字段。
+            count: 替换的次数。
+
+        Returns:
+            替换后的消息对象。
+        """
+        temp_msg = self.deepcopy()
+        for index, item in enumerate(temp_msg):
+            item: MessageSegment
+            if count == 0:
+                break
+            if item.is_text() and old in item.data['text']:
+                if count == -1:
+                    temp_msg[index].data['text'] = item.data['text'].replace(old, new)
+                else:
+                    replace_times = min(count, item.data['text'].count(old))
+                    temp_msg[index].data['text'] = item.data['text'].replace(old, new, replace_times)
+                    count -= replace_times
+        return temp_msg
+
 
 @dataclass
 class MessageSegment(Mapping, Generic[T_Message]):
@@ -203,7 +279,7 @@ class MessageSegment(Mapping, Generic[T_Message]):
         data: 消息字段内容。
     """
     type: str
-    data: Dict[str, Any] = field(default_factory=lambda: {})
+    data: Dict[str, Any] = field(default_factory=dict)
 
     @property
     def _message_class(self) -> Type[T_Message]:
@@ -259,7 +335,7 @@ class MessageSegment(Mapping, Generic[T_Message]):
         return self._message_class(other) + self
 
     def get(self, key: str, default=None):
-        return getattr(self.data, key, default)
+        return self.data.get(key, default)
 
     def keys(self):
         return self.data.keys()
@@ -269,6 +345,13 @@ class MessageSegment(Mapping, Generic[T_Message]):
 
     def items(self):
         return self.data.items()
+
+    def is_text(self) -> bool:
+        """
+        Returns:
+            是否是纯文本消息字段。
+        """
+        return self.type == 'text'
 
     def copy(self) -> T_MessageSegment:
         """返回自身的浅复制。

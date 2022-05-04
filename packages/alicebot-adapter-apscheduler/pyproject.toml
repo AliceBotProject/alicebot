@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alicebot-adapter-apscheduler"
-version = "0.1.0"
+version = "0.2.0"
 description = "APScheduler adapter for AliceBot."
 license = "MIT"
 authors = ["st1020 <stone_1020@qq.com>"]
@@ -25,8 +25,8 @@ packages = [
 exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
 [tool.poetry.dependencies]
-python = "^3.7"
-alicebot = "^0.2.0"
+python = "^3.8"
+alicebot = "^0.3.0"
 apscheduler = "^3.7"
 
 [tool.poetry.dev-dependencies]

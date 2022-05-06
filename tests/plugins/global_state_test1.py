@@ -13,4 +13,4 @@ class GlobalStateTest1(Plugin):
             return False
         if self.event.type != 'message':
             return False
-        return self.event.message.startswith('add')
+        return self.event.message.get_plain_text() == 'add'

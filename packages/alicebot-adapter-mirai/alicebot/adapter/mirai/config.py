@@ -7,10 +7,11 @@ class Config(BaseModel):
 
     Attributes:
         __config_name__: 配置名称。
-        adapter_type: 适配器类型，需要和 mirai-api-http 配置相同。
+        adapter_type: 适配器类型，需要和协议端配置相同。
         host: 本机域名。
         port: 监听的端口。
-        url: WebSocket 路径，需要和 mirai-api-http 配置相同。
+        url: WebSocket 路径，需要和协议端配置相同。
+        reconnect_interval: 重连等待时间。
         api_timeout: 进行 API 调用时等待返回响应的超时时间。
         verify_key: 建立连接时的认证密钥，需要和 mirai-api-http 配置中的 verifyKey 相同，如果关闭验证则留空。
         qq: 机器人的 QQ 号码，必须指定。

@@ -68,6 +68,7 @@ class Plugin(ABC, Generic[T_Event, T_State]):
 
     @property
     def state(self) -> T_State:
+        """插件状态。"""
         return self.bot.plugin_state[self.__class__]
 
     @state.setter

@@ -36,6 +36,8 @@ class Bot:
         should_exit: 机器人是否应该进入准备退出状态。
         adapters: 适配器列表。
         plugins_priority_dict: 插件优先级字典。
+        plugin_state: 插件状态。
+        global_state: 全局状态。
     """
     config: MainConfig = None
     config_dict: Dict[str, Any]

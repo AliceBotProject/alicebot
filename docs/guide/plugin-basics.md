@@ -86,13 +86,11 @@ class TestPlugin(Plugin):
 
 - `self.event` ：当前正在被此插件处理的事件。
 - `self.name` ：插件类名称。
-- `self.adapter` ：产生当前事件的适配器对象。
 - `self.bot` ：机器人对象。
 - `self.config` ：机器人配置。
 - `self.stop()` ：停止当前事件传播。
 - `self.skip()` ：跳过自身继续当前事件传播。
-- `self.send()` ：发送消息，具体实现和参数取决于适配器。
-- `self.get()` ：获取满足指定条件的的事件，具体使用方式见下文。
+- `self.state` ：插件状态。
 
 不同适配器产生的事件是不同的，下文以 CQHTTP 适配器为例编写一个 Hello 插件。
 
@@ -107,7 +105,7 @@ class HalloAlice(Plugin):
         pass
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
+        return self.event.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
 
 ```
 
@@ -122,10 +120,10 @@ class HalloAlice(Plugin):
         pass
 
     async def rule(self) -> bool:
-        if self.adapter.name != 'cqhttp':
-          	return False
+        if self.event.adapter.name != 'cqhttp':
+            return False
         if self.event.type != 'message':
-          	return False
+            return False
         return str(self.event.message).lower() == 'hello'
 
 ```
@@ -134,7 +132,7 @@ class HalloAlice(Plugin):
 
 然后应该判断当前事件的类型，CQHTTP 适配器产生的事件的类型有：`message` 、 `notice` 和 `request` ，只有 `message` 类型的适配器才有 `message` 属性，这个插件只对消息事件进行响应。
 
-CQHTTP 适配器消息事件的 `message` 表示当前接收到的消息，类型是 `CQHTTPMessage` ，是 AliceBot 内置 `Message` 类的子类。
+CQHTTP 适配器消息事件的 `message` 属性表示当前接收到的消息，类型是 `CQHTTPMessage` ，是 AliceBot 内置 `Message` 类的子类。
 
 AliceBot 内置的 `Message` 类实现了许多实用的方法，建议所有适配器开发者尽可能使用，具体使用在 [插件进阶](./plugin-advanced.md) 中有提到。在这里可以直接使用 `str()`
 函数将 `Message` 类型的 `self.event.message` 转换为字符串。
@@ -153,7 +151,11 @@ class HalloAlice(Plugin):
         await self.event.reply('Hello, Alice!')
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return str(self.event.message).lower() == 'hello'
 
 ```
 
@@ -179,14 +181,14 @@ class Weather(Plugin):
         else:
             await self.event.reply('请输入想要查询天气的城市：')
             try:
-                city_event = await self.get(lambda x: x.type == 'message', timeout=10)
+                city_event = await self.event.adapter.get(lambda x: x.type == 'message', timeout=10)
             except GetEventTimeout:
                 return
             else:
                 await self.event.reply(await self.get_weather(city_event.get_plain_text()))
 
     async def rule(self) -> bool:
-        if self.adapter.name != 'cqhttp':
+        if self.event.adapter.name != 'cqhttp':
             return False
         if self.event.type != 'message':
             return False
@@ -203,7 +205,7 @@ class Weather(Plugin):
 你可以通过向机器人发送 `天气 北京` 格式的消息来获取天气信息，同时，也可以只发送 `天气` ，这时机器人会向你询问城市，再次发送要查询的城市名称即可查询天气。
 
 在这个例子中，插件需要去进一步获取接收到的下一条消息，这里，我们使用了 `get()`
-方法，它的使用方法可以参考 [API 文档](/api/plugin.html#async-get-func-none-max-try-times-none-timeout-none) 。
+方法，它的使用方法可以参考 [API 文档](/api/adapter/#Adapter.get) 。
 
 简而言之，它就是用于获取符合条件的事件的，同样的，它也是一个异步方法，请使用 `await` 等待。
 
@@ -213,3 +215,4 @@ class Weather(Plugin):
 等同步的网络请求库，这会导致程序被阻塞。
 
 相信阅读到这里，你应该已经可以写出一个 AliceBot 插件了。接下来建议你继续阅读 [插件进阶](./plugin-advanced.md) 和你将要使用的适配器的教程。
+

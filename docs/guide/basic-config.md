@@ -1,5 +1,7 @@
 # 基本配置
 
+## 配置文件
+
 AliceBot 的所有配置均储存在 `config.json` 文件中。
 
 `config.json` 文件的内容要求是使用 UTF-8 编码的标准 [JSON](https://www.json.org/) 文件。
@@ -19,10 +21,6 @@ AliceBot 有如下配置项：
 - **adapters**
 
   将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapter()` 方法加载。
-
-- **dev_env**
-
-  当前是否处于开发环境，默认为 false，在使用时**请勿设置为 true**。
 
 适配器的配置会被放置于独立的键中，如一个包含 `cqhttp` 适配器配置的配置文件如下：
 
@@ -62,3 +60,21 @@ class HalloAlice(Plugin):
     async def rule(self) -> bool:
         return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello' and self.event.user_id == self.config.superuser
 ```
+
+## 自定义配置文件或不使用配置文件
+
+你可以在实例化 `Bot` 对象时传入 `config_file` 或 `config_dict` 属性来实现自定义配置文件或者不使用配置文件或者直接在 Python 文件中配置。
+
+当指定 `config_dict` 属性时，AliceBot 将不再读取配置文件。
+
+```python
+# 自定义配置文件名
+bot = Bot(config_file='my_config.json')
+
+# 不使用配置文件
+bot = Bot(config_dict={
+    'plugin_dir': ['plugins'],
+    'adapters': ['alicebot.adapter.cqhttp'],
+})
+```
+

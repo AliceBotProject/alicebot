@@ -77,7 +77,7 @@ class TestPlugin(Plugin):
         pass
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'apscheduler' and type(self) == self.event.plugin_class
+        return self.event.adapter.name == 'apscheduler' and type(self) == self.event.plugin_class
 
 ```
 
@@ -110,7 +110,11 @@ class TestPlugin(Plugin):
         pass
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return str(self.event.message).lower() == 'hello'
 
 ```
 
@@ -131,10 +135,14 @@ class TestPlugin(Plugin):
         pass
 
     async def rule(self) -> bool:
-        if self.adapter.name == 'apscheduler' and type(self) == self.event.plugin_class:
+        if self.event.name == 'apscheduler' and type(self) == self.event.plugin_class:
             return True
         else:
-            return self.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
+            if self.event.adapter.name != 'cqhttp':
+                return False
+            if self.event.type != 'message':
+                return False
+            return str(self.event.message).lower() == 'hello'
 
 ```
 

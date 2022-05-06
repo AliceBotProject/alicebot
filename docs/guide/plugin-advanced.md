@@ -51,6 +51,123 @@ class TestPlugin(Plugin):
 
 ```
 
+### 原理
+
+实际上，这两个方法是使用 Python 的异常处理实现的，所以，在编写插件时请注意不要捕获所有异常，如：
+
+```python
+# 错误代码：skip() 方法不会生效
+from alicebot.plugin import Plugin
+
+
+class TestPlugin(Plugin):
+    async def handle(self) -> None:
+        try:
+            self.skip()
+        except:
+            pass
+
+    async def rule(self) -> bool:
+        return True
+
+```
+
+而应该至少使用：
+
+```python
+from alicebot.plugin import Plugin
+
+
+class TestPlugin(Plugin):
+    async def handle(self) -> None:
+        try:
+            self.skip()
+        except Exception:
+            pass
+
+    async def rule(self) -> bool:
+        return True
+
+```
+
+## 状态存储
+
+插件类在每次运行时都会被实例化，也就是说，对于每个事件，都是不同的 `Plugin` 实例，但有时候，我们可能会希望插件可以存储一些数据，每次调用时都可以使用，这时候就要用到状态存储了。
+
+插件类有一个 `state` 属性，你可以将其视为一个普通的属性，初始值是 `None` ，但是，它会被永久存储下来，即使在同一个插件的不同的实例中访问它也会得到相同的值。
+
+下面我们使用一个计数插件为例：
+
+```python
+from alicebot.plugin import Plugin
+
+
+class Count(Plugin):
+    async def handle(self) -> None:
+        if self.state is None:
+            self.state = 0
+        self.state += 1
+        await self.event.reply(f'count: {self.state}')
+
+    async def rule(self) -> bool:
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return self.event.message.get_plain_text() == 'count'
+
+```
+
+每次收到 count 消息，插件都会回复一个数字，并且是递增的。
+
+你可以根据需要对 `state` 赋值为任何数据。
+
+但是 `state` 是被存储在内存中的，则意味着，当你关闭 AliceBot 再次打开，并不会得到存储的状态，你可以通过 Python 自带的 [pickle](https://docs.python.org/zh-cn/3/library/pickle.html) 或 [json](https://docs.python.org/zh-cn/3/library/json.html) 库进行序列化，将状态保存到文件中。
+
+此外， `state` 每个插件是独立的，它可以在同一个插件的不同实例中共享，但不能在不同插件中共享，如果你需要在不同插件中共享状态，可以使用全局状态，即 `self.bot.global_state` 属性，全局状态是一个 Python 字典。
+
+下面的示例是两个不同的插件，实现分别对一个数字全局状态进行增减。
+
+```python
+from alicebot.plugin import Plugin
+
+
+class GlobalStateTest1(Plugin):
+    async def handle(self) -> None:
+        if self.bot.global_state.get('count', None) is None:
+            self.bot.global_state['count'] = 0
+        self.bot.global_state['count'] += 1
+        await self.event.reply(f'add: {self.bot.global_state["count"]}')
+
+    async def rule(self) -> bool:
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return self.event.message.get_plain_text() == 'add'
+
+```
+
+```python
+from alicebot.plugin import Plugin
+
+
+class GlobalStateTest2(Plugin):
+    async def handle(self) -> None:
+        if self.bot.global_state.get('count', None) is None:
+            self.bot.global_state['count'] = 0
+        self.bot.global_state['count'] -= 1
+        await self.event.reply(f'sub: {self.bot.global_state["count"]}')
+
+    async def rule(self) -> bool:
+        if self.event.adapter.name != 'cqhttp':
+            return False
+        if self.event.type != 'message':
+            return False
+        return self.event.message.get_plain_text() == 'sub'
+
+```
+
 ## 插件配置
 
 在 [基础配置](./basic-config.md) 一节中提到，你可以直接通过 `self.config` 访问当前机器人的配置。但有时我们可能会希望插件配置像适配器配置一样放在一个独立的键中，以提高这个插件的可移植性，那么我们可以这样处理：
@@ -80,7 +197,6 @@ class Config(BaseModel):
 
 ```json
 {
-    "plugins": null,
     "plugin_dir": ["plugins"],
     "adapters": ["alicebot.adapter.cqhttp"],
     "test_plugin": {
@@ -94,7 +210,7 @@ class Config(BaseModel):
 
 `变量名称: 类型[ = 默认值] `
 
-如果不指定默认值，且类型不是 `Optional[...]`， `Union[None, ...]` 或 `Any`，则这个字段是必填的，在非必需的情况下，建议不要在插件中使用必填字段，这会导致不指定这个字段时，不止仅仅是这个插件，整个 AliceBot 都不能运行。
+如果不指定默认值，且类型不是 `Optional[...]`， `Union[None, ...]` 或 `Any`，则这个字段是必填的，在非必需的情况下，建议不要在插件中使用必填字段，这会导致不指定这个字段时，不只是这个插件，整个 AliceBot 都不能运行。
 
 特别的是，`Config` 类中**必须**要有一个 `__config_name__` 属性，表示这个插件在配置文件中对应的键名。
 
@@ -111,19 +227,22 @@ from .config import Config
 这个类的类名必须为 `Config` 且必须包含 `__config_name__` 属性。
 :::
 
-## `send()` 和 `get()` 方法
+## `get()` 方法
 
-实际上，`send()` 和 `get()` 方法都是适配器的方法，插件中的只是引用了适配器中的方法。
+在 [插件基础](/guide/plugin-basics) 中相信你已经使用过了 `get()` 方法。
 
-所以，你也可以使用 `self.adapter.get()` 代替 `get()` 。
+实际上，`Bot` 和 `Adapter` 类都有一个 `get()` 方法。
 
-`get()` 方法是所有适配器共有的方法，通常情况下，除非适配器有特殊说明，全部支持此方法。
+```python
+self.bot.get()
+self.event.adapter.get()
+```
 
-`sned()` 方法是适配器特有的方法，不同的适配器使用方法不同，需要参考适配器文档。
+它们的区别在于，`Bot` 的 `get()` 方法会捕获所有适配器产生的事件，而 `Adapter` 的 `get()` 方法仅会捕获此适配器产生的时间，即相当于在条件中隐含了判断适配器是自身的条件。
 
 ## 初始化后处理
 
-插件类会在事件传播时被实例化，如果你需要在被实例化时就进行一些操作，为了避免一些不必要的麻烦，建议不要直接重写 `__init__()` 方法。为此，AliceBot 提供了一个 `__post_init__()` 方法。`__post_init__()` 方法将被 `__init__()` 方法在最后调用，默认没有定义任何内容，你可以通过重写该方法进行初始化后处理。
+插件类会在事件传播时被实例化，对于每个事件都会实例化一个新的插件类，如果你需要在被实例化时就进行一些操作，为了避免一些不必要的麻烦，建议不要直接重写 `__init__()` 方法。为此，AliceBot 提供了一个 `__post_init__()` 方法。`__post_init__()` 方法将被 `__init__()` 方法在最后调用，默认没有定义任何内容，你可以通过重写该方法进行初始化后处理。
 
 ```python
 from alicebot.plugin import Plugin

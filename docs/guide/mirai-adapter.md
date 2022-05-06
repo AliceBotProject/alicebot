@@ -2,11 +2,9 @@
 
 Mirai 协议适配器是 [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 协议的适配器，你需要先按照 mirai-api-http 文档的说明安装 mirai-api-http 。
 
-值得注意的是，本适配器仅支持 mirai-api-http 2.0 以上版本。
+值得注意的是，本适配器仅支持 mirai-api-http 2.3 以上版本。
 
 本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
-
-目前更加推荐使用 Websocket Adapter 模式。
 
 ## 安装
 
@@ -98,7 +96,7 @@ class HalloAlice(Plugin):
         await self.event.reply(msg)
 
     async def rule(self) -> bool:
-        if self.adapter.name != 'mirai':
+        if self.event.adapter.name != 'mirai':
             return False
         if self.event.type != 'FriendMessage':
             return False
@@ -118,11 +116,11 @@ from alicebot.plugin import Plugin
 
 class TestPlugin(Plugin):
     async def handle(self) -> None:
-        resp = await self.adapter.call_api('friendProfile', target=10001)
-        # 等效于 resp = await self.adapter.friendProfile(target=10001)
+        resp = await self.event.adapter.call_api('friendProfile', target=10001)
+        # 等效于 resp = await self.event.adapter.friendProfile(target=10001)
 
     async def rule(self) -> bool:
-        return self.adapter.name == 'mirai'
+        return self.event.adapter.name == 'mirai'
 
 ```
 

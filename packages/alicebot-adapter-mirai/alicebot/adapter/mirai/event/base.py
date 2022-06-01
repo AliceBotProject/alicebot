@@ -1,4 +1,4 @@
-from typing import Literal, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, TypeVar
 
 from pydantic import BaseModel
 
@@ -7,14 +7,14 @@ from alicebot.event import Event
 if TYPE_CHECKING:
     from .. import MiraiAdapter  # noqa
 
-T_MiraiEvent = TypeVar('T_MiraiEvent', bound='MiraiEvent')
+T_MiraiEvent = TypeVar("T_MiraiEvent", bound="MiraiEvent")
 
-Permission = Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']
+Permission = Literal["OWNER", "ADMINISTRATOR", "MEMBER"]
 
 
 class Subject(BaseModel):
     id: int
-    kind: Literal['Friend', 'Group']
+    kind: Literal["Friend", "Group"]
 
 
 class FriendInfo(BaseModel):
@@ -45,6 +45,7 @@ class OtherClientSender(BaseModel):
     platform: str
 
 
-class MiraiEvent(Event['MiraiAdapter']):
+class MiraiEvent(Event["MiraiAdapter"]):
     """Mirai 事件基类"""
+
     type: str

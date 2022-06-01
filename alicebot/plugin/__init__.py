@@ -3,16 +3,16 @@
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
 from abc import ABC, abstractmethod
-from typing import Generic, NoReturn, TYPE_CHECKING
+from typing import TYPE_CHECKING, Generic, NoReturn
 
 from alicebot.typing import T_Event, T_State
-from alicebot.exceptions import StopException, SkipException
+from alicebot.exceptions import SkipException, StopException
 
 if TYPE_CHECKING:
     from alicebot import Bot
     from alicebot.config import MainConfig
 
-__all__ = ['Plugin']
+__all__ = ["Plugin"]
 
 
 class Plugin(ABC, Generic[T_Event, T_State]):
@@ -23,6 +23,7 @@ class Plugin(ABC, Generic[T_Event, T_State]):
         priority: 插件的优先级，数字越小表示优先级越高，默认为 0。
         block: 插件执行结束后是否阻止事件的传播。True 表示阻止。
     """
+
     event: T_Event
     priority: int = 0
     block: bool = False
@@ -30,9 +31,9 @@ class Plugin(ABC, Generic[T_Event, T_State]):
     def __init__(self, event: T_Event):
         self.event = event
 
-        if not hasattr(self, 'priority'):
+        if not hasattr(self, "priority"):
             self.priority = 0
-        if not hasattr(self, 'priority'):
+        if not hasattr(self, "priority"):
             self.block = False
 
         self.get = self.bot.get
@@ -49,12 +50,12 @@ class Plugin(ABC, Generic[T_Event, T_State]):
         return self.__class__.__name__
 
     @property
-    def bot(self) -> 'Bot':
+    def bot(self) -> "Bot":
         """机器人对象。"""
         return self.event.adapter.bot
 
     @property
-    def config(self) -> 'MainConfig':
+    def config(self) -> "MainConfig":
         """机器人配置。"""
         return self.bot.config
 

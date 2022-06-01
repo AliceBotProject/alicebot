@@ -6,7 +6,7 @@ from typing import Set, Optional
 
 from pydantic import BaseModel
 
-__all__ = ['MainConfig']
+__all__ = ["MainConfig"]
 
 
 class MainConfig(BaseModel):
@@ -17,9 +17,10 @@ class MainConfig(BaseModel):
         plugin_dir: 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dir()` 方法加载。
         adapters: 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapter()` 方法加载。
     """
+
     plugins: Optional[Set[str]]
     plugin_dir: Optional[Set[str]]
     adapters: Optional[Set[str]]
 
     class Config:
-        extra = 'allow'
+        extra = "allow"

@@ -4,11 +4,11 @@
 协议详情请参考: [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 。
 """
 import sys
-import time
 import json
+import time
 import asyncio
 from functools import partial
-from typing import Any, Dict, Literal, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Literal
 
 import aiohttp
 
@@ -19,16 +19,16 @@ from alicebot.utils import Condition, DataclassEncoder
 from .config import Config
 from .event import get_event_class
 from .message import CQHTTPMessage
-from .exceptions import NetworkError, ActionFailed, ApiNotAvailable, ApiTimeout
+from .exceptions import ApiTimeout, ActionFailed, NetworkError, ApiNotAvailable
 
 if TYPE_CHECKING:
     from .message import T_CQMSG
 
-__all__ = ['CQHTTPAdapter']
+__all__ = ["CQHTTPAdapter"]
 
 
 class CQHTTPAdapter(WebSocketAdapter):
-    name = 'cqhttp'
+    name = "cqhttp"
     api_response_cond: Condition = None
     _api_id: int = 0
 
@@ -43,8 +43,8 @@ class CQHTTPAdapter(WebSocketAdapter):
     async def startup(self):
         """初始化适配器。"""
         self.adapter_type = self.config.adapter_type
-        if self.adapter_type == 'ws-reverse':
-            self.adapter_type = 'reverse-ws'
+        if self.adapter_type == "ws-reverse":
+            self.adapter_type = "reverse-ws"
         self.host = self.config.host
         self.port = self.config.port
         self.url = self.config.url
@@ -54,17 +54,22 @@ class CQHTTPAdapter(WebSocketAdapter):
 
     async def reverse_ws_connection_hook(self):
         """反向 WebSocket 连接建立时的钩子函数。"""
-        logger.info(f'WebSocket connected!')
+        logger.info(f"WebSocket connected!")
         if self.config.access_token:
-            if self.websocket.headers.get('Authorization', '') != f'Bearer {self.config.access_token}':
+            if (
+                self.websocket.headers.get("Authorization", "")
+                != f"Bearer {self.config.access_token}"
+            ):
                 await self.websocket.close()
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""
-        logger.info('Tying to connect to WebSocket server...')
+        logger.info("Tying to connect to WebSocket server...")
         async with self.session.ws_connect(
-                f'ws://{self.host}:{self.port}/',
-                headers={'Authorization': f'Bearer {self.config.access_token}'} if self.config.access_token else None
+            f"ws://{self.host}:{self.port}/",
+            headers={"Authorization": f"Bearer {self.config.access_token}"}
+            if self.config.access_token
+            else None,
         ) as self.websocket:
             await self.handle_websocket()
 
@@ -74,17 +79,20 @@ class CQHTTPAdapter(WebSocketAdapter):
             try:
                 msg_dict = msg.json()
             except json.JSONDecodeError as e:
-                logger.error(f'WebSocket message parsing error, not json: {e!r}')
+                logger.error(f"WebSocket message parsing error, not json: {e!r}")
                 return
 
-            if 'post_type' in msg_dict:
+            if "post_type" in msg_dict:
                 await self.handle_cqhttp_event(msg_dict)
             else:
                 async with self.api_response_cond:
                     self.api_response_cond.notify_all(msg_dict)
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
-            logger.error(f'WebSocket connection closed with exception {self.websocket.exception()!r}')
+            logger.error(
+                f"WebSocket connection closed "
+                f"with exception {self.websocket.exception()!r}"
+            )
 
     def _get_api_echo(self) -> int:
         self._api_id = (self._api_id + 1) % sys.maxsize
@@ -96,22 +104,30 @@ class CQHTTPAdapter(WebSocketAdapter):
         Args:
             msg: 接收到的信息。
         """
-        post_type = msg.get('post_type')
-        event_type = msg.get(post_type + '_type')
-        sub_type = msg.get('sub_type', None)
+        post_type = msg.get("post_type")
+        event_type = msg.get(post_type + "_type")
+        sub_type = msg.get("sub_type", None)
         event_class = get_event_class(post_type, event_type, sub_type)
 
         cqhttp_event = event_class(adapter=self, **msg)
 
-        if cqhttp_event.post_type == 'meta_event':
+        if cqhttp_event.post_type == "meta_event":
             # meta_event 不交由插件处理
-            if cqhttp_event.meta_event_type == 'lifecycle' and cqhttp_event.sub_type == 'connect':
-                logger.info(f'WebSocket connection from CQHTTP Bot {msg.get("self_id")} accepted!')
-            elif cqhttp_event.meta_event_type == 'heartbeat':
+            if (
+                cqhttp_event.meta_event_type == "lifecycle"
+                and cqhttp_event.sub_type == "connect"
+            ):
+                logger.info(
+                    f"WebSocket connection "
+                    f"from CQHTTP Bot {msg.get('self_id')} accepted!"
+                )
+            elif cqhttp_event.meta_event_type == "heartbeat":
                 if cqhttp_event.status.good and cqhttp_event.status.online:
                     pass
                 else:
-                    logger.error(f'CQHTTP Bot status is not good: {cqhttp_event.status.dict()}')
+                    logger.error(
+                        f"CQHTTP Bot status is not good: {cqhttp_event.status.dict()}"
+                    )
         else:
             await self.handle_event(cqhttp_event)
 
@@ -133,11 +149,12 @@ class CQHTTPAdapter(WebSocketAdapter):
         """
         api_echo = self._get_api_echo()
         try:
-            await self.websocket.send_str(json.dumps({
-                'action': api,
-                'params': params,
-                'echo': api_echo
-            }, cls=DataclassEncoder))
+            await self.websocket.send_str(
+                json.dumps(
+                    {"action": api, "params": params, "echo": api_echo},
+                    cls=DataclassEncoder,
+                )
+            )
         except Exception:
             raise NetworkError
 
@@ -147,25 +164,30 @@ class CQHTTPAdapter(WebSocketAdapter):
                 break
             async with self.api_response_cond:
                 try:
-                    resp = await asyncio.wait_for(self.api_response_cond.wait(),
-                                                  timeout=start_time + self.config.api_timeout - time.time())
+                    resp = await asyncio.wait_for(
+                        self.api_response_cond.wait(),
+                        timeout=start_time + self.config.api_timeout - time.time(),
+                    )
                 except asyncio.TimeoutError:
                     break
-                if resp['echo'] == api_echo:
-                    if resp.get('retcode') == 1404:
+                if resp["echo"] == api_echo:
+                    if resp.get("retcode") == 1404:
                         raise ApiNotAvailable(resp=resp)
-                    if resp.get('status') == 'failed':
+                    if resp.get("status") == "failed":
                         raise ActionFailed(resp=resp)
-                    return resp.get('data')
+                    return resp.get("data")
 
         if not self.bot.should_exit.is_set():
             raise ApiTimeout
 
-    async def send(self, message_: 'T_CQMSG', message_type: Literal['private', 'group'], id_: int) -> Dict[str, Any]:
+    async def send(
+        self, message_: "T_CQMSG", message_type: Literal["private", "group"], id_: int
+    ) -> Dict[str, Any]:
         """发送消息，调用 send_private_msg 或 send_group_msg API 发送消息。
 
         Args:
-            message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'CQHTTPMessageSegment', 'CQHTTPMessage'。
+            message_: 消息内容，可以是 str, Mapping, Iterable[Mapping],
+                'CQHTTPMessageSegment', 'CQHTTPMessage'。
                 将使用 `CQHTTPMessage` 进行封装。
             message_type: 消息类型。应该是 private 或者 group。
             id_: 发送对象的 ID ，QQ 号码或者群号码。
@@ -177,9 +199,13 @@ class CQHTTPAdapter(WebSocketAdapter):
             TypeError: message_type 不是 'private' 或 'group'。
             ...: 同 `call_api()` 方法。
         """
-        if message_type == 'private':
-            return await self.send_private_msg(user_id=id_, message=CQHTTPMessage(message_))
-        elif message_type == 'group':
-            return await self.send_group_msg(group_id=id_, message=CQHTTPMessage(message_))
+        if message_type == "private":
+            return await self.send_private_msg(
+                user_id=id_, message=CQHTTPMessage(message_)
+            )
+        elif message_type == "group":
+            return await self.send_group_msg(
+                group_id=id_, message=CQHTTPMessage(message_)
+            )
         else:
             raise TypeError('message_type must be "private" or "group"')

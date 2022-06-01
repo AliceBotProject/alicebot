@@ -3,11 +3,11 @@
 本适配器适配了钉钉企业自建机器人协议。
 协议详情请参考: [钉钉开放平台](https://developers.dingtalk.com/document/robots/robot-overview) 。
 """
-import time
 import hmac
+import time
 import base64
 import hashlib
-from typing import Any, Dict, Literal, Union
+from typing import Any, Dict, Union, Literal
 
 import aiohttp
 from aiohttp import web
@@ -20,12 +20,13 @@ from .event import DingTalkEvent
 from .message import DingTalkMessage
 from .exceptions import ApiTimeout, NetworkError
 
-__all__ = ['DingTalkAdapter']
+__all__ = ["DingTalkAdapter"]
 
 
 class DingTalkAdapter(Adapter):
     """钉钉协议适配器。"""
-    name: str = 'dingtalk'
+
+    name: str = "dingtalk"
     app: web.Application = None
     runner: web.AppRunner = None
     site: web.TCPSite = None
@@ -66,17 +67,19 @@ class DingTalkAdapter(Adapter):
         Args:
             request: aiohttp 服务器的 Request 对象。
         """
-        if 'timestamp' not in request.headers or 'sign' not in request.headers:
-            logger.error(f'Illegal http header, incomplete http header')
-        elif abs(int(request.headers['timestamp']) - time.time() * 1000) > 3600000:
-            logger.error(f'Illegal http header, timestamp: {request.headers["timestamp"]}')
-        elif request.headers['sign'] != self.get_sign(request.headers['timestamp']):
+        if "timestamp" not in request.headers or "sign" not in request.headers:
+            logger.error(f"Illegal http header, incomplete http header")
+        elif abs(int(request.headers["timestamp"]) - time.time() * 1000) > 3600000:
+            logger.error(
+                f'Illegal http header, timestamp: {request.headers["timestamp"]}'
+            )
+        elif request.headers["sign"] != self.get_sign(request.headers["timestamp"]):
             logger.error(f'Illegal http header, sign: {request.headers["sign"]}')
         else:
             try:
                 dingtalk_event = DingTalkEvent(adapter=self, **(await request.json()))
             except Exception as e:
-                logger.error(f'Request parsing error: {e!r}')
+                logger.error(f"Request parsing error: {e!r}")
                 return web.Response()
             await self.handle_event(dingtalk_event)
         return web.Response()
@@ -90,16 +93,20 @@ class DingTalkAdapter(Adapter):
         Returns:
             签名。
         """
-        hmac_code = hmac.new(self.config.app_secret.encode('utf-8'),
-                             '{}\n{}'.format(timestamp, self.config.app_secret).encode('utf-8'),
-                             digestmod=hashlib.sha256).digest()
-        return base64.b64encode(hmac_code).decode('utf-8')
+        hmac_code = hmac.new(
+            self.config.app_secret.encode("utf-8"),
+            "{}\n{}".format(timestamp, self.config.app_secret).encode("utf-8"),
+            digestmod=hashlib.sha256,
+        ).digest()
+        return base64.b64encode(hmac_code).decode("utf-8")
 
-    async def send(self,
-                   webhook: str,
-                   conversation_type: Literal['1', '2'],
-                   msg: Union[str, Dict, DingTalkMessage],
-                   at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
+    async def send(
+        self,
+        webhook: str,
+        conversation_type: Literal["1", "2"],
+        msg: Union[str, Dict, DingTalkMessage],
+        at: Union[None, Dict, DingTalkMessage] = None,
+    ) -> Dict[str, Any]:
         """发送消息。
 
         Args:
@@ -123,28 +130,32 @@ class DingTalkAdapter(Adapter):
         elif isinstance(msg, str):
             msg = DingTalkMessage.text(msg)
         else:
-            raise TypeError(f'msg must be str, Dict or DingTalkMessage, not {type(msg)!r}')
+            raise TypeError(
+                f"msg must be str, Dict or DingTalkMessage, not {type(msg)!r}"
+            )
 
         if at is not None:
             if isinstance(at, DingTalkMessage):
-                if at.type == 'at':
+                if at.type == "at":
                     pass
                 else:
                     raise ValueError(f'at.type must be "at", not {at.type}')
             elif isinstance(at, dict):
                 at = DingTalkMessage.raw(at)
             else:
-                raise TypeError(f'at must be Dict or DingTalkMessage, not {type(at)!r}')
+                raise TypeError(f"at must be Dict or DingTalkMessage, not {type(at)!r}")
 
-        if conversation_type == '1':
+        if conversation_type == "1":
             data = msg
-        elif conversation_type == '2':
+        elif conversation_type == "2":
             if at is None:
-                data = {'msgtype': msg.type, **msg.as_dict()}
+                data = {"msgtype": msg.type, **msg.as_dict()}
             else:
-                data = {'msgtype': msg.type, **msg.as_dict(), **at.as_dict()}
+                data = {"msgtype": msg.type, **msg.as_dict(), **at.as_dict()}
         else:
-            raise ValueError(f'conversation_type must be "1" or "2" not {conversation_type}')
+            raise ValueError(
+                f'conversation_type must be "1" or "2" not {conversation_type}'
+            )
 
         try:
             async with self.session.post(webhook, json=data) as resp:

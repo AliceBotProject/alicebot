@@ -16,12 +16,13 @@ class Config(BaseModel):
         verify_key: 建立连接时的认证密钥，需要和 mirai-api-http 配置中的 verifyKey 相同，如果关闭验证则留空。
         qq: 机器人的 QQ 号码，必须指定。
     """
-    __config_name__ = 'mirai'
-    adapter_type: str = 'ws'
-    host: str = '127.0.0.1'
+
+    __config_name__ = "mirai"
+    adapter_type: str = "ws"
+    host: str = "127.0.0.1"
     port: int = 8080
-    url: str = '/mirai/ws'
+    url: str = "/mirai/ws"
     reconnect_interval: int = 3
     api_timeout: int = 1000
-    verify_key: str = ''
+    verify_key: str = ""
     qq: int = 10001

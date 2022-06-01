@@ -2,11 +2,11 @@
 import inspect
 from typing import Type
 
-from .base import T_MiraiEvent
 from .mate import *
-from .message import *
 from .notice import *
+from .message import *
 from .request import *
+from .base import T_MiraiEvent
 
 _mirai_events = {
     name: model
@@ -27,4 +27,4 @@ def get_event_class(event_type: str) -> Type[T_MiraiEvent]:
     return _mirai_events.get(event_type)
 
 
-__all__ = list(_mirai_events.keys()) + ['get_event_class']
+__all__ = list(_mirai_events.keys()) + ["get_event_class"]

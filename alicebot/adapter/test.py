@@ -9,7 +9,8 @@ from alicebot.utils import Condition
 
 class TestAdapter(Adapter):
     """测试适配器。"""
-    name: str = 'test'
+
+    name: str = "test"
     _cond: Condition[str]
 
     async def startup(self):
@@ -19,9 +20,9 @@ class TestAdapter(Adapter):
         while not self.bot.should_exit.is_set():
             async with self._cond:
                 msg = await self._cond.wait()
-                await self.handle_event(TestAdapterEvent(adapter=self,
-                                                         type='message',
-                                                         message=msg))
+                await self.handle_event(
+                    TestAdapterEvent(adapter=self, type="message", message=msg)
+                )
 
     async def send(self, msg: str):
         """此方法发送的消息会直接使此适配器产生一个事件。"""
@@ -35,4 +36,5 @@ class TestAdapterEvent(Event[TestAdapter]):
     Attributes:
         message: 消息内容。
     """
+
     message: str

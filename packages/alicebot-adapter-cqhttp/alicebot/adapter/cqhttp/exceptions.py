@@ -4,12 +4,10 @@ from alicebot.exceptions import AdapterException
 
 class CQHTTPException(AdapterException):
     """CQHTTP 异常基类。"""
-    pass
 
 
 class NetworkError(CQHTTPException):
     """网络异常。"""
-    pass
 
 
 class ActionFailed(CQHTTPException):
@@ -25,9 +23,7 @@ class ActionFailed(CQHTTPException):
 
 class ApiNotAvailable(ActionFailed):
     """API 请求返回 404，表示当前请求的 API 不可用或不存在。"""
-    pass
 
 
 class ApiTimeout(CQHTTPException):
     """API 请求响应超时。"""
-    pass

@@ -6,7 +6,7 @@ from .base import MiraiEvent
 class RequestEvent(MiraiEvent):
     """申请事件"""
 
-    async def approve(self, message: str = '') -> Dict[str, Any]:
+    async def approve(self, message: str = "") -> Dict[str, Any]:
         """同意请求。
 
         Args:
@@ -17,7 +17,7 @@ class RequestEvent(MiraiEvent):
         """
         raise NotImplementedError
 
-    async def refuse(self, message: str = '') -> Dict[str, Any]:
+    async def refuse(self, message: str = "") -> Dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -31,21 +31,26 @@ class RequestEvent(MiraiEvent):
 
 class NewFriendRequestEvent(RequestEvent):
     """添加好友申请"""
-    type: Literal['NewFriendRequestEvent']
+
+    type: Literal["NewFriendRequestEvent"]
     eventId: int
     fromId: int
     groupId: int
     nick: str
     message: str
 
-    async def approve(self, message: str = '') -> Dict[str, Any]:
-        return await self.adapter.resp_newFriendRequestEvent(eventId=self.eventId,
-                                                             fromId=self.fromId,
-                                                             groupId=self.groupId,
-                                                             operate=0,
-                                                             message=message)
+    async def approve(self, message: str = "") -> Dict[str, Any]:
+        return await self.adapter.resp_newFriendRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=0,
+            message=message,
+        )
 
-    async def refuse(self, message: str = '', black_list: bool = False) -> Dict[str, Any]:
+    async def refuse(
+        self, message: str = "", black_list: bool = False
+    ) -> Dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -55,16 +60,19 @@ class NewFriendRequestEvent(RequestEvent):
         Returns:
             API 请求响应。
         """
-        return await self.adapter.resp_newFriendRequestEvent(eventId=self.eventId,
-                                                             fromId=self.fromId,
-                                                             groupId=self.groupId,
-                                                             operate=2 if black_list else 1,
-                                                             message=message)
+        return await self.adapter.resp_newFriendRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=2 if black_list else 1,
+            message=message,
+        )
 
 
 class MemberJoinRequestEvent(RequestEvent):
     """用户入群申请（Bot需要有管理员权限）"""
-    type: Literal['MemberJoinRequestEvent']
+
+    type: Literal["MemberJoinRequestEvent"]
     eventId: int
     fromId: int
     groupId: int
@@ -72,14 +80,18 @@ class MemberJoinRequestEvent(RequestEvent):
     nick: str
     message: str
 
-    async def approve(self, message: str = '') -> Dict[str, Any]:
-        return await self.adapter.resp_memberJoinRequestEvent(eventId=self.eventId,
-                                                              fromId=self.fromId,
-                                                              groupId=self.groupId,
-                                                              operate=0,
-                                                              message=message)
+    async def approve(self, message: str = "") -> Dict[str, Any]:
+        return await self.adapter.resp_memberJoinRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=0,
+            message=message,
+        )
 
-    async def refuse(self, message: str = '', black_list: bool = False) -> Dict[str, Any]:
+    async def refuse(
+        self, message: str = "", black_list: bool = False
+    ) -> Dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -89,13 +101,17 @@ class MemberJoinRequestEvent(RequestEvent):
         Returns:
             API 请求响应。
         """
-        return await self.adapter.resp_memberJoinRequestEvent(eventId=self.eventId,
-                                                              fromId=self.fromId,
-                                                              groupId=self.groupId,
-                                                              operate=3 if black_list else 1,
-                                                              message=message)
+        return await self.adapter.resp_memberJoinRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=3 if black_list else 1,
+            message=message,
+        )
 
-    async def ignore(self, message: str = '', black_list: bool = False) -> Dict[str, Any]:
+    async def ignore(
+        self, message: str = "", black_list: bool = False
+    ) -> Dict[str, Any]:
         """忽略请求。
 
         Args:
@@ -105,16 +121,19 @@ class MemberJoinRequestEvent(RequestEvent):
         Returns:
             API 请求响应。
         """
-        return await self.adapter.resp_memberJoinRequestEvent(eventId=self.eventId,
-                                                              fromId=self.fromId,
-                                                              groupId=self.groupId,
-                                                              operate=4 if black_list else 2,
-                                                              message=message)
+        return await self.adapter.resp_memberJoinRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=4 if black_list else 2,
+            message=message,
+        )
 
 
 class BotInvitedJoinGroupRequestEvent(RequestEvent):
     """Bot 被邀请入群申请"""
-    type: Literal['BotInvitedJoinGroupRequestEvent']
+
+    type: Literal["BotInvitedJoinGroupRequestEvent"]
     eventId: int
     fromId: int
     groupId: int
@@ -122,16 +141,20 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
     nick: str
     message: str
 
-    async def approve(self, message: str = '') -> Dict[str, Any]:
-        return await self.adapter.resp_botInvitedJoinGroupRequestEvent(eventId=self.eventId,
-                                                                       fromId=self.fromId,
-                                                                       groupId=self.groupId,
-                                                                       operate=0,
-                                                                       message=message)
+    async def approve(self, message: str = "") -> Dict[str, Any]:
+        return await self.adapter.resp_botInvitedJoinGroupRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=0,
+            message=message,
+        )
 
-    async def refuse(self, message: str = '') -> Dict[str, Any]:
-        return await self.adapter.resp_botInvitedJoinGroupRequestEvent(eventId=self.eventId,
-                                                                       fromId=self.fromId,
-                                                                       groupId=self.groupId,
-                                                                       operate=1,
-                                                                       message=message)
+    async def refuse(self, message: str = "") -> Dict[str, Any]:
+        return await self.adapter.resp_botInvitedJoinGroupRequestEvent(
+            eventId=self.eventId,
+            fromId=self.fromId,
+            groupId=self.groupId,
+            operate=1,
+            message=message,
+        )

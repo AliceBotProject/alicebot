@@ -2,7 +2,14 @@ from typing import Literal
 
 from pydantic import create_model
 
-from .base import MiraiEvent, Subject, FriendInfo, Permission, GroupInfo, GroupMemberInfo
+from .base import (
+    Subject,
+    GroupInfo,
+    FriendInfo,
+    MiraiEvent,
+    Permission,
+    GroupMemberInfo,
+)
 
 
 class NoticeEvent(MiraiEvent):
@@ -11,7 +18,8 @@ class NoticeEvent(MiraiEvent):
 
 class NudgeEvent(NoticeEvent):
     """戳一戳事件"""
-    type: Literal['NudgeEvent']
+
+    type: Literal["NudgeEvent"]
     fromId: int
     subject: Subject
     action: str
@@ -21,29 +29,34 @@ class NudgeEvent(NoticeEvent):
 
 class FriendEvent(NoticeEvent):
     """好友事件"""
+
     friend: FriendInfo
 
 
 class FriendInputStatusChangedEvent(FriendEvent):
     """好友输入状态改变"""
-    type: Literal['FriendInputStatusChangedEvent']
+
+    type: Literal["FriendInputStatusChangedEvent"]
     inputting: bool
 
 
 # 因为 from 是 python 关键字，所以不能直接定义
-FriendNickChangedEvent = create_model('FriendNickChangedEvent',
-                                      **{
-                                          'type': (Literal['FriendNickChangedEvent'], None),
-                                          'from': (str, None),
-                                          'to': (str, None)
-                                      },
-                                      __base__=FriendEvent)
+FriendNickChangedEvent = create_model(
+    "FriendNickChangedEvent",
+    **{
+        "type": (Literal["FriendNickChangedEvent"], None),
+        "from": (str, None),
+        "to": (str, None),
+    },
+    __base__=FriendEvent,
+)
 """好友昵称改变"""
 
 
 class FriendRecallEvent(FriendEvent):
     """好友消息撤回"""
-    type: Literal['FriendRecallEvent']
+
+    type: Literal["FriendRecallEvent"]
     authorId: int
     messageId: int
     time: int
@@ -60,7 +73,8 @@ class GroupBotEvent(GroupEvent):
 
 class BotGroupPermissionChangeEvent(GroupBotEvent):
     """Bot 在群里的权限被改变. 操作人一定是群主"""
-    type: Literal['BotGroupPermissionChangeEvent']
+
+    type: Literal["BotGroupPermissionChangeEvent"]
     origin: Permission
     current: Permission
     group: GroupInfo
@@ -68,31 +82,36 @@ class BotGroupPermissionChangeEvent(GroupBotEvent):
 
 class BotMuteEvent(GroupBotEvent):
     """Bot 被禁言"""
-    type: Literal['BotMuteEvent']
+
+    type: Literal["BotMuteEvent"]
     operator: GroupMemberInfo
 
 
 class BotUnmuteEvent(GroupBotEvent):
     """Bot 被取消禁言"""
-    type: Literal['BotUnmuteEvent']
+
+    type: Literal["BotUnmuteEvent"]
     operator: GroupMemberInfo
 
 
 class BotJoinGroupEvent(GroupBotEvent):
     """Bot加入了一个新群"""
-    type: Literal['BotJoinGroupEvent']
+
+    type: Literal["BotJoinGroupEvent"]
     group: GroupInfo
 
 
 class BotLeaveEventActive(GroupBotEvent):
     """Bot 主动退出一个群"""
-    type: Literal['BotLeaveEventActive']
+
+    type: Literal["BotLeaveEventActive"]
     group: GroupInfo
 
 
 class BotLeaveEventKick(GroupBotEvent):
     """Bot 被踢出一个群"""
-    type: Literal['BotLeaveEventKick']
+
+    type: Literal["BotLeaveEventKick"]
     group: GroupInfo
 
 
@@ -102,7 +121,8 @@ class GroupNoticeEvent(GroupEvent):
 
 class GroupRecallEvent(GroupNoticeEvent):
     """群消息撤回"""
-    type: Literal['GroupRecallEvent']
+
+    type: Literal["GroupRecallEvent"]
     authorId: int
     messageId: int
     time: int
@@ -112,7 +132,8 @@ class GroupRecallEvent(GroupNoticeEvent):
 
 class GroupNameChangeEvent(GroupNoticeEvent):
     """某个群名改变"""
-    type: Literal['GroupNameChangeEvent']
+
+    type: Literal["GroupNameChangeEvent"]
     origin: str
     current: str
     group: GroupInfo
@@ -121,7 +142,8 @@ class GroupNameChangeEvent(GroupNoticeEvent):
 
 class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
     """某群入群公告改变"""
-    type: Literal['GroupEntranceAnnouncementChangeEvent']
+
+    type: Literal["GroupEntranceAnnouncementChangeEvent"]
     origin: str
     current: str
     group: GroupInfo
@@ -130,7 +152,8 @@ class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
 
 class GroupMuteAllEvent(GroupNoticeEvent):
     """全员禁言"""
-    type: Literal['GroupMuteAllEvent']
+
+    type: Literal["GroupMuteAllEvent"]
     origin: bool
     current: bool
     group: GroupInfo
@@ -139,7 +162,8 @@ class GroupMuteAllEvent(GroupNoticeEvent):
 
 class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
     """匿名聊天"""
-    type: Literal['GroupAllowAnonymousChatEvent']
+
+    type: Literal["GroupAllowAnonymousChatEvent"]
     origin: bool
     current: bool
     group: GroupInfo
@@ -148,7 +172,8 @@ class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
 
 class GroupAllowConfessTalkEvent(GroupNoticeEvent):
     """坦白说"""
-    type: Literal['GroupAllowAnonymousChatEvent']
+
+    type: Literal["GroupAllowAnonymousChatEvent"]
     origin: bool
     current: bool
     group: GroupInfo
@@ -157,7 +182,8 @@ class GroupAllowConfessTalkEvent(GroupNoticeEvent):
 
 class GroupAllowMemberInviteEvent(GroupNoticeEvent):
     """允许群员邀请好友加群"""
-    type: Literal['GroupAllowMemberInviteEvent']
+
+    type: Literal["GroupAllowMemberInviteEvent"]
     origin: bool
     current: bool
     group: GroupInfo
@@ -166,60 +192,70 @@ class GroupAllowMemberInviteEvent(GroupNoticeEvent):
 
 class GroupMemberEvent(GroupEvent):
     """群成员相关事件"""
+
     member: GroupMemberInfo
 
 
 class MemberJoinEvent(GroupMemberEvent):
     """新人入群的事件"""
-    type: Literal['MemberJoinEvent']
+
+    type: Literal["MemberJoinEvent"]
 
 
 class MemberLeaveEventKick(GroupMemberEvent):
     """成员被踢出群（该成员不是Bot）"""
-    type: Literal['MemberLeaveEventKick']
+
+    type: Literal["MemberLeaveEventKick"]
     operator: GroupMemberInfo
 
 
 class MemberLeaveEventQuit(GroupMemberEvent):
     """成员主动离群（该成员不是Bot）"""
-    type: Literal['MemberLeaveEventQuit']
+
+    type: Literal["MemberLeaveEventQuit"]
 
 
 class MemberCardChangeEvent(GroupMemberEvent):
     """群名片改动"""
-    type: Literal['MemberCardChangeEvent']
+
+    type: Literal["MemberCardChangeEvent"]
     origin: str
     current: str
 
 
 class MemberSpecialTitleChangeEvent(GroupMemberEvent):
     """群头衔改动（只有群主有操作限权）"""
-    type: Literal['MemberSpecialTitleChangeEvent']
+
+    type: Literal["MemberSpecialTitleChangeEvent"]
     origin: str
     current: str
 
 
 class MemberPermissionChangeEvent(GroupMemberEvent):
     """成员权限改变的事件（该成员不是Bot）"""
-    type: Literal['MemberPermissionChangeEvent']
+
+    type: Literal["MemberPermissionChangeEvent"]
     origin: Permission
     current: Permission
 
 
 class MemberMuteEvent(GroupMemberEvent):
     """群成员被禁言事件（该成员不是Bot）"""
-    type: Literal['MemberMuteEvent']
+
+    type: Literal["MemberMuteEvent"]
     durationSeconds: int
     operator: GroupMemberInfo
 
 
 class MemberUnmuteEvent(GroupMemberEvent):
     """群成员被取消禁言事件（该成员不是Bot）"""
-    type: Literal['MemberUnmuteEvent']
+
+    type: Literal["MemberUnmuteEvent"]
     operator: GroupMemberInfo
 
 
 class MemberHonorChangeEvent(GroupMemberEvent):
     """群员称号改变"""
-    type: Literal['MemberHonorChangeEvent']
-    action: Literal['achieve', 'lose']
+
+    type: Literal["MemberHonorChangeEvent"]
+    action: Literal["achieve", "lose"]

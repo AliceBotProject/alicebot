@@ -1,25 +1,25 @@
 """CQHTTP 适配器事件。"""
 import inspect
-from typing import Any, Dict, Literal, Optional, Type, TypeVar, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Type, Literal, TypeVar, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field, BaseModel
 
 from alicebot.event import Event
 
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
-    from . import CQHTTPAdapter  # noqa
     from .message import T_CQMSG
+    from . import CQHTTPAdapter  # noqa
 
-T_CQHTTPEvent = TypeVar('T_CQHTTPEvent', bound='CQHTTPEvent')
+T_CQHTTPEvent = TypeVar("T_CQHTTPEvent", bound="CQHTTPEvent")
 
 
 class Sender(BaseModel):
     user_id: Optional[int]
     nickname: Optional[str]
     card: Optional[str]
-    sex: Optional[Literal['male', 'female', 'unknown']]
+    sex: Optional[Literal["male", "female", "unknown"]]
     age: Optional[int]
     area: Optional[str]
     level: Optional[str]
@@ -45,28 +45,30 @@ class Status(BaseModel):
     good: bool
 
     class Config:
-        extra = 'allow'
+        extra = "allow"
 
 
-class CQHTTPEvent(Event['CQHTTPAdapter']):
+class CQHTTPEvent(Event["CQHTTPAdapter"]):
     """CQHTTP 事件基类"""
-    __event__ = ''
-    type: Optional[str] = Field(alias='post_type')
+
+    __event__ = ""
+    type: Optional[str] = Field(alias="post_type")
     time: int
     self_id: int
-    post_type: Literal['message', 'notice', 'request', 'meta_event']
+    post_type: Literal["message", "notice", "request", "meta_event"]
 
     @property
     def to_me(self) -> bool:
         """当前事件的 user_id 是否等于 self_id。"""
-        return getattr(self, 'user_id') == self.self_id
+        return getattr(self, "user_id") == self.self_id
 
 
 class MessageEvent(CQHTTPEvent):
     """消息事件"""
-    __event__ = 'message'
-    post_type: Literal['message']
-    message_type: Literal['private', 'group']
+
+    __event__ = "message"
+    post_type: Literal["message"]
+    message_type: Literal["private", "group"]
     sub_type: str
     message_id: int
     user_id: int
@@ -86,7 +88,7 @@ class MessageEvent(CQHTTPEvent):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, msg: 'T_CQMSG') -> Dict[str, Any]:
+    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -100,36 +102,44 @@ class MessageEvent(CQHTTPEvent):
 
 class PrivateMessageEvent(MessageEvent):
     """私聊消息"""
-    __event__ = 'message.private'
-    message_type: Literal['private']
-    sub_type: Literal['friend', 'group', 'other']
 
-    async def reply(self, msg: 'T_CQMSG') -> Dict[str, Any]:
-        return await self.adapter.send_private_msg(user_id=self.user_id, message=CQHTTPMessage(msg))
+    __event__ = "message.private"
+    message_type: Literal["private"]
+    sub_type: Literal["friend", "group", "other"]
+
+    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+        return await self.adapter.send_private_msg(
+            user_id=self.user_id, message=CQHTTPMessage(msg)
+        )
 
 
 class GroupMessageEvent(MessageEvent):
     """群消息"""
-    __event__ = 'message.group'
-    message_type: Literal['group']
-    sub_type: Literal['normal', 'anonymous', 'notice']
+
+    __event__ = "message.group"
+    message_type: Literal["group"]
+    sub_type: Literal["normal", "anonymous", "notice"]
     group_id: int
     anonymous: Optional[Anonymous] = None
 
-    async def reply(self, msg: 'T_CQMSG') -> Dict[str, Any]:
-        return await self.adapter.send_group_msg(group_id=self.group_id, message=CQHTTPMessage(msg))
+    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+        return await self.adapter.send_group_msg(
+            group_id=self.group_id, message=CQHTTPMessage(msg)
+        )
 
 
 class NoticeEvent(CQHTTPEvent):
     """通知事件"""
-    __event__ = 'notice'
-    post_type: Literal['notice']
+
+    __event__ = "notice"
+    post_type: Literal["notice"]
     notice_type: str
 
 
 class GroupUploadNoticeEvent(NoticeEvent):
     """群文件上传"""
-    __event__ = 'notice.group_upload'
+
+    __event__ = "notice.group_upload"
     notice_type: Literal["group_upload"]
     user_id: int
     group_id: int
@@ -138,18 +148,20 @@ class GroupUploadNoticeEvent(NoticeEvent):
 
 class GroupAdminNoticeEvent(NoticeEvent):
     """群管理员变动"""
-    __event__ = 'notice.group_admin'
-    notice_type: Literal['group_admin']
-    sub_type: Literal['set', 'unset']
+
+    __event__ = "notice.group_admin"
+    notice_type: Literal["group_admin"]
+    sub_type: Literal["set", "unset"]
     user_id: int
     group_id: int
 
 
 class GroupDecreaseNoticeEvent(NoticeEvent):
     """群成员减少"""
-    __event__ = 'notice.group_decrease'
-    notice_type: Literal['group_decrease']
-    sub_type: Literal['leave', 'kick', 'kick_me']
+
+    __event__ = "notice.group_decrease"
+    notice_type: Literal["group_decrease"]
+    sub_type: Literal["leave", "kick", "kick_me"]
     group_id: int
     operator_id: int
     user_id: int
@@ -157,9 +169,10 @@ class GroupDecreaseNoticeEvent(NoticeEvent):
 
 class GroupIncreaseNoticeEvent(NoticeEvent):
     """群成员增加"""
-    __event__ = 'notice.group_increase'
-    notice_type: Literal['group_increase']
-    sub_type: Literal['approve', 'invite']
+
+    __event__ = "notice.group_increase"
+    notice_type: Literal["group_increase"]
+    sub_type: Literal["approve", "invite"]
     group_id: int
     operator_id: int
     user_id: int
@@ -167,9 +180,10 @@ class GroupIncreaseNoticeEvent(NoticeEvent):
 
 class GroupBanNoticeEvent(NoticeEvent):
     """群禁言"""
-    __event__ = 'notice.group_ban'
-    notice_type: Literal['group_ban']
-    sub_type: Literal['ban', 'lift_ban']
+
+    __event__ = "notice.group_ban"
+    notice_type: Literal["group_ban"]
+    sub_type: Literal["ban", "lift_ban"]
     group_id: int
     operator_id: int
     user_id: int
@@ -178,15 +192,17 @@ class GroupBanNoticeEvent(NoticeEvent):
 
 class FriendAddNoticeEvent(NoticeEvent):
     """好友添加"""
-    __event__ = 'notice.friend_add'
-    notice_type: Literal['friend_add']
+
+    __event__ = "notice.friend_add"
+    notice_type: Literal["friend_add"]
     user_id: int
 
 
 class GroupRecallNoticeEvent(NoticeEvent):
     """群消息撤回"""
-    __event__ = 'notice.group_recall'
-    notice_type: Literal['group_recall']
+
+    __event__ = "notice.group_recall"
+    notice_type: Literal["group_recall"]
     group_id: int
     operator_id: int
     user_id: int
@@ -195,16 +211,18 @@ class GroupRecallNoticeEvent(NoticeEvent):
 
 class FriendRecallNoticeEvent(NoticeEvent):
     """好友消息撤回"""
-    __event__ = 'notice.friend_recall'
-    notice_type: Literal['friend_recall']
+
+    __event__ = "notice.friend_recall"
+    notice_type: Literal["friend_recall"]
     user_id: int
     message_id: int
 
 
 class NotifyEvent(NoticeEvent):
     """提醒事件"""
-    __event__ = 'notice.notify'
-    notice_type: Literal['notify']
+
+    __event__ = "notice.notify"
+    notice_type: Literal["notify"]
     sub_type: str
     group_id: int
     user_id: int
@@ -212,30 +230,34 @@ class NotifyEvent(NoticeEvent):
 
 class PokeNotifyEvent(NotifyEvent):
     """戳一戳"""
-    __event__ = 'notice.notify.poke'
-    sub_type: Literal['poke']
+
+    __event__ = "notice.notify.poke"
+    sub_type: Literal["poke"]
     target_id: int
     group_id: Optional[int] = None
 
 
 class GroupLuckyKingNotifyEvent(NotifyEvent):
     """群红包运气王"""
-    __event__ = 'notice.notify.lucky_king'
-    sub_type: Literal['lucky_king']
+
+    __event__ = "notice.notify.lucky_king"
+    sub_type: Literal["lucky_king"]
     target_id: int
 
 
 class GroupHonorNotifyEvent(NotifyEvent):
     """群成员荣誉变更"""
-    __event__ = 'notice.notify.honor'
-    sub_type: Literal['honor']
-    honor_type: Literal['talkative', 'performer', 'emotion']
+
+    __event__ = "notice.notify.honor"
+    sub_type: Literal["honor"]
+    honor_type: Literal["talkative", "performer", "emotion"]
 
 
 class RequestEvent(CQHTTPEvent):
     """请求事件"""
-    __event__ = 'request'
-    post_type: Literal['request']
+
+    __event__ = "request"
+    post_type: Literal["request"]
     request_type: str
 
     async def approve(self) -> Dict[str, Any]:
@@ -257,13 +279,14 @@ class RequestEvent(CQHTTPEvent):
 
 class FriendRequestEvent(RequestEvent):
     """加好友请求"""
-    __event__ = 'request.friend'
-    request_type: Literal['friend']
+
+    __event__ = "request.friend"
+    request_type: Literal["friend"]
     user_id: int
     comment: str
     flag: str
 
-    async def approve(self, remark: str = '') -> Dict[str, Any]:
+    async def approve(self, remark: str = "") -> Dict[str, Any]:
         """同意请求。
 
         Args:
@@ -272,7 +295,9 @@ class FriendRequestEvent(RequestEvent):
         Returns:
             API 请求响应。
         """
-        return await self.adapter.set_friend_add_request(flag=self.flag, approve=True, remark=remark)
+        return await self.adapter.set_friend_add_request(
+            flag=self.flag, approve=True, remark=remark
+        )
 
     async def refuse(self) -> Dict[str, Any]:
         return await self.adapter.set_friend_add_request(flag=self.flag, approve=False)
@@ -280,18 +305,21 @@ class FriendRequestEvent(RequestEvent):
 
 class GroupRequestEvent(RequestEvent):
     """加群请求／邀请"""
-    __event__ = 'request.group'
-    request_type: Literal['group']
-    sub_type: Literal['add', 'invite']
+
+    __event__ = "request.group"
+    request_type: Literal["group"]
+    sub_type: Literal["add", "invite"]
     group_id: int
     user_id: int
     comment: str
     flag: str
 
     async def approve(self) -> Dict[str, Any]:
-        return await self.adapter.set_group_add_request(flag=self.flag, sub_type=self.sub_type, approve=True)
+        return await self.adapter.set_group_add_request(
+            flag=self.flag, sub_type=self.sub_type, approve=True
+        )
 
-    async def refuse(self, reason: str = '') -> Dict[str, Any]:
+    async def refuse(self, reason: str = "") -> Dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -300,28 +328,32 @@ class GroupRequestEvent(RequestEvent):
         Returns:
             API 请求响应。
         """
-        return await self.adapter.set_group_add_request(flag=self.flag, sub_type=self.sub_type, approve=False,
-                                                        reason=reason)
+        return await self.adapter.set_group_add_request(
+            flag=self.flag, sub_type=self.sub_type, approve=False, reason=reason
+        )
 
 
 class MetaEvent(CQHTTPEvent):
     """元事件"""
-    __event__ = 'meta_event'
-    post_type: Literal['meta_event']
+
+    __event__ = "meta_event"
+    post_type: Literal["meta_event"]
     meta_event_type: str
 
 
 class LifecycleMetaEvent(MetaEvent):
     """生命周期"""
-    __event__ = 'meta_event.lifecycle'
-    meta_event_type: Literal['lifecycle']
-    sub_type: Literal['enable', 'disable', 'connect']
+
+    __event__ = "meta_event.lifecycle"
+    meta_event_type: Literal["lifecycle"]
+    sub_type: Literal["enable", "disable", "connect"]
 
 
 class HeartbeatMetaEvent(MetaEvent):
     """心跳"""
-    __event__ = 'meta_event.heartbeat'
-    meta_event_type: Literal['heartbeat']
+
+    __event__ = "meta_event.heartbeat"
+    meta_event_type: Literal["heartbeat"]
     status: Status
     interval: int
 
@@ -333,7 +365,9 @@ _cqhttp_events = {
 }
 
 
-def get_event_class(post_type: str, event_type: str, sub_type: Optional[str] = None) -> Type[T_CQHTTPEvent]:
+def get_event_class(
+    post_type: str, event_type: str, sub_type: Optional[str] = None
+) -> Type[T_CQHTTPEvent]:
     """根据接收到的消息类型返回对应的事件类。
 
     Args:
@@ -345,7 +379,8 @@ def get_event_class(post_type: str, event_type: str, sub_type: Optional[str] = N
         对应的事件类。
     """
     if sub_type is None:
-        return _cqhttp_events['.'.join((post_type, event_type))]
-    return _cqhttp_events.get(
-        '.'.join((post_type, event_type, sub_type))
-    ) or _cqhttp_events['.'.join((post_type, event_type))]
+        return _cqhttp_events[".".join((post_type, event_type))]
+    return (
+        _cqhttp_events.get(".".join((post_type, event_type, sub_type)))
+        or _cqhttp_events[".".join((post_type, event_type))]
+    )

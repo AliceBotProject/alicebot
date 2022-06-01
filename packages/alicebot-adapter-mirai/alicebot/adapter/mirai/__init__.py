@@ -5,11 +5,11 @@
 协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
 """
 import sys
-import time
 import json
+import time
 import asyncio
 from functools import partial
-from typing import Any, Dict, Literal, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
 
 import aiohttp
 
@@ -19,22 +19,24 @@ from alicebot.utils import Condition, DataclassEncoder
 
 from .config import Config
 from .message import MiraiMessage
-from .exceptions import NetworkError, ActionFailed, ApiTimeout
-from .event import BotEvent, CommandExecutedEvent, MateEvent, get_event_class
+from .exceptions import ApiTimeout, ActionFailed, NetworkError
+from .event import BotEvent, MateEvent, CommandExecutedEvent, get_event_class
 
 if TYPE_CHECKING:
     from .event import T_MiraiEvent
     from .message import T_MiraiMSG
 
-__all__ = ['MiraiAdapter']
+__all__ = ["MiraiAdapter"]
 
 
 class MiraiAdapter(WebSocketAdapter):
     """Mirai 协议适配器。
 
-    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，和调用 `call_api()` 方法相同。
+    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，
+    和调用 `call_api()` 方法相同。
     """
-    name: str = 'mirai'
+
+    name: str = "mirai"
     api_response_cond: Condition = None
     _sync_id: int = 0
 
@@ -58,14 +60,15 @@ class MiraiAdapter(WebSocketAdapter):
 
     async def reverse_ws_connection_hook(self):
         """反向 WebSocket 连接建立时的钩子函数。"""
-        logger.info(f'WebSocket connected!')
+        logger.info(f"WebSocket connected!")
         asyncio.create_task(self.verify_identity())
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""
-        logger.info('Trying to verify identity and create connection...')
+        logger.info("Trying to verify identity and create connection...")
         async with self.session.ws_connect(
-                f'ws://{self.host}:{self.port}/all?verifyKey={self.config.verify_key}&qq={self.config.qq}'
+            f"ws://{self.host}:{self.port}/all?"
+            f"verifyKey={self.config.verify_key}&qq={self.config.qq}"
         ) as self.websocket:
             await self.handle_websocket()
 
@@ -75,23 +78,32 @@ class MiraiAdapter(WebSocketAdapter):
             try:
                 msg_dict = msg.json()
             except json.JSONDecodeError as e:
-                logger.error(f'WebSocket message parsing error, not json: {e!r}')
+                logger.error(f"WebSocket message parsing error, not json: {e!r}")
                 return
 
-            if msg_dict.get('syncId') == '':
-                if msg_dict.get('data', {}).get('code') == 0:
-                    logger.info(f'Verify success! Session key: {msg_dict.get("data").get("session")}')
+            if msg_dict.get("syncId") == "":
+                if msg_dict.get("data", {}).get("code") == 0:
+                    logger.info(
+                        f"Verify success! "
+                        f"Session key: {msg_dict.get('data').get('session')}"
+                    )
                 else:
-                    logger.warning(f'Verify failed with code {msg_dict.get("code") or msg_dict}, retrying...')
+                    logger.warning(
+                        f"Verify failed with code {msg_dict.get('code') or msg_dict}, "
+                        f"retrying..."
+                    )
                     await asyncio.sleep(self.reconnect_interval)
-            elif msg_dict.get('syncId') == '-1':
-                await self.handle_mirai_event(msg_dict.get('data'))
+            elif msg_dict.get("syncId") == "-1":
+                await self.handle_mirai_event(msg_dict.get("data"))
             else:
                 async with self.api_response_cond:
                     self.api_response_cond.notify_all(msg_dict)
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
-            logger.error(f'WebSocket connection closed with exception {self.websocket.exception()!r}')
+            logger.error(
+                f"WebSocket connection closed "
+                f"with exception {self.websocket.exception()!r}"
+            )
 
     def _get_sync_id(self) -> int:
         self._sync_id = (self._sync_id + 1) % sys.maxsize
@@ -103,14 +115,16 @@ class MiraiAdapter(WebSocketAdapter):
         Args:
             msg: 接收到的信息。
         """
-        mirai_event = get_event_class(msg.get('type'))(adapter=self, **msg)
+        mirai_event = get_event_class(msg.get("type"))(adapter=self, **msg)
 
         if isinstance(mirai_event, MateEvent):
             # meta_event 不交由插件处理
             if isinstance(mirai_event, BotEvent):
-                logger.info(f'Bot {mirai_event.qq}: {mirai_event.type}')
+                logger.info(f"Bot {mirai_event.qq}: {mirai_event.type}")
             elif isinstance(mirai_event, CommandExecutedEvent):
-                logger.info(f'Command "{mirai_event.name}" was executed: {mirai_event!r}')
+                logger.info(
+                    f'Command "{mirai_event.name}" was executed: {mirai_event!r}'
+                )
         else:
             await self.handle_event(mirai_event)
 
@@ -119,19 +133,24 @@ class MiraiAdapter(WebSocketAdapter):
         while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.reconnect_interval)
             try:
-                logger.info('Trying to verify identity and create connection...')
-                await self.call_api('verify', **{
-                    'verifyKey': self.config.verify_key,
-                    'sessionKey': None,
-                    'qq': self.config.qq
-                })
+                logger.info("Trying to verify identity and create connection...")
+                await self.call_api(
+                    "verify",
+                    **{
+                        "verifyKey": self.config.verify_key,
+                        "sessionKey": None,
+                        "qq": self.config.qq,
+                    },
+                )
             except ActionFailed as e:
-                logger.warning(f'Verify failed with code {e.code}, retrying...')
+                logger.warning(f"Verify failed with code {e.code}, retrying...")
             else:
-                logger.info('Verify success!')
+                logger.info("Verify success!")
                 return
 
-    async def call_api(self, command: str, sub_command: Optional[str] = None, **content) -> Dict[str, Any]:
+    async def call_api(
+        self, command: str, sub_command: Optional[str] = None, **content
+    ) -> Dict[str, Any]:
         """调用 Mirai API，协程会等待直到获得 API 响应。
 
         Args:
@@ -149,12 +168,17 @@ class MiraiAdapter(WebSocketAdapter):
         """
         sync_id = str(self._get_sync_id())
         try:
-            await self.websocket.send_str(json.dumps({
-                'syncId': sync_id,
-                'command': command,
-                "subCommand": sub_command,
-                "content": content
-            }, cls=DataclassEncoder))
+            await self.websocket.send_str(
+                json.dumps(
+                    {
+                        "syncId": sync_id,
+                        "command": command,
+                        "subCommand": sub_command,
+                        "content": content,
+                    },
+                    cls=DataclassEncoder,
+                )
+            )
         except Exception:
             raise NetworkError
 
@@ -164,28 +188,33 @@ class MiraiAdapter(WebSocketAdapter):
                 break
             async with self.api_response_cond:
                 try:
-                    resp = await asyncio.wait_for(self.api_response_cond.wait(),
-                                                  timeout=start_time + self.config.api_timeout - time.time())
+                    resp = await asyncio.wait_for(
+                        self.api_response_cond.wait(),
+                        timeout=start_time + self.config.api_timeout - time.time(),
+                    )
                 except asyncio.TimeoutError:
                     break
-                if resp.get('syncId') == sync_id:
-                    status_code = resp.get('data', {}).get('code')
+                if resp.get("syncId") == sync_id:
+                    status_code = resp.get("data", {}).get("code")
                     if status_code is not None and status_code != 0:
                         raise ActionFailed(code=status_code, resp=resp)
-                    return resp.get('data')
+                    return resp.get("data")
 
         if not self.bot.should_exit.is_set():
             raise ApiTimeout
 
-    async def send(self,
-                   message_: 'T_MiraiMSG',
-                   message_type: Literal['private', 'friend', 'group'],
-                   target: int,
-                   quote: int = None) -> Dict[str, Any]:
+    async def send(
+        self,
+        message_: "T_MiraiMSG",
+        message_type: Literal["private", "friend", "group"],
+        target: int,
+        quote: int = None,
+    ) -> Dict[str, Any]:
         """调用 Mirai API 发送消息。
 
         Args:
-            message_: 消息内容，可以是 str, Mapping, Iterable[Mapping], 'MiraiMessageSegment', 'MiraiMessage'。
+            message_: 消息内容，可以是 str, Mapping, Iterable[Mapping],
+                'MiraiMessageSegment', 'MiraiMessage'。
                 将使用 `MiraiMessage` 进行封装。
             message_type: 消息类型。应该是 private, friend 或者 group。其中 private 和 friend 相同。
             target: 发送对象的 ID ，QQ 号码或者群号码。
@@ -198,9 +227,13 @@ class MiraiAdapter(WebSocketAdapter):
             TypeError: message_type 非法。
             ...: 同 `call_api()` 方法。
         """
-        if message_type == 'private' or message_type == 'friend':
-            return await self.sendFriendMessage(target=target, messageChain=MiraiMessage(message_), quote=quote)
-        elif message_type == 'group':
-            return await self.sendGroupMessage(target=target, messageChain=MiraiMessage(message_), quote=quote)
+        if message_type == "private" or message_type == "friend":
+            return await self.sendFriendMessage(
+                target=target, messageChain=MiraiMessage(message_), quote=quote
+            )
+        elif message_type == "group":
+            return await self.sendGroupMessage(
+                target=target, messageChain=MiraiMessage(message_), quote=quote
+            )
         else:
             raise TypeError('message_type must be "private", "friend" or "group"')

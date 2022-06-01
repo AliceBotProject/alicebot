@@ -11,5 +11,6 @@ class Config(BaseModel):
         __config_name__: 配置名称。
         scheduler_config: 调度器配置。
     """
-    __config_name__ = 'apscheduler'
+
+    __config_name__ = "apscheduler"
     scheduler_config: Dict[str, Any] = {}

@@ -5,12 +5,10 @@ from alicebot.exceptions import AdapterException
 
 class MiraiException(AdapterException):
     """Mirai 异常基类。"""
-    pass
 
 
 class NetworkError(MiraiException):
     """网络异常。"""
-    pass
 
 
 class ActionFailed(MiraiException):
@@ -28,4 +26,3 @@ class ActionFailed(MiraiException):
 
 class ApiTimeout(MiraiException):
     """API 请求响应超时。"""
-    pass

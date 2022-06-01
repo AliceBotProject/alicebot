@@ -13,9 +13,10 @@ class Config(BaseModel):
         api_timeout: 进行 API 调用时等待返回响应的超时时间。
         app_secret: 机器人的 appSecret。
     """
-    __config_name__ = 'dingtalk'
-    host: str = '127.0.0.1'
+
+    __config_name__ = "dingtalk"
+    host: str = "127.0.0.1"
     port: int = 8080
-    url: str = '/dingtalk'
+    url: str = "/dingtalk"
     api_timeout: int = 1000
-    app_secret: str = ''
+    app_secret: str = ""

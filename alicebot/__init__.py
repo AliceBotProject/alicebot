@@ -1,13 +1,24 @@
 import sys
-import time
 import json
+import time
 import signal
 import asyncio
 import threading
-from itertools import chain
 from functools import wraps
+from itertools import chain
 from collections import defaultdict
-from typing import Any, Awaitable, Callable, Dict, List, Iterable, Union, Tuple, Type, Optional
+from typing import (
+    Any,
+    Dict,
+    List,
+    Type,
+    Tuple,
+    Union,
+    Callable,
+    Iterable,
+    Optional,
+    Awaitable,
+)
 
 from pydantic import BaseModel, ValidationError, create_model
 
@@ -15,11 +26,27 @@ from alicebot.log import logger
 from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
 from alicebot.config import MainConfig
-from alicebot.typing import T_Event, T_BotHook, T_BotExitHook, T_AdapterHook, T_EventHook
-from alicebot.utils import Condition, ModulePathFinder, load_module, load_modules_from_dir
-from alicebot.exceptions import StopException, SkipException, LoadModuleError, GetEventTimeout
+from alicebot.utils import (
+    Condition,
+    ModulePathFinder,
+    load_module,
+    load_modules_from_dir,
+)
+from alicebot.typing import (
+    T_Event,
+    T_BotHook,
+    T_EventHook,
+    T_AdapterHook,
+    T_BotExitHook,
+)
+from alicebot.exceptions import (
+    SkipException,
+    StopException,
+    GetEventTimeout,
+    LoadModuleError,
+)
 
-__all__ = ['Bot']
+__all__ = ["Bot"]
 
 HANDLED_SIGNALS = (
     signal.SIGINT,  # Unix signal 2. Sent by Ctrl+C.
@@ -28,7 +55,8 @@ HANDLED_SIGNALS = (
 
 
 class Bot:
-    """AliceBot 机器人对象，定义了机器人的基本方法，读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
+    """AliceBot 机器人对象，定义了机器人的基本方法。
+        读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
 
     Attributes:
         config: 机器人配置。
@@ -39,6 +67,7 @@ class Bot:
         plugin_state: 插件状态。
         global_state: 全局状态。
     """
+
     config: MainConfig = None
     config_dict: Dict[str, Any]
     should_exit: asyncio.Event
@@ -60,12 +89,18 @@ class Bot:
     _event_preprocessor_hook: List[T_EventHook]
     _event_postprocessor_hook: List[T_EventHook]
 
-    def __init__(self, config_file: Optional[str] = 'config.json', config_dict: Optional[Dict] = None):
+    def __init__(
+        self,
+        config_file: Optional[str] = "config.json",
+        config_dict: Optional[Dict] = None,
+    ):
         """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
         Args:
-            config_file: 配置文件，如不指定则使用默认的 `config.json`， 若指定为 None，则不加载配置文件。
-            config_dict: 配置字典，默认为 None，若指定字典，则会忽略 config_file 配置，不再读取配置文件。
+            config_file: 配置文件，如不指定则使用默认的 `config.json`。
+                若指定为 None，则不加载配置文件。
+            config_dict: 配置字典，默认为 None。
+                若指定字典，则会忽略 config_file 配置，不再读取配置文件。
         """
         self.adapters = []
         self.plugins_priority_dict = {}
@@ -89,21 +124,21 @@ class Bot:
                 return
 
             try:
-                with open(config_file, 'r', encoding='utf8') as f:
+                with open(config_file, "r", encoding="utf8") as f:
                     self.config_dict = json.load(f)
             except OSError as e:
-                logger.warning(f'Can not open config file: {e!r}')
+                logger.warning(f"Can not open config file: {e!r}")
             except json.JSONDecodeError as e:
-                logger.warning(f'Read config file failed: {e!r}')
+                logger.warning(f"Read config file failed: {e!r}")
             except ValueError as e:
-                logger.error(f'Read config file failed: {e!r}')
+                logger.error(f"Read config file failed: {e!r}")
         else:
             self.config_dict = config_dict
 
         try:
             self.config = MainConfig(**self.config_dict)
         except ValidationError as e:
-            logger.error(f'Config dict parse error: {e!r}')
+            logger.error(f"Config dict parse error: {e!r}")
 
         if self.config is None:
             self.config = MainConfig()
@@ -129,7 +164,7 @@ class Bot:
 
     async def _run(self):
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
-        logger.info('Running AliceBot...')
+        logger.info("Running AliceBot...")
         loop = asyncio.get_running_loop()
 
         self.should_exit = asyncio.Event()
@@ -148,7 +183,9 @@ class Bot:
 
         # 更新 config，合并入来自 Plugin 和 Adapter 的 Config
         if self._config_update_dict and self.config_dict:
-            self.config = create_model('Config', **self._config_update_dict, __base__=MainConfig)(**self.config_dict)
+            self.config = create_model(
+                "Config", **self._config_update_dict, __base__=MainConfig
+            )(**self.config_dict)
 
         for _hook_func in self._bot_run_hook:
             await _hook_func(self)
@@ -160,7 +197,7 @@ class Bot:
                 try:
                     await _adapter.startup()
                 except Exception as e:
-                    logger.error(f'Startup adapter {_adapter!r} failed: {e!r}')
+                    logger.error(f"Startup adapter {_adapter!r} failed: {e!r}")
 
             for _adapter in self.adapters:
                 for _hook_func in self._adapter_run_hook:
@@ -176,16 +213,18 @@ class Bot:
 
     def _handle_exit(self, *args):  # noqa
         """当机器人收到退出信号时，根据情况进行处理。"""
-        logger.info('Stopping AliceBot...')
+        logger.info("Stopping AliceBot...")
         for _hook_func in self._bot_exit_hook:
             _hook_func(self)
         if self.should_exit.is_set():
-            logger.warning('Force Exit AliceBot...')
+            logger.warning("Force Exit AliceBot...")
             sys.exit()
         else:
             self.should_exit.set()
 
-    async def handle_event(self, current_event: T_Event, *, handle_get: bool = True, show_log: bool = True):
+    async def handle_event(
+        self, current_event: T_Event, *, handle_get: bool = True, show_log: bool = True
+    ):
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
         此方法不应该被用户手动调用。
@@ -196,7 +235,9 @@ class Bot:
             show_log: 是否在日志中显示，默认为 True。
         """
         if show_log:
-            logger.info(f'Adapter {current_event.adapter.name} received: {current_event!r}')
+            logger.info(
+                f"Adapter {current_event.adapter.name} received: {current_event!r}"
+            )
 
         if handle_get:
             asyncio.create_task(self._handle_event())
@@ -218,13 +259,15 @@ class Bot:
 
         for plugin_priority in sorted(self.plugins_priority_dict.keys()):
             try:
-                logger.debug(f'Checking for matching plugins with priority {plugin_priority!r}')
+                logger.debug(
+                    f"Checking for matching plugins with priority {plugin_priority!r}"
+                )
                 stop = False
                 for _plugin in self.plugins_priority_dict[plugin_priority]:
                     try:
                         _plugin = _plugin(current_event)
                         if await _plugin.rule():
-                            logger.info(f'Event will be handled by {_plugin!r}')
+                            logger.info(f"Event will be handled by {_plugin!r}")
                             try:
                                 await _plugin.handle()
                             finally:
@@ -241,22 +284,25 @@ class Bot:
                 if stop:
                     break
             except Exception as e:
-                logger.error(f'Exception in handling event {current_event!r}: {e!r}')
+                logger.error(f"Exception in handling event {current_event!r}: {e!r}")
 
         for _hook_func in self._event_postprocessor_hook:
             await _hook_func(current_event)
 
-        logger.info('Event Finished')
+        logger.info("Event Finished")
 
-    async def get(self,
-                  func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
-                  *,
-                  max_try_times: Optional[int] = None,
-                  timeout: Optional[Union[int, float]] = None) -> T_Event:
+    async def get(
+        self,
+        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        *,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> T_Event:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         Args:
-            func: 协程或者函数，函数会被自动包装为协程执行。要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
+            func: 协程或者函数，函数会被自动包装为协程执行。
+                要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
                 当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
             max_try_times: 最大事件数。
             timeout: 超时时间。
@@ -296,8 +342,10 @@ class Bot:
                     event = await self._condition.wait()
                 else:
                     try:
-                        event = await asyncio.wait_for(self._condition.wait(),
-                                                       timeout=start_time + timeout - time.time())
+                        event = await asyncio.wait_for(
+                            self._condition.wait(),
+                            timeout=start_time + timeout - time.time(),
+                        )
                     except asyncio.TimeoutError:
                         break
 
@@ -311,7 +359,9 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def load_plugin_from_class(self, plugin_class: Type[Plugin], config_class: Type[BaseModel] = None) -> None:
+    def load_plugin_from_class(
+        self, plugin_class: Type[Plugin], config_class: Type[BaseModel] = None
+    ) -> None:
         """从插件类中手动加载插件。
 
         Args:
@@ -325,7 +375,9 @@ class Bot:
                 self.plugins_priority_dict[plugin_class.priority] = [plugin_class]
             self._update_config(config_class)
         else:
-            raise LoadModuleError(f'Plugin class priority incorrect in the module "{plugin_class!r}"')
+            raise LoadModuleError(
+                f'Plugin class priority incorrect in the module "{plugin_class!r}"'
+            )
 
     def load_plugin(self, name: str) -> Optional[Type[Plugin]]:
         """加载单个插件。
@@ -368,20 +420,24 @@ class Bot:
         """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
 
         Args:
-            path: 由储存插件的路径文本组成的列表。 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
+            path: 由储存插件的路径文本组成的列表。
+                例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
-        for module, config_class, module_info in load_modules_from_dir(self._module_path_finder, path, Plugin):
+        for module, config_class, module_info in load_modules_from_dir(
+            self._module_path_finder, path, Plugin
+        ):
             try:
                 self.load_plugin_from_class(module)
             except Exception as e:
-                # noinspection PyUnresolvedReferences
                 logger.error(
-                    f'Import plugin "{module_info.name}" from path "{module_info.module_finder.path}" failed: {e!r}'
+                    f'Import plugin "{module_info.name}" '
+                    f'from path "{module_info.module_finder.path}" '  # noqa
+                    f"failed: {e!r}"
                 )
             else:
-                # noinspection PyUnresolvedReferences
                 logger.info(
-                    f'Succeeded to import plugin "{module_info.name}" from path "{module_info.module_finder.path}"'
+                    f'Succeeded to import plugin "{module_info.name}" '
+                    f'from path "{module_info.module_finder.path}"'  # noqa
                 )
 
     def _update_config(self, config_class: Optional[Type[BaseModel]]):
@@ -391,7 +447,10 @@ class Bot:
             default_value = config_class()
         except ValidationError:
             default_value = ...
-        self._config_update_dict[getattr(config_class, '__config_name__')] = (config_class, default_value)
+        self._config_update_dict[getattr(config_class, "__config_name__")] = (
+            config_class,
+            default_value,
+        )
 
     def get_loaded_adapter_by_name(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。

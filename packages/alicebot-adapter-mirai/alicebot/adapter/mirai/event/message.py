@@ -1,7 +1,7 @@
-from typing import Any, Dict, Literal, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, Literal
 
 from ..message import MiraiMessage
-from .base import MiraiEvent, FriendInfo, GroupMemberInfo, OtherClientSender
+from .base import FriendInfo, MiraiEvent, GroupMemberInfo, OtherClientSender
 
 if TYPE_CHECKING:
     from ..message import T_MiraiMSG
@@ -9,6 +9,7 @@ if TYPE_CHECKING:
 
 class MessageEvent(MiraiEvent):
     """消息事件"""
+
     messageChain: MiraiMessage
 
     @property
@@ -25,7 +26,7 @@ class MessageEvent(MiraiEvent):
         """
         return self.messageChain.get_plain_text()
 
-    async def reply(self, msg: 'T_MiraiMSG', quote: bool = False) -> Dict[str, Any]:
+    async def reply(self, msg: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -40,60 +41,89 @@ class MessageEvent(MiraiEvent):
 
 class FriendMessage(MessageEvent):
     """好友消息"""
-    type: Literal['FriendMessage']
+
+    type: Literal["FriendMessage"]
     sender: FriendInfo
 
-    async def reply(self, msg: 'T_MiraiMSG', quote: bool = False) -> Dict[str, Any]:
+    async def reply(self, msg: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         if quote:
-            return await self.adapter.send(msg, message_type='friend', target=self.sender.id,
-                                           quote=self.messageChain[0].id)
+            return await self.adapter.send(
+                msg,
+                message_type="friend",
+                target=self.sender.id,
+                quote=self.messageChain[0].id,
+            )
         else:
-            return await self.adapter.send(msg, message_type='friend', target=self.sender.id)
+            return await self.adapter.send(
+                msg, message_type="friend", target=self.sender.id
+            )
 
 
 class GroupMessage(MessageEvent):
     """群消息"""
-    type: Literal['GroupMessage']
+
+    type: Literal["GroupMessage"]
     sender: GroupMemberInfo
 
-    async def reply(self, msg: 'T_MiraiMSG', quote: bool = False) -> Dict[str, Any]:
+    async def reply(self, msg: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         if quote:
-            return await self.adapter.send(msg, message_type='group', target=self.sender.group.id,
-                                           quote=self.messageChain[0].id)
+            return await self.adapter.send(
+                msg,
+                message_type="group",
+                target=self.sender.group.id,
+                quote=self.messageChain[0].id,
+            )
         else:
-            return await self.adapter.send(msg, message_type='group', target=self.sender.group.id)
+            return await self.adapter.send(
+                msg, message_type="group", target=self.sender.group.id
+            )
 
 
 class TempMessage(MessageEvent):
     """群临时消息"""
-    type: Literal['TempMessage']
+
+    type: Literal["TempMessage"]
     sender: GroupMemberInfo
 
-    async def reply(self, msg: 'T_MiraiMSG', quote: bool = False) -> Dict[str, Any]:
+    async def reply(self, msg: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         if quote:
-            return await self.adapter.sendTempMessage(qq=self.sender.id, group=self.sender.group.id, messageChain=msg,
-                                                      quote=self.messageChain[0].id)
+            return await self.adapter.sendTempMessage(
+                qq=self.sender.id,
+                group=self.sender.group.id,
+                messageChain=msg,
+                quote=self.messageChain[0].id,
+            )
         else:
-            return await self.adapter.sendTempMessage(qq=self.sender.id, group=self.sender.group.id, messageChain=msg)
+            return await self.adapter.sendTempMessage(
+                qq=self.sender.id, group=self.sender.group.id, messageChain=msg
+            )
 
 
 class StrangerMessage(MessageEvent):
     """陌生人消息"""
-    type: Literal['StrangerMessage']
+
+    type: Literal["StrangerMessage"]
     sender: FriendInfo
 
-    async def reply(self, msg: 'T_MiraiMSG', quote: bool = False) -> Dict[str, Any]:
+    async def reply(self, msg: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         if quote:
-            return await self.adapter.send(msg, message_type='friend', target=self.sender.id,
-                                           quote=self.messageChain[0].id)
+            return await self.adapter.send(
+                msg,
+                message_type="friend",
+                target=self.sender.id,
+                quote=self.messageChain[0].id,
+            )
         else:
-            return await self.adapter.send(msg, message_type='friend', target=self.sender.id)
+            return await self.adapter.send(
+                msg, message_type="friend", target=self.sender.id
+            )
 
 
 class OtherClientMessage(MessageEvent):
     """其他客户端消息"""
-    type: Literal['OtherClientMessage']
+
+    type: Literal["OtherClientMessage"]
     sender: OtherClientSender
 
-    async def reply(self, msg: 'T_MiraiMSG', quote: bool = False) -> Dict[str, Any]:
+    async def reply(self, msg: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         raise NotImplementedError

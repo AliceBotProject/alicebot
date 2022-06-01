@@ -1,8 +1,8 @@
 """DingTalk 适配器事件。"""
 import time
-from typing import Any, Dict, List, Literal, Optional, Union, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Union, Literal, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import Field, BaseModel, validator
 
 from alicebot.event import Event
 
@@ -22,14 +22,15 @@ class Text(BaseModel):
     content: str
 
 
-class DingTalkEvent(Event['DingTalkAdapter']):
+class DingTalkEvent(Event["DingTalkAdapter"]):
     """DingTalk 事件基类"""
-    type: Optional[str] = Field(alias='msgtype')
+
+    type: Optional[str] = Field(alias="msgtype")
 
     msgtype: str
     msgId: str
     createAt: str
-    conversationType: Literal['1', '2']
+    conversationType: Literal["1", "2"]
     conversationId: str
     conversationTitle: Optional[str]
     senderId: str
@@ -49,13 +50,15 @@ class DingTalkEvent(Event['DingTalkAdapter']):
     response_msg: Union[None, str, Dict, DingTalkMessage] = None
     response_at: Union[None, Dict, DingTalkMessage] = None
 
-    @validator('message', always=True)
+    @validator("message", always=True)
     def set_ts_now(cls, v, values, **kwargs):  # noqa
-        return DingTalkMessage.text(values['text'].content)
+        return DingTalkMessage.text(values["text"].content)
 
-    async def reply(self,
-                    msg: Union[str, Dict, DingTalkMessage],
-                    at: Union[None, Dict, DingTalkMessage] = None) -> Dict[str, Any]:
+    async def reply(
+        self,
+        msg: Union[str, Dict, DingTalkMessage],
+        at: Union[None, Dict, DingTalkMessage] = None,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -70,9 +73,11 @@ class DingTalkEvent(Event['DingTalkAdapter']):
             ...: 同 `DingTalkAdapter.send()` 方法。
         """
         if self.sessionWebhookExpiredTime > time.time() * 1000:
-            return await self.adapter.send(webhook=self.sessionWebhook,
-                                           conversation_type=self.conversationType,
-                                           msg=msg,
-                                           at=at)
+            return await self.adapter.send(
+                webhook=self.sessionWebhook,
+                conversation_type=self.conversationType,
+                msg=msg,
+                at=at,
+            )
         else:
             raise WebhookExpiredError

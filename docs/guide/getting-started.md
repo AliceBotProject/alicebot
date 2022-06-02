@@ -116,4 +116,4 @@ AliceBot 推荐的目录结构如下：
 
 ## 开发建议
 
-在使用 AliceBot 进行开发时，建议使用具有类型检查的 IDE，如 PyCharm 、 VSCode 等，这可以帮助你充分利用 AliceBot 的类型声明。
+在使用 AliceBot 进行开发时，建议使用具有类型检查的 IDE，如 PyCharm 、 VSCode 等，这可以帮助你充分利用 AliceBot 的类型提示。

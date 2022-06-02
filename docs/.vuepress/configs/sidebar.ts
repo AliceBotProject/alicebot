@@ -44,6 +44,7 @@ export const zh: SidebarConfig = {
       children: [
         '/guide/cqhttp-adapter.md',
         '/guide/mirai-adapter.md',
+        '/guide/dingtalk-adapter.md',
       ]
     }
   ],

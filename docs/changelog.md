@@ -4,7 +4,7 @@ sidebar: auto
 
 # 更新日志
 
-# [0.3.0](https://github.com/st1020/alicebot/compare/v0.2.1...v0.3.0) (2022-05-04)
+## [0.3.0](https://github.com/st1020/alicebot/compare/v0.2.1...v0.3.0) (2022-05-04)
 
 
 ### Bug Fixes

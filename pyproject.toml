@@ -10,21 +10,21 @@ repository = "https://github.com/st1020/alicebot"
 documentation = "https://docs.alicebot.dev/"
 keywords = ["bot", "chatbot", "qq", "qqbot", "cqhttp", "coolq"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Framework :: AsyncIO",
-    "Framework :: Robot Framework",
-    "Framework :: Robot Framework :: Library",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3",
-    "Topic :: Communications :: Chat"
+  "Development Status :: 3 - Alpha",
+  "Framework :: AsyncIO",
+  "Framework :: Robot Framework",
+  "Framework :: Robot Framework :: Library",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Topic :: Communications :: Chat"
 ]
 
 [tool.poetry.dependencies]
 python = "^3.8"
 pydantic = "~1.9.0"
 aiohttp = "^3.7.0"
-loguru = "^0.5.0"
+loguru = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
 sophia-doc = { git = "https://github.com/st1020/sophia-doc.git" }
@@ -43,10 +43,10 @@ mirai = ["alicebot-adapter-mirai"]
 dingtalk = ["alicebot-adapter-dingtalk"]
 apscheduler = ["alicebot-adapter-apscheduler"]
 all = [
-    "alicebot-adapter-cqhttp",
-    "alicebot-adapter-mirai",
-    "alicebot-adapter-dingtalk",
-    "alicebot-adapter-apscheduler"
+  "alicebot-adapter-cqhttp",
+  "alicebot-adapter-mirai",
+  "alicebot-adapter-dingtalk",
+  "alicebot-adapter-apscheduler"
 ]
 
 [tool.pydantic-pycharm-plugin]

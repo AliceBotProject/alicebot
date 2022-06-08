@@ -4,6 +4,21 @@ sidebar: auto
 
 # 更新日志
 
+
+## [0.3.1](https://github.com/st1020/alicebot/compare/v0.3.0...v0.3.1) (2022-06-08)
+
+
+### Bug Fixes
+
+* 修复 load_plugins_from_dir 方法不会导入配置类的问题 ([bc6dc1a](https://github.com/st1020/alicebot/commit/bc6dc1a0f8f209388d76cd927504da05d2c97160))
+
+
+### Features
+
+* 添加部分 docstring ([4d07ac2](https://github.com/st1020/alicebot/commit/4d07ac2bb9dd46e3b13816df5e983a02507dcba0))
+
+
+
 ## [0.3.0](https://github.com/st1020/alicebot/compare/v0.2.1...v0.3.0) (2022-05-04)
 
 
@@ -86,7 +101,7 @@ sidebar: auto
 
 
 
-# [0.2.0](https://github.com/st1020/alicebot/compare/0d9eadccabd0b7dac93943df4280626713ab57dd...v0.2.0) (2021-09-04)
+## [0.2.0](https://github.com/st1020/alicebot/compare/v0.1.0...v0.2.0) (2021-09-04)
 
 
 ### Bug Fixes
@@ -138,5 +153,5 @@ refactor(cqhttp.message): 适配上述修改。
 
 ## 0.1.0 (2021-07-24)
 
-AliceBot 首个测试版。
+
 

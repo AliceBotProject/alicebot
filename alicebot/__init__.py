@@ -427,7 +427,7 @@ class Bot:
             self._module_path_finder, path, Plugin
         ):
             try:
-                self.load_plugin_from_class(module)
+                self.load_plugin_from_class(module, config_class)
             except Exception as e:
                 logger.error(
                     f'Import plugin "{module_info.name}" '

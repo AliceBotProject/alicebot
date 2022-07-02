@@ -208,7 +208,7 @@ class Config(BaseModel):
 
 需要在插件内写一个名称为 `Config` 的继承于 `pydantic.BaseModel` 的类，这是一个 `pydantic` 的模型类，具体可以参考 [pydantic 的文档](https://pydantic-docs.helpmanual.io/) ，简而言之，格式为：
 
-`变量名称: 类型[ = 默认值] `
+`变量名称: 类型[ = 默认值]`
 
 如果不指定默认值，且类型不是 `Optional[...]`， `Union[None, ...]` 或 `Any`，则这个字段是必填的，在非必需的情况下，建议不要在插件中使用必填字段，这会导致不指定这个字段时，不只是这个插件，整个 AliceBot 都不能运行。
 

@@ -60,7 +60,7 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-  	priority: int = 0
+   priority: int = 0
     block: bool = False
 
     async def handle(self) -> None:
@@ -215,4 +215,3 @@ class Weather(Plugin):
 等同步的网络请求库，这会导致程序被阻塞。
 
 相信阅读到这里，你应该已经可以写出一个 AliceBot 插件了。接下来建议你继续阅读 [插件进阶](./plugin-advanced.md) 和你将要使用的适配器的教程。
-

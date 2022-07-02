@@ -81,4 +81,3 @@ bot = Bot(config_dict={
     'adapters': ['alicebot.adapter.cqhttp'],
 })
 ```
-

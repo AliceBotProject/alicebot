@@ -12,7 +12,7 @@ pip install alicebot-adapter-apscheduler
 
 或者在安装 AliceBot 的同时搭配对应的适配器：
 
-```
+```sh
 pip install aliebot[apscheduler]
 ```
 

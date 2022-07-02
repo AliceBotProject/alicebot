@@ -4,23 +4,17 @@ sidebar: auto
 
 # 更新日志
 
-
 ## [0.3.1](https://github.com/st1020/alicebot/compare/v0.3.0...v0.3.1) (2022-06-08)
-
 
 ### Bug Fixes
 
 * 修复 load_plugins_from_dir 方法不会导入配置类的问题 ([bc6dc1a](https://github.com/st1020/alicebot/commit/bc6dc1a0f8f209388d76cd927504da05d2c97160))
 
-
 ### Features
 
 * 添加部分 docstring ([4d07ac2](https://github.com/st1020/alicebot/commit/4d07ac2bb9dd46e3b13816df5e983a02507dcba0))
 
-
-
 ## [0.3.0](https://github.com/st1020/alicebot/compare/v0.2.1...v0.3.0) (2022-05-04)
-
 
 ### Bug Fixes
 
@@ -28,15 +22,14 @@ sidebar: auto
 * **mirai:** 修复 GroupMemberInfo 类的类型错误 ([c96ca40](https://github.com/st1020/alicebot/commit/c96ca40f2fa0a3cc89f16e7077f2fb0fcfe61175))
 * **utils:** 修复 python 3.10 下无法运行的问题 ([094ac04](https://github.com/st1020/alicebot/commit/094ac047e7d1b0f5c1d671f712378de67cc19085))
 
-
 ### Features
 
 * **adapter.utils:** 添加 WebSocketAdapter 适配器 ([710ab13](https://github.com/st1020/alicebot/commit/710ab13bb897c1daea8716c11a08fd948477e07f))
 * **adapter:** 修改开发模式环境变量名称为 ALICEBOT_DEV ([ae457d9](https://github.com/st1020/alicebot/commit/ae457d9dbcd13db41df9b1ee9ee24d465604b007))
 * **adapter:** 添加 test 适配器 ([1c5f08b](https://github.com/st1020/alicebot/commit/1c5f08b0a943c573da2785c64f2b8e6a7723e023))
-* **alicebot:** 重命名 Bot 对象的 __init__() 方法参数为 config_file ([e0c2c5e](https://github.com/st1020/alicebot/commit/e0c2c5e8a266d825a675cb083169b7f058728144))
+* **alicebot:** 重命名 Bot 对象的 **init**() 方法参数为 config_file ([e0c2c5e](https://github.com/st1020/alicebot/commit/e0c2c5e8a266d825a675cb083169b7f058728144))
 * **bot:** Bot 的 handle_exit 方法设为非公开方法，并部分调整代码格式 ([6a92fb5](https://github.com/st1020/alicebot/commit/6a92fb5e780b93d0ea8d394060040913d16ad4d8))
-* **bot:** Bot 类 __init__() 方法添加 config_dict 参数 ([832f42c](https://github.com/st1020/alicebot/commit/832f42ccf6959b0fdf43aa2baa17017764a03954))
+* **bot:** Bot 类 **init**() 方法添加 config_dict 参数 ([832f42c](https://github.com/st1020/alicebot/commit/832f42ccf6959b0fdf43aa2baa17017764a03954))
 * **bot:** Bot 类添加 load_plugin_from_class() 方法 ([f00bbab](https://github.com/st1020/alicebot/commit/f00bbab6f440db68578c519deb9d3bd1f069a606))
 * **bot:** 修改 Bot 类的部分类型提示 ([b87d8e4](https://github.com/st1020/alicebot/commit/b87d8e410440df2a3a4896f01b868522c3e9d87a))
 * **config:** 不再使用上下文变量隐式传递 config 对象，删除 dev_env 配置项 ([53a9191](https://github.com/st1020/alicebot/commit/53a91912649720d8ffca4e9186c0d3f5fb398055))
@@ -45,7 +38,7 @@ sidebar: auto
 * **event:** event 模块不再是包 ([83899ba](https://github.com/st1020/alicebot/commit/83899ba0bb7e00c671814af4f503cacba5551d61))
 * **event:** 为 Event 类添加泛型支持 ([8fb3601](https://github.com/st1020/alicebot/commit/8fb36013559d3e875bb974f28522867692b58975))
 * **event:** 修改 Event 类的部分行为 ([0635be7](https://github.com/st1020/alicebot/commit/0635be7a9a5ef01fb47e8aa92a5797eea8ace847))
-* **event:** 重命名 Event 类的 handled 属性为 __handled__ ([4617bd1](https://github.com/st1020/alicebot/commit/4617bd15346d4a65f1e7ce5b572b1aad0ffbe812))
+* **event:** 重命名 Event 类的 handled 属性为 **handled** ([4617bd1](https://github.com/st1020/alicebot/commit/4617bd15346d4a65f1e7ce5b572b1aad0ffbe812))
 * **exceptions:** 使 EventException 继承自 BaseException 以防止被用户捕获 ([9a2f45e](https://github.com/st1020/alicebot/commit/9a2f45e71c9ae6b8105871417e83ae7c40d8c390))
 * **exceptions:** 删除 AdapterTimeout 异常类，并新增 GetEventTimeout 类，get 方法不再抛出 AdapterTimeout 而是 GetEventTimeout ([0d7f6fa](https://github.com/st1020/alicebot/commit/0d7f6fa87a285f89dfa5a89cae37eb5cda0023cd))
 * get 方法和相关逻辑从 Adapter 类移动到 Bot 类并删除 BaseAdapter 类 ([662a9f6](https://github.com/st1020/alicebot/commit/662a9f6f7477bfe85002b84269ae6c26ca249846))
@@ -58,12 +51,11 @@ sidebar: auto
 * **utils:** 删除 load_module 模块，将其代码移动到 utils 模块中 ([fcf96ee](https://github.com/st1020/alicebot/commit/fcf96eed2bbc7ee7bf1928b8d9058dadec3a3fbe))
 * **utils:** 删除无用的 LinkedQueue 类 ([f7a0b5b](https://github.com/st1020/alicebot/commit/f7a0b5bdbb3f65e672e4af9448c0537f2781700b))
 * 为各个适配器添加泛型 Event 支持 ([aeb9ee1](https://github.com/st1020/alicebot/commit/aeb9ee15795493ff5fb7bd164ddc5d8dedff6c96))
-* 为大多数模块添加 __all__ 属性 ([d58ad7e](https://github.com/st1020/alicebot/commit/d58ad7e91f583384d23e6bf800d68c9952810878))
+* 为大多数模块添加 **all** 属性 ([d58ad7e](https://github.com/st1020/alicebot/commit/d58ad7e91f583384d23e6bf800d68c9952810878))
 * 修改 Bot 的 should_exit 类型为 asyncio.Event ([4e9fdf1](https://github.com/st1020/alicebot/commit/4e9fdf1cf05fd4350c1d5313008f691af8d03e30))
 * 添加 state 状态存储功能 ([d94a3fe](https://github.com/st1020/alicebot/commit/d94a3fe2ff23f613fd8c42c5f251f7159f37950f))
 * 添加 typing 模块，将所有类型变量定义转移到 alicebot.typing 模块中 ([eea30ed](https://github.com/st1020/alicebot/commit/eea30ed9718451b18423a335427a39cf896487ec))
 * 移除 Bot 类的 loop 属性，并且不再使用低层级事件循环 API 启动 Bot 的运行 ([be46f5a](https://github.com/st1020/alicebot/commit/be46f5a89595c83765c4eefe54e839d0d7e5337b))
-
 
 ### BREAKING CHANGES
 
@@ -78,31 +70,23 @@ sidebar: auto
 * **adapter:** 开发模式环境变量名称从 dev_env 改为 ALICEBOT_DEV
 * **config:** 删除 dev_env 配置项
 
-
-
 ## [0.2.1](https://github.com/st1020/alicebot/compare/v0.2.0...v0.2.1) (2021-09-12)
-
 
 ### Bug Fixes
 
 * **cqhttp, mirai, dingtalk:** 修复 message 类型的 event 的 reply() 方法错误拼写为 replay 的错误 ([bf4c6be](https://github.com/st1020/alicebot/commit/bf4c6be83ff12b4072260927d0b73e2d5f77d67b))
 * **load_module:** 修复 ModulePathFinder 在部分情况下可能出现的错误 ([71a7366](https://github.com/st1020/alicebot/commit/71a736694179cc39ee157e637864a779792f8b1b))
 
-
 ### Features
 
 * **load_module:** load_module() 函数添加不导入显式继承自 ABC 的类的功能 ([b018aaa](https://github.com/st1020/alicebot/commit/b018aaa3aa6c259ae080513eb8e85afe79309961))
 * **message:** 增加 Message 类对 Iterable[Union[T_MessageSegment, str, Mapping]] 类型的处理能力 ([1dc35cb](https://github.com/st1020/alicebot/commit/1dc35cb103fda5ee6bd4efa3e45ebc4cc38e0302))
 
-
 ### BREAKING CHANGES
 
 * **cqhttp, mirai, dingtalk:** 所有适配器中 message 类型的 event 的 replay() 方法重命名为 reply()
 
-
-
 ## [0.2.0](https://github.com/st1020/alicebot/compare/v0.1.0...v0.2.0) (2021-09-04)
-
 
 ### Bug Fixes
 
@@ -114,11 +98,9 @@ sidebar: auto
 * **cqhttp:** 为 api_response 设置最大长度，解决潜在的内存泄露问题 ([96d0ed0](https://github.com/st1020/alicebot/commit/96d0ed06d32df65524371eab4b3cbf38ddd247f5))
 * **message:** 修复 AbstractAdapter.get() 方法出现 KeyError 的 bug ([1f74906](https://github.com/st1020/alicebot/commit/1f749064aa0adcd5ed88ddd6981d730853f80cf3))
 
-
 ### Code Refactoring
 
 * **message:** 修改 Message 和 MessageSegment 的子类继承方式。 ([d10a089](https://github.com/st1020/alicebot/commit/d10a0893e444d75a7ed99252d87cdfc2aa9ff5c4))
-
 
 ### Features
 
@@ -134,24 +116,17 @@ sidebar: auto
 * **message:** 添加了 Message 类 startswith()、endswith() 方法对 T_MessageSegment 类型的支持 ([6e65316](https://github.com/st1020/alicebot/commit/6e653160750c97ae76299f4e204c214526b26fde))
 * **mirai:** 添加 mirai-api-http 的 Websocket Adapter 模式 ([94be1b4](https://github.com/st1020/alicebot/commit/94be1b43c1cb324c3e6b696e376d3020d5415676))
 * **mirai:** 添加支持 mirai-api-http 的 Reverse Websocket Adapter 的 mirai 适配器 ([01231dc](https://github.com/st1020/alicebot/commit/01231dca57c077d9e66606eacc9e059195edc592))
-* **plugin:** 添加了 __post_init__() 方法用于初始化后处理 ([6ffca3c](https://github.com/st1020/alicebot/commit/6ffca3cdc0842d05789f28ba00882145b55889c0))
-
+* **plugin:** 添加了 **post_init**() 方法用于初始化后处理 ([6ffca3c](https://github.com/st1020/alicebot/commit/6ffca3cdc0842d05789f28ba00882145b55889c0))
 
 ### Performance Improvements
 
 * **adapter, event:** 使用链队列代替列表作为事件队列，优化 get() 方法的性能 ([fecc7b1](https://github.com/st1020/alicebot/commit/fecc7b1287e799a02a0bb0c149d058b8db39e221))
 
-
 ### BREAKING CHANGES
 
-* **message:** Message 的子类不再需要重写 _construct() 方法，而需要重写 _set_message_segment_class() 和 _str_to_message_segment() 方法。
-    MessageSegment 则需要重写 _set_message_class() 方法。
+* **message:** Message 的子类不再需要重写 _construct() 方法，而需要重写_set_message_segment_class() 和 _str_to_message_segment() 方法。
+MessageSegment 则需要重写_set_message_class() 方法。
 refactor(cqhttp.message): 适配上述修改。
 * **.:** 当超时时不再返回 None，而是抛出 AdapterTimeout 异常
 
-
-
 ## 0.1.0 (2021-07-24)
-
-
-

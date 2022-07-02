@@ -59,7 +59,7 @@ pip install alicebot[dingtalk]
    if __name__ == '__main__':
        bot.run()
    ```
-   
+
 3. 创建一个 `config.json` 文件并写入以下内容
 
    ```json
@@ -68,7 +68,7 @@ pip install alicebot[dingtalk]
        "adapters": ["alicebot.adapter.cqhttp"]
    }
    ```
-   
+
 4. 创建一个 `plugins` 目录
 
    ```sh
@@ -83,7 +83,7 @@ pip install alicebot[dingtalk]
 
 你应该会看到以下输出的日志
 
-```
+```text
 2021-07-24 00:00:00.000 | INFO     | alicebot:load_adapter:235 - Succeeded to load adapter "alicebot.adapter.cqhttp"
 2021-07-24 00:00:00.000 | INFO     | alicebot:run:90 - Running AliceBot...
 ```

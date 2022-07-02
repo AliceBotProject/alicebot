@@ -27,7 +27,7 @@ jobs:
         shell: bash
 
       - name: Build API Doc
-        run: poetry run sophia-doc alicebot -o docs/api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name README.md
+        run: poetry run sophia-doc alicebot -o docs/api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
         env:
           ALICEBOT_DEV: '1'

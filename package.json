@@ -1,7 +1,8 @@
 {
   "name": "alicebot",
-  "version": "0.3.1",
+  "version": "0.1.0",
   "description": "A simple asynchronous python chat bot framework.",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com/st1020/alicebot.git"
@@ -10,19 +11,24 @@
   "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
   "devDependencies": {
-    "@vuepress/plugin-pwa": "^2.0.0-beta.46",
-    "@vuepress/plugin-pwa-popup": "^2.0.0-beta.46",
-    "@vuepress/plugin-search": "^2.0.0-beta.46",
     "conventional-changelog": "^3.1.25",
-    "markdown-it": "^12.3.2",
-    "markdown-it-attrs": "^4.1.4",
     "markdownlint-cli": "^0.31.1",
-    "vuepress": "^2.0.0-beta.46",
-    "webpack": "^5.73.0"
+    "vitepress": "^1.0.0-alpha.4"
   },
   "scripts": {
-    "docs:dev": "vuepress dev docs",
-    "docs:build": "vuepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:serve": "vitepress serve docs",
     "release": "node .release.js"
+  },
+  "pnpm": {
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@types/react",
+        "react",
+        "react-dom",
+        "@algolia/client-search"
+      ]
+    }
   }
 }

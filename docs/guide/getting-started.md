@@ -92,7 +92,7 @@ pip install alicebot[dingtalk]
 
 AliceBot 推荐的目录结构如下：
 
-```:no-line-numbers
+```text
 .
 ├── plugins (插件目录)
 │   └── xxx.py

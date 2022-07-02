@@ -117,5 +117,3 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 AliceBot 采用 MIT 许可证开放源代码。
 
 本项目的图标由 迷糊小梦神 绘制，作为本项目的一部分，使用与本项目相同的许可证开放使用。
-
-AliceBot 的 message 模块部分参考了 NoneBot 的实现，在此感谢 [NoneBot](https://github.com/nonebot/nonebot2/) 项目。

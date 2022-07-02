@@ -64,7 +64,7 @@ class TestPlugin(Plugin):
     async def handle(self) -> None:
         try:
             self.skip()
-        except:
+        except BaseException:
             pass
 
     async def rule(self) -> bool:
@@ -291,3 +291,34 @@ class BasePlugin(Plugin, ABC):
 ```
 
 注意：这个插件基类必须像上面那样显式继承自 `abc.ABC` 类。
+
+## 插件类的泛型支持
+
+插件类 `Plugin` 是一个泛型类，可以提供更加完善的类型提示。
+
+比如：
+
+```python
+from typing import Union
+
+from alicebot.plugin import Plugin
+from alicebot.adapter.cqhttp.event import GroupMessageEvent, PrivateMessageEvent
+
+
+class Count(Plugin[Union[PrivateMessageEvent, GroupMessageEvent], int]):
+    async def handle(self) -> None:
+        if self.state is None:
+            self.state = 0
+        self.state += 1
+        await self.event.reply(f"count: {self.state}")
+
+    async def rule(self) -> bool:
+        if self.event.adapter.name != "cqhttp":
+            return False
+        if self.event.type != "message":
+            return False
+        return self.event.message.get_plain_text() == "count"
+
+```
+
+这里相当于指明了此插件所处理的事件的类型为 `Union[PrivateMessageEvent, GroupMessageEvent]` 储存的状态类型为 `int` 。

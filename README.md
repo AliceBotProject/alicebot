@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://docs.alicebot.dev/"><img src="https://raw.githubusercontent.com/st1020/alicebot/master/docs/.vuepress/public/logo.png" width="200" height="200" alt="logo"></a>
+  <a href="https://docs.alicebot.dev/"><img src="https://raw.githubusercontent.com/st1020/alicebot/master/docs/public/logo.png" width="200" height="200" alt="logo"></a>
 
 # AliceBot
 
@@ -28,6 +28,8 @@
   <a href="https://docs.alicebot.dev/guide/">指南</a>
   ·
   <a href="https://docs.alicebot.dev/guide/">API 参考</a>
+  ·
+  <a href="https://github.com/st1020/alicebot-example">示例</a>
 </p>
 
 ## 简介
@@ -112,7 +114,7 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 
 作者就是在使用 NoneBot 时觉得插件编写不是很易用，于是萌发了编写一个新的机器人框架的想法，AliceBot 就这样诞生了。
 
-## 协议与致谢
+## 许可证
 
 AliceBot 采用 MIT 许可证开放源代码。
 

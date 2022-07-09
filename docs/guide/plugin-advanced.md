@@ -2,7 +2,7 @@
 
 ## 事件传播控制
 
-有时候，我们可能需要对事件的传播进行一些控制，除了基础的定义 `bolck` 属性来决定此插件执行结束后是否继续进行事件传播外，AilceBot 还提供了一些方法以供高级的逻辑控制。
+有时候，我们可能需要对事件的传播进行一些控制，除了基础的定义 `block` 属性来决定此插件执行结束后是否继续进行事件传播外，AliceBot 还提供了一些方法以供高级的逻辑控制。
 
 ### `skip()` 方法
 
@@ -321,4 +321,4 @@ class Count(Plugin[Union[PrivateMessageEvent, GroupMessageEvent], int]):
 
 ```
 
-这里相当于指明了此插件所处理的事件的类型为 `Union[PrivateMessageEvent, GroupMessageEvent]` 储存的状态类型为 `int` 。
+这里相当于指明了此插件所处理的事件的类型为 `Union[PrivateMessageEvent, GroupMessageEvent]` 储存的状态类型为 `int` 。

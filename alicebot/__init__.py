@@ -73,7 +73,7 @@ class Bot:
     should_exit: asyncio.Event
     adapters: List[Adapter]
     plugins_priority_dict: Dict[int, List[Type[Plugin]]]
-    plugin_state: Dict[Type[Plugin], Any]
+    plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
     _condition: Condition[T_Event]

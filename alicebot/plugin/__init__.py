@@ -70,11 +70,11 @@ class Plugin(ABC, Generic[T_Event, T_State]):
     @property
     def state(self) -> T_State:
         """插件状态。"""
-        return self.bot.plugin_state[self.__class__]
+        return self.bot.plugin_state[self.name]
 
     @state.setter
     def state(self, value: T_State):
-        self.bot.plugin_state[self.__class__] = value
+        self.bot.plugin_state[self.name] = value
 
     @abstractmethod
     async def handle(self) -> None:

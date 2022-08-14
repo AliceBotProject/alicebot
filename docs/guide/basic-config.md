@@ -22,6 +22,10 @@ AliceBot 有如下配置项：
 
   将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapter()` 方法加载。
 
+- **verbose_exception_log**
+
+  详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
+
 适配器的配置会被放置于独立的键中，如一个包含 `cqhttp` 适配器配置的配置文件如下：
 
 ```json

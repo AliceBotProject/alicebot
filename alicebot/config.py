@@ -2,9 +2,9 @@
 
 AliceBot 使用 [pydantic](https://pydantic-docs.helpmanual.io/) 来读取配置。
 """
-from typing import Set, Optional
+from typing import Set
 
-from pydantic import BaseModel
+from pydantic import Field, BaseModel
 
 __all__ = ["MainConfig"]
 
@@ -19,9 +19,9 @@ class MainConfig(BaseModel):
         verbose_exception_log: 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
     """
 
-    plugins: Optional[Set[str]]
-    plugin_dir: Optional[Set[str]]
-    adapters: Optional[Set[str]]
+    plugins: Set[str] = Field(default_factory=set)
+    plugin_dir: Set[str] = Field(default_factory=set)
+    adapters: Set[str] = Field(default_factory=set)
     verbose_exception_log: bool = False
 
     class Config:

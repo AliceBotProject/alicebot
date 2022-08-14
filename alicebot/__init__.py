@@ -104,7 +104,7 @@ class Bot:
         """
         self.adapters = []
         self.plugins_priority_dict = {}
-        self.plugin_state = defaultdict(lambda: None)
+        self.plugin_state = defaultdict(type(None))
         self.global_state = {}
         self._module_path_finder = ModulePathFinder()
         self._config_update_dict = {}
@@ -148,14 +148,11 @@ class Bot:
             self.config = MainConfig()
             return
 
-        if self.config.plugin_dir:
-            self.load_plugins_from_dir(self.config.plugin_dir)
-        if self.config.plugins:
-            for _plugin in self.config.plugins:
-                self.load_plugin(_plugin)
-        if self.config.adapters:
-            for _adapter in self.config.adapters:
-                self.load_adapter(_adapter)
+        self.load_plugins_from_dir(self.config.plugin_dir)
+        for _plugin in self.config.plugins:
+            self.load_plugin(_plugin)
+        for _adapter in self.config.adapters:
+            self.load_adapter(_adapter)
 
     @property
     def plugins(self) -> List[Type[Plugin]]:
@@ -220,6 +217,13 @@ class Bot:
                 await _adapter.shutdown()
             for _hook_func in self._bot_exit_hook:
                 _hook_func(self)
+
+    def reload_plugins(self):
+        """手动重新加载所有插件。"""
+        self.plugins_priority_dict = {}
+        self.load_plugins_from_dir(self.config.plugin_dir)
+        for _plugin in self.config.plugins:
+            self.load_plugin(_plugin)
 
     def _handle_exit(self, *args):  # noqa
         """当机器人收到退出信号时，根据情况进行处理。"""
@@ -375,10 +379,10 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def load_plugin_from_class(
+    def _load_plugin_from_class(
         self, plugin_class: Type[Plugin], config_class: Type[BaseModel] = None
     ) -> None:
-        """从插件类中手动加载插件。
+        """从插件类中加载插件。
 
         Args:
             plugin_class: 插件类。
@@ -404,9 +408,10 @@ class Bot:
         Returns:
             被加载的插件类。
         """
+        self.config.plugins.add(name)
         try:
             plugin_class, config_class = load_module(name, Plugin)
-            self.load_plugin_from_class(plugin_class, config_class)
+            self._load_plugin_from_class(plugin_class, config_class)
         except Exception as e:
             error_or_exception(
                 f'Import plugin "{name}" failed:', e, self.config.verbose_exception_log
@@ -424,6 +429,7 @@ class Bot:
         Returns:
             被加载的适配器对象。
         """
+        self.config.adapters.add(name)
         try:
             adapter_object, config_class = load_module(name, Adapter, True, self)
         except Exception as e:
@@ -443,11 +449,12 @@ class Bot:
             path: 由储存插件的路径文本组成的列表。
                 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
+        self.config.plugin_dir.update(path)
         for module, config_class, module_info in load_modules_from_dir(
             self._module_path_finder, path, Plugin
         ):
             try:
-                self.load_plugin_from_class(module, config_class)
+                self._load_plugin_from_class(module, config_class)
             except Exception as e:
                 error_or_exception(
                     f'Import plugin "{module_info.name}" '

@@ -163,6 +163,7 @@ def load_module(
 
     importlib.invalidate_caches()
     module = importlib.import_module(name)
+    importlib.reload(module)
     module_class = []
     for module_attr in dir(module):
         module_attr = getattr(module, module_attr)

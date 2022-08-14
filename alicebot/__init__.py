@@ -22,10 +22,10 @@ from typing import (
 
 from pydantic import BaseModel, ValidationError, create_model
 
-from alicebot.log import logger
 from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
 from alicebot.config import MainConfig
+from alicebot.log import logger, error_or_exception
 from alicebot.utils import (
     Condition,
     ModulePathFinder,
@@ -131,14 +131,18 @@ class Bot:
             except json.JSONDecodeError as e:
                 logger.warning(f"Read config file failed: {e!r}")
             except ValueError as e:
-                logger.error(f"Read config file failed: {e!r}")
+                error_or_exception(
+                    "Read config file failed:", e, self.config.verbose_exception_log
+                )
         else:
             self.config_dict = config_dict
 
         try:
             self.config = MainConfig(**self.config_dict)
         except ValidationError as e:
-            logger.error(f"Config dict parse error: {e!r}")
+            error_or_exception(
+                "Config dict parse error:", e, self.config.verbose_exception_log
+            )
 
         if self.config is None:
             self.config = MainConfig()
@@ -197,7 +201,11 @@ class Bot:
                 try:
                     await _adapter.startup()
                 except Exception as e:
-                    logger.error(f"Startup adapter {_adapter!r} failed: {e!r}")
+                    error_or_exception(
+                        f"Startup adapter {_adapter!r} failed:",
+                        e,
+                        self.config.verbose_exception_log,
+                    )
 
             for _adapter in self.adapters:
                 for _hook_func in self._adapter_run_hook:
@@ -280,11 +288,19 @@ class Bot:
                         # 插件要求停止当前事件传播
                         stop = True
                     except Exception as e:
-                        logger.error(f'Exception in plugin "{_plugin}": {e!r}')
+                        error_or_exception(
+                            f'Exception in plugin "{_plugin}":',
+                            e,
+                            self.config.verbose_exception_log,
+                        )
                 if stop:
                     break
             except Exception as e:
-                logger.error(f"Exception in handling event {current_event!r}: {e!r}")
+                error_or_exception(
+                    f"Exception in handling event {current_event!r}:",
+                    e,
+                    self.config.verbose_exception_log,
+                )
 
         for _hook_func in self._event_postprocessor_hook:
             await _hook_func(current_event)
@@ -392,7 +408,9 @@ class Bot:
             plugin_class, config_class = load_module(name, Plugin)
             self.load_plugin_from_class(plugin_class, config_class)
         except Exception as e:
-            logger.error(f'Import plugin "{name}" failed: {e!r}')
+            error_or_exception(
+                f'Import plugin "{name}" failed:', e, self.config.verbose_exception_log
+            )
         else:
             logger.info(f'Succeeded to import plugin "{name}"')
             return plugin_class
@@ -409,7 +427,9 @@ class Bot:
         try:
             adapter_object, config_class = load_module(name, Adapter, True, self)
         except Exception as e:
-            logger.error(f'Load adapter "{name}" failed: {e!r}')
+            error_or_exception(
+                f'Load adapter "{name}" failed:', e, self.config.verbose_exception_log
+            )
         else:
             self.adapters.append(adapter_object)
             self._update_config(config_class)
@@ -429,10 +449,11 @@ class Bot:
             try:
                 self.load_plugin_from_class(module, config_class)
             except Exception as e:
-                logger.error(
+                error_or_exception(
                     f'Import plugin "{module_info.name}" '
-                    f'from path "{module_info.module_finder.path}" '  # noqa
-                    f"failed: {e!r}"
+                    f'from path "{module_info.module_finder.path}" failed:',  # noqa
+                    e,
+                    self.config.verbose_exception_log,
                 )
             else:
                 logger.info(

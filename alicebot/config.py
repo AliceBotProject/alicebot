@@ -16,11 +16,13 @@ class MainConfig(BaseModel):
         plugins: 将被加载的插件列表，将依次被 `Bot` 类的 `load_plugin()` 方法加载。
         plugin_dir: 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dir()` 方法加载。
         adapters: 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapter()` 方法加载。
+        verbose_exception_log: 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
     """
 
     plugins: Optional[Set[str]]
     plugin_dir: Optional[Set[str]]
     adapters: Optional[Set[str]]
+    verbose_exception_log: bool = False
 
     class Config:
         extra = "allow"

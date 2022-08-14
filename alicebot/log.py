@@ -6,4 +6,10 @@ AliceBot 使用 [loguru](https://github.com/Delgan/loguru) 来记录日志信息
 from loguru import logger as _logger
 
 logger = _logger
-# logger = logging.getLogger("AliceBot")
+
+
+def error_or_exception(message: str, exception: Exception, verbose: bool):
+    if verbose:
+        logger.exception(message)
+    else:
+        logger.error(f"{message} {exception!r}")

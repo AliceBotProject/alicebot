@@ -11,9 +11,9 @@ from typing import Any, Dict, Type
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from alicebot.log import logger
 from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
+from alicebot.log import logger, error_or_exception
 
 from .config import Config
 from .event import APSchedulerEvent
@@ -63,9 +63,11 @@ class APSchedulerAdapter(Adapter):
                     self.create_event, args=(plugin,), trigger=trigger, **trigger_args
                 )
             except Exception as e:
-                logger.error(
+                error_or_exception(
                     f"Plugin {plugin.__name__} add_job filed, "
-                    f"please check trigger and trigger_args: {e}"
+                    "please check trigger and trigger_args:",
+                    e,
+                    self.bot.config.verbose_exception_log,
                 )
             else:
                 logger.info(f"Plugin {plugin.__name__} has been scheduled to run")

@@ -9,8 +9,8 @@ from abc import ABCMeta, abstractmethod
 import aiohttp
 from aiohttp import web
 
-from alicebot.log import logger
 from alicebot.adapter import Adapter
+from alicebot.log import logger, error_or_exception
 
 
 class PollingAdapter(Adapter, metaclass=ABCMeta):
@@ -194,7 +194,11 @@ class WebSocketAdapter(Adapter, metaclass=ABCMeta):
                 try:
                     await self.websocket_connect()
                 except aiohttp.ClientError as e:
-                    logger.error(f"WebSocket connection error: {e!r}")
+                    error_or_exception(
+                        "WebSocket connection error:",
+                        e,
+                        self.bot.config.verbose_exception_log,
+                    )
                 if self.bot.should_exit.is_set():
                     break
                 await asyncio.sleep(self.reconnect_interval)

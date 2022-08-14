@@ -7,8 +7,8 @@ from functools import wraps
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Union, Callable, Optional, Awaitable
 
-from alicebot.log import logger
 from alicebot.typing import T_Event
+from alicebot.log import error_or_exception
 
 if TYPE_CHECKING:
     from alicebot import Bot
@@ -42,7 +42,11 @@ class Adapter(ABC):
         try:
             await self.run()
         except Exception as e:
-            logger.error(f"Run adapter {self.__class__.__name__} failed: {e!r}")
+            error_or_exception(
+                f"Run adapter {self.__class__.__name__} failed:",
+                e,
+                self.bot.config.verbose_exception_log,
+            )
 
     @abstractmethod
     async def run(self):

@@ -13,8 +13,8 @@ from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
 
 import aiohttp
 
-from alicebot.log import logger
 from alicebot.adapter.utils import WebSocketAdapter
+from alicebot.log import logger, error_or_exception
 from alicebot.utils import Condition, DataclassEncoder
 
 from .config import Config
@@ -78,7 +78,11 @@ class MiraiAdapter(WebSocketAdapter):
             try:
                 msg_dict = msg.json()
             except json.JSONDecodeError as e:
-                logger.error(f"WebSocket message parsing error, not json: {e!r}")
+                error_or_exception(
+                    "WebSocket message parsing error, not json:",
+                    e,
+                    self.bot.config.verbose_exception_log,
+                )
                 return
 
             if msg_dict.get("syncId") == "":

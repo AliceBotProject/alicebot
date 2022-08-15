@@ -10,17 +10,7 @@ from abc import ABC
 from types import ModuleType
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import (
-    List,
-    Type,
-    Tuple,
-    Union,
-    Generic,
-    TypeVar,
-    Callable,
-    Iterable,
-    Optional,
-)
+from typing import List, Type, Tuple, Generic, TypeVar, Callable, Iterable, Optional
 
 from pydantic import BaseModel
 
@@ -131,54 +121,33 @@ class ModulePathFinder(MetaPathFinder):
 
 
 def load_module(
-    module: ModuleType,
-    class_type: Type[_T],
-    try_instantiate_class: bool = False,
-    *args,
-    **kwargs,
-) -> Tuple[Union[Type[_T], _T], Optional[Type[BaseModel]]]:
+    module: ModuleType, class_type: Type[_T]
+) -> Tuple[Type[_T], Optional[Type[BaseModel]]]:
     """从模块中查找指定类型的类和 `Config` 。若模块中存在多个符合条件的类，则抛出错误。
 
     Args:
         module: Python 模块。
         class_type: 要查找的类型。
-        try_instantiate_class: 是否尝试实例化类。
-            当为 True 时，查找到指定的类后会尝试使用指定参数示例化类，仅返回成功被实例化的对象。
-        *args: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
-        **kwargs: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
 
     Returns:
         `(class, config)` 返回符合条件的类和配置类组成的元组。
-        当 `try_instantiate_class` 为 True 时，返回 `(object, config)` 。
 
     Raises:
         LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
     """
-
-    def _instantiate_class(_module_class: type) -> Union[_T, Exception]:
-        try:
-            return _module_class(*args, **kwargs)
-        except Exception as e:
-            return e
 
     module_class = []
     for module_attr in dir(module):
         module_attr = getattr(module, module_attr)
         if (
             inspect.isclass(module_attr)
+            and (inspect.getmodule(module_attr) or module) is module
             and issubclass(module_attr, class_type)
             and module_attr != class_type
             and ABC not in module_attr.__bases__
+            and not inspect.isabstract(module_attr)
         ):
             module_class.append(module_attr)
-
-    if try_instantiate_class:
-        module_class = list(
-            filter(
-                lambda x: not isinstance(x, Exception),
-                map(_instantiate_class, module_class),
-            )
-        )
 
     if not module_class:
         raise LoadModuleError(
@@ -202,25 +171,16 @@ def load_module(
 
 
 def load_module_from_name(
-    name: str,
-    class_type: Type[_T],
-    try_instantiate_class: bool = False,
-    *args,
-    **kwargs,
-) -> Tuple[Union[Type[_T], _T], Optional[Type[BaseModel]], ModuleType]:
+    name: str, class_type: Type[_T]
+) -> Tuple[Type[_T], Optional[Type[BaseModel]], ModuleType]:
     """从模块中查找指定类型的类和 `Config` 。若模块中存在多个符合条件的类，则抛出错误。
 
     Args:
         name: 模块名称，格式和 Python `import` 语句相同。
         class_type: 要查找的类型。
-        try_instantiate_class: 是否尝试实例化类。
-            当为 True 时，查找到指定的类后会尝试使用指定参数示例化类，仅返回成功被实例化的对象。
-        *args: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
-        **kwargs: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
 
     Returns:
         `(class, config, module)` 返回符合条件的类、配置类和模块组成的元组。
-        当 `try_instantiate_class` 为 True 时，返回 `(object, config)` 。
 
     Raises:
         LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
@@ -228,13 +188,7 @@ def load_module_from_name(
     importlib.invalidate_caches()
     module = importlib.import_module(name)
     importlib.reload(module)
-    return load_module(
-        module,
-        class_type,
-        try_instantiate_class,
-        *args,
-        **kwargs,
-    ) + (module,)
+    return load_module(module, class_type) + (module,)
 
 
 def load_module_form_file(

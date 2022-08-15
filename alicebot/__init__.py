@@ -551,9 +551,8 @@ class Bot:
         """
         self.config.adapters.add(name)
         try:
-            adapter_object, config_class, _ = load_module_from_name(
-                name, Adapter, True, self
-            )
+            adapter_class, config_class, _ = load_module_from_name(name, Adapter)
+            adapter_object = adapter_class(self)
         except Exception as e:
             error_or_exception(
                 f'Load adapter "{name}" failed:', e, self.config.verbose_exception_log
@@ -562,7 +561,7 @@ class Bot:
             self.adapters.append(adapter_object)
             self._update_config(config_class)
             logger.info(
-                f'Succeeded to load adapter "{adapter_object.__class__.__name__}" '
+                f'Succeeded to load adapter "{adapter_class.__name__}" '
                 f'from module "{name}"'
             )
             return adapter_object

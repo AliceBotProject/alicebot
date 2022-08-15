@@ -3,11 +3,9 @@ import json
 import time
 import signal
 import asyncio
-import importlib
 import threading
 from functools import wraps
 from itertools import chain
-from types import ModuleType
 from collections import defaultdict
 from typing import (
     Any,
@@ -43,45 +41,19 @@ from alicebot.exceptions import (
 )
 from alicebot.utils import (
     Condition,
+    ModuleInfo,
     ModulePathFinder,
-    load_module,
     load_module_form_file,
     load_module_from_name,
     load_modules_from_dir,
 )
 
-__all__ = ["Bot", "PluginInfo"]
+__all__ = ["Bot"]
 
 HANDLED_SIGNALS = (
     signal.SIGINT,  # Unix signal 2. Sent by Ctrl+C.
     signal.SIGTERM,  # Unix signal 15. Sent by `kill <pid>`.
 )
-
-
-class PluginInfo:
-    """插件信息。
-
-    Attributes:
-        plugin_class: 插件类。
-        config_class: 配置类。
-        plugin_module: 插件模块。
-    """
-
-    def __init__(
-        self,
-        plugin_class: Type[Plugin],
-        config_class: Optional[Type[BaseModel]],
-        plugin_module: ModuleType,
-    ):
-        self.plugin_class = plugin_class
-        self.config_class = config_class
-        self.plugin_module = plugin_module
-
-    def reload(self):
-        importlib.reload(self.plugin_module)
-        plugin_class, config_class = load_module(self.plugin_module, Plugin)
-        self.plugin_class = plugin_class
-        self.config_class = config_class
 
 
 class Bot:
@@ -102,7 +74,7 @@ class Bot:
     config_dict: Dict[str, Any]
     should_exit: asyncio.Event
     adapters: List[Adapter]
-    plugins_priority_dict: Dict[int, List[PluginInfo]]
+    plugins_priority_dict: Dict[int, List[ModuleInfo]]
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
@@ -185,9 +157,14 @@ class Bot:
             self.load_adapter(_adapter)
 
     @property
-    def plugins(self) -> List[PluginInfo]:
+    def plugins(self) -> List[Type[Plugin]]:
         """当前已经加载的插件的列表。"""
-        return list(chain(*self.plugins_priority_dict.values()))
+        return list(
+            map(
+                lambda x: x.module_class,
+                chain(*self.plugins_priority_dict.values()),
+            )
+        )
 
     def run(self):
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
@@ -274,34 +251,32 @@ class Bot:
         ):
             for change_type, file in changes:
                 if change_type == Change.added:
-                    plugin_class, config_class, plugin_module = load_module_form_file(
+                    plugin_info = load_module_form_file(
                         self._module_path_finder, file, Plugin
                     )
-                    self._load_plugin_from_class(
-                        plugin_class, config_class, plugin_module
-                    )
+                    self._load_plugin(plugin_info)
                     self._reload_config()
                     logger.info(
-                        f'Add new plugin: "{plugin_class.__name__}" '
-                        f'from file "{plugin_module.__file__}"'
+                        f'Add new plugin: "{plugin_info.module_class.__name__}" '
+                        f'from file "{plugin_info.module.__file__}"'
                     )
                     continue
                 for plugins in self.plugins_priority_dict.values():
                     for i, _plugin in enumerate(plugins):
-                        if getattr(_plugin.plugin_module, "__file__", None) == file:
+                        if getattr(_plugin.module_class, "__file__", None) == file:
                             if change_type == Change.modified:
                                 logger.info(
-                                    f'Reload plugin: "{_plugin.plugin_class.__name__}" '
-                                    f'from file "{_plugin.plugin_module.__file__}"'
+                                    f'Reload plugin: "{_plugin.module_class.__name__}" '
+                                    f'from file "{_plugin.module.__file__}"'
                                 )
                                 self._remove_config_module(_plugin.config_class)
-                                _plugin.reload()
+                                _plugin.reload(Plugin)
                                 self._update_config_module(_plugin.config_class)
                                 self._reload_config()
                             elif change_type == Change.deleted:
                                 logger.info(
-                                    f'Remove plugin: "{_plugin.plugin_class.__name__}" '
-                                    f'from file "{_plugin.plugin_module.__file__}"'
+                                    f'Remove plugin: "{_plugin.module_class.__name__}" '
+                                    f'from file "{_plugin.module.__file__}"'
                                 )
                                 plugins.pop(i)
                                 self._remove_config_module(_plugin.config_class)
@@ -369,7 +344,7 @@ class Bot:
                 stop = False
                 for _plugin in self.plugins_priority_dict[plugin_priority]:
                     try:
-                        _plugin = _plugin.plugin_class(current_event)
+                        _plugin = _plugin.module_class(current_event)
                         if await _plugin.rule():
                             logger.info(f"Event will be handled by {_plugin!r}")
                             try:
@@ -471,23 +446,18 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def _load_plugin_from_class(
-        self,
-        plugin_class: Type[Plugin],
-        config_class: Optional[Type[BaseModel]],
-        plugin_module: ModuleType,
-    ) -> None:
-        """从插件类中加载插件。"""
-        plugin_info = PluginInfo(plugin_class, config_class, plugin_module)
-        if type(plugin_class.priority) is int and plugin_class.priority >= 0:
-            if plugin_class.priority in self.plugins_priority_dict:
-                self.plugins_priority_dict[plugin_class.priority].append(plugin_info)
-            else:
-                self.plugins_priority_dict[plugin_class.priority] = [plugin_info]
-            self._update_config_module(config_class)
+    def _load_plugin(self, plugin_info: ModuleInfo):
+        """加载插件。"""
+        priority = getattr(plugin_info.module_class, "priority", None)
+        if type(priority) is int and priority >= 0:
+            if priority not in self.plugins_priority_dict:
+                self.plugins_priority_dict[priority] = []
+            self.plugins_priority_dict[priority].append(plugin_info)
+            self._update_config_module(plugin_info.config_class)
         else:
             raise LoadModuleError(
-                f'Plugin class priority incorrect in the module "{plugin_class!r}"'
+                "Plugin class priority incorrect in the module "
+                + plugin_info.module.__name__
             )
 
     def load_plugin(self, name: str) -> Optional[Type[Plugin]]:
@@ -501,8 +471,8 @@ class Bot:
         """
         self.config.plugins.add(name)
         try:
-            plugin_class, config_class, module = load_module_from_name(name, Plugin)
-            self._load_plugin_from_class(plugin_class, config_class, module)
+            plugin_info = load_module_from_name(name, Plugin)
+            self._load_plugin(plugin_info)
         except Exception as e:
             error_or_exception(
                 f'Load plugin from module "{name}" failed:',
@@ -511,10 +481,10 @@ class Bot:
             )
         else:
             logger.info(
-                f'Succeeded to load plugin "{plugin_class.__name__}" '
+                f'Succeeded to load plugin "{plugin_info.module_class.__name__}" '
                 f'from module "{name}"'
             )
-            return plugin_class
+            return plugin_info.module_class
 
     def load_plugins_from_dir(self, path: Iterable[str]):
         """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
@@ -524,22 +494,22 @@ class Bot:
                 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
         self.config.plugin_dir.update(path)
-        for plugin_class, config_class, module in load_modules_from_dir(
+        for plugin_info in load_modules_from_dir(
             self._module_path_finder, path, Plugin
         ):
             try:
-                self._load_plugin_from_class(plugin_class, config_class, module)
+                self._load_plugin(plugin_info)
             except Exception as e:
                 error_or_exception(
-                    f'Load plugin "{plugin_class.__name__}" '
-                    f'from file "{module.__file__}" failed:',
+                    f'Load plugin "{plugin_info.module_class.__name__}" '
+                    f'from file "{plugin_info.module.__file__}" failed:',
                     e,
                     self.config.verbose_exception_log,
                 )
             else:
                 logger.info(
-                    f'Succeeded to load plugin "{plugin_class.__name__}" '
-                    f'from file "{module.__file__}"'
+                    f'Succeeded to load plugin "{plugin_info.module_class.__name__}" '
+                    f'from file "{plugin_info.module.__file__}"'
                 )
 
     def load_adapter(self, name: str) -> Optional[Adapter]:
@@ -553,17 +523,17 @@ class Bot:
         """
         self.config.adapters.add(name)
         try:
-            adapter_class, config_class, _ = load_module_from_name(name, Adapter)
-            adapter_object = adapter_class(self)
+            adapter_info = load_module_from_name(name, Adapter)
+            adapter_object = adapter_info.module_class(self)
         except Exception as e:
             error_or_exception(
                 f'Load adapter "{name}" failed:', e, self.config.verbose_exception_log
             )
         else:
             self.adapters.append(adapter_object)
-            self._update_config_module(config_class)
+            self._update_config_module(adapter_info.config_class)
             logger.info(
-                f'Succeeded to load adapter "{adapter_class.__name__}" '
+                f'Succeeded to load adapter "{adapter_info.module_class.__name__}" '
                 f'from module "{name}"'
             )
             return adapter_object

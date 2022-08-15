@@ -164,7 +164,7 @@ def load_module(
         if (
             inspect.isclass(module_attr)
             and issubclass(module_attr, BaseModel)
-            and "__config_name__" in dir(module_attr)
+            and isinstance(getattr(module_attr, "__config_name__", None), str)
         ):
             return module_class[0], module_attr
     return module_class[0], None

@@ -70,7 +70,7 @@ class PluginInfo:
     def __init__(
         self,
         plugin_class: Type[Plugin],
-        config_class: Type[BaseModel],
+        config_class: Optional[Type[BaseModel]],
         plugin_module: ModuleType,
     ):
         self.plugin_class = plugin_class
@@ -212,11 +212,7 @@ class Bot:
                 for sig in HANDLED_SIGNALS:
                     signal.signal(sig, self._handle_exit)
 
-        # 更新 config，合并入来自 Plugin 和 Adapter 的 Config
-        if self._config_update_dict and self.config_dict:
-            self.config = create_model(
-                "Config", **self._config_update_dict, __base__=MainConfig
-            )(**self.config_dict)
+        self._reload_config()
 
         hot_reload_task = None
         if self.config.hot_reload:
@@ -284,36 +280,42 @@ class Bot:
                     self._load_plugin_from_class(
                         plugin_class, config_class, plugin_module
                     )
+                    self._reload_config()
                     logger.info(
                         f'Add new plugin: "{plugin_class.__name__}" '
                         f'from file "{plugin_module.__file__}"'
                     )
                     continue
                 for plugins in self.plugins_priority_dict.values():
-                    for i in range(len(plugins)):
-                        if getattr(plugins[i].plugin_module, "__file__", None) == file:
-                            plugin_class = plugins[i].plugin_class
-                            plugin_module = plugins[i].plugin_module
+                    for i, _plugin in enumerate(plugins):
+                        if getattr(_plugin.plugin_module, "__file__", None) == file:
                             if change_type == Change.modified:
                                 logger.info(
-                                    f'Reload plugin: "{plugin_class.__name__}" '
-                                    f'from file "{plugin_module.__file__}"'
+                                    f'Reload plugin: "{_plugin.plugin_class.__name__}" '
+                                    f'from file "{_plugin.plugin_module.__file__}"'
                                 )
-                                plugins[i].reload()
+                                self._remove_config_module(_plugin.config_class)
+                                _plugin.reload()
+                                self._update_config_module(_plugin.config_class)
+                                self._reload_config()
                             elif change_type == Change.deleted:
                                 logger.info(
-                                    f'Remove plugin: "{plugin_class.__name__}" '
-                                    f'from file "{plugin_module.__file__}"'
+                                    f'Remove plugin: "{_plugin.plugin_class.__name__}" '
+                                    f'from file "{_plugin.plugin_module.__file__}"'
                                 )
                                 plugins.pop(i)
+                                self._remove_config_module(_plugin.config_class)
+                                self._reload_config()
                             break
 
     def reload_plugins(self):
         """手动重新加载所有插件。"""
         self.plugins_priority_dict = {}
+        self._config_update_dict = {}
         self.load_plugins_from_dir(self.config.plugin_dir)
         for _plugin in self.config.plugins:
             self.load_plugin(_plugin)
+        self._reload_config()
 
     def _handle_exit(self, *args):  # noqa
         """当机器人收到退出信号时，根据情况进行处理。"""
@@ -482,7 +484,7 @@ class Bot:
                 self.plugins_priority_dict[plugin_class.priority].append(plugin_info)
             else:
                 self.plugins_priority_dict[plugin_class.priority] = [plugin_info]
-            self._update_config(config_class)
+            self._update_config_module(config_class)
         else:
             raise LoadModuleError(
                 f'Plugin class priority incorrect in the module "{plugin_class!r}"'
@@ -559,14 +561,15 @@ class Bot:
             )
         else:
             self.adapters.append(adapter_object)
-            self._update_config(config_class)
+            self._update_config_module(config_class)
             logger.info(
                 f'Succeeded to load adapter "{adapter_class.__name__}" '
                 f'from module "{name}"'
             )
             return adapter_object
 
-    def _update_config(self, config_class: Optional[Type[BaseModel]]):
+    def _update_config_module(self, config_class: Optional[Type[BaseModel]]):
+        """更新配置模型。"""
         if config_class is None:
             return
         try:
@@ -577,6 +580,22 @@ class Bot:
             config_class,
             default_value,
         )
+
+    def _remove_config_module(self, config_class: Optional[Type[BaseModel]]):
+        """删除配置模型。"""
+        if config_class is None:
+            return
+        try:
+            self._config_update_dict.pop(getattr(config_class, "__config_name__"))
+        except KeyError:
+            pass
+
+    def _reload_config(self):
+        """更新 config，合并入来自 Plugin 和 Adapter 的 Config"""
+        if self._config_update_dict and self.config_dict:
+            self.config = create_model(
+                "Config", **self._config_update_dict, __base__=MainConfig
+            )(**self.config_dict)
 
     def get_loaded_adapter_by_name(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。

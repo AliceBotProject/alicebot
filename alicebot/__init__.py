@@ -503,10 +503,15 @@ class Bot:
             self._load_plugin_from_class(plugin_class, config_class, module)
         except Exception as e:
             error_or_exception(
-                f'Import plugin "{name}" failed:', e, self.config.verbose_exception_log
+                f'Load plugin from module "{name}" failed:',
+                e,
+                self.config.verbose_exception_log,
             )
         else:
-            logger.info(f'Succeeded to import plugin "{name}"')
+            logger.info(
+                f'Succeeded to load plugin "{plugin_class.__name__}" '
+                f'from module "{name}"'
+            )
             return plugin_class
 
     def load_plugins_from_dir(self, path: Iterable[str]):
@@ -517,23 +522,22 @@ class Bot:
                 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
         self.config.plugin_dir.update(path)
-        for plugin_class, config_class, module, module_info in load_modules_from_dir(
+        for plugin_class, config_class, module in load_modules_from_dir(
             self._module_path_finder, path, Plugin
         ):
-            module_path = module_info.module_finder.path  # noqa
             try:
                 self._load_plugin_from_class(plugin_class, config_class, module)
             except Exception as e:
                 error_or_exception(
-                    f'Import plugin "{module_info.name}" '
-                    f'from path "{module_path}" failed:',
+                    f'Load plugin "{plugin_class.__name__}" '
+                    f'from file "{module.__file__}" failed:',
                     e,
                     self.config.verbose_exception_log,
                 )
             else:
                 logger.info(
-                    f'Succeeded to import plugin "{module_info.name}" '
-                    f'from path "{module_path}"'
+                    f'Succeeded to load plugin "{plugin_class.__name__}" '
+                    f'from file "{module.__file__}"'
                 )
 
     def load_adapter(self, name: str) -> Optional[Adapter]:
@@ -557,7 +561,10 @@ class Bot:
         else:
             self.adapters.append(adapter_object)
             self._update_config(config_class)
-            logger.info(f'Succeeded to load adapter "{name}"')
+            logger.info(
+                f'Succeeded to load adapter "{adapter_object.__class__.__name__}" '
+                f'from module "{name}"'
+            )
             return adapter_object
 
     def _update_config(self, config_class: Optional[Type[BaseModel]]):

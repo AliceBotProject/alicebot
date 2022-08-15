@@ -11,7 +11,6 @@ from types import ModuleType
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
 from typing import (
-    TYPE_CHECKING,
     List,
     Type,
     Tuple,
@@ -26,9 +25,6 @@ from typing import (
 from pydantic import BaseModel
 
 from alicebot.exceptions import LoadModuleError
-
-if TYPE_CHECKING:
-    from pkgutil import ModuleInfo
 
 __all__ = [
     "Condition",
@@ -268,7 +264,7 @@ def load_modules_from_dir(
     module_path_finder: ModulePathFinder,
     path: Iterable[str],
     module_class_type: Type[_T],
-) -> List[Tuple[Type[_T], Optional[Type[BaseModel]], ModuleType, "ModuleInfo"]]:
+) -> List[Tuple[Type[_T], Optional[Type[BaseModel]], ModuleType]]:
     """从指定路径列表中的所有模块中查找指定类型的类和 `Config` ，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
 
     Args:
@@ -277,8 +273,7 @@ def load_modules_from_dir(
         module_class_type: 要查找的类型。
 
     Returns:
-        `[(class, config, module, module_info), ...]`
-        返回由符合条件的类、配置类、模块和 `ModuleInfo` 组成的元组的列表。
+        `[(class, config, module), ...]` 返回由符合条件的类、配置类和模块组成的元组的列表。
     """
     modules = []
     module_path_finder.path = list(path)
@@ -287,7 +282,6 @@ def load_modules_from_dir(
             try:
                 modules.append(
                     load_module_from_name(module_info.name, module_class_type)
-                    + (module_info,)
                 )
             except LoadModuleError:
                 continue

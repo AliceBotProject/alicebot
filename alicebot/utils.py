@@ -1,11 +1,13 @@
 import json
 import asyncio
 import inspect
+import os.path
 import pkgutil
 import importlib
 import collections
 import dataclasses
 from abc import ABC
+from types import ModuleType
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
 from typing import (
@@ -32,6 +34,8 @@ __all__ = [
     "Condition",
     "ModulePathFinder",
     "load_module",
+    "load_module_from_name",
+    "load_module_form_file",
     "load_modules_from_dir",
     "DataclassEncoder",
 ]
@@ -131,8 +135,8 @@ class ModulePathFinder(MetaPathFinder):
 
 
 def load_module(
-    name: str,
-    module_class_type: Type[_T],
+    module: ModuleType,
+    class_type: Type[_T],
     try_instantiate_class: bool = False,
     *args,
     **kwargs,
@@ -140,8 +144,8 @@ def load_module(
     """从模块中查找指定类型的类和 `Config` 。若模块中存在多个符合条件的类，则抛出错误。
 
     Args:
-        name: 模块名称，格式和 Python `import` 语句相同。
-        module_class_type: 要查找的类型。
+        module: Python 模块。
+        class_type: 要查找的类型。
         try_instantiate_class: 是否尝试实例化类。
             当为 True 时，查找到指定的类后会尝试使用指定参数示例化类，仅返回成功被实例化的对象。
         *args: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
@@ -161,16 +165,13 @@ def load_module(
         except Exception as e:
             return e
 
-    importlib.invalidate_caches()
-    module = importlib.import_module(name)
-    importlib.reload(module)
     module_class = []
     for module_attr in dir(module):
         module_attr = getattr(module, module_attr)
         if (
             inspect.isclass(module_attr)
-            and issubclass(module_attr, module_class_type)
-            and module_attr != module_class_type
+            and issubclass(module_attr, class_type)
+            and module_attr != class_type
             and ABC not in module_attr.__bases__
         ):
             module_class.append(module_attr)
@@ -185,11 +186,12 @@ def load_module(
 
     if not module_class:
         raise LoadModuleError(
-            f"Can not find {module_class_type!r} class in the {name!r} module"
+            f"Can not find {class_type!r} class in the {module.__name__} module"
         )
     elif len(module_class) > 1:
+        print(module_class)
         raise LoadModuleError(
-            f"More then one {module_class_type!r} class in the {name!r} module"
+            f"More then one {class_type!r} class in the {module.__name__} module"
         )
 
     if "Config" in dir(module):
@@ -199,36 +201,96 @@ def load_module(
             and issubclass(module_attr, BaseModel)
             and "__config_name__" in dir(module_attr)
         ):
-            return module_class[0], getattr(module, "Config")
+            return module_class[0], module_attr
     return module_class[0], None
 
 
-def load_modules_from_dir(
-    _module_path_finder: ModulePathFinder,
-    path: Iterable[str],
-    module_class_type: Type[_T],
-) -> List[Tuple[Type[_T], Optional[Type[BaseModel]], "ModuleInfo"]]:
-    """从指定路径列表中的所有模块中查找指定类型的类和 `Config` ，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
+def load_module_from_name(
+    name: str,
+    class_type: Type[_T],
+    try_instantiate_class: bool = False,
+    *args,
+    **kwargs,
+) -> Tuple[Union[Type[_T], _T], Optional[Type[BaseModel]], ModuleType]:
+    """从模块中查找指定类型的类和 `Config` 。若模块中存在多个符合条件的类，则抛出错误。
 
     Args:
-        _module_path_finder: 用于查找 AliceBot 组件的元路径查找器。
+        name: 模块名称，格式和 Python `import` 语句相同。
+        class_type: 要查找的类型。
+        try_instantiate_class: 是否尝试实例化类。
+            当为 True 时，查找到指定的类后会尝试使用指定参数示例化类，仅返回成功被实例化的对象。
+        *args: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
+        **kwargs: 实例化类时使用的参数，仅当 `try_instantiate_class` 为 True 时生效。
+
+    Returns:
+        `(class, config, module)` 返回符合条件的类、配置类和模块组成的元组。
+        当 `try_instantiate_class` 为 True 时，返回 `(object, config)` 。
+
+    Raises:
+        LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
+    """
+    importlib.invalidate_caches()
+    module = importlib.import_module(name)
+    importlib.reload(module)
+    return load_module(
+        module,
+        class_type,
+        try_instantiate_class,
+        *args,
+        **kwargs,
+    ) + (module,)
+
+
+def load_module_form_file(
+    module_path_finder: ModulePathFinder,
+    path: str,
+    module_class_type: Type[_T],
+) -> Tuple[Type[_T], Optional[Type[BaseModel]], ModuleType]:
+    """从指定文件中导入模块。
+
+    Args:
+        module_path_finder: 用于查找 AliceBot 组件的元路径查找器。
         path: 由储存模块的路径文本组成的列表。 例如 `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         module_class_type: 要查找的类型。
 
     Returns:
-        `[(class, config, module_info), ...]` 返回由符合条件的类、配置类和 `ModuleInfo` 组成的元组组成的列表。
+        `[(class, config, module), ...]` 返回由符合条件的类、配置类和模块组成的元组的列表。
+    """
+    dirname, basename = os.path.split(path)
+    name, ext = os.path.splitext(basename)
+    if ext != ".py":
+        raise LoadModuleError("The extension of path must be .py")
+    module_path_finder.path = [dirname]
+    return load_module_from_name(name, module_class_type)
+
+
+def load_modules_from_dir(
+    module_path_finder: ModulePathFinder,
+    path: Iterable[str],
+    module_class_type: Type[_T],
+) -> List[Tuple[Type[_T], Optional[Type[BaseModel]], ModuleType, "ModuleInfo"]]:
+    """从指定路径列表中的所有模块中查找指定类型的类和 `Config` ，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
+
+    Args:
+        module_path_finder: 用于查找 AliceBot 组件的元路径查找器。
+        path: 由储存模块的路径文本组成的列表。 例如 `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
+        module_class_type: 要查找的类型。
+
+    Returns:
+        `[(class, config, module, module_info), ...]`
+        返回由符合条件的类、配置类、模块和 `ModuleInfo` 组成的元组的列表。
     """
     modules = []
-    _module_path_finder.path = list(path)
+    module_path_finder.path = list(path)
     for module_info in pkgutil.iter_modules(path):
-        try:
-            module_class, config_class = load_module(
-                module_info.name, module_class_type
-            )
-            if not module_info.name.startswith("_"):
-                modules.append((module_class, config_class, module_info))
-        except LoadModuleError:
-            continue
+        if not module_info.name.startswith("_"):
+            try:
+                modules.append(
+                    load_module_from_name(module_info.name, module_class_type)
+                    + (module_info,)
+                )
+            except LoadModuleError:
+                continue
     return modules
 
 

@@ -27,6 +27,7 @@ aiohttp = "^3.7.0"
 loguru = "^0.6.0"
 
 [tool.poetry.dev-dependencies]
+watchfiles = "^0.16.0"
 sophia-doc = { git = "https://github.com/st1020/sophia-doc.git" }
 alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
 alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }
@@ -42,11 +43,13 @@ cqhttp = ["alicebot-adapter-cqhttp"]
 mirai = ["alicebot-adapter-mirai"]
 dingtalk = ["alicebot-adapter-dingtalk"]
 apscheduler = ["alicebot-adapter-apscheduler"]
+hot_reload = ["watchfiles"]
 all = [
   "alicebot-adapter-cqhttp",
   "alicebot-adapter-mirai",
   "alicebot-adapter-dingtalk",
-  "alicebot-adapter-apscheduler"
+  "alicebot-adapter-apscheduler",
+  "watchfiles"
 ]
 
 [tool.pydantic-pycharm-plugin]

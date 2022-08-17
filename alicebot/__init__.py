@@ -64,8 +64,6 @@ class Bot:
 
     Attributes:
         config: 机器人配置。
-        config_file: 机器人配置文件。
-        config_dict: 机器人配置字典。
         should_exit: 机器人是否应该进入准备退出状态。
         adapters: 适配器列表。
         plugins_priority_dict: 插件优先级字典。
@@ -74,8 +72,6 @@ class Bot:
     """
 
     config: MainConfig = None
-    config_file: Optional[str]
-    config_dict: Dict[str, Any]
 
     should_exit: asyncio.Event
     adapters: List[Adapter]
@@ -85,10 +81,14 @@ class Bot:
 
     _condition: Condition[T_Event]
 
+    _restart_flag: bool
     _module_path_finder: ModulePathFinder
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
 
+    _config_file: Optional[str]
+    _config_dict: Dict[str, Any]
     _hot_reload: bool
+
     _bot_run_hook: List[T_BotHook]
     _bot_exit_hook: List[T_BotExitHook]
     _adapter_startup_hook: List[T_AdapterHook]
@@ -114,15 +114,21 @@ class Bot:
             hot_reload: 热重载。
                 启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
         """
+        self.config = MainConfig()
+
         self.adapters = []
         self.plugins_priority_dict = {}
         self.plugin_state = defaultdict(type(None))
         self.global_state = {}
 
+        self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._config_update_dict = {}
 
+        self._config_file = config_file
+        self._config_dict = config_dict
         self._hot_reload = hot_reload
+
         self._bot_run_hook = []
         self._bot_exit_hook = []
         self._adapter_startup_hook = []
@@ -131,39 +137,7 @@ class Bot:
         self._event_preprocessor_hook = []
         self._event_postprocessor_hook = []
 
-        self.config_file = config_file
-        self.config_dict = {}
-
         sys.meta_path.insert(0, self._module_path_finder)
-        if config_dict is not None:
-            self.config_dict = config_dict
-        elif self.config_file is not None:
-            try:
-                with open(self.config_file, "r", encoding="utf8") as f:
-                    self.config_dict = json.load(f)
-            except OSError as e:
-                logger.warning(f"Can not open config file: {e!r}")
-            except json.JSONDecodeError as e:
-                logger.warning(f"Read config file failed: {e!r}")
-            except ValueError as e:
-                error_or_exception(
-                    "Read config file failed:", e, self.config.verbose_exception_log
-                )
-
-        try:
-            self.config = MainConfig(**self.config_dict)
-        except ValidationError as e:
-            self.config = MainConfig()
-            error_or_exception(
-                "Config dict parse error:", e, self.config.verbose_exception_log
-            )
-
-        self.load_plugins_from_dir(self.config.plugin_dir)
-        for _plugin in self.config.plugins:
-            self.load_plugin(_plugin)
-        for _adapter in self.config.adapters:
-            self.load_adapter(_adapter)
-        self._reload_config()
 
     @property
     def plugins(self) -> List[Type[Plugin]]:
@@ -177,13 +151,19 @@ class Bot:
 
     def run(self):
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
-        asyncio.run(self._run())
+        self._restart_flag = True
+        while self._restart_flag:
+            self._restart_flag = False
+            asyncio.run(self._run())
+
+    def restart(self):
+        """退出并重新运行 AliceBot。"""
+        logger.info("Restarting AliceBot...")
+        self._restart_flag = True
+        self.should_exit.set()
 
     async def _run(self):
-        """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
-        logger.info("Running AliceBot...")
-        loop = asyncio.get_running_loop()
-
+        """运行 AliceBot。"""
         self.should_exit = asyncio.Event()
         self._condition = Condition()
 
@@ -191,12 +171,48 @@ class Bot:
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。
             try:
+                loop = asyncio.get_running_loop()
                 for sig in HANDLED_SIGNALS:
                     loop.add_signal_handler(sig, self._handle_exit)
             except NotImplementedError:
                 # add_signal_handler 仅在 Unix 下可用，以下对于 Windows。
                 for sig in HANDLED_SIGNALS:
                     signal.signal(sig, self._handle_exit)
+
+        # 加载配置文件
+        config_dict = {}
+        if self._config_dict is not None:
+            config_dict = self._config_dict
+        elif self._config_file is not None:
+            try:
+                with open(self._config_file, "r", encoding="utf8") as f:
+                    config_dict = json.load(f)
+            except OSError as e:
+                logger.warning(f"Can not open config file: {e!r}")
+            except json.JSONDecodeError as e:
+                logger.warning(f"Read config file failed: {e!r}")
+            except ValueError as e:
+                error_or_exception(
+                    "Read config file failed:", e, self.config.verbose_exception_log
+                )
+
+        try:
+            self.config = MainConfig(**config_dict)
+        except ValidationError as e:
+            self.config = MainConfig()
+            error_or_exception(
+                "Config dict parse error:", e, self.config.verbose_exception_log
+            )
+
+        self.load_plugins_from_dir(self.config.plugin_dir)
+        for _plugin in self.config.plugins:
+            self.load_plugin(_plugin)
+        for _adapter in self.config.adapters:
+            self.load_adapter(_adapter)
+        self._reload_config()
+
+        # 启动 AliceBot
+        logger.info("Running AliceBot...")
 
         hot_reload_task = None
         if self._hot_reload:
@@ -221,7 +237,7 @@ class Bot:
             for _adapter in self.adapters:
                 for _hook_func in self._adapter_run_hook:
                     await _hook_func(_adapter)
-                loop.create_task(_adapter.safe_run())
+                asyncio.create_task(_adapter.safe_run())
 
             await self.should_exit.wait()
 
@@ -234,6 +250,10 @@ class Bot:
                 await _adapter.shutdown()
             for _hook_func in self._bot_exit_hook:
                 _hook_func(self)
+
+            self.adapters.clear()
+            self.plugins_priority_dict.clear()
+            self._config_update_dict.clear()
 
     async def _run_hot_reload(self):
         """热重载。"""
@@ -322,8 +342,8 @@ class Bot:
 
     def reload_plugins(self):
         """手动重新加载所有插件。"""
-        self.plugins_priority_dict = {}
-        self._config_update_dict = {}
+        self.plugins_priority_dict.clear()
+        self._config_update_dict.clear()
         self.load_plugins_from_dir(self.config.plugin_dir)
         for _plugin in self.config.plugins:
             self.load_plugin(_plugin)
@@ -599,10 +619,9 @@ class Bot:
 
     def _reload_config(self):
         """更新 config，合并入来自 Plugin 和 Adapter 的 Config"""
-        if self._config_update_dict and self.config_dict:
-            self.config = create_model(
-                "Config", **self._config_update_dict, __base__=MainConfig
-            )(**self.config_dict)
+        self.config = create_model(
+            "Config", **self._config_update_dict, __base__=MainConfig
+        )(**self.config.dict())
 
     def get_loaded_adapter_by_name(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。

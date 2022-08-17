@@ -1,3 +1,4 @@
+import os
 import sys
 import json
 import time
@@ -63,6 +64,7 @@ class Bot:
 
     Attributes:
         config: 机器人配置。
+        config_file: 机器人配置文件。
         config_dict: 机器人配置字典。
         should_exit: 机器人是否应该进入准备退出状态。
         adapters: 适配器列表。
@@ -72,7 +74,9 @@ class Bot:
     """
 
     config: MainConfig = None
+    config_file: Optional[str]
     config_dict: Dict[str, Any]
+
     should_exit: asyncio.Event
     adapters: List[Adapter]
     plugins_priority_dict: Dict[int, List[ModuleInfo]]
@@ -120,14 +124,15 @@ class Bot:
         self._event_preprocessor_hook = []
         self._event_postprocessor_hook = []
 
-        sys.meta_path.insert(0, self._module_path_finder)
-        if config_dict is None:
-            if config_file is None:
-                self.config = MainConfig()
-                return
+        self.config_file = config_file
+        self.config_dict = {}
 
+        sys.meta_path.insert(0, self._module_path_finder)
+        if config_dict is not None:
+            self.config_dict = config_dict
+        elif self.config_file is not None:
             try:
-                with open(config_file, "r", encoding="utf8") as f:
+                with open(self.config_file, "r", encoding="utf8") as f:
                     self.config_dict = json.load(f)
             except OSError as e:
                 logger.warning(f"Can not open config file: {e!r}")
@@ -137,25 +142,21 @@ class Bot:
                 error_or_exception(
                     "Read config file failed:", e, self.config.verbose_exception_log
                 )
-        else:
-            self.config_dict = config_dict
 
         try:
             self.config = MainConfig(**self.config_dict)
         except ValidationError as e:
+            self.config = MainConfig()
             error_or_exception(
                 "Config dict parse error:", e, self.config.verbose_exception_log
             )
-
-        if self.config is None:
-            self.config = MainConfig()
-            return
 
         self.load_plugins_from_dir(self.config.plugin_dir)
         for _plugin in self.config.plugins:
             self.load_plugin(_plugin)
         for _adapter in self.config.adapters:
             self.load_adapter(_adapter)
+        self._reload_config()
 
     @property
     def plugins(self) -> List[Type[Plugin]]:
@@ -189,8 +190,6 @@ class Bot:
                 # add_signal_handler 仅在 Unix 下可用，以下对于 Windows。
                 for sig in HANDLED_SIGNALS:
                     signal.signal(sig, self._handle_exit)
-
-        self._reload_config()
 
         hot_reload_task = None
         if self.config.hot_reload:
@@ -246,7 +245,7 @@ class Bot:
 
         logger.info("Hot reload is working!")
         async for changes in awatch(
-            *self.config.plugin_dir,
+            *map(os.path.abspath, self.config.plugin_dir),
             stop_event=self.should_exit,
             watch_filter=PyFileFilter(),
         ):
@@ -266,7 +265,7 @@ class Bot:
                         )
                     else:
                         logger.info(
-                            f"Added new plugin: "
+                            f"Added new plugin "
                             f'"{plugin_info.module_class.__name__}" '
                             f'from file "{file}"'
                         )
@@ -291,7 +290,7 @@ class Bot:
                                     )
                                 else:
                                     logger.info(
-                                        f"Succeeded to reload plugin: "
+                                        f"Succeeded to reload plugin "
                                         f'"{_plugin.module_class.__name__}" '
                                         f'from file "{file}"'
                                     )
@@ -308,7 +307,7 @@ class Bot:
                                     )
                                 else:
                                     logger.info(
-                                        f"Succeeded to remove plugin: "
+                                        f"Succeeded to remove plugin "
                                         f'"{_plugin.module_class.__name__}" '
                                         f'from file "{file}"'
                                     )

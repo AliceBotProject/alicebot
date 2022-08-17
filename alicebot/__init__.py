@@ -88,6 +88,7 @@ class Bot:
     _module_path_finder: ModulePathFinder
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
 
+    _hot_reload: bool
     _bot_run_hook: List[T_BotHook]
     _bot_exit_hook: List[T_BotExitHook]
     _adapter_startup_hook: List[T_AdapterHook]
@@ -98,8 +99,10 @@ class Bot:
 
     def __init__(
         self,
+        *,
         config_file: Optional[str] = "config.json",
         config_dict: Optional[Dict] = None,
+        hot_reload: bool = False,
     ):
         """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
@@ -108,14 +111,18 @@ class Bot:
                 若指定为 None，则不加载配置文件。
             config_dict: 配置字典，默认为 None。
                 若指定字典，则会忽略 config_file 配置，不再读取配置文件。
+            hot_reload: 热重载。
+                启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
         """
         self.adapters = []
         self.plugins_priority_dict = {}
         self.plugin_state = defaultdict(type(None))
         self.global_state = {}
+
         self._module_path_finder = ModulePathFinder()
         self._config_update_dict = {}
 
+        self._hot_reload = hot_reload
         self._bot_run_hook = []
         self._bot_exit_hook = []
         self._adapter_startup_hook = []
@@ -192,8 +199,8 @@ class Bot:
                     signal.signal(sig, self._handle_exit)
 
         hot_reload_task = None
-        if self.config.hot_reload:
-            hot_reload_task = asyncio.create_task(self._hot_reload())
+        if self._hot_reload:
+            hot_reload_task = asyncio.create_task(self._run_hot_reload())
 
         for _hook_func in self._bot_run_hook:
             await _hook_func(self)
@@ -228,7 +235,7 @@ class Bot:
             for _hook_func in self._bot_exit_hook:
                 _hook_func(self)
 
-    async def _hot_reload(self):
+    async def _run_hot_reload(self):
         """热重载。"""
         try:
             from watchfiles import Change, PythonFilter, DefaultFilter, awatch

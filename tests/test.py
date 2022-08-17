@@ -1,7 +1,6 @@
 from alicebot import Bot
 
-bot = Bot()
-# bot.load_adapter('alicebot.adapter.cqhttp')
+bot = Bot(hot_reload=True)
 
 if __name__ == "__main__":
     bot.run()

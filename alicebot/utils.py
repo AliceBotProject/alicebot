@@ -1,3 +1,4 @@
+import os
 import json
 import asyncio
 import inspect
@@ -25,6 +26,7 @@ __all__ = [
     "load_module_form_file",
     "load_modules_from_dir",
     "DataclassEncoder",
+    "samefile",
 ]
 
 _T = TypeVar("_T")
@@ -141,12 +143,6 @@ class ModuleInfo(Generic[_T]):
         self.module_class = module_class
         self.config_class = config_class
         self.module = module
-
-    def reload(self, class_type: Type[_T]):
-        importlib.reload(self.module)
-        module_class, config_class = load_module(self.module, class_type)
-        self.module_class = module_class
-        self.config_class = config_class
 
 
 def load_module(module: ModuleType, class_type: Type[_T]) -> ModuleInfo[_T]:
@@ -268,3 +264,19 @@ class DataclassEncoder(json.JSONEncoder):
         if dataclasses.is_dataclass(o):
             return o.as_dict()
         return super().default(o)
+
+
+def samefile(path1: str, path2: str) -> bool:
+    """一个 `os.path.samefile` 的简单包装。
+
+    Args:
+        path1: 路径1。
+        path2: 路径2。
+
+    Returns:
+        如果两个路径是否指向相同的文件或目录。
+    """
+    try:
+        return os.path.samefile(path1, path2)
+    except OSError:
+        return False

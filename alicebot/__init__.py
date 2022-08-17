@@ -43,6 +43,7 @@ from alicebot.utils import (
     Condition,
     ModuleInfo,
     ModulePathFinder,
+    samefile,
     load_module_form_file,
     load_module_from_name,
     load_modules_from_dir,
@@ -251,36 +252,66 @@ class Bot:
         ):
             for change_type, file in changes:
                 if change_type == Change.added:
-                    plugin_info = load_module_form_file(
-                        self._module_path_finder, file, Plugin
-                    )
-                    self._load_plugin(plugin_info)
-                    self._reload_config()
-                    logger.info(
-                        f'Add new plugin: "{plugin_info.module_class.__name__}" '
-                        f'from file "{plugin_info.module.__file__}"'
-                    )
+                    try:
+                        plugin_info = load_module_form_file(
+                            self._module_path_finder, file, Plugin
+                        )
+                        self._load_plugin(plugin_info)
+                        self._reload_config()
+                    except Exception as e:
+                        error_or_exception(
+                            f'Add new plugin from file "{file}" failed:',
+                            e,
+                            self.config.verbose_exception_log,
+                        )
+                    else:
+                        logger.info(
+                            f"Added new plugin: "
+                            f'"{plugin_info.module_class.__name__}" '
+                            f'from file "{file}"'
+                        )
                     continue
                 for plugins in self.plugins_priority_dict.values():
                     for i, _plugin in enumerate(plugins):
-                        if getattr(_plugin.module_class, "__file__", None) == file:
+                        if samefile(getattr(_plugin.module, "__file__", None), file):
                             if change_type == Change.modified:
-                                logger.info(
-                                    f'Reload plugin: "{_plugin.module_class.__name__}" '
-                                    f'from file "{_plugin.module.__file__}"'
-                                )
-                                self._remove_config_module(_plugin.config_class)
-                                _plugin.reload(Plugin)
-                                self._update_config_module(_plugin.config_class)
-                                self._reload_config()
+                                try:
+                                    self._remove_config_module(_plugin.config_class)
+                                    plugins.pop(i)
+                                    plugin_info = load_module_form_file(
+                                        self._module_path_finder, file, Plugin
+                                    )
+                                    self._load_plugin(plugin_info)
+                                    self._reload_config()
+                                except Exception as e:
+                                    error_or_exception(
+                                        f'Reload plugin from file "{file}" failed:',
+                                        e,
+                                        self.config.verbose_exception_log,
+                                    )
+                                else:
+                                    logger.info(
+                                        f"Succeeded to reload plugin: "
+                                        f'"{_plugin.module_class.__name__}" '
+                                        f'from file "{file}"'
+                                    )
                             elif change_type == Change.deleted:
-                                logger.info(
-                                    f'Remove plugin: "{_plugin.module_class.__name__}" '
-                                    f'from file "{_plugin.module.__file__}"'
-                                )
-                                plugins.pop(i)
-                                self._remove_config_module(_plugin.config_class)
-                                self._reload_config()
+                                try:
+                                    plugins.pop(i)
+                                    self._remove_config_module(_plugin.config_class)
+                                    self._reload_config()
+                                except Exception as e:
+                                    error_or_exception(
+                                        f'Removed plugin from file "{file}" failed:',
+                                        e,
+                                        self.config.verbose_exception_log,
+                                    )
+                                else:
+                                    logger.info(
+                                        f"Succeeded to remove plugin: "
+                                        f'"{_plugin.module_class.__name__}" '
+                                        f'from file "{file}"'
+                                    )
                             break
 
     def reload_plugins(self):

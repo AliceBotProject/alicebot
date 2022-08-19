@@ -266,17 +266,28 @@ class Bot:
             )
             return
 
-        class PyFileFilter(DefaultFilter):
-            def __call__(self, change: Change, path: str) -> bool:
-                return path.endswith(".py") and super().__call__(change, path)
-
         logger.info("Hot reload is working!")
         async for changes in awatch(
-            *map(os.path.abspath, self.config.plugin_dir),
+            *map(
+                os.path.abspath,
+                self.config.plugin_dir.union(
+                    {self._config_file}
+                    if self._config_dict is None and self._config_file is not None
+                    else set()
+                ),
+            ),
             stop_event=self.should_exit,
-            watch_filter=PyFileFilter(),
         ):
             for change_type, file in changes:
+                if (
+                    samefile(self._config_file, file)
+                    and change_type == change_type.modified
+                ):
+                    logger.info(f'Reload config file "{self._config_file}"')
+                    self.restart()
+                    continue
+                if not file.endswith(".py"):
+                    continue
                 if change_type == Change.added:
                     try:
                         plugin_info = load_module_form_file(

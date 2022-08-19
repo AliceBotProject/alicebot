@@ -31,7 +31,11 @@ conventionalChangelog({
     this.s += temp
     callback()
   }, async destroy() {
-    fs.writeFile(fileName, this.s, err => err ? console.log(err) : null)
+    fs.writeFile(
+      fileName,
+      this.s.replaceAll("_", "\\_"),
+      err => err ? console.log(err) : null
+    )
     console.log("成功写入文件")
     await exec("git tag -d v" + version)
     await exec("git add .")

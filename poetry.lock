@@ -31,7 +31,7 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "alicebot-adapter-apscheduler"
-version = "0.2.0"
+version = "0.2.1"
 description = "APScheduler adapter for AliceBot."
 category = "dev"
 optional = false
@@ -39,7 +39,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.3.0"
+alicebot = "^0.4.0"
 apscheduler = "^3.7"
 
 [package.source]
@@ -48,7 +48,7 @@ url = "packages/alicebot-adapter-apscheduler"
 
 [[package]]
 name = "alicebot-adapter-cqhttp"
-version = "0.2.0"
+version = "0.2.1"
 description = "OneBot(CQHTTP) adapter for AliceBot."
 category = "dev"
 optional = false
@@ -56,7 +56,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.3.0"
+alicebot = "^0.4.0"
 
 [package.source]
 type = "directory"
@@ -64,7 +64,7 @@ url = "packages/alicebot-adapter-cqhttp"
 
 [[package]]
 name = "alicebot-adapter-dingtalk"
-version = "0.2.0"
+version = "0.2.1"
 description = "DingTalk adapter for AliceBot."
 category = "dev"
 optional = false
@@ -72,7 +72,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.3.0"
+alicebot = "^0.4.0"
 
 [package.source]
 type = "directory"
@@ -80,7 +80,7 @@ url = "packages/alicebot-adapter-dingtalk"
 
 [[package]]
 name = "alicebot-adapter-mirai"
-version = "0.2.0"
+version = "0.2.1"
 description = "Mirai adapter for AliceBot."
 category = "dev"
 optional = false
@@ -88,7 +88,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.3.0"
+alicebot = "^0.4.0"
 
 [package.source]
 type = "directory"
@@ -240,14 +240,11 @@ python-versions = "*"
 
 [[package]]
 name = "docstring-parser"
-version = "0.13"
-description = "\"Parse Python docstrings in reST, Google and Numpydoc format\""
+version = "0.14.1"
+description = "Parse Python docstrings in reST, Google and Numpydoc format"
 category = "dev"
 optional = false
-python-versions = ">=3.6"
-
-[package.extras]
-test = ["pytest", "black"]
+python-versions = ">=3.6,<4.0"
 
 [[package]]
 name = "filelock"
@@ -481,13 +478,13 @@ python-versions = "^3.8"
 develop = false
 
 [package.dependencies]
-docstring-parser = "^0.13"
+docstring-parser = "^0.14"
 
 [package.source]
 type = "git"
 url = "https://github.com/st1020/sophia-doc.git"
 reference = "master"
-resolved_reference = "9bd6717b584d3981b014722e1dfe5c2aa62d3bf9"
+resolved_reference = "1e810824d611538950eaa7c08f254cfad173ac07"
 
 [[package]]
 name = "toml"
@@ -765,7 +762,8 @@ distlib = [
     {file = "distlib-0.3.5.tar.gz", hash = "sha256:a7f75737c70be3b25e2bee06288cec4e4c221de18455b2dd037fe2a795cab2fe"},
 ]
 docstring-parser = [
-    {file = "docstring_parser-0.13.tar.gz", hash = "sha256:66dd7eac7232202bf220fd98a5f11491863c01f958a75fdd535c7eccac9ced78"},
+    {file = "docstring_parser-0.14.1-py3-none-any.whl", hash = "sha256:14ac6ec1f1ba6905c4d8cb90fd0bc55394f5678183752c90e44812bf28d7a515"},
+    {file = "docstring_parser-0.14.1.tar.gz", hash = "sha256:2c77522e31b7c88b1ab457a1f3c9ae38947ad719732260ba77ee8a3deb58622a"},
 ]
 filelock = [
     {file = "filelock-3.8.0-py3-none-any.whl", hash = "sha256:617eb4e5eedc82fc5f47b6d61e4d11cb837c56cb4544e39081099fa17ad109d4"},

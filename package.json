@@ -1,6 +1,6 @@
 {
   "name": "alicebot",
-  "version": "0.1.0",
+  "version": "0.4.0",
   "description": "A simple asynchronous python chat bot framework.",
   "private": true,
   "repository": {
@@ -13,7 +13,7 @@
   "devDependencies": {
     "conventional-changelog": "^3.1.25",
     "markdownlint-cli": "^0.31.1",
-    "vitepress": "^1.0.0-alpha.4"
+    "vitepress": "^1.0.0-alpha.8"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",

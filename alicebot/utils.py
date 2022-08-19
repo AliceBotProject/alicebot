@@ -159,38 +159,39 @@ def load_module(module: ModuleType, class_type: Type[_T]) -> ModuleInfo[_T]:
         LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
     """
 
-    module_class = []
-    for module_attr in dir(module):
-        module_attr = getattr(module, module_attr)
+    module_class: Optional[Type[_T]] = None
+    for _, module_attr in inspect.getmembers(module, inspect.isclass):
+        module_attr: type
         if (
-            inspect.isclass(module_attr)
-            and (inspect.getmodule(module_attr) or module) is module
+            (inspect.getmodule(module_attr) or module) is module
             and issubclass(module_attr, class_type)
             and module_attr != class_type
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            module_class.append(module_attr)
-
-    if not module_class:
+            if module_class is None:
+                module_class = module_attr
+            else:
+                raise LoadModuleError(
+                    f"More then one {class_type!r} class "
+                    f"in the {module.__name__} module"
+                )
+    if module_class is None:
         raise LoadModuleError(
             f"Can not find {class_type!r} class in the {module.__name__} module"
         )
-    elif len(module_class) > 1:
-        print(module_class)
-        raise LoadModuleError(
-            f"More then one {class_type!r} class in the {module.__name__} module"
-        )
 
-    if "Config" in dir(module):
-        module_attr = getattr(module, "Config")
+    config_class: Optional[Type[BaseModel]] = None
+    for name, module_attr in inspect.getmembers(module, inspect.isclass):
+        module_attr: type
         if (
-            inspect.isclass(module_attr)
+            name == "Config"
             and issubclass(module_attr, BaseModel)
             and isinstance(getattr(module_attr, "__config_name__", None), str)
         ):
-            return ModuleInfo(module_class[0], module_attr, module)
-    return ModuleInfo(module_class[0], None, module)
+            config_class = module_attr
+
+    return ModuleInfo(module_class, config_class, module)
 
 
 def load_module_from_name(name: str, class_type: Type[_T]) -> ModuleInfo[_T]:

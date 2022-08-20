@@ -45,7 +45,7 @@ from alicebot.utils import (
     ModuleInfo,
     ModulePathFinder,
     samefile,
-    load_module_form_file,
+    get_module_name,
     load_module_from_name,
     load_modules_from_dir,
 )
@@ -268,6 +268,7 @@ class Bot:
             self.adapters.clear()
             self.plugins_priority_dict.clear()
             self._config_update_dict.clear()
+            self._module_path_finder.path.clear()
 
     async def _run_hot_reload(self):
         """热重载。"""
@@ -304,8 +305,8 @@ class Bot:
                     continue
                 if change_type == Change.added:
                     try:
-                        plugin_info = load_module_form_file(
-                            self._module_path_finder, file, Plugin
+                        plugin_info = load_module_from_name(
+                            get_module_name(file), Plugin
                         )
                         self._load_plugin_module(plugin_info)
                         self._reload_config()
@@ -329,8 +330,8 @@ class Bot:
                                 try:
                                     self._remove_config_module(_plugin.config_class)
                                     plugins.pop(i)
-                                    plugin_info = load_module_form_file(
-                                        self._module_path_finder, file, Plugin
+                                    plugin_info = load_module_from_name(
+                                        _plugin.module.__name__, Plugin
                                     )
                                     self._load_plugin_module(plugin_info)
                                     self._reload_config()
@@ -589,9 +590,8 @@ class Bot:
             path: 由储存插件的路径文本组成的列表。
                 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
-        for plugin_info in load_modules_from_dir(
-            self._module_path_finder, path, Plugin
-        ):
+        self._module_path_finder.path.extend(path)
+        for plugin_info in load_modules_from_dir(path, Plugin):
             try:
                 self._load_plugin_module(plugin_info)
             except Exception as e:

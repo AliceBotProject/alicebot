@@ -23,10 +23,10 @@ __all__ = [
     "ModuleInfo",
     "load_module",
     "load_module_from_name",
-    "load_module_form_file",
     "load_modules_from_dir",
     "DataclassEncoder",
     "samefile",
+    "get_module_name",
 ]
 
 _T = TypeVar("_T")
@@ -213,34 +213,12 @@ def load_module_from_name(name: str, class_type: Type[_T]) -> ModuleInfo[_T]:
     return load_module(module, class_type)
 
 
-def load_module_form_file(
-    module_path_finder: ModulePathFinder, path: str, class_type: Type[_T]
-) -> ModuleInfo[_T]:
-    """从指定文件中导入模块。
-
-    Args:
-        module_path_finder: 用于查找 AliceBot 组件的元路径查找器。
-        path: 由储存模块的路径文本组成的列表。 例如 `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
-        class_type: 要查找的类型。
-
-    Returns:
-        返回符合条件的 `ModuleInfo`。
-    """
-    dirname, basename = os.path.split(path)
-    name, ext = os.path.splitext(basename)
-    if ext != ".py":
-        raise LoadModuleError("The extension of path must be .py")
-    module_path_finder.path = [dirname]
-    return load_module_from_name(name, class_type)
-
-
 def load_modules_from_dir(
-    module_path_finder: ModulePathFinder, path: Iterable[str], class_type: Type[_T]
+    path: Iterable[str], class_type: Type[_T]
 ) -> List[ModuleInfo[_T]]:
     """从指定路径列表中的所有模块中查找指定类型的类和 `Config` ，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
 
     Args:
-        module_path_finder: 用于查找 AliceBot 组件的元路径查找器。
         path: 由储存模块的路径文本组成的列表。 例如 `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         class_type: 要查找的类型。
 
@@ -248,7 +226,6 @@ def load_modules_from_dir(
         返回符合条件的 `ModuleInfo` 的列表。
     """
     modules = []
-    module_path_finder.path = list(path)
     for module_info in pkgutil.iter_modules(path):
         if not module_info.name.startswith("_"):
             try:
@@ -281,3 +258,24 @@ def samefile(path1: str, path2: str) -> bool:
         return os.path.samefile(path1, path2)
     except OSError:
         return False
+
+
+def get_module_name(path: str) -> str:
+    """
+    从路径中获取合法的 Python 模块名称，与 `inspect.getmodulename()` 函数不同。
+
+    Args:
+        path: 路径。
+
+    Returns:
+        Python 模块名称。
+
+    Raises:
+        ValueError: 当路径不以 ".py" 结尾时。
+    """
+    basename = os.path.basename(path)
+    if not basename.endswith(".py"):
+        raise ValueError('path must endswith ".py"')
+    if basename == "__init__.py":
+        return os.path.basename(os.path.dirname(path))
+    return basename[:-3]

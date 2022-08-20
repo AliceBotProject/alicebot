@@ -121,7 +121,7 @@ class Bot:
         self.config = MainConfig()
 
         self.adapters = []
-        self.plugins_priority_dict = {}
+        self.plugins_priority_dict = defaultdict(list)
         self.plugin_state = defaultdict(type(None))
         self.global_state = {}
 
@@ -553,8 +553,11 @@ class Bot:
         """加载插件。"""
         priority = getattr(plugin_info.module_class, "priority", None)
         if type(priority) is int and priority >= 0:
-            if priority not in self.plugins_priority_dict:
-                self.plugins_priority_dict[priority] = []
+            for _plugin in self.plugins:
+                if _plugin.__name__ == plugin_info.module_class.__name__:
+                    logger.warning(
+                        f'Already have a same name plugin "{_plugin.__name__}"'
+                    )
             self.plugins_priority_dict[priority].append(plugin_info)
             self._update_config_module(plugin_info.config_class)
         else:

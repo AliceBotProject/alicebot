@@ -293,7 +293,10 @@ class Bot:
             ),
             stop_event=self.should_exit,
         ):
-            for change_type, file in changes:
+            # 按照 Change.deleted, Change.modified, Change.added 的顺序处理
+            # 以确保发生重命名时先处理删除再处理新增
+            for change_type, file in sorted(changes, key=lambda x: x[0], reverse=True):
+                # 更改配置文件
                 if (
                     samefile(self._config_file, file)
                     and change_type == change_type.modified
@@ -301,8 +304,22 @@ class Bot:
                     logger.info(f'Reload config file "{self._config_file}"')
                     self.restart()
                     continue
-                if not file.endswith(".py"):
-                    continue
+
+                # 更改插件文件夹
+                if change_type == Change.deleted:
+                    # 针对删除操作特殊处理
+                    if not file.endswith(".py"):
+                        file = os.path.join(file, "__init__.py")
+                else:
+                    if os.path.isdir(file) and os.path.isfile(
+                        os.path.join(file, "__init__.py")
+                    ):
+                        # 当新增一个目录，且此目录中包含 __init__.py 文件
+                        # 说明此时发生的是添加一个 Python 包，则视为添加了此包的 __init__.py 文件
+                        file = os.path.join(file, "__init__.py")
+                    if not (os.path.isfile(file) and file.endswith(".py")):
+                        continue
+
                 if change_type == Change.added:
                     try:
                         plugin_info = load_module_from_name(
@@ -318,7 +335,7 @@ class Bot:
                         )
                     else:
                         logger.info(
-                            f"Added new plugin "
+                            f"Succeeded to add new plugin "
                             f'"{plugin_info.module_class.__name__}" '
                             f'from file "{file}"'
                         )

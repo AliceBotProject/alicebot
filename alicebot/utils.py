@@ -255,7 +255,7 @@ def samefile(path1: str, path2: str) -> bool:
         如果两个路径是否指向相同的文件或目录。
     """
     try:
-        return os.path.samefile(path1, path2)
+        return path1 == path2 or os.path.samefile(path1, path2)
     except OSError:
         return False
 

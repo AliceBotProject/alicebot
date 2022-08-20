@@ -71,7 +71,7 @@ class Bot:
         global_state: 全局状态。
     """
 
-    config: MainConfig = None
+    config: MainConfig
 
     should_exit: asyncio.Event
     adapters: List[Adapter]
@@ -83,12 +83,16 @@ class Bot:
 
     _restart_flag: bool
     _module_path_finder: ModulePathFinder
+    _raw_config_dict: Dict[str, Any]
     _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
 
     _config_file: Optional[str]
     _config_dict: Dict[str, Any]
     _hot_reload: bool
 
+    _extend_plugins: List[str]
+    _extend_plugin_dirs: List[str]
+    _extend_adapters: List[str]
     _bot_run_hook: List[T_BotHook]
     _bot_exit_hook: List[T_BotExitHook]
     _adapter_startup_hook: List[T_AdapterHook]
@@ -123,12 +127,16 @@ class Bot:
 
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
+        self._raw_config_dict = {}
         self._config_update_dict = {}
 
         self._config_file = config_file
         self._config_dict = config_dict
         self._hot_reload = hot_reload
 
+        self._extend_plugins = []
+        self._extend_plugin_dirs = []
+        self._extend_adapters = []
         self._bot_run_hook = []
         self._bot_exit_hook = []
         self._adapter_startup_hook = []
@@ -155,6 +163,12 @@ class Bot:
         while self._restart_flag:
             self._restart_flag = False
             asyncio.run(self._run())
+            if self._restart_flag:
+                self._load_plugins_from_dir(self._extend_plugin_dirs)
+                for _plugin in self._extend_plugins:
+                    self._load_plugin(_plugin)
+                for _adapter in self._extend_adapters:
+                    self._load_adapter(_adapter)
 
     def restart(self):
         """退出并重新运行 AliceBot。"""
@@ -180,13 +194,13 @@ class Bot:
                     signal.signal(sig, self._handle_exit)
 
         # 加载配置文件
-        config_dict = {}
+        self._raw_config_dict = {}
         if self._config_dict is not None:
-            config_dict = self._config_dict
+            self._raw_config_dict = self._config_dict
         elif self._config_file is not None:
             try:
                 with open(self._config_file, "r", encoding="utf8") as f:
-                    config_dict = json.load(f)
+                    self._raw_config_dict = json.load(f)
             except OSError as e:
                 logger.warning(f"Can not open config file: {e!r}")
             except json.JSONDecodeError as e:
@@ -197,18 +211,18 @@ class Bot:
                 )
 
         try:
-            self.config = MainConfig(**config_dict)
+            self.config = MainConfig(**self._raw_config_dict)
         except ValidationError as e:
             self.config = MainConfig()
             error_or_exception(
                 "Config dict parse error:", e, self.config.verbose_exception_log
             )
 
-        self.load_plugins_from_dir(self.config.plugin_dir)
+        self._load_plugins_from_dir(self.config.plugin_dir)
         for _plugin in self.config.plugins:
-            self.load_plugin(_plugin)
+            self._load_plugin(_plugin)
         for _adapter in self.config.adapters:
-            self.load_adapter(_adapter)
+            self._load_adapter(_adapter)
         self._reload_config()
 
         # 启动 AliceBot
@@ -293,7 +307,7 @@ class Bot:
                         plugin_info = load_module_form_file(
                             self._module_path_finder, file, Plugin
                         )
-                        self._load_plugin(plugin_info)
+                        self._load_plugin_module(plugin_info)
                         self._reload_config()
                     except Exception as e:
                         error_or_exception(
@@ -318,7 +332,7 @@ class Bot:
                                     plugin_info = load_module_form_file(
                                         self._module_path_finder, file, Plugin
                                     )
-                                    self._load_plugin(plugin_info)
+                                    self._load_plugin_module(plugin_info)
                                     self._reload_config()
                                 except Exception as e:
                                     error_or_exception(
@@ -355,9 +369,12 @@ class Bot:
         """手动重新加载所有插件。"""
         self.plugins_priority_dict.clear()
         self._config_update_dict.clear()
-        self.load_plugins_from_dir(self.config.plugin_dir)
+        self._load_plugins_from_dir(self.config.plugin_dir)
         for _plugin in self.config.plugins:
-            self.load_plugin(_plugin)
+            self._load_plugin(_plugin)
+        self._load_plugins_from_dir(self._extend_plugin_dirs)
+        for _plugin in self._extend_plugins:
+            self._load_plugin(_plugin)
         self._reload_config()
 
     def _handle_exit(self, *args):  # noqa
@@ -514,7 +531,7 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def _load_plugin(self, plugin_info: ModuleInfo):
+    def _load_plugin_module(self, plugin_info: ModuleInfo):
         """加载插件。"""
         priority = getattr(plugin_info.module_class, "priority", None)
         if type(priority) is int and priority >= 0:
@@ -528,7 +545,7 @@ class Bot:
                 + plugin_info.module.__name__
             )
 
-    def load_plugin(self, name: str) -> Optional[Type[Plugin]]:
+    def _load_plugin(self, name: str) -> Optional[Type[Plugin]]:
         """加载单个插件。
 
         Args:
@@ -537,10 +554,9 @@ class Bot:
         Returns:
             被加载的插件类。
         """
-        self.config.plugins.add(name)
         try:
             plugin_info = load_module_from_name(name, Plugin)
-            self._load_plugin(plugin_info)
+            self._load_plugin_module(plugin_info)
         except Exception as e:
             error_or_exception(
                 f'Load plugin from module "{name}" failed:',
@@ -554,19 +570,30 @@ class Bot:
             )
             return plugin_info.module_class
 
-    def load_plugins_from_dir(self, path: Iterable[str]):
+    def load_plugin(self, name: str) -> Optional[Type[Plugin]]:
+        """加载单个插件。
+
+        Args:
+            name: 插件名称，格式和 Python `import` 语句相同。
+
+        Returns:
+            被加载的插件类。
+        """
+        self._extend_plugins.append(name)
+        return self._load_plugin(name)
+
+    def _load_plugins_from_dir(self, path: Iterable[str]):
         """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
 
         Args:
             path: 由储存插件的路径文本组成的列表。
                 例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
         """
-        self.config.plugin_dir.update(path)
         for plugin_info in load_modules_from_dir(
             self._module_path_finder, path, Plugin
         ):
             try:
-                self._load_plugin(plugin_info)
+                self._load_plugin_module(plugin_info)
             except Exception as e:
                 error_or_exception(
                     f'Load plugin "{plugin_info.module_class.__name__}" '
@@ -580,7 +607,17 @@ class Bot:
                     f'from file "{plugin_info.module.__file__}"'
                 )
 
-    def load_adapter(self, name: str) -> Optional[Adapter]:
+    def load_plugins_from_dir(self, path: Iterable[str]):
+        """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
+
+        Args:
+            path: 由储存插件的路径文本组成的列表。
+                例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
+        """
+        self._extend_plugin_dirs.extend(path)
+        self._load_plugins_from_dir(path)
+
+    def _load_adapter(self, name: str) -> Optional[Adapter]:
         """加载单个适配器。
 
         Args:
@@ -589,7 +626,6 @@ class Bot:
         Returns:
             被加载的适配器对象。
         """
-        self.config.adapters.add(name)
         try:
             adapter_info = load_module_from_name(name, Adapter)
             adapter_object = adapter_info.module_class(self)
@@ -605,6 +641,18 @@ class Bot:
                 f'from module "{name}"'
             )
             return adapter_object
+
+    def load_adapter(self, name: str) -> Optional[Adapter]:
+        """加载单个适配器。
+
+        Args:
+            name: 适配器名称，格式和 Python `import` 语句相同。
+
+        Returns:
+            被加载的适配器对象。
+        """
+        self._extend_adapters.append(name)
+        return self._load_adapter(name)
 
     def _update_config_module(self, config_class: Optional[Type[BaseModel]]):
         """更新配置模型。"""
@@ -632,7 +680,7 @@ class Bot:
         """更新 config，合并入来自 Plugin 和 Adapter 的 Config"""
         self.config = create_model(
             "Config", **self._config_update_dict, __base__=MainConfig
-        )(**self.config.dict())
+        )(**self._raw_config_dict)
 
     def get_loaded_adapter_by_name(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。

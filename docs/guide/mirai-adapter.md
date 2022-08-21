@@ -92,15 +92,16 @@ from alicebot.adapter.mirai.message import CQHTTPMessageSegment
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        msg = CQHTTPMessageSegment.plain('Hello, Alice!') + CQHTTPMessageSegment.image(url='https://www.example.org/1.jpg')
+        msg = CQHTTPMessageSegment.plain("Hello, Alice!") + \
+              CQHTTPMessageSegment.image(url="https://www.example.org/1.jpg")
         await self.event.reply(msg)
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'mirai':
+        if self.event.adapter.name != "mirai":
             return False
-        if self.event.type != 'FriendMessage':
+        if self.event.type != "FriendMessage":
             return False
-        return self.event.message.get_plain_text().lower() == 'hello'
+        return self.event.message.get_plain_text().lower() == "hello"
 
 ```
 
@@ -116,11 +117,11 @@ from alicebot.plugin import Plugin
 
 class TestPlugin(Plugin):
     async def handle(self) -> None:
-        resp = await self.event.adapter.call_api('friendProfile', target=10001)
+        resp = await self.event.adapter.call_api("friendProfile", target=10001)
         # 等效于 resp = await self.event.adapter.friendProfile(target=10001)
 
     async def rule(self) -> bool:
-        return self.event.adapter.name == 'mirai'
+        return self.event.adapter.name == "mirai"
 
 ```
 

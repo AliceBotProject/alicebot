@@ -65,8 +65,8 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
    ```python
    from alicebot import Bot
    
-   bot = Bot(config_file=None)
-   bot.load_adapter('alicebot.adapter.cqhttp')
+   bot = Bot()
+   bot.load_adapter("alicebot.adapter.cqhttp")
    
    bot.run()
    ```
@@ -79,14 +79,14 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
    
    class Echo(Plugin):
        async def handle(self) -> None:
-           await self.event.reply(self.event.message.replace('echo ', ''))
+           await self.event.reply(self.event.message.replace("echo ", ""))
    
        async def rule(self) -> bool:
-           if self.event.adapter.name != 'cqhttp':
+           if self.event.adapter.name != "cqhttp":
                return False
-           if self.event.type != 'message':
+           if self.event.type != "message":
                return False
-           return self.event.message.startswith('echo ')
+           return self.event.message.startswith("echo ")
    ```
 
 更多信息请参阅 AliceBot [文档](https://docs.alicebot.dev/)。

@@ -30,9 +30,9 @@ pip install aliebot[apscheduler]
 from alicebot import Bot
 
 bot = Bot()
-bot.load_adapter('alicebot.adapter.apscheduler')
+bot.load_adapter("alicebot.adapter.apscheduler")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     bot.run()
 
 ```
@@ -68,16 +68,17 @@ from alicebot.plugin import Plugin
 
 class TestPlugin(Plugin):
     __schedule__ = True
-    trigger = 'interval'
-    trigger_args = {
-        'seconds': 10
-    }
+    trigger = "interval"
+    trigger_args = {"seconds": 10}
 
     async def handle(self) -> None:
         pass
 
     async def rule(self) -> bool:
-        return self.event.adapter.name == 'apscheduler' and type(self) == self.event.plugin_class
+        return (
+            self.event.adapter.name == "apscheduler"
+            and type(self) == self.event.plugin_class
+        )
 
 ```
 
@@ -104,17 +105,19 @@ from alicebot.plugin import Plugin
 from alicebot.adapter.apscheduler import scheduler_decorator
 
 
-@scheduler_decorator(trigger='interval', trigger_args={'seconds': 10}, override_rule=True)
+@scheduler_decorator(
+    trigger="interval", trigger_args={"seconds": 10}, override_rule=True
+)
 class TestPlugin(Plugin):
     async def handle(self) -> None:
         pass
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return str(self.event.message).lower() == 'hello'
+        return str(self.event.message).lower() == "hello"
 
 ```
 
@@ -126,23 +129,21 @@ from alicebot.plugin import Plugin
 
 class TestPlugin(Plugin):
     __schedule__ = True
-    trigger = 'interval'
-    trigger_args = {
-        'seconds': 10
-    }
+    trigger = "interval"
+    trigger_args = {"seconds": 10}
 
     async def handle(self) -> None:
         pass
 
     async def rule(self) -> bool:
-        if self.event.name == 'apscheduler' and type(self) == self.event.plugin_class:
+        if self.event.name == "apscheduler" and type(self) == self.event.plugin_class:
             return True
         else:
-            if self.event.adapter.name != 'cqhttp':
+            if self.event.adapter.name != "cqhttp":
                 return False
-            if self.event.type != 'message':
+            if self.event.type != "message":
                 return False
-            return str(self.event.message).lower() == 'hello'
+            return str(self.event.message).lower() == "hello"
 
 ```
 
@@ -159,15 +160,20 @@ from alicebot.plugin import Plugin
 from alicebot.adapter.apscheduler import scheduler_decorator
 
 
-@scheduler_decorator(trigger='interval', trigger_args={'seconds': 10}, override_rule=False)
+@scheduler_decorator(
+    trigger="interval", trigger_args={"seconds": 10}, override_rule=False
+)
 class PluginA(Plugin):
-    scheduler_flag = 'abc'
+    scheduler_flag = "abc"
 
     async def handle(self) -> None:
         pass
 
     async def rule(self) -> bool:
-        if self.event.type == 'apscheduler' and getattr(self.event.plugin_class, 'scheduler_flag', '') == 'abc':
+        if (
+            self.event.type == "apscheduler"
+            and getattr(self.event.plugin_class, "scheduler_flag", "") == "abc"
+        ):
             return True
         else:
             pass
@@ -185,7 +191,10 @@ class PluginB(Plugin):
         pass
 
     async def rule(self) -> bool:
-        if self.event.type == 'apscheduler' and getattr(self.event.plugin_class, 'scheduler_flag', '') == 'abc':
+        if (
+            self.event.type == "apscheduler"
+            and getattr(self.event.plugin_class, "scheduler_flag", "") == "abc"
+        ):
             return True
         else:
             pass

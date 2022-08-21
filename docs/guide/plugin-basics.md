@@ -16,10 +16,11 @@
 from alicebot import Bot
 
 bot = Bot()
-bot.load_plugins_from_dir(['plugins', '/home/xxx/alicebot/plugins'])
+bot.load_plugins_from_dir(["plugins", "/home/xxx/alicebot/plugins"])
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     bot.run()
+
 ```
 
 这实际上和配置 `plugin_dir` 为 `["plugins", "/home/xxx/alicebot/plugins"]`
@@ -33,10 +34,11 @@ if __name__ == '__main__':
 from alicebot import Bot
 
 bot = Bot()
-bot.load_plugin('plugins.hello')
+bot.load_plugin("plugins.hello")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     bot.run()
+
 ```
 
 加载插件的名称和 Python 的 `import` 语句相同。
@@ -62,7 +64,7 @@ from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-   priority: int = 0
+    priority: int = 0
     block: bool = False
 
     async def handle(self) -> None:
@@ -108,7 +110,11 @@ class HalloAlice(Plugin):
         pass
 
     async def rule(self) -> bool:
-        return self.event.adapter.name == 'cqhttp' and self.event.type == 'message' and str(self.event.message).lower() == 'hello'
+        return (
+            self.event.adapter.name == "cqhttp"
+            and self.event.type == "message"
+            and str(self.event.message).lower() == "hello"
+        )
 
 ```
 
@@ -123,11 +129,11 @@ class HalloAlice(Plugin):
         pass
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return str(self.event.message).lower() == 'hello'
+        return str(self.event.message).lower() == "hello"
 
 ```
 
@@ -155,14 +161,14 @@ from alicebot.plugin import Plugin
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        await self.event.reply('Hello, Alice!')
+        await self.event.reply("Hello, Alice!")
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return str(self.event.message).lower() == 'hello'
+        return str(self.event.message).lower() == "hello"
 
 ```
 
@@ -182,33 +188,37 @@ from alicebot.exceptions import GetEventTimeout
 
 
 class Weather(Plugin):
-  async def handle(self) -> None:
-    args = self.event.get_plain_text().split(' ')
-    if len(args) >= 2:
-      await self.event.reply(await self.get_weather(args[1]))
-    else:
-      await self.event.reply('请输入想要查询天气的城市：')
-      try:
-        city_event = await self.event.adapter.get(lambda x: x.type == 'message',
-                                                  timeout=10)
-      except GetEventTimeout:
-        return
-      else:
-        await self.event.reply(await self.get_weather(city_event.get_plain_text()))
+    async def handle(self) -> None:
+        args = self.event.get_plain_text().split(" ")
+        if len(args) >= 2:
+            await self.event.reply(await self.get_weather(args[1]))
+        else:
+            await self.event.reply("请输入想要查询天气的城市：")
+            try:
+                city_event = await self.event.adapter.get(
+                    lambda x: x.type == "message", timeout=10
+                )
+            except GetEventTimeout:
+                return
+            else:
+                await self.event.reply(
+                    await self.get_weather(city_event.get_plain_text())
+                )
 
-  async def rule(self) -> bool:
-    if self.event.adapter.name != 'cqhttp':
-      return False
-    if self.event.type != 'message':
-      return False
-    return self.event.message.startswith('天气') or self.event.message.startswith(
-      'weather')
+    async def rule(self) -> bool:
+        if self.event.adapter.name != "cqhttp":
+            return False
+        if self.event.type != "message":
+            return False
+        return self.event.message.startswith("天气") or self.event.message.startswith(
+            "weather"
+        )
 
-  @staticmethod
-  async def get_weather(city):
-    if city not in ['北京', '上海']:
-      return '你想查询的城市暂不支持！'
-    return f'{city}的天气是...'
+    @staticmethod
+    async def get_weather(city):
+        if city not in ["北京", "上海"]:
+            return "你想查询的城市暂不支持！"
+        return f"{city}的天气是..."
 
 ```
 

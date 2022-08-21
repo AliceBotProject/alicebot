@@ -34,12 +34,12 @@ from alicebot.adapter.digntalk.message import DingTalkMessage
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        await self.event.reply(DingTalkMessage.markdown('# hello\n\nHello, Alice!'))
+        await self.event.reply(DingTalkMessage.markdown("# hello\n\nHello, Alice!"))
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'dingtalk':
+        if self.event.adapter.name != "dingtalk":
             return False
-        return str(self.event.message).strip().lower() == 'hello'
+        return str(self.event.message).strip().lower() == "hello"
 
 ```
 

@@ -108,6 +108,7 @@ function sidebarGuide() {
         '/guide/builtin-message.md',
         '/guide/scheduler.md',
         '/guide/hook-function.md',
+        '/guide/hot-reload.md',
       ].map(getSidebarItem)
     },
     {

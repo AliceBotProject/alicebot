@@ -56,8 +56,9 @@ pip install alicebot[dingtalk]
    
    bot = Bot()
    
-   if __name__ == '__main__':
+   if __name__ == "__main__":
        bot.run()
+   
    ```
 
 3. 创建一个 `config.json` 文件并写入以下内容

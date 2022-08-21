@@ -56,7 +56,7 @@ class TestPlugin(Plugin):
 实际上，这两个方法是使用 Python 的异常处理实现的，所以，在编写插件时请注意不要捕获所有异常，如：
 
 ```python
-# 错误代码：skip() 方法不会生效
+# 错误：skip() 方法不会生效
 from alicebot.plugin import Plugin
 
 
@@ -107,14 +107,14 @@ class Count(Plugin):
         if self.state is None:
             self.state = 0
         self.state += 1
-        await self.event.reply(f'count: {self.state}')
+        await self.event.reply(f"count: {self.state}")
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return self.event.message.get_plain_text() == 'count'
+        return self.event.message.get_plain_text() == "count"
 
 ```
 
@@ -134,17 +134,17 @@ from alicebot.plugin import Plugin
 
 class GlobalStateTest1(Plugin):
     async def handle(self) -> None:
-        if self.bot.global_state.get('count', None) is None:
-            self.bot.global_state['count'] = 0
-        self.bot.global_state['count'] += 1
+        if self.bot.global_state.get("count", None) is None:
+            self.bot.global_state["count"] = 0
+        self.bot.global_state["count"] += 1
         await self.event.reply(f'add: {self.bot.global_state["count"]}')
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return self.event.message.get_plain_text() == 'add'
+        return self.event.message.get_plain_text() == "add"
 
 ```
 
@@ -154,17 +154,17 @@ from alicebot.plugin import Plugin
 
 class GlobalStateTest2(Plugin):
     async def handle(self) -> None:
-        if self.bot.global_state.get('count', None) is None:
-            self.bot.global_state['count'] = 0
-        self.bot.global_state['count'] -= 1
-        await self.event.reply(f'sub: {self.bot.global_state["count"]}')
+        if self.bot.global_state.get("count", None) is None:
+            self.bot.global_state["count"] = 0
+        self.bot.global_state["count"] -= 1
+        await self.event.reply(f"sub: {self.bot.global_state['count']}")
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return self.event.message.get_plain_text() == 'sub'
+        return self.event.message.get_plain_text() == "sub"
 
 ```
 
@@ -174,6 +174,7 @@ class GlobalStateTest2(Plugin):
 
 ```python
 from pydantic import BaseModel
+
 from alicebot.plugin import Plugin
 
 
@@ -187,8 +188,8 @@ class TestPlugin(Plugin):
 
 
 class Config(BaseModel):
-    __config_name__ = 'test_plugin'
-    a: str = 'test'
+    __config_name__ = "test_plugin"
+    a: str = "test"
     b: int = 1
 
 ```
@@ -265,14 +266,13 @@ class TestPlugin(Plugin):
 如果你想要在插件中输出到控制台什么东西的话，建议不要直接使用 `print()`，可以这样输出日志：
 
 ```python
-from alicebot.plugin import Plugin
 from alicebot.log import logger
+from alicebot.plugin import Plugin
 
 
 class TestPlugin(Plugin):
-
     async def handle(self) -> None:
-        logger.info('TestPlugin Processing!')
+        logger.info("TestPlugin Processing!")
 
     async def rule(self) -> bool:
         return True
@@ -321,4 +321,4 @@ class Count(Plugin[Union[PrivateMessageEvent, GroupMessageEvent], int]):
 
 ```
 
-这里相当于指明了此插件所处理的事件的类型为 `Union[PrivateMessageEvent, GroupMessageEvent]` 储存的状态类型为 `int` 。
+这里相当于指明了此插件所处理的事件的类型为 `Union[PrivateMessageEvent, GroupMessageEvent]` ，储存的状态类型为 `int` 。

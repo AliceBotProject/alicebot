@@ -16,11 +16,11 @@ AliceBot 内置了 `Message` 和 `MessageSegment` 类，即消息和消息字段
 
 ```python
 msg_seg = MessageSegment()
-mas_seg.type = 'text'
-msg_seg['text'] = 'Hello'
+mas_seg.type = "text"
+msg_seg["text"] = "Hello"
 msg = Message(msg_seg)
 
-msg = Message('Hello')    # 内置的 Message 原生并不支持这种用法
+msg = Message("Hello")  # 内置的 Message 原生并不支持这种用法
 
 msg = Message(msg)
 ```
@@ -31,17 +31,17 @@ msg = Message(msg)
 msg = Message()
 
 msg_seg = MessageSegment()
-mas_seg.type = 'text'
-msg_seg['text'] = 'Hello'
+mas_seg.type = "text"
+msg_seg["text"] = "Hello"
 
 msg += msg_seg
-msg = msg + 'Hello'    # 内置的 Message 原生并不支持这种用法
+msg = msg + "Hello"  # 内置的 Message 原生并不支持这种用法
 ```
 
 实现了 `startswith()` ， `endswith()` 和 `replace()` 方法，类似字符串的对应方法，但可以传入 `MessageSegment` 或 `str` 类型的对象，具体请参考 [API文档](/api/message.md) 。
 
 ```python
-msg.startswith('a')
+msg.startswith("a")
 ```
 
 ## 消息字段
@@ -52,10 +52,10 @@ msg.startswith('a')
 
 ```python
 msg_seg = MessageSegment()
-mas_seg.type = 'text'
+mas_seg.type = "text"
 
-msg_seg['text'] = 'Hello'    # 等同与 mag_seg.data['text'] = 'Hello'
-print(msg_seg.get('text'))   # 等同与 print(msg_seg.data.get('text'))
+msg_seg["text"] = "Hello"  # 等同与 mag_seg.data['text'] = 'Hello'
+print(msg_seg.get("text"))  # 等同与 print(msg_seg.data.get('text'))
 ```
 
 消息字段对象也可以直接与其他对象相加，会返回一个消息类。
@@ -64,5 +64,31 @@ print(msg_seg.get('text'))   # 等同与 print(msg_seg.data.get('text'))
 msg_seg_1 = MessageSegment()
 msg_seg_2 = MessageSegment()
 msg = msg_seg_1 + msg_seg_2
-type(msg)    # Message
+type(msg)  # Message
 ```
+
+## 示例
+
+下面让我们来实践一下，尝试使用 CQHTTP 协议适配器的消息类构建一个富文本消息。
+
+```python
+from alicebot.plugin import Plugin
+from alicebot.adapter.cqhttp.message import CQHTTPMessage, CQHTTPMessageSegment
+
+
+class Hello(Plugin):
+    async def handle(self) -> None:
+        msg = CQHTTPMessage()
+        msg += CQHTTPMessageSegment.text("Hello")
+        msg += CQHTTPMessageSegment.image("file:///path/hello.png")
+        await self.event.reply(msg)
+
+    async def rule(self) -> bool:
+        if self.event.adapter.name != "cqhttp":
+            return False
+        if self.event.type != "message":
+            return False
+        return str(self.event.message) == "hello"
+
+```
+

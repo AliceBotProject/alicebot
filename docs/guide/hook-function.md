@@ -13,7 +13,7 @@ def hook_func(_bot: Bot):
     pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     bot.run()
 
 ```
@@ -50,7 +50,7 @@ def hook_func(_bot: Bot):
 
 ```python
 @bot.adapter_startup_hook
-async def hook_func(_adapter: 'T_Adapter'):
+async def hook_func(_adapter: "T_Adapter"):
     pass
 ```
 
@@ -58,7 +58,7 @@ async def hook_func(_adapter: 'T_Adapter'):
 
 ```python
 @bot.adapter_run_hook
-async def hook_func(_adapter: 'T_Adapter'):
+async def hook_func(_adapter: "T_Adapter"):
     pass
 ```
 
@@ -66,7 +66,7 @@ async def hook_func(_adapter: 'T_Adapter'):
 
 ```python
 @bot.adapter_shutdown_hook
-async def hook_func(_adapter: 'T_Adapter'):
+async def hook_func(_adapter: "T_Adapter"):
     pass
 ```
 
@@ -76,7 +76,7 @@ async def hook_func(_adapter: 'T_Adapter'):
 
 ```python
 @bot.event_preprocessor_hook
-async def hook_func(_event: 'T_Event'):
+async def hook_func(_event: "T_Event"):
     pass
 ```
 
@@ -84,6 +84,6 @@ async def hook_func(_event: 'T_Event'):
 
 ```python
 @bot.event_postprocessor_hook
-async def hook_func(_event: 'T_Event'):
+async def hook_func(_event: "T_Event"):
     pass
 ```

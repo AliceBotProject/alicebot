@@ -80,15 +80,16 @@ from alicebot.adapter.cqhttp.message import CQHTTPMessageSegment
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        msg = CQHTTPMessageSegment.text('Hello, Alice!') + CQHTTPMessageSegment.image('https://www.example.org/1.jpg')
+        msg = CQHTTPMessageSegment.text("Hello, Alice!") + \
+              CQHTTPMessageSegment.image("https://www.example.org/1.jpg")
         await self.event.reply(msg)
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return str(self.event.message).lower() == 'hello'
+        return str(self.event.message).lower() == "hello"
 
 ```
 
@@ -104,11 +105,11 @@ from alicebot.plugin import Plugin
 
 class TestPlugin(Plugin):
     async def handle(self) -> None:
-        resp = await self.event.adapter.call_api('send_like', user_id=10001)
+        resp = await self.event.adapter.call_api("send_like", user_id=10001)
         # 等效于 resp = await self.event.adapter.send_like(user_id=10001)
 
     async def rule(self) -> bool:
-        return self.event.adapter.name == 'cqhttp'
+        return self.event.adapter.name == "cqhttp"
 
 ```
 

@@ -59,14 +59,18 @@ from alicebot.plugin import Plugin
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        await self.event.reply(f'Hello, I am {self.config.nickname}!')
+        await self.event.reply(f"Hello, I am {self.config.nickname}!")
 
     async def rule(self) -> bool:
-        if self.event.adapter.name != 'cqhttp':
+        if self.event.adapter.name != "cqhttp":
             return False
-        if self.event.type != 'message':
+        if self.event.type != "message":
             return False
-        return self.event.user_id == self.config.superuser and str(self.event.message).lower() == 'hello'
+        return (
+            self.event.user_id == self.config.superuser
+            and str(self.event.message).lower() == "hello"
+        )
+
 ```
 
 ## 自定义配置文件或不使用配置文件
@@ -77,11 +81,13 @@ class HalloAlice(Plugin):
 
 ```python
 # 自定义配置文件名
-bot = Bot(config_file='my_config.json')
+bot = Bot(config_file="my_config.json")
 
 # 不使用配置文件
-bot = Bot(config_dict={
-    'plugin_dir': ['plugins'],
-    'adapters': ['alicebot.adapter.cqhttp'],
-})
+bot = Bot(
+    config_dict={
+        "plugin_dir": ["plugins"],
+        "adapters": ["alicebot.adapter.cqhttp"],
+    }
+)
 ```

@@ -5,6 +5,28 @@ sidebar: auto
 # 更新日志
 
 
+## [0.5.0](https://github.com/st1020/alicebot/compare/v0.4.0...v0.5.0) (2022-08-21)
+
+
+### Bug Fixes
+
+* **bot:** 修复删除插件不触发热重载的错误 ([e97f244](https://github.com/st1020/alicebot/commit/e97f2447fc7ae938e15c21675341aa2e4f6e6832))
+* **bot:** 修复部分情况下热更新时出现的导入错误 ([7977dfc](https://github.com/st1020/alicebot/commit/7977dfc0f3274e9fb939fc866484ea13c96b607a))
+* **bot:** 修复部分情况下热重载时配置加载错误 ([24cd51c](https://github.com/st1020/alicebot/commit/24cd51c61d1d5262987c98673e8c6f7e32c07138))
+
+
+### Features
+
+* **bot:** 添加加载同名插件时的警告 ([c008711](https://github.com/st1020/alicebot/commit/c00871168711c85227e06dbabf09ad64bd5657ec))
+* **utils:** 删除 utils.Condition 类，改用标准库中的 asyncio.Condition 类 ([3e9db43](https://github.com/st1020/alicebot/commit/3e9db43a59fb1e6659836b7ca2cc15b064b71cef))
+
+
+### BREAKING CHANGES
+
+* **utils:** 删除 utils.Condition 类
+
+
+
 ## [0.4.0](https://github.com/st1020/alicebot/compare/v0.3.1...v0.4.0) (2022-08-19)
 
 

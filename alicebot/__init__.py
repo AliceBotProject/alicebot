@@ -78,28 +78,28 @@ class Bot:
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
-    _condition: asyncio.Condition
-    _current_event: T_Event
+    _condition: asyncio.Condition  # 用于处理 get 的 Condition
+    _current_event: T_Event  # 当前待处理的 Event
 
-    _restart_flag: bool
-    _module_path_finder: ModulePathFinder
-    _raw_config_dict: Dict[str, Any]
-    _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]
+    _restart_flag: bool  # 重新启动标志
+    _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
+    _raw_config_dict: Dict[str, Any]  # 原始配置字典
+    _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]  # 配置模型更新使用的字典
 
-    _config_file: Optional[str]
-    _config_dict: Dict[str, Any]
-    _hot_reload: bool
+    _config_file: Optional[str]  # 配置文件
+    _config_dict: Optional[Dict[str, Any]]  # 配置字典
+    _hot_reload: bool  # 热重载
 
-    _extend_plugins: List[str]
-    _extend_plugin_dirs: List[str]
-    _extend_adapters: List[str]
-    _bot_run_hook: List[T_BotHook]
-    _bot_exit_hook: List[T_BotExitHook]
-    _adapter_startup_hook: List[T_AdapterHook]
-    _adapter_run_hook: List[T_AdapterHook]
-    _adapter_shutdown_hook: List[T_AdapterHook]
-    _event_preprocessor_hook: List[T_EventHook]
-    _event_postprocessor_hook: List[T_EventHook]
+    _extend_plugins: List[str]  # 使用 load_plugin() 方法程序化加载的插件列表
+    _extend_plugin_dirs: List[str]  # 使用 load_plugins_from_dir() 方法程序化加载的插件路径列表
+    _extend_adapters: List[str]  # 使用 load_adapter() 方法程序化加载的适配器列表
+    _bot_run_hooks: List[T_BotHook]
+    _bot_exit_hooks: List[T_BotExitHook]
+    _adapter_startup_hooks: List[T_AdapterHook]
+    _adapter_run_hooks: List[T_AdapterHook]
+    _adapter_shutdown_hooks: List[T_AdapterHook]
+    _event_preprocessor_hooks: List[T_EventHook]
+    _event_postprocessor_hooks: List[T_EventHook]
 
     def __init__(
         self,
@@ -137,13 +137,13 @@ class Bot:
         self._extend_plugins = []
         self._extend_plugin_dirs = []
         self._extend_adapters = []
-        self._bot_run_hook = []
-        self._bot_exit_hook = []
-        self._adapter_startup_hook = []
-        self._adapter_run_hook = []
-        self._adapter_shutdown_hook = []
-        self._event_preprocessor_hook = []
-        self._event_postprocessor_hook = []
+        self._bot_run_hooks = []
+        self._bot_exit_hooks = []
+        self._adapter_startup_hooks = []
+        self._adapter_run_hooks = []
+        self._adapter_shutdown_hooks = []
+        self._event_preprocessor_hooks = []
+        self._event_postprocessor_hooks = []
 
         sys.meta_path.insert(0, self._module_path_finder)
 
@@ -232,12 +232,12 @@ class Bot:
         if self._hot_reload:
             hot_reload_task = asyncio.create_task(self._run_hot_reload())
 
-        for _hook_func in self._bot_run_hook:
+        for _hook_func in self._bot_run_hooks:
             await _hook_func(self)
 
         try:
             for _adapter in self.adapters:
-                for _hook_func in self._adapter_startup_hook:
+                for _hook_func in self._adapter_startup_hooks:
                     await _hook_func(_adapter)
                 try:
                     await _adapter.startup()
@@ -249,7 +249,7 @@ class Bot:
                     )
 
             for _adapter in self.adapters:
-                for _hook_func in self._adapter_run_hook:
+                for _hook_func in self._adapter_run_hooks:
                     await _hook_func(_adapter)
                 asyncio.create_task(_adapter.safe_run())
 
@@ -259,10 +259,10 @@ class Bot:
                 await hot_reload_task
         finally:
             for _adapter in self.adapters:
-                for _hook_func in self._adapter_shutdown_hook:
+                for _hook_func in self._adapter_shutdown_hooks:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
-            for _hook_func in self._bot_exit_hook:
+            for _hook_func in self._bot_exit_hooks:
                 _hook_func(self)
 
             self.adapters.clear()
@@ -438,7 +438,7 @@ class Bot:
             if current_event.__handled__:
                 return
 
-        for _hook_func in self._event_preprocessor_hook:
+        for _hook_func in self._event_preprocessor_hooks:
             await _hook_func(current_event)
 
         for plugin_priority in sorted(self.plugins_priority_dict.keys()):
@@ -478,7 +478,7 @@ class Bot:
                     self.config.verbose_exception_log,
                 )
 
-        for _hook_func in self._event_postprocessor_hook:
+        for _hook_func in self._event_postprocessor_hooks:
             await _hook_func(current_event)
 
         logger.info("Event Finished")
@@ -730,7 +730,7 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._bot_run_hook.append(func)
+        self._bot_run_hooks.append(func)
         return func
 
     def bot_exit_hook(self, func: T_BotExitHook) -> T_BotExitHook:
@@ -742,7 +742,7 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._bot_exit_hook.append(func)
+        self._bot_exit_hooks.append(func)
         return func
 
     def adapter_startup_hook(self, func: T_AdapterHook) -> T_AdapterHook:
@@ -754,7 +754,7 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._adapter_startup_hook.append(func)
+        self._adapter_startup_hooks.append(func)
         return func
 
     def adapter_run_hook(self, func: T_AdapterHook) -> T_AdapterHook:
@@ -766,7 +766,7 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._adapter_run_hook.append(func)
+        self._adapter_run_hooks.append(func)
         return func
 
     def adapter_shutdown_hook(self, func: T_AdapterHook) -> T_AdapterHook:
@@ -778,7 +778,7 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._adapter_shutdown_hook.append(func)
+        self._adapter_shutdown_hooks.append(func)
         return func
 
     def event_preprocessor_hook(self, func: T_EventHook) -> T_EventHook:
@@ -790,7 +790,7 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._event_preprocessor_hook.append(func)
+        self._event_preprocessor_hooks.append(func)
         return func
 
     def event_postprocessor_hook(self, func: T_EventHook) -> T_EventHook:
@@ -802,5 +802,5 @@ class Bot:
         Returns:
             被注册的函数。
         """
-        self._event_postprocessor_hook.append(func)
+        self._event_postprocessor_hooks.append(func)
         return func

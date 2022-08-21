@@ -41,7 +41,6 @@ from alicebot.exceptions import (
     LoadModuleError,
 )
 from alicebot.utils import (
-    Condition,
     ModuleInfo,
     ModulePathFinder,
     samefile,
@@ -79,7 +78,8 @@ class Bot:
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
-    _condition: Condition[T_Event]
+    _condition: asyncio.Condition
+    _current_event: T_Event
 
     _restart_flag: bool
     _module_path_finder: ModulePathFinder
@@ -179,7 +179,7 @@ class Bot:
     async def _run(self):
         """运行 AliceBot。"""
         self.should_exit = asyncio.Event()
-        self._condition = Condition()
+        self._condition = asyncio.Condition()
 
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
@@ -425,14 +425,16 @@ class Bot:
             asyncio.create_task(self._handle_event())
             await asyncio.sleep(0)
             async with self._condition:
-                self._condition.notify_all(current_event)
+                self._current_event = current_event
+                self._condition.notify_all()
         else:
             asyncio.create_task(self._handle_event(current_event))
 
     async def _handle_event(self, current_event: Optional[T_Event] = None):
         if current_event is None:
             async with self._condition:
-                current_event = await self._condition.wait()
+                await self._condition.wait()
+                current_event = self._current_event
             if current_event.__handled__:
                 return
 
@@ -529,20 +531,20 @@ class Bot:
 
             async with self._condition:
                 if timeout is None:
-                    event = await self._condition.wait()
+                    await self._condition.wait()
                 else:
                     try:
-                        event = await asyncio.wait_for(
+                        await asyncio.wait_for(
                             self._condition.wait(),
                             timeout=start_time + timeout - time.time(),
                         )
                     except asyncio.TimeoutError:
                         break
 
-                if not event.__handled__:
-                    if await func(event):
-                        event.__handled__ = True
-                        return event
+                if not self._current_event.__handled__:
+                    if await func(self._current_event):
+                        self._current_event.__handled__ = True
+                        return self._current_event
 
                 try_times += 1
 

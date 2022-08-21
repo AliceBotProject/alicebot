@@ -13,9 +13,9 @@ from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
 
 import aiohttp
 
+from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import logger, error_or_exception
-from alicebot.utils import Condition, DataclassEncoder
 
 from .config import Config
 from .message import MiraiMessage
@@ -37,7 +37,8 @@ class MiraiAdapter(WebSocketAdapter):
     """
 
     name: str = "mirai"
-    api_response_cond: Condition = None
+    _api_response: Any
+    _api_response_cond: asyncio.Condition = None
     _sync_id: int = 0
 
     @property
@@ -55,7 +56,7 @@ class MiraiAdapter(WebSocketAdapter):
         self.port = self.config.port
         self.url = self.config.url
         self.reconnect_interval = self.config.reconnect_interval
-        self.api_response_cond = Condition()
+        self._api_response_cond = asyncio.Condition()
         await super().startup()
 
     async def reverse_ws_connection_hook(self):
@@ -100,8 +101,9 @@ class MiraiAdapter(WebSocketAdapter):
             elif msg_dict.get("syncId") == "-1":
                 await self.handle_mirai_event(msg_dict.get("data"))
             else:
-                async with self.api_response_cond:
-                    self.api_response_cond.notify_all(msg_dict)
+                async with self._api_response_cond:
+                    self._api_response = msg_dict
+                    self._api_response_cond.notify_all()
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
             logger.error(
@@ -190,19 +192,19 @@ class MiraiAdapter(WebSocketAdapter):
         while not self.bot.should_exit.is_set():
             if time.time() - start_time > self.config.api_timeout:
                 break
-            async with self.api_response_cond:
+            async with self._api_response_cond:
                 try:
-                    resp = await asyncio.wait_for(
-                        self.api_response_cond.wait(),
+                    await asyncio.wait_for(
+                        self._api_response_cond.wait(),
                         timeout=start_time + self.config.api_timeout - time.time(),
                     )
                 except asyncio.TimeoutError:
                     break
-                if resp.get("syncId") == sync_id:
-                    status_code = resp.get("data", {}).get("code")
+                if self._api_response.get("syncId") == sync_id:
+                    status_code = self._api_response.get("data", {}).get("code")
                     if status_code is not None and status_code != 0:
-                        raise ActionFailed(code=status_code, resp=resp)
-                    return resp.get("data")
+                        raise ActionFailed(code=status_code, resp=self._api_response)
+                    return self._api_response.get("data")
 
         if not self.bot.should_exit.is_set():
             raise ApiTimeout

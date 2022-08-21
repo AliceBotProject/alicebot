@@ -12,9 +12,9 @@ from typing import TYPE_CHECKING, Any, Dict, Literal
 
 import aiohttp
 
+from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import logger, error_or_exception
-from alicebot.utils import Condition, DataclassEncoder
 
 from .config import Config
 from .event import get_event_class
@@ -29,7 +29,8 @@ __all__ = ["CQHTTPAdapter"]
 
 class CQHTTPAdapter(WebSocketAdapter):
     name = "cqhttp"
-    api_response_cond: Condition = None
+    _api_response: Dict[Any, Any]
+    _api_response_cond: asyncio.Condition = None
     _api_id: int = 0
 
     @property
@@ -49,7 +50,7 @@ class CQHTTPAdapter(WebSocketAdapter):
         self.port = self.config.port
         self.url = self.config.url
         self.reconnect_interval = self.config.reconnect_interval
-        self.api_response_cond = Condition()
+        self._api_response_cond = asyncio.Condition()
         await super().startup()
 
     async def reverse_ws_connection_hook(self):
@@ -89,8 +90,9 @@ class CQHTTPAdapter(WebSocketAdapter):
             if "post_type" in msg_dict:
                 await self.handle_cqhttp_event(msg_dict)
             else:
-                async with self.api_response_cond:
-                    self.api_response_cond.notify_all(msg_dict)
+                async with self._api_response_cond:
+                    self._api_response = msg_dict
+                    self._api_response_cond.notify_all()
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
             logger.error(
@@ -166,20 +168,20 @@ class CQHTTPAdapter(WebSocketAdapter):
         while not self.bot.should_exit.is_set():
             if time.time() - start_time > self.config.api_timeout:
                 break
-            async with self.api_response_cond:
+            async with self._api_response_cond:
                 try:
-                    resp = await asyncio.wait_for(
-                        self.api_response_cond.wait(),
+                    await asyncio.wait_for(
+                        self._api_response_cond.wait(),
                         timeout=start_time + self.config.api_timeout - time.time(),
                     )
                 except asyncio.TimeoutError:
                     break
-                if resp["echo"] == api_echo:
-                    if resp.get("retcode") == 1404:
-                        raise ApiNotAvailable(resp=resp)
-                    if resp.get("status") == "failed":
-                        raise ActionFailed(resp=resp)
-                    return resp.get("data")
+                if self._api_response["echo"] == api_echo:
+                    if self._api_response.get("retcode") == 1404:
+                        raise ApiNotAvailable(resp=self._api_response)
+                    if self._api_response.get("status") == "failed":
+                        raise ActionFailed(resp=self._api_response)
+                    return self._api_response.get("data")
 
         if not self.bot.should_exit.is_set():
             raise ApiTimeout

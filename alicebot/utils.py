@@ -1,24 +1,21 @@
 import os
 import json
-import asyncio
 import inspect
 import os.path
 import pkgutil
 import importlib
-import collections
 import dataclasses
 from abc import ABC
 from types import ModuleType
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import List, Type, Generic, TypeVar, Callable, Iterable, Optional
+from typing import List, Type, Generic, TypeVar, Iterable, Optional
 
 from pydantic import BaseModel
 
 from alicebot.exceptions import LoadModuleError
 
 __all__ = [
-    "Condition",
     "ModulePathFinder",
     "ModuleInfo",
     "load_module",
@@ -30,86 +27,6 @@ __all__ = [
 ]
 
 _T = TypeVar("_T")
-
-
-class Condition(Generic[_T]):
-    """类似于 asyncio.Condition ，但允许在 notify() 时传递值，并由 wait() 返回。"""
-
-    def __init__(self):
-        self._loop = asyncio.get_running_loop()
-        lock = asyncio.Lock()
-        self._lock = lock
-        # Export the lock's locked(), acquire() and release() methods.
-        self.locked = lock.locked
-        self.acquire = lock.acquire
-        self.release = lock.release
-
-        self._waiters = collections.deque()
-
-    async def __aenter__(self):
-        await self.acquire()
-        # We have no use for the "as ..."  clause in the with
-        # statement for locks.
-        return None
-
-    async def __aexit__(self, exc_type, exc, tb):
-        self.release()
-
-    def __repr__(self):
-        res = super().__repr__()
-        extra = "locked" if self.locked() else "unlocked"
-        if self._waiters:
-            extra = f"{extra}, waiters:{len(self._waiters)}"
-        return f"<{res[1:-1]} [{extra}]>"
-
-    async def wait(self) -> _T:
-        if not self.locked():
-            raise RuntimeError("cannot wait on un-acquired lock")
-
-        self.release()
-        try:
-            fut = self._loop.create_future()
-            self._waiters.append(fut)
-            try:
-                return await fut
-            finally:
-                self._waiters.remove(fut)
-
-        finally:
-            # Must reacquire lock even if wait is cancelled
-            cancelled = False
-            while True:
-                try:
-                    await self.acquire()
-                    break
-                except asyncio.CancelledError:
-                    cancelled = True
-
-            if cancelled:
-                raise asyncio.CancelledError
-
-    async def wait_for(self, predicate: Callable[..., bool]) -> bool:
-        result = predicate()
-        while not result:
-            await self.wait()
-            result = predicate()
-        return result
-
-    def notify(self, value: _T = None, n: int = 1):
-        if not self.locked():
-            raise RuntimeError("cannot notify on un-acquired lock")
-
-        idx = 0
-        for fut in self._waiters:
-            if idx >= n:
-                break
-
-            if not fut.done():
-                idx += 1
-                fut.set_result(value)
-
-    def notify_all(self, value: _T = None):
-        self.notify(value, len(self._waiters))
 
 
 class ModulePathFinder(MetaPathFinder):

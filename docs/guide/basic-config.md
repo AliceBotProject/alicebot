@@ -30,7 +30,7 @@ AliceBot 有如下配置项：
 
 ```json
 {
-    "plugins": null,
+    "plugins": [],
     "plugin_dir": ["plugins"],
     "adapters": ["alicebot.adapter.cqhttp"],
     "cqhttp": {

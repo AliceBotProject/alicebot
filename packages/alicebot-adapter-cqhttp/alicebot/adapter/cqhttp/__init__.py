@@ -166,13 +166,13 @@ class CQHTTPAdapter(WebSocketAdapter):
 
         start_time = time.time()
         while not self.bot.should_exit.is_set():
-            if time.time() - start_time > self.config.api_timeout:
+            if time.time() - start_time > self.config['api_timeout']:
                 break
             async with self._api_response_cond:
                 try:
                     await asyncio.wait_for(
                         self._api_response_cond.wait(),
-                        timeout=start_time + self.config.api_timeout - time.time(),
+                        timeout=start_time + self.config['api_timeout'] - time.time(),
                     )
                 except asyncio.TimeoutError:
                     break

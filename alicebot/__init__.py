@@ -367,24 +367,26 @@ class Bot:
                                 f'"{_plugin.module_class.__name__}" from file "{file}"'
                             )
                 elif change_type == Change.modified:
+                    msg = "reload"
                     try:
                         _plugin = self._remove_plugin_by_path(file)
                         if _plugin is not None:
                             plugin_module_name = _plugin.module.__name__
                         else:
+                            msg = "add new"
                             plugin_module_name = get_module_name(file)
                         plugin_info = load_module_from_name(plugin_module_name, Plugin)
                         self._load_plugin_module(plugin_info)
                         self._reload_config()
                     except Exception as e:
                         error_or_exception(
-                            f'Reload plugin from file "{file}" failed:',
+                            f'{msg.capitalize()} plugin from file "{file}" failed:',
                             e,
                             self.config.verbose_exception_log,
                         )
                     else:
                         logger.info(
-                            "Succeeded to reload plugin "
+                            f"Succeeded to {msg} plugin "
                             f'"{plugin_info.module_class.__name__}" from file "{file}"'
                         )
 

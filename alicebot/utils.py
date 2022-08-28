@@ -4,6 +4,7 @@ import inspect
 import os.path
 import pkgutil
 import importlib
+import traceback
 import dataclasses
 from abc import ABC
 from types import ModuleType
@@ -122,12 +123,22 @@ def load_module_from_name(name: str, class_type: Type[_T]) -> ModuleInfo[_T]:
         返回符合条件的 `ModuleInfo`。
 
     Raises:
+        ImportError: 当导入模块过程中出现错误。
         LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
     """
-    importlib.invalidate_caches()
-    module = importlib.import_module(name)
-    importlib.reload(module)
-    return load_module(module, class_type)
+    try:
+        importlib.invalidate_caches()
+        module = importlib.import_module(name)
+        importlib.reload(module)
+        return load_module(module, class_type)
+    except LoadModuleError as e:
+        raise e
+    except BaseException as e:
+        # 不捕获 KeyboardInterrupt
+        # 捕获 KeyboardInterrupt 会阻止用户关闭 Python 当正在导入的模块陷入死循环时
+        if isinstance(e, KeyboardInterrupt):
+            raise e
+        raise ImportError(e, traceback.format_exc()) from e
 
 
 def load_modules_from_dir(
@@ -147,7 +158,7 @@ def load_modules_from_dir(
         if not module_info.name.startswith("_"):
             try:
                 modules.append(load_module_from_name(module_info.name, class_type))
-            except LoadModuleError:
+            except (ImportError, LoadModuleError):
                 continue
     return modules
 

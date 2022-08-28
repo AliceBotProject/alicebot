@@ -64,20 +64,18 @@ class Bot:
     Attributes:
         config: 机器人配置。
         should_exit: 机器人是否应该进入准备退出状态。
-        adapters: 适配器列表。
         plugins_priority_dict: 插件优先级字典。
         plugin_state: 插件状态。
         global_state: 全局状态。
     """
 
     config: MainConfig
-
     should_exit: asyncio.Event
-    adapters: List[Adapter]
     plugins_priority_dict: Dict[int, List[ModuleInfo]]
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
+    _adapters: List[Tuple[Adapter, ModuleInfo]]  # 适配器和适配器信息列表
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
     _current_event: T_Event  # 当前待处理的 Event
 
@@ -119,12 +117,11 @@ class Bot:
                 启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
         """
         self.config = MainConfig()
-
-        self.adapters = []
         self.plugins_priority_dict = defaultdict(list)
         self.plugin_state = defaultdict(type(None))
         self.global_state = {}
 
+        self._adapters = []
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._raw_config_dict = {}
@@ -156,6 +153,11 @@ class Bot:
                 chain(*self.plugins_priority_dict.values()),
             )
         )
+
+    @property
+    def adapters(self) -> List[Adapter]:
+        """当前已经加载的适配器的列表。"""
+        return list(map(lambda x: x[0], self._adapters))
 
     def run(self):
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
@@ -236,7 +238,7 @@ class Bot:
             await _hook_func(self)
 
         try:
-            for _adapter in self.adapters:
+            for _adapter, _ in self._adapters:
                 for _hook_func in self._adapter_startup_hooks:
                     await _hook_func(_adapter)
                 try:
@@ -248,7 +250,7 @@ class Bot:
                         self.config.verbose_exception_log,
                     )
 
-            for _adapter in self.adapters:
+            for _adapter, _ in self._adapters:
                 for _hook_func in self._adapter_run_hooks:
                     await _hook_func(_adapter)
                 asyncio.create_task(_adapter.safe_run())
@@ -258,14 +260,14 @@ class Bot:
             if hot_reload_task is not None:
                 await hot_reload_task
         finally:
-            for _adapter in self.adapters:
+            for _adapter, _ in self._adapters:
                 for _hook_func in self._adapter_shutdown_hooks:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
             for _hook_func in self._bot_exit_hooks:
                 _hook_func(self)
 
-            self.adapters.clear()
+            self._adapters.clear()
             self.plugins_priority_dict.clear()
             self._config_update_dict.clear()
             self._module_path_finder.path.clear()
@@ -393,6 +395,8 @@ class Bot:
         self._load_plugins_from_dir(self._extend_plugin_dirs)
         for _plugin in self._extend_plugins:
             self._load_plugin(_plugin)
+        for _, adapter_info in self._adapters:
+            self._update_config_module(adapter_info.config_class)
         self._reload_config()
 
     def _handle_exit(self, *args):  # noqa
@@ -656,7 +660,7 @@ class Bot:
                 f'Load adapter "{name}" failed:', e, self.config.verbose_exception_log
             )
         else:
-            self.adapters.append(adapter_object)
+            self._adapters.append((adapter_object, adapter_info))
             self._update_config_module(adapter_info.config_class)
             logger.info(
                 f'Succeeded to load adapter "{adapter_info.module_class.__name__}" '
@@ -716,7 +720,7 @@ class Bot:
         Raises:
             LookupError: 找不到此名称的适配器对象。
         """
-        for _adapter in self.adapters:
+        for _adapter, _ in self._adapters:
             if _adapter.name == name:
                 return _adapter
         raise LookupError

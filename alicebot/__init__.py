@@ -272,6 +272,15 @@ class Bot:
             self._config_update_dict.clear()
             self._module_path_finder.path.clear()
 
+    def _remove_plugin_by_path(self, file: str) -> Optional[ModuleInfo]:
+        for plugins in self.plugins_priority_dict.values():
+            for i, _plugin in enumerate(plugins):
+                if samefile(getattr(_plugin.module, "__file__", None), file):
+                    plugins.pop(i)
+                    self._remove_config_module(_plugin.config_class)
+                    return _plugin
+        return None
+
     async def _run_hot_reload(self):
         """热重载。"""
         try:
@@ -337,53 +346,47 @@ class Bot:
                         )
                     else:
                         logger.info(
-                            f"Succeeded to add new plugin "
-                            f'"{plugin_info.module_class.__name__}" '
-                            f'from file "{file}"'
+                            "Succeeded to add new plugin "
+                            f'"{plugin_info.module_class.__name__}" from file "{file}"'
                         )
                     continue
-                for plugins in self.plugins_priority_dict.values():
-                    for i, _plugin in enumerate(plugins):
-                        if samefile(getattr(_plugin.module, "__file__", None), file):
-                            if change_type == Change.modified:
-                                try:
-                                    self._remove_config_module(_plugin.config_class)
-                                    plugins.pop(i)
-                                    plugin_info = load_module_from_name(
-                                        _plugin.module.__name__, Plugin
-                                    )
-                                    self._load_plugin_module(plugin_info)
-                                    self._reload_config()
-                                except Exception as e:
-                                    error_or_exception(
-                                        f'Reload plugin from file "{file}" failed:',
-                                        e,
-                                        self.config.verbose_exception_log,
-                                    )
-                                else:
-                                    logger.info(
-                                        f"Succeeded to reload plugin "
-                                        f'"{_plugin.module_class.__name__}" '
-                                        f'from file "{file}"'
-                                    )
-                            elif change_type == Change.deleted:
-                                try:
-                                    plugins.pop(i)
-                                    self._remove_config_module(_plugin.config_class)
-                                    self._reload_config()
-                                except Exception as e:
-                                    error_or_exception(
-                                        f'Removed plugin from file "{file}" failed:',
-                                        e,
-                                        self.config.verbose_exception_log,
-                                    )
-                                else:
-                                    logger.info(
-                                        f"Succeeded to remove plugin "
-                                        f'"{_plugin.module_class.__name__}" '
-                                        f'from file "{file}"'
-                                    )
-                            break
+                elif change_type == Change.deleted:
+                    try:
+                        _plugin = self._remove_plugin_by_path(file)
+                        self._reload_config()
+                    except Exception as e:
+                        error_or_exception(
+                            f'Removed plugin from file "{file}" failed:',
+                            e,
+                            self.config.verbose_exception_log,
+                        )
+                    else:
+                        if _plugin is not None:
+                            logger.info(
+                                "Succeeded to remove plugin "
+                                f'"{_plugin.module_class.__name__}" from file "{file}"'
+                            )
+                elif change_type == Change.modified:
+                    try:
+                        _plugin = self._remove_plugin_by_path(file)
+                        if _plugin is not None:
+                            plugin_module_name = _plugin.module.__name__
+                        else:
+                            plugin_module_name = get_module_name(file)
+                        plugin_info = load_module_from_name(plugin_module_name, Plugin)
+                        self._load_plugin_module(plugin_info)
+                        self._reload_config()
+                    except Exception as e:
+                        error_or_exception(
+                            f'Reload plugin from file "{file}" failed:',
+                            e,
+                            self.config.verbose_exception_log,
+                        )
+                    else:
+                        logger.info(
+                            "Succeeded to reload plugin "
+                            f'"{plugin_info.module_class.__name__}" from file "{file}"'
+                        )
 
     def reload_plugins(self):
         """手动重新加载所有插件。"""

@@ -33,7 +33,7 @@ class Plugin(ABC, Generic[T_Event, T_State]):
 
         if not hasattr(self, "priority"):
             self.priority = 0
-        if not hasattr(self, "priority"):
+        if not hasattr(self, "block"):
             self.block = False
 
         self.get = self.bot.get

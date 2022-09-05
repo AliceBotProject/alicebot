@@ -132,6 +132,10 @@ function sidebarApi() {
         getSidebarItem('/api/plugin/index.md'),
         getSidebarItem('/api/adapter/index.md'),
         {
+          text: 'alicebot.adapter.utils',
+          link: '/api/adapter/utils.md',
+        },
+        {
           text: 'alicebot.adapter.cqhttp',
           link: '/api/adapter/cqhttp/index.md',
           children: getSidebarChildrenItems('/api/adapter/cqhttp/'),

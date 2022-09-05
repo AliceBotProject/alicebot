@@ -5,7 +5,6 @@ import time
 import signal
 import asyncio
 import threading
-from functools import wraps
 from itertools import chain
 from collections import defaultdict
 from typing import (
@@ -45,6 +44,7 @@ from alicebot.utils import (
     ModulePathFinder,
     samefile,
     get_module_name,
+    sync_func_wrapper,
     load_module_from_name,
     load_modules_from_dir,
 )
@@ -514,21 +514,10 @@ class Bot:
         Raises:
             GetEventTimeout: 超过最大事件数或超时。
         """
-
-        async def always_true(_):
-            return True
-
-        def async_wrapper(_func):
-            @wraps(_func)
-            async def _wrapper(_event):
-                return _func(_event)
-
-            return _wrapper
-
         if func is None:
-            func = always_true
+            func = sync_func_wrapper(lambda x: True)
         elif not asyncio.iscoroutinefunction(func):
-            func = async_wrapper(func)
+            func = sync_func_wrapper(func)
 
         try_times = 0
         start_time = time.time()

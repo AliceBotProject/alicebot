@@ -3,12 +3,13 @@
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
 import os
-from functools import wraps
+import asyncio
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Union, Callable, Optional, Awaitable
 
 from alicebot.typing import T_Event
 from alicebot.log import error_or_exception
+from alicebot.utils import sync_func_wrapper
 
 if TYPE_CHECKING:
     from alicebot import Bot
@@ -102,15 +103,17 @@ class Adapter(ABC):
         """
 
         def func_wrapper(_func):
-            @wraps(_func)
             async def _wrapper(_event: T_Event):
                 if _event.adapter is not self:
                     return False
-                return _func(_event)
+                return await _func(_event)
 
             return _wrapper
 
-        if func is not None:
-            func = func_wrapper(func)
+        if func is None:
+            func = sync_func_wrapper(lambda x: True)
+        elif not asyncio.iscoroutinefunction(func):
+            func = sync_func_wrapper(func)
+        func = func_wrapper(func)
 
         return await self.bot.get(func, max_try_times=max_try_times, timeout=timeout)

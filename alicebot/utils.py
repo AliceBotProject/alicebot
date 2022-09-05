@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 import inspect
 import os.path
 import pkgutil
@@ -8,9 +9,20 @@ import traceback
 import dataclasses
 from abc import ABC
 from types import ModuleType
+from functools import partial
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import List, Type, Generic, TypeVar, Iterable, Optional
+from typing import (
+    List,
+    Type,
+    Generic,
+    TypeVar,
+    Callable,
+    Iterable,
+    Optional,
+    Coroutine,
+    ParamSpec,
+)
 
 from pydantic import BaseModel
 
@@ -25,9 +37,12 @@ __all__ = [
     "DataclassEncoder",
     "samefile",
     "get_module_name",
+    "sync_func_wrapper",
 ]
 
 _T = TypeVar("_T")
+_P = ParamSpec("_P")
+_R = TypeVar("_R")
 
 
 class ModulePathFinder(MetaPathFinder):
@@ -207,3 +222,30 @@ def get_module_name(path: str) -> str:
     if basename == "__init__.py":
         return os.path.basename(os.path.dirname(path))
     return basename[:-3]
+
+
+def sync_func_wrapper(
+    func: Callable[_P, _R], to_thread: bool = False
+) -> Callable[_P, Coroutine[None, None, _R]]:
+    """包装一个同步函数为异步函数，当 func 为
+
+    Args:
+        func: 待包装的同步函数。
+        to_thread: 在独立的线程中运行同步函数。
+
+    Returns:
+        异步函数。
+    """
+    if to_thread:
+
+        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs):
+            loop = asyncio.get_running_loop()
+            func_call = partial(func, *args, **kwargs)
+            return await loop.run_in_executor(None, func_call)
+
+    else:
+
+        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs):
+            return func(*args, **kwargs)
+
+    return _wrapper

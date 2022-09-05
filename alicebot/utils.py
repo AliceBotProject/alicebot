@@ -10,19 +10,10 @@ import dataclasses
 from abc import ABC
 from types import ModuleType
 from functools import partial
+from typing_extensions import ParamSpec
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import (
-    List,
-    Type,
-    Generic,
-    TypeVar,
-    Callable,
-    Iterable,
-    Optional,
-    Coroutine,
-    ParamSpec,
-)
+from typing import List, Type, Generic, TypeVar, Callable, Iterable, Optional, Coroutine
 
 from pydantic import BaseModel
 

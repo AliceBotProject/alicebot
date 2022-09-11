@@ -5,6 +5,26 @@ sidebar: auto
 # 更新日志
 
 
+## [0.5.1](https://github.com/st1020/alicebot/compare/v0.5.0...v0.5.1) (2022-09-11)
+
+
+### Bug Fixes
+
+* **adapter:** 修复 test 适配器中的错误 ([fabeb24](https://github.com/st1020/alicebot/commit/fabeb2490c13c36e30112cc7c3f5d799e6245a6b))
+* **bot:** 修复 Adapter 类的 get 方法的 func 参数为协程时出现的错误 ([4e022fb](https://github.com/st1020/alicebot/commit/4e022fbad415b7006a08947d1d4ef895560d0232))
+* **bot:** 修复热重载启用时之前因为某些原因未被成功过加载为插件的文件触发修改后无法被重新加载的错误 ([4c00b35](https://github.com/st1020/alicebot/commit/4c00b358c66fadec59a94f387e64e9339f48ebf5))
+* **bot:** 修复调用 Bot 类的 reload\_plugins() 方法后适配器配置错误 ([a01676e](https://github.com/st1020/alicebot/commit/a01676e0bcdf00552edce0058c1bf04177c97ac5))
+* **plugin:** 修复 Plugin 类 block 属性的潜在错误 ([3f76fd4](https://github.com/st1020/alicebot/commit/3f76fd4b90a239cdc47909c577d3d54aa61ef7c7))
+* **utils:** 引入 typing-extensions，修复在 Python 3.10 以下版本中的运行异常 ([fcd4d43](https://github.com/st1020/alicebot/commit/fcd4d431590d2cc0dbd7e9916f077f4ee3b31d40))
+
+
+### Features
+
+* **bot:** 修改热更新文件修改相关日志 ([3d587b3](https://github.com/st1020/alicebot/commit/3d587b3d7557956b5e46a6475e11888c6b88e8c6))
+* **utils:** 修改 load\_module\_from\_name() 函数的行为，保证只会引发 ImportError、 LoadModuleError 和 KeyboardInterrupt 异常 ([54af514](https://github.com/st1020/alicebot/commit/54af514144236adad80e62953a311011fb784755))
+
+
+
 ## [0.5.0](https://github.com/st1020/alicebot/compare/v0.4.0...v0.5.0) (2022-08-21)
 
 

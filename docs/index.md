@@ -4,6 +4,9 @@ layout: home
 hero:
   name: AliceBot
   text: 简单的 Python 异步多后端机器人框架
+  image:
+    src: /logo.png
+    alt: AliceBot
   actions:
     - theme: brand
       text: 快速上手

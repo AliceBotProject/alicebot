@@ -20,6 +20,10 @@
   <a href="https://github.com/st1020/alicebot/">
     <img src="https://img.shields.io/github/stars/st1020/alicebot?style=social" alt="github">
   </a>
+  <br />
+  <a href="https://jq.qq.com/?_wv=1027&k=ZbE3p6tq">
+    <img src="https://img.shields.io/badge/QQ%E7%BE%A4-674802046-orange" alt="qq-group">
+  </a>
 </div>
 
 <p align="center">

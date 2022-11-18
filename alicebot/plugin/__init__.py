@@ -2,8 +2,11 @@
 
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
+from enum import Enum
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Generic, NoReturn
+from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional
+
+from pydantic import BaseModel
 
 from alicebot.typing import T_Event, T_State
 from alicebot.exceptions import SkipException, StopException
@@ -12,7 +15,16 @@ if TYPE_CHECKING:
     from alicebot import Bot
     from alicebot.config import MainConfig
 
-__all__ = ["Plugin"]
+__all__ = ["Plugin", "PluginLoadType"]
+
+
+class PluginLoadType(Enum):
+    """插件加载类型。"""
+
+    DIR = "dir"
+    NAME = "name"
+    FILE = "file"
+    CLASS = "class"
 
 
 class Plugin(ABC, Generic[T_Event, T_State]):
@@ -22,11 +34,18 @@ class Plugin(ABC, Generic[T_Event, T_State]):
         event: 当前正在被此插件处理的事件。
         priority: 插件的优先级，数字越小表示优先级越高，默认为 0。
         block: 插件执行结束后是否阻止事件的传播。True 表示阻止。
+        __plugin_load_type__: 插件加载类型，由 AliceBot 自动设置，反映了此插件是如何被加载的。
+        __plugin_file_path__: 当插件加载类型为 `PluginLoadType.CLASS` 时为 `None`，
+            否则为定义插件在的 Python 模块的位置。
     """
 
     event: T_Event
     priority: int = 0
     block: bool = False
+    Config: Type[BaseModel]
+
+    __plugin_load_type__: PluginLoadType
+    __plugin_file_path__: Optional[str]
 
     def __init__(self, event: T_Event):
         self.event = event

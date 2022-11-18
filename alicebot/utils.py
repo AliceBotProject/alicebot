@@ -13,21 +13,18 @@ from functools import partial
 from typing_extensions import ParamSpec
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import List, Type, Generic, TypeVar, Callable, Iterable, Optional, Coroutine
+from typing import Any, List, Type, Tuple, TypeVar, Callable, Iterable, Coroutine
 
 from pydantic import BaseModel
 
-from alicebot.exceptions import LoadModuleError
-
 __all__ = [
     "ModulePathFinder",
-    "ModuleInfo",
-    "load_module",
-    "load_module_from_name",
-    "load_modules_from_dir",
+    "is_config_class",
+    "get_classes_from_module",
+    "get_classes_from_module_name",
+    "get_classes_from_dir",
     "DataclassEncoder",
     "samefile",
-    "get_module_name",
     "sync_func_wrapper",
 ]
 
@@ -47,98 +44,72 @@ class ModulePathFinder(MetaPathFinder):
         return PathFinder.find_spec(fullname, self.path + list(path), target)
 
 
-class ModuleInfo(Generic[_T]):
-    """模块信息。
+def is_config_class(config_class: Any) -> bool:
+    """判断一个对象是否是配置类。
 
-    Attributes
-        module_class: 模块类。
-        config_class: 配置类。
-        module: 模块。
+    Args:
+        config_class: 待判断的对象。
+
+    Returns:
+        返回是否是配置类。
     """
-
-    __slots__ = ("module_class", "config_class", "module")
-
-    def __init__(
-        self,
-        module_class: Type[_T],
-        config_class: Optional[Type[BaseModel]],
-        module: ModuleType,
-    ):
-        self.module_class = module_class
-        self.config_class = config_class
-        self.module = module
+    return (
+        inspect.isclass(config_class)
+        and issubclass(config_class, BaseModel)
+        and isinstance(getattr(config_class, "__config_name__", None), str)
+        and ABC not in config_class.__bases__
+        and not inspect.isabstract(config_class)
+    )
 
 
-def load_module(module: ModuleType, class_type: Type[_T]) -> ModuleInfo[_T]:
-    """从模块中查找指定类型的类和 `Config` 。若模块中存在多个符合条件的类，则抛出错误。
+def get_classes_from_module(
+    module: ModuleType, super_class: Type[_T]
+) -> List[Type[_T]]:
+    """从模块中查找指定类型的类。
 
     Args:
         module: Python 模块。
-        class_type: 要查找的类型。
+        super_class: 要查找的类的超类。
 
     Returns:
-        返回符合条件的类和配置类组成的元组。
-
-    Raises:
-        LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
+        返回符合条件的类的列表。
     """
-
-    module_class: Optional[Type[_T]] = None
+    classes: List[Type[_T]] = []
     for _, module_attr in inspect.getmembers(module, inspect.isclass):
         module_attr: type
         if (
             (inspect.getmodule(module_attr) or module) is module
-            and issubclass(module_attr, class_type)
-            and module_attr != class_type
+            and issubclass(module_attr, super_class)
+            and module_attr != super_class
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            if module_class is None:
-                module_class = module_attr
-            else:
-                raise LoadModuleError(
-                    f"More then one {class_type!r} class "
-                    f"in the {module.__name__} module"
-                )
-    if module_class is None:
-        raise LoadModuleError(
-            f"Can not find {class_type!r} class in the {module.__name__} module"
-        )
-
-    config_class: Optional[Type[BaseModel]] = None
-    for name, module_attr in inspect.getmembers(module, inspect.isclass):
-        module_attr: type
-        if (
-            name == "Config"
-            and issubclass(module_attr, BaseModel)
-            and isinstance(getattr(module_attr, "__config_name__", None), str)
-        ):
-            config_class = module_attr
-
-    return ModuleInfo(module_class, config_class, module)
+            classes.append(module_attr)
+    return classes
 
 
-def load_module_from_name(name: str, class_type: Type[_T]) -> ModuleInfo[_T]:
-    """从模块中查找指定类型的类和 `Config` 。若模块中存在多个符合条件的类，则抛出错误。
+def get_classes_from_module_name(
+    name: str, super_class: Type[_T]
+) -> List[Tuple[Type[_T], ModuleType]]:
+    """从指定名称的模块中查找指定类型的类。
 
     Args:
         name: 模块名称，格式和 Python `import` 语句相同。
-        class_type: 要查找的类型。
+        super_class: 要查找的类的超类。
 
     Returns:
-        返回符合条件的 `ModuleInfo`。
+        返回由符合条件的类和模块组成的元组的列表。
 
     Raises:
         ImportError: 当导入模块过程中出现错误。
-        LoadModuleError: 当找不到符合条件的类或者模块中存在多个符合条件的类。
     """
     try:
         importlib.invalidate_caches()
         module = importlib.import_module(name)
         importlib.reload(module)
-        return load_module(module, class_type)
-    except LoadModuleError as e:
-        raise e
+        return list(
+            map(lambda x: (x, module), get_classes_from_module(module, super_class))
+        )
     except BaseException as e:
         # 不捕获 KeyboardInterrupt
         # 捕获 KeyboardInterrupt 会阻止用户关闭 Python 当正在导入的模块陷入死循环时
@@ -147,26 +118,28 @@ def load_module_from_name(name: str, class_type: Type[_T]) -> ModuleInfo[_T]:
         raise ImportError(e, traceback.format_exc()) from e
 
 
-def load_modules_from_dir(
-    path: Iterable[str], class_type: Type[_T]
-) -> List[ModuleInfo[_T]]:
-    """从指定路径列表中的所有模块中查找指定类型的类和 `Config` ，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
+def get_classes_from_dir(
+    dirs: Iterable[str], super_class: Type[_T]
+) -> List[Tuple[Type[_T], ModuleType]]:
+    """从指定路径列表中的所有模块中查找指定类型的类，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
 
     Args:
-        path: 由储存模块的路径文本组成的列表。 例如 `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
-        class_type: 要查找的类型。
+        dirs: 储存模块的路径的列表。
+        super_class: 要查找的类的超类。
 
     Returns:
-        返回符合条件的 `ModuleInfo` 的列表。
+        返回由符合条件的类和模块组成的元组的列表。
     """
-    modules = []
-    for module_info in pkgutil.iter_modules(path):
+    classes: List[Tuple[Type[_T], ModuleType]] = []
+    for module_info in pkgutil.iter_modules(dirs):
         if not module_info.name.startswith("_"):
             try:
-                modules.append(load_module_from_name(module_info.name, class_type))
-            except (ImportError, LoadModuleError):
+                classes.extend(
+                    get_classes_from_module_name(module_info.name, super_class)
+                )
+            except ImportError:
                 continue
-    return modules
+    return classes
 
 
 class DataclassEncoder(json.JSONEncoder):
@@ -192,27 +165,6 @@ def samefile(path1: str, path2: str) -> bool:
         return path1 == path2 or os.path.samefile(path1, path2)
     except OSError:
         return False
-
-
-def get_module_name(path: str) -> str:
-    """
-    从路径中获取合法的 Python 模块名称，与 `inspect.getmodulename()` 函数不同。
-
-    Args:
-        path: 路径。
-
-    Returns:
-        Python 模块名称。
-
-    Raises:
-        ValueError: 当路径不以 ".py" 结尾时。
-    """
-    basename = os.path.basename(path)
-    if not basename.endswith(".py"):
-        raise ValueError('path must endswith ".py"')
-    if basename == "__init__.py":
-        return os.path.basename(os.path.dirname(path))
-    return basename[:-3]
 
 
 def sync_func_wrapper(

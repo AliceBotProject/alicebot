@@ -28,7 +28,11 @@ __all__ = ["CQHTTPAdapter"]
 
 
 class CQHTTPAdapter(WebSocketAdapter):
+    """CQHTTP 协议适配器。"""
+
     name = "cqhttp"
+    Config = Config
+
     _api_response: Dict[Any, Any]
     _api_response_cond: asyncio.Condition = None
     _api_id: int = 0

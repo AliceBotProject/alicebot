@@ -5,26 +5,16 @@ import time
 import signal
 import asyncio
 import threading
+from pathlib import Path
 from itertools import chain
 from collections import defaultdict
-from typing import (
-    Any,
-    Dict,
-    List,
-    Type,
-    Tuple,
-    Union,
-    Callable,
-    Iterable,
-    Optional,
-    Awaitable,
-)
+from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable
 
-from pydantic import BaseModel, ValidationError, create_model
+from pydantic import ValidationError, create_model
 
-from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
 from alicebot.config import MainConfig
+from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
 from alicebot.typing import (
     T_Event,
@@ -40,13 +30,12 @@ from alicebot.exceptions import (
     LoadModuleError,
 )
 from alicebot.utils import (
-    ModuleInfo,
     ModulePathFinder,
     samefile,
-    get_module_name,
+    is_config_class,
     sync_func_wrapper,
-    load_module_from_name,
-    load_modules_from_dir,
+    get_classes_from_dir,
+    get_classes_from_module_name,
 )
 
 __all__ = ["Bot"]
@@ -64,6 +53,7 @@ class Bot:
     Attributes:
         config: 机器人配置。
         should_exit: 机器人是否应该进入准备退出状态。
+        adapters: 当前已经加载的适配器的列表。
         plugins_priority_dict: 插件优先级字典。
         plugin_state: 插件状态。
         global_state: 全局状态。
@@ -71,25 +61,27 @@ class Bot:
 
     config: MainConfig
     should_exit: asyncio.Event
-    plugins_priority_dict: Dict[int, List[ModuleInfo]]
+    adapters: List[Adapter]
+    plugins_priority_dict: Dict[int, List[Type[Plugin]]]
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
-    _adapters: List[Tuple[Adapter, ModuleInfo]]  # 适配器和适配器信息列表
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
     _current_event: T_Event  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
     _raw_config_dict: Dict[str, Any]  # 原始配置字典
-    _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]  # 配置模型更新使用的字典
+    # _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]  # 配置模型更新使用的字典
 
     _config_file: Optional[str]  # 配置文件
     _config_dict: Optional[Dict[str, Any]]  # 配置字典
     _hot_reload: bool  # 热重载
 
-    _extend_plugins: List[str]  # 使用 load_plugin() 方法程序化加载的插件列表
-    _extend_plugin_dirs: List[str]  # 使用 load_plugins_from_dir() 方法程序化加载的插件路径列表
+    _extend_plugins: List[
+        Union[Type[Plugin], str, Path]
+    ]  # 使用 load_plugins() 方法程序化加载的插件列表
+    _extend_plugin_dirs: List[Path]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
     _extend_adapters: List[str]  # 使用 load_adapter() 方法程序化加载的适配器列表
     _bot_run_hooks: List[T_BotHook]
     _bot_exit_hooks: List[T_BotExitHook]
@@ -121,11 +113,10 @@ class Bot:
         self.plugin_state = defaultdict(type(None))
         self.global_state = {}
 
-        self._adapters = []
+        self.adapters = []
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._raw_config_dict = {}
-        self._config_update_dict = {}
 
         self._config_file = config_file
         self._config_dict = config_dict
@@ -147,17 +138,7 @@ class Bot:
     @property
     def plugins(self) -> List[Type[Plugin]]:
         """当前已经加载的插件的列表。"""
-        return list(
-            map(
-                lambda x: x.module_class,
-                chain(*self.plugins_priority_dict.values()),
-            )
-        )
-
-    @property
-    def adapters(self) -> List[Adapter]:
-        """当前已经加载的适配器的列表。"""
-        return list(map(lambda x: x[0], self._adapters))
+        return list(chain(*self.plugins_priority_dict.values()))
 
     def run(self):
         """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
@@ -166,11 +147,9 @@ class Bot:
             self._restart_flag = False
             asyncio.run(self._run())
             if self._restart_flag:
-                self._load_plugins_from_dir(self._extend_plugin_dirs)
-                for _plugin in self._extend_plugins:
-                    self._load_plugin(_plugin)
-                for _adapter in self._extend_adapters:
-                    self._load_adapter(_adapter)
+                self._load_plugins_from_dirs(*self._extend_plugin_dirs)
+                self._load_plugins(*self._extend_plugins)
+                self._load_adapters(*self._extend_adapters)
 
     def restart(self):
         """退出并重新运行 AliceBot。"""
@@ -220,11 +199,9 @@ class Bot:
                 "Config dict parse error:", e, self.config.verbose_exception_log
             )
 
-        self._load_plugins_from_dir(self.config.plugin_dir)
-        for _plugin in self.config.plugins:
-            self._load_plugin(_plugin)
-        for _adapter in self.config.adapters:
-            self._load_adapter(_adapter)
+        self._load_plugins_from_dirs(*self.config.plugin_dir)
+        self._load_plugins(*self.config.plugins)
+        self._load_adapters(*self.config.adapters)
         self._reload_config()
 
         # 启动 AliceBot
@@ -238,7 +215,7 @@ class Bot:
             await _hook_func(self)
 
         try:
-            for _adapter, _ in self._adapters:
+            for _adapter in self.adapters:
                 for _hook_func in self._adapter_startup_hooks:
                     await _hook_func(_adapter)
                 try:
@@ -250,7 +227,7 @@ class Bot:
                         self.config.verbose_exception_log,
                     )
 
-            for _adapter, _ in self._adapters:
+            for _adapter in self.adapters:
                 for _hook_func in self._adapter_run_hooks:
                     await _hook_func(_adapter)
                 asyncio.create_task(_adapter.safe_run())
@@ -260,26 +237,37 @@ class Bot:
             if hot_reload_task is not None:
                 await hot_reload_task
         finally:
-            for _adapter, _ in self._adapters:
+            for _adapter in self.adapters:
                 for _hook_func in self._adapter_shutdown_hooks:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
             for _hook_func in self._bot_exit_hooks:
                 _hook_func(self)
 
-            self._adapters.clear()
+            self.adapters.clear()
             self.plugins_priority_dict.clear()
-            self._config_update_dict.clear()
             self._module_path_finder.path.clear()
 
-    def _remove_plugin_by_path(self, file: str) -> Optional[ModuleInfo]:
+    def _remove_plugin_by_path(self, file: str) -> List[Type[Plugin]]:
+        """根据路径删除已加载的插件。"""
+        removed_plugins: List[Type[Plugin]] = []
         for plugins in self.plugins_priority_dict.values():
-            for i, _plugin in enumerate(plugins):
-                if samefile(getattr(_plugin.module, "__file__", None), file):
-                    plugins.pop(i)
-                    self._remove_config_module(_plugin.config_class)
-                    return _plugin
-        return None
+            _removed_plugins = list(
+                filter(
+                    lambda x: x.__plugin_load_type__ != PluginLoadType.CLASS
+                    and x.__plugin_file_path__ is not None
+                    and samefile(x.__plugin_file_path__, file),
+                    plugins,
+                )
+            )
+            removed_plugins.extend(_removed_plugins)
+            for plugin_ in _removed_plugins:
+                plugins.remove(plugin_)
+                logger.info(
+                    "Succeeded to remove plugin "
+                    f'"{plugin_.__name__}" from file "{file}"'
+                )
+        return removed_plugins
 
     async def _run_hot_reload(self):
         """热重载。"""
@@ -296,10 +284,13 @@ class Bot:
         async for changes in awatch(
             *map(
                 os.path.abspath,
-                self.config.plugin_dir.union(
-                    {self._config_file}
-                    if self._config_dict is None and self._config_file is not None
-                    else set()
+                map(
+                    str,
+                    self.config.plugin_dir.union(
+                        {self._config_file}
+                        if self._config_dict is None and self._config_file is not None
+                        else set()
+                    ),
                 ),
             ),
             stop_event=self.should_exit,
@@ -332,76 +323,27 @@ class Bot:
                         continue
 
                 if change_type == Change.added:
-                    try:
-                        plugin_info = load_module_from_name(
-                            get_module_name(file), Plugin
-                        )
-                        self._load_plugin_module(plugin_info)
-                        self._reload_config()
-                    except Exception as e:
-                        error_or_exception(
-                            f'Add new plugin from file "{file}" failed:',
-                            e,
-                            self.config.verbose_exception_log,
-                        )
-                    else:
-                        logger.info(
-                            "Succeeded to add new plugin "
-                            f'"{plugin_info.module_class.__name__}" from file "{file}"'
-                        )
+                    logger.info(f"Hot reload: added file: {file}")
+                    self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
+                    self._reload_config()
                     continue
                 elif change_type == Change.deleted:
-                    try:
-                        _plugin = self._remove_plugin_by_path(file)
-                        self._reload_config()
-                    except Exception as e:
-                        error_or_exception(
-                            f'Removed plugin from file "{file}" failed:',
-                            e,
-                            self.config.verbose_exception_log,
-                        )
-                    else:
-                        if _plugin is not None:
-                            logger.info(
-                                "Succeeded to remove plugin "
-                                f'"{_plugin.module_class.__name__}" from file "{file}"'
-                            )
+                    logger.info(f"Hot reload: Deleted file: {file}")
+                    self._remove_plugin_by_path(file)
+                    self._reload_config()
                 elif change_type == Change.modified:
-                    msg = "reload"
-                    try:
-                        _plugin = self._remove_plugin_by_path(file)
-                        if _plugin is not None:
-                            plugin_module_name = _plugin.module.__name__
-                        else:
-                            msg = "add new"
-                            plugin_module_name = get_module_name(file)
-                        plugin_info = load_module_from_name(plugin_module_name, Plugin)
-                        self._load_plugin_module(plugin_info)
-                        self._reload_config()
-                    except Exception as e:
-                        error_or_exception(
-                            f'{msg.capitalize()} plugin from file "{file}" failed:',
-                            e,
-                            self.config.verbose_exception_log,
-                        )
-                    else:
-                        logger.info(
-                            f"Succeeded to {msg} plugin "
-                            f'"{plugin_info.module_class.__name__}" from file "{file}"'
-                        )
+                    logger.info(f"Hot reload: Modified file: {file}")
+                    self._remove_plugin_by_path(file)
+                    self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
+                    self._reload_config()
 
     def reload_plugins(self):
         """手动重新加载所有插件。"""
         self.plugins_priority_dict.clear()
-        self._config_update_dict.clear()
-        self._load_plugins_from_dir(self.config.plugin_dir)
-        for _plugin in self.config.plugins:
-            self._load_plugin(_plugin)
-        self._load_plugins_from_dir(self._extend_plugin_dirs)
-        for _plugin in self._extend_plugins:
-            self._load_plugin(_plugin)
-        for _, adapter_info in self._adapters:
-            self._update_config_module(adapter_info.config_class)
+        self._load_plugins(*self.config.plugins)
+        self._load_plugins_from_dirs(*self.config.plugin_dir)
+        self._load_plugins(*self._extend_plugins)
+        self._load_plugins_from_dirs(*self._extend_plugin_dirs)
         self._reload_config()
 
     def _handle_exit(self, *args):  # noqa
@@ -458,7 +400,7 @@ class Bot:
                 stop = False
                 for _plugin in self.plugins_priority_dict[plugin_priority]:
                     try:
-                        _plugin = _plugin.module_class(current_event)
+                        _plugin = _plugin(current_event)
                         if await _plugin.rule():
                             logger.info(f"Event will be handled by {_plugin!r}")
                             try:
@@ -549,157 +491,237 @@ class Bot:
         if not self.should_exit.is_set():
             raise GetEventTimeout
 
-    def _load_plugin_module(self, plugin_info: ModuleInfo):
-        """加载插件。"""
-        priority = getattr(plugin_info.module_class, "priority", None)
+    def _load_plugin_class(
+        self,
+        plugin_class: Type[Plugin],
+        plugin_load_type: PluginLoadType,
+        plugin_file_path: Optional[str],
+    ):
+        """加载插件类。"""
+        priority = getattr(plugin_class, "priority", None)
         if type(priority) is int and priority >= 0:
             for _plugin in self.plugins:
-                if _plugin.__name__ == plugin_info.module_class.__name__:
+                if _plugin.__name__ == plugin_class.__name__:
                     logger.warning(
                         f'Already have a same name plugin "{_plugin.__name__}"'
                     )
-            self.plugins_priority_dict[priority].append(plugin_info)
-            self._update_config_module(plugin_info.config_class)
+            plugin_class.__plugin_load_type__ = plugin_load_type
+            plugin_class.__plugin_file_path__ = plugin_file_path
+            self.plugins_priority_dict[priority].append(plugin_class)
+            logger.info(
+                f'Succeeded to load plugin "{plugin_class.__name__}" '
+                f'from class "{plugin_class!r}"'
+            )
         else:
-            raise LoadModuleError(
-                "Plugin class priority incorrect in the module "
-                + plugin_info.module.__name__
+            error_or_exception(
+                f'Load plugin from class "{plugin_class!r}" failed:',
+                LoadModuleError(
+                    f'Plugin priority incorrect in the class "{plugin_class!r}"'
+                ),
+                self.config.verbose_exception_log,
             )
 
-    def _load_plugin(self, name: str) -> Optional[Type[Plugin]]:
-        """加载单个插件。
-
-        Args:
-            name: 插件名称，格式和 Python `import` 语句相同。
-
-        Returns:
-            被加载的插件类。
-        """
+    def _load_plugins_from_module_name(
+        self, module_name: str, plugin_load_type: PluginLoadType
+    ):
+        """从模块名称中插件模块。"""
         try:
-            plugin_info = load_module_from_name(name, Plugin)
-            self._load_plugin_module(plugin_info)
-        except Exception as e:
+            plugin_classes = get_classes_from_module_name(module_name, Plugin)
+        except ImportError as e:
             error_or_exception(
-                f'Load plugin from module "{name}" failed:',
+                f'Import module "{module_name}" failed:',
                 e,
                 self.config.verbose_exception_log,
             )
         else:
-            logger.info(
-                f'Succeeded to load plugin "{plugin_info.module_class.__name__}" '
-                f'from module "{name}"'
-            )
-            return plugin_info.module_class
+            for plugin_class, module in plugin_classes:
+                self._load_plugin_class(
+                    plugin_class,
+                    plugin_load_type,
+                    module.__file__,
+                )
 
-    def load_plugin(self, name: str) -> Optional[Type[Plugin]]:
-        """加载单个插件。
-
-        Args:
-            name: 插件名称，格式和 Python `import` 语句相同。
-
-        Returns:
-            被加载的插件类。
-        """
-        self._extend_plugins.append(name)
-        return self._load_plugin(name)
-
-    def _load_plugins_from_dir(self, path: Iterable[str]):
-        """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
+    def _load_plugins(
+        self,
+        *plugins: Union[Type[Plugin], str, Path],
+        plugin_load_type: Optional[PluginLoadType] = None,
+    ):
+        """加载插件。
 
         Args:
-            path: 由储存插件的路径文本组成的列表。
-                例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
+            plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
+                如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
+                如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
+                    例如：`path.of.plugin`。
+                如果为 `pathlib.Path` 类型时，将作为插件模块文件路径进行加载。
+                    例如：`pathlib.Path("path/of/plugin")`。
+            plugin_load_type: 插件加载类型，如果为 None 则自动判断，否则使用指定的类型。
         """
-        self._module_path_finder.path.extend(path)
-        for plugin_info in load_modules_from_dir(path, Plugin):
+        for plugin_ in plugins:
+            if isinstance(plugin_, type):
+                if issubclass(plugin_, Plugin):
+                    self._load_plugin_class(
+                        plugin_, plugin_load_type or PluginLoadType.CLASS, None
+                    )
+                else:
+                    logger.error(
+                        f'The plugin class "{plugin_!r}" must be a subclass of Plugin'
+                    )
+            elif isinstance(plugin_, str):
+                logger.info(f'Loading plugins from module "{plugin_}"')
+                self._load_plugins_from_module_name(
+                    plugin_, plugin_load_type or PluginLoadType.NAME
+                )
+            elif isinstance(plugin_, Path):
+                logger.info(f'Loading plugins from path "{plugin_}"')
+                if plugin_.is_file():
+                    if plugin_.suffix != ".py":
+                        logger.error(f'The path "{plugin_}" must endswith ".py"')
+                        return
+
+                    plugin_module_name = None
+                    for path in self._module_path_finder.path:
+                        try:
+                            if plugin_.stem == "__init__":
+                                if plugin_.resolve().parent.parent.samefile(Path(path)):
+                                    plugin_module_name = plugin_.resolve().parent.name
+                                    break
+                            elif plugin_.resolve().parent.samefile(Path(path)):
+                                plugin_module_name = plugin_.stem
+                                break
+                        except OSError:
+                            continue
+                    if plugin_module_name is None:
+                        rel_path = plugin_.resolve().relative_to(Path(".").resolve())
+                        if rel_path.stem == "__init__":
+                            plugin_module_name = ".".join(rel_path.parts[:-1])
+                        else:
+                            plugin_module_name = ".".join(
+                                rel_path.parts[:-1] + (rel_path.stem,)
+                            )
+
+                    self._load_plugins_from_module_name(
+                        plugin_module_name, plugin_load_type or PluginLoadType.FILE
+                    )
+                else:
+                    logger.error(f'The plugin path "{plugin_}" must be a file')
+            else:
+                logger.error(f"Type error: {plugin_} can not be loaded as plugin")
+
+    def load_plugins(self, *plugins: Union[Type[Plugin], str, Path]):
+        """加载插件。
+
+        Args:
+            plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
+                如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
+                如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
+                    例如：`path.of.plugin`。
+                如果为 `pathlib.Path` 类型时，将作为插件模块文件路径进行加载。
+                    例如：`pathlib.Path("path/of/plugin")`。
+        """
+        self._extend_plugins.extend(plugins)
+        return self._load_plugins(*plugins)
+
+    def _load_plugins_from_dirs(self, *dirs: Path):
+        """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
+
+        Args:
+            dirs: 储存包含插件的模块的模块路径。
+                例如：`[pathlib.Path("path/of/plugins/"),
+                pathlib.Path("/home/xxx/alicebot/plugins")]` 。
+        """
+        dirs = list(map(lambda x: str(x.resolve()), dirs))
+        logger.info(f'Loading plugins from dirs "{", ".join(map(str, dirs))}"')
+        self._module_path_finder.path.extend(dirs)
+        for plugin_class, module in get_classes_from_dir(dirs, Plugin):
+            self._load_plugin_class(plugin_class, PluginLoadType.DIR, module.__file__)
+
+    def load_plugins_from_dirs(self, *dirs: Path):
+        """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
+
+        Args:
+            dirs: 储存包含插件的模块的模块路径。
+                例如：`[pathlib.Path("path/of/plugins/"),
+                pathlib.Path("/home/xxx/alicebot/plugins")]` 。
+        """
+        self._extend_plugin_dirs.extend(dirs)
+        self._load_plugins_from_dirs(*dirs)
+
+    def _load_adapters(self, *adapters: Union[Type[Adapter], str]):
+        """加载适配器。
+
+        Args:
+            adapters: 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
+                如果为 `Type[Adapter]` 类型时，将作为适配器类进行加载。
+                如果为 `str` 类型时，将作为适配器模块名称进行加载，格式和 Python `import` 语句相同。
+                    例如：`path.of.adapter`。
+        """
+        for adapter_ in adapters:
             try:
-                self._load_plugin_module(plugin_info)
+                if isinstance(adapter_, type):
+                    if issubclass(adapter_, Adapter):
+                        adapter_object = adapter_(self)
+                    else:
+                        raise LoadModuleError(
+                            f'The Adapter class "{adapter_!r}" '
+                            "must be a subclass of Adapter"
+                        )
+                elif isinstance(adapter_, str):
+                    adapter_classes = get_classes_from_module_name(adapter_, Adapter)
+                    if not adapter_classes:
+                        raise LoadModuleError(
+                            f"Can not find Adapter class in the {adapter_} module"
+                        )
+                    elif len(adapter_classes) > 1:
+                        raise LoadModuleError(
+                            f"More then one Adapter class in the {adapter_} module"
+                        )
+                    adapter_object = adapter_classes[0][0](self)
+                else:
+                    raise LoadModuleError(
+                        f"Type error: {adapter_} can not be loaded as adapter"
+                    )
             except Exception as e:
                 error_or_exception(
-                    f'Load plugin "{plugin_info.module_class.__name__}" '
-                    f'from file "{plugin_info.module.__file__}" failed:',
+                    f'Load adapter "{adapter_}" failed:',
                     e,
                     self.config.verbose_exception_log,
                 )
             else:
+                self.adapters.append(adapter_object)
                 logger.info(
-                    f'Succeeded to load plugin "{plugin_info.module_class.__name__}" '
-                    f'from file "{plugin_info.module.__file__}"'
+                    f'Succeeded to load adapter "{adapter_object.__class__.__name__}" '
+                    f'from "{adapter_}"'
                 )
 
-    def load_plugins_from_dir(self, path: Iterable[str]):
-        """从指定路径列表中加载插件，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
+    def load_adapters(self, *adapters: Union[Type[Adapter], str]):
+        """加载适配器。
 
         Args:
-            path: 由储存插件的路径文本组成的列表。
-                例如： `['path/of/plugins/', '/home/xxx/alicebot/plugins']` 。
+            adapters: 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
+                如果为 `Type[Adapter]` 类型时，将作为适配器类进行加载。
+                如果为 `str` 类型时，将作为适配器模块名称进行加载，格式和 Python `import` 语句相同。
+                    例如：`path.of.adapter`。
         """
-        self._extend_plugin_dirs.extend(path)
-        self._load_plugins_from_dir(path)
-
-    def _load_adapter(self, name: str) -> Optional[Adapter]:
-        """加载单个适配器。
-
-        Args:
-            name: 适配器名称，格式和 Python `import` 语句相同。
-
-        Returns:
-            被加载的适配器对象。
-        """
-        try:
-            adapter_info = load_module_from_name(name, Adapter)
-            adapter_object = adapter_info.module_class(self)
-        except Exception as e:
-            error_or_exception(
-                f'Load adapter "{name}" failed:', e, self.config.verbose_exception_log
-            )
-        else:
-            self._adapters.append((adapter_object, adapter_info))
-            self._update_config_module(adapter_info.config_class)
-            logger.info(
-                f'Succeeded to load adapter "{adapter_info.module_class.__name__}" '
-                f'from module "{name}"'
-            )
-            return adapter_object
-
-    def load_adapter(self, name: str) -> Optional[Adapter]:
-        """加载单个适配器。
-
-        Args:
-            name: 适配器名称，格式和 Python `import` 语句相同。
-
-        Returns:
-            被加载的适配器对象。
-        """
-        self._extend_adapters.append(name)
-        return self._load_adapter(name)
-
-    def _update_config_module(self, config_class: Optional[Type[BaseModel]]):
-        """更新配置模型。"""
-        if config_class is None:
-            return
-        try:
-            default_value = config_class()
-        except ValidationError:
-            default_value = ...
-        self._config_update_dict[getattr(config_class, "__config_name__")] = (
-            config_class,
-            default_value,
-        )
-
-    def _remove_config_module(self, config_class: Optional[Type[BaseModel]]):
-        """删除配置模型。"""
-        if config_class is None:
-            return
-        try:
-            self._config_update_dict.pop(getattr(config_class, "__config_name__"))
-        except KeyError:
-            pass
+        self._extend_adapters.extend(adapters)
+        return self._load_adapters(*adapters)
 
     def _reload_config(self):
         """更新 config，合并入来自 Plugin 和 Adapter 的 Config"""
+        _config_update_dict = {}
+        for i in chain(self.plugins, self.adapters):
+            config_class = getattr(i, "Config", None)
+            if is_config_class(config_class):
+                try:
+                    default_value = config_class()
+                except ValidationError:
+                    default_value = ...
+                _config_update_dict[getattr(config_class, "__config_name__")] = (
+                    config_class,
+                    default_value,
+                )
         self.config = create_model(
-            "Config", **self._config_update_dict, __base__=MainConfig
+            "Config", **_config_update_dict, __base__=MainConfig
         )(**self._raw_config_dict)
 
     def get_loaded_adapter_by_name(self, name: str) -> Adapter:
@@ -714,7 +736,7 @@ class Bot:
         Raises:
             LookupError: 找不到此名称的适配器对象。
         """
-        for _adapter, _ in self._adapters:
+        for _adapter, _ in self.adapters:
             if _adapter.name == name:
                 return _adapter
         raise LookupError

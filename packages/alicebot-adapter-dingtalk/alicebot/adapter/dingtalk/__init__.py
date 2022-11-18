@@ -27,6 +27,8 @@ class DingTalkAdapter(Adapter):
     """钉钉协议适配器。"""
 
     name: str = "dingtalk"
+    Config = Config
+
     app: web.Application = None
     runner: web.AppRunner = None
     site: web.TCPSite = None

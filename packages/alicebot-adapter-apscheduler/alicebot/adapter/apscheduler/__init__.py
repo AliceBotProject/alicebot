@@ -23,6 +23,8 @@ __all__ = ["APSchedulerAdapter", "scheduler_decorator"]
 
 class APSchedulerAdapter(Adapter):
     name: str = "apscheduler"
+    Config = Config
+
     scheduler: AsyncIOScheduler
     plugin_class_to_job: Dict[Type[Plugin], Job]
 

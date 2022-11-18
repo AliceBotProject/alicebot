@@ -37,6 +37,8 @@ class MiraiAdapter(WebSocketAdapter):
     """
 
     name: str = "mirai"
+    Config = Config
+
     _api_response: Any
     _api_response_cond: asyncio.Condition = None
     _sync_id: int = 0

@@ -183,10 +183,10 @@ class Bot:
                 with open(self._config_file, "r", encoding="utf8") as f:
                     self._raw_config_dict = json.load(f)
             except OSError as e:
-                logger.warning(f"Can not open config file: {e!r}")
-            except json.JSONDecodeError as e:
-                logger.warning(f"Read config file failed: {e!r}")
-            except ValueError as e:
+                error_or_exception(
+                    "Can not open config file:", e, self.config.verbose_exception_log
+                )
+            except (json.JSONDecodeError, ValueError) as e:
                 error_or_exception(
                     "Read config file failed:", e, self.config.verbose_exception_log
                 )

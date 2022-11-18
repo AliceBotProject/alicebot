@@ -38,6 +38,11 @@ from alicebot.utils import (
     get_classes_from_module_name,
 )
 
+try:
+    import tomllib  # noqa
+except ModuleNotFoundError:
+    import tomli as tomllib
+
 __all__ = ["Bot"]
 
 HANDLED_SIGNALS = (
@@ -94,14 +99,14 @@ class Bot:
     def __init__(
         self,
         *,
-        config_file: Optional[str] = "config.json",
+        config_file: Optional[str] = "config.toml",
         config_dict: Optional[Dict] = None,
         hot_reload: bool = False,
     ):
         """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
         Args:
-            config_file: 配置文件，如不指定则使用默认的 `config.json`。
+            config_file: 配置文件，如不指定则使用默认的 `config.toml`。
                 若指定为 None，则不加载配置文件。
             config_dict: 配置字典，默认为 None。
                 若指定字典，则会忽略 config_file 配置，不再读取配置文件。
@@ -180,13 +185,18 @@ class Bot:
             self._raw_config_dict = self._config_dict
         elif self._config_file is not None:
             try:
-                with open(self._config_file, "r", encoding="utf8") as f:
-                    self._raw_config_dict = json.load(f)
+                with open(self._config_file, "rb") as f:
+                    if self._config_file.endswith(".json"):
+                        self._raw_config_dict = json.load(f)
+                    elif self._config_file.endswith(".toml"):
+                        self._raw_config_dict = tomllib.load(f)
+                    else:
+                        logger.error("Unable to determine config file type")
             except OSError as e:
                 error_or_exception(
                     "Can not open config file:", e, self.config.verbose_exception_log
                 )
-            except (json.JSONDecodeError, ValueError) as e:
+            except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
                 error_or_exception(
                     "Read config file failed:", e, self.config.verbose_exception_log
                 )
@@ -284,7 +294,9 @@ class Bot:
         async for changes in awatch(
             *map(
                 lambda x: x.resolve(),
-                self.config.plugin_dir.union(self._extend_plugin_dirs).union(
+                set(self._extend_plugin_dirs)
+                .union(self.config.plugin_dir)
+                .union(
                     {Path(self._config_file)}
                     if self._config_dict is None and self._config_file is not None
                     else set()

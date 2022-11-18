@@ -138,4 +138,5 @@ node_modules/
 docs_build/**/*.rst
 docs_build/_build
 /tests/config.json
+/tests/config.toml
 /docs/api/**/*.md

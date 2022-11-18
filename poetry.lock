@@ -515,7 +515,7 @@ python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 name = "tomli"
 version = "2.0.1"
 description = "A lil' TOML parser"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 
@@ -614,7 +614,7 @@ mirai = []
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "388e0737b6c50d6e854ea7a077861f61bed016edbe070f62819c7e3b984370a6"
+content-hash = "eef7ed5810cced6bce2ea0ddbfb93e650f56d7c1f6f155b6940b270aa636961c"
 
 [metadata.files]
 aiohttp = [

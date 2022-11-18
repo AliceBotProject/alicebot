@@ -72,8 +72,8 @@ class Bot:
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
     _raw_config_dict: Dict[str, Any]  # 原始配置字典
-    # _config_update_dict: Dict[str, Tuple[Type[BaseModel], Any]]  # 配置模型更新使用的字典
 
+    # 以下属性不会在重启时清除
     _config_file: Optional[str]  # 配置文件
     _config_dict: Optional[Dict[str, Any]]  # 配置字典
     _hot_reload: bool  # 热重载
@@ -283,14 +283,11 @@ class Bot:
         logger.info("Hot reload is working!")
         async for changes in awatch(
             *map(
-                os.path.abspath,
-                map(
-                    str,
-                    self.config.plugin_dir.union(
-                        {self._config_file}
-                        if self._config_dict is None and self._config_file is not None
-                        else set()
-                    ),
+                lambda x: x.resolve(),
+                self.config.plugin_dir.union(self._extend_plugin_dirs).union(
+                    {Path(self._config_file)}
+                    if self._config_dict is None and self._config_file is not None
+                    else set()
                 ),
             ),
             stop_event=self.should_exit,

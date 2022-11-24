@@ -23,7 +23,7 @@ from .exceptions import ApiTimeout, NetworkError
 __all__ = ["DingTalkAdapter"]
 
 
-class DingTalkAdapter(Adapter):
+class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
     """钉钉协议适配器。"""
 
     name: str = "dingtalk"
@@ -34,11 +34,6 @@ class DingTalkAdapter(Adapter):
     site: web.TCPSite = None
 
     session: aiohttp.ClientSession = None
-
-    @property
-    def config(self):
-        """本适配器的配置。"""
-        return getattr(self.bot.config, Config.__config_name__)
 
     async def startup(self):
         """创建 aiohttp Application。"""

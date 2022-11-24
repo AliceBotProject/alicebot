@@ -20,16 +20,21 @@ from alicebot.log import logger, error_or_exception
 from .config import Config
 from .message import MiraiMessage
 from .exceptions import ApiTimeout, ActionFailed, NetworkError
-from .event import BotEvent, MateEvent, CommandExecutedEvent, get_event_class
+from .event import (
+    BotEvent,
+    MateEvent,
+    MiraiEvent,
+    CommandExecutedEvent,
+    get_event_class,
+)
 
 if TYPE_CHECKING:
-    from .event import T_MiraiEvent
     from .message import T_MiraiMSG
 
 __all__ = ["MiraiAdapter"]
 
 
-class MiraiAdapter(WebSocketAdapter):
+class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     """Mirai 协议适配器。
 
     在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，

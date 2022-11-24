@@ -10,10 +10,11 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.adapter import Adapter
+from alicebot.typing import T_Event, T_Config
 from alicebot.log import logger, error_or_exception
 
 
-class PollingAdapter(Adapter, metaclass=ABCMeta):
+class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """轮询式适配器示例。"""
 
     delay: Union[int, float] = 0.1
@@ -32,7 +33,7 @@ class PollingAdapter(Adapter, metaclass=ABCMeta):
         pass
 
 
-class HttpClientAdapter(PollingAdapter, metaclass=ABCMeta):
+class HttpClientAdapter(PollingAdapter[T_Event, T_Config], metaclass=ABCMeta):
     """HTTP 客户端适配器示例。"""
 
     session: aiohttp.ClientSession
@@ -48,7 +49,7 @@ class HttpClientAdapter(PollingAdapter, metaclass=ABCMeta):
         await self.session.close()
 
 
-class WebSocketClientAdapter(Adapter, metaclass=ABCMeta):
+class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """WebSocket 客户端适配器示例。"""
 
     url: str
@@ -69,7 +70,7 @@ class WebSocketClientAdapter(Adapter, metaclass=ABCMeta):
         pass
 
 
-class HttpServerAdapter(Adapter, metaclass=ABCMeta):
+class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """HTTP 服务端适配器示例。"""
 
     app: web.Application
@@ -103,7 +104,7 @@ class HttpServerAdapter(Adapter, metaclass=ABCMeta):
         pass
 
 
-class WebSocketServerAdapter(Adapter, metaclass=ABCMeta):
+class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """WebSocket 服务端适配器示例。"""
 
     app: web.Application = None
@@ -151,7 +152,7 @@ class WebSocketServerAdapter(Adapter, metaclass=ABCMeta):
         pass
 
 
-class WebSocketAdapter(Adapter, metaclass=ABCMeta):
+class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """WebSocket 适配器示例。
 
     同时支持 WebSocket 客户端和服务端。

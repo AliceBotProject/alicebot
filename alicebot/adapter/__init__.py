@@ -5,11 +5,12 @@
 import os
 import asyncio
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Union, Callable, Optional, Awaitable
+from typing import TYPE_CHECKING, Type, Union, Generic, Callable, Optional, Awaitable
 
-from alicebot.typing import T_Event
+from alicebot.config import ConfigModel
 from alicebot.log import error_or_exception
-from alicebot.utils import sync_func_wrapper
+from alicebot.typing import T_Event, T_Config
+from alicebot.utils import is_config_class, sync_func_wrapper
 
 if TYPE_CHECKING:
     from alicebot import Bot
@@ -21,7 +22,7 @@ if os.getenv("ALICEBOT_DEV") == "1":
     __import__("pkg_resources").declare_namespace(__name__)
 
 
-class Adapter(ABC):
+class Adapter(Generic[T_Event, T_Config], ABC):
     """协议适配器基类。
 
     Attributes:
@@ -31,12 +32,21 @@ class Adapter(ABC):
 
     name: str
     bot: "Bot"
+    Config: Type[ConfigModel]
 
     def __init__(self, bot: "Bot"):
         if not hasattr(self, "name"):
             self.name = self.__class__.__name__
         self.bot: "Bot" = bot
         self.handle_event = self.bot.handle_event
+
+    @property
+    def config(self) -> Optional[T_Config]:
+        """适配器配置。"""
+        config_class: ConfigModel = getattr(self, "Config", None)
+        if is_config_class(config_class):
+            return getattr(self.bot.config, config_class.__config_name__, None)
+        return None
 
     async def safe_run(self):
         """附带有异常处理地安全运行适配器。"""

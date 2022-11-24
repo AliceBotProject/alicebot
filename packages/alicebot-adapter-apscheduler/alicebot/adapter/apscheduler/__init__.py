@@ -21,17 +21,12 @@ from .event import APSchedulerEvent
 __all__ = ["APSchedulerAdapter", "scheduler_decorator"]
 
 
-class APSchedulerAdapter(Adapter):
+class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     name: str = "apscheduler"
     Config = Config
 
     scheduler: AsyncIOScheduler
     plugin_class_to_job: Dict[Type[Plugin], Job]
-
-    @property
-    def config(self):
-        """本适配器的配置。"""
-        return getattr(self.bot.config, Config.__config_name__)
 
     async def startup(self):
         """创建 AsyncIOScheduler 对象。"""

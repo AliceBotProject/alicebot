@@ -17,8 +17,8 @@ from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import logger, error_or_exception
 
 from .config import Config
-from .event import get_event_class
 from .message import CQHTTPMessage
+from .event import CQHTTPEvent, get_event_class
 from .exceptions import ApiTimeout, ActionFailed, NetworkError, ApiNotAvailable
 
 if TYPE_CHECKING:
@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 __all__ = ["CQHTTPAdapter"]
 
 
-class CQHTTPAdapter(WebSocketAdapter):
+class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     """CQHTTP 协议适配器。"""
 
     name = "cqhttp"
@@ -36,11 +36,6 @@ class CQHTTPAdapter(WebSocketAdapter):
     _api_response: Dict[Any, Any]
     _api_response_cond: asyncio.Condition = None
     _api_id: int = 0
-
-    @property
-    def config(self):
-        """本适配器的配置。"""
-        return getattr(self.bot.config, Config.__config_name__)
 
     def __getattr__(self, item):
         return partial(self.call_api, item)

@@ -8,7 +8,17 @@ from alicebot.event import Event
 from alicebot.adapter import Adapter
 
 
-class TestAdapter(Adapter):
+class TestAdapterEvent(Event["TestAdapter"]):
+    """测试适配器事件。
+
+    Attributes:
+        message: 消息内容。
+    """
+
+    message: str
+
+
+class TestAdapter(Adapter[TestAdapterEvent, None]):
     """测试适配器。"""
 
     name: str = "test"
@@ -31,13 +41,3 @@ class TestAdapter(Adapter):
         async with self._cond:
             self._msg = msg
             self._cond.notify()
-
-
-class TestAdapterEvent(Event[TestAdapter]):
-    """测试适配器事件。
-
-    Attributes:
-        message: 消息内容。
-    """
-
-    message: str

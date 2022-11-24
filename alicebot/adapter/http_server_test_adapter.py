@@ -20,7 +20,7 @@ class HttpServerTestEvent(Event["HttpServerTestAdapter"]):
     message: Message
 
 
-class HttpServerTestAdapter(HttpServerAdapter):
+class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
     """HTTP 服务端示例适配器类。"""
 
     get_url: str = "/"

@@ -1,14 +1,13 @@
 """APScheduler 适配器配置。"""
 from typing import Any, Dict
 
-from pydantic import BaseModel
+from alicebot.config import ConfigModel
 
 
-class Config(BaseModel):
+class Config(ConfigModel):
     """APScheduler 配置类，将在适配器被加载时被混入到机器人主配置中。
 
     Attributes:
-        __config_name__: 配置名称。
         scheduler_config: 调度器配置。
     """
 

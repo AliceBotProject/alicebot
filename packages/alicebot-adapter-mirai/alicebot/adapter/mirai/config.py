@@ -1,12 +1,11 @@
 """Mirai 适配器配置。"""
-from pydantic import BaseModel
+from alicebot.config import ConfigModel
 
 
-class Config(BaseModel):
+class Config(ConfigModel):
     """Mirai 配置类，将在适配器被加载时被混入到机器人主配置中。
 
     Attributes:
-        __config_name__: 配置名称。
         adapter_type: 适配器类型，需要和协议端配置相同。
         host: 本机域名。
         port: 监听的端口。

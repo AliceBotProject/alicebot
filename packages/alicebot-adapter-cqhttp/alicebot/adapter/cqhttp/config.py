@@ -1,4 +1,6 @@
 """CQHTTP 适配器配置。"""
+from typing import Literal
+
 from alicebot.config import ConfigModel
 
 
@@ -16,7 +18,7 @@ class Config(ConfigModel):
     """
 
     __config_name__ = "cqhttp"
-    adapter_type: str = "reverse-ws"
+    adapter_type: Literal["ws", "reverse-ws", "ws-reverse"] = "reverse-ws"
     host: str = "127.0.0.1"
     port: int = 8080
     url: str = "/cqhttp/ws"

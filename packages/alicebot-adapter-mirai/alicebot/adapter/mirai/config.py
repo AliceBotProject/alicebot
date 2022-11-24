@@ -1,4 +1,6 @@
 """Mirai 适配器配置。"""
+from typing import Literal
+
 from alicebot.config import ConfigModel
 
 
@@ -17,7 +19,7 @@ class Config(ConfigModel):
     """
 
     __config_name__ = "mirai"
-    adapter_type: str = "ws"
+    adapter_type: Literal["ws", "reverse-ws"] = "ws"
     host: str = "127.0.0.1"
     port: int = 8080
     url: str = "/mirai/ws"

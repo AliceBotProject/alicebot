@@ -6,14 +6,13 @@ from enum import Enum
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional
 
-from pydantic import BaseModel
-
-from alicebot.typing import T_Event, T_State
+from alicebot.config import ConfigModel
+from alicebot.utils import is_config_class
+from alicebot.typing import T_Event, T_State, T_Config
 from alicebot.exceptions import SkipException, StopException
 
 if TYPE_CHECKING:
     from alicebot import Bot
-    from alicebot.config import MainConfig
 
 __all__ = ["Plugin", "PluginLoadType"]
 
@@ -27,7 +26,7 @@ class PluginLoadType(Enum):
     CLASS = "class"
 
 
-class Plugin(ABC, Generic[T_Event, T_State]):
+class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     """所有 AliceBot 插件的基类。
 
     Attributes:
@@ -42,7 +41,7 @@ class Plugin(ABC, Generic[T_Event, T_State]):
     event: T_Event
     priority: int = 0
     block: bool = False
-    Config: Type[BaseModel]
+    Config: Type[ConfigModel]
 
     __plugin_load_type__: PluginLoadType
     __plugin_file_path__: Optional[str]
@@ -74,9 +73,12 @@ class Plugin(ABC, Generic[T_Event, T_State]):
         return self.event.adapter.bot
 
     @property
-    def config(self) -> "MainConfig":
-        """机器人配置。"""
-        return self.bot.config
+    def config(self) -> Optional[T_Config]:
+        """插件配置。"""
+        config_class: ConfigModel = getattr(self, "Config", None)
+        if is_config_class(config_class):
+            return getattr(self.bot.config, config_class.__config_name__, None)
+        return None
 
     def stop(self) -> NoReturn:
         """停止当前事件传播。"""

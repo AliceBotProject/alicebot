@@ -12,11 +12,14 @@ if TYPE_CHECKING:
     from alicebot.event import Event  # noqa
     from alicebot.plugin import Plugin  # noqa
     from alicebot.adapter import Adapter  # noqa
+    from alicebot.config import ConfigModel  # noqa
 
 __all__ = [
+    "T_State",
     "T_Event",
     "T_Plugin",
     "T_Adapter",
+    "T_Config",
     "T_Message",
     "T_MessageSegment",
     "T_MS",
@@ -24,13 +27,13 @@ __all__ = [
     "T_BotExitHook",
     "T_AdapterHook",
     "T_EventHook",
-    "T_State",
 ]
 
+T_State = TypeVar("T_State")
 T_Event = TypeVar("T_Event", bound="Event")
 T_Plugin = TypeVar("T_Plugin", bound="Plugin")
 T_Adapter = TypeVar("T_Adapter", bound="Adapter")
-T_State = TypeVar("T_State")
+T_Config = TypeVar("T_Config", bound="ConfigModel")
 
 T_BotHook = Callable[["Bot"], Awaitable[NoReturn]]
 T_BotExitHook = Callable[["Bot"], NoReturn]

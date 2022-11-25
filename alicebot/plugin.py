@@ -12,7 +12,7 @@ from alicebot.typing import T_Event, T_State, T_Config
 from alicebot.exceptions import SkipException, StopException
 
 if TYPE_CHECKING:
-    from alicebot import Bot
+    from alicebot.bot import Bot
 
 __all__ = ["Plugin", "PluginLoadType"]
 

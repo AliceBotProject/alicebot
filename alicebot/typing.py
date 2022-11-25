@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING, TypeVar, Callable, NoReturn, Awaitable
 from alicebot.message import T_MS, T_Message, T_MessageSegment
 
 if TYPE_CHECKING:
-    from alicebot import Bot  # noqa
+    from alicebot.bot import Bot  # noqa
     from alicebot.event import Event  # noqa
     from alicebot.plugin import Plugin  # noqa
     from alicebot.adapter import Adapter  # noqa

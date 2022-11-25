@@ -129,7 +129,6 @@ function sidebarApi() {
       text: 'AliceBot Api Reference',
       items: [
         ...getSidebarChildrenItems('/api/'),
-        getSidebarItem('/api/plugin/index.md'),
         getSidebarItem('/api/adapter/index.md'),
         {
           text: 'alicebot.adapter.utils',

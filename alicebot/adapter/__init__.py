@@ -13,7 +13,7 @@ from alicebot.typing import T_Event, T_Config
 from alicebot.utils import is_config_class, sync_func_wrapper
 
 if TYPE_CHECKING:
-    from alicebot import Bot
+    from alicebot.bot import Bot
 
 __all__ = ["Adapter"]
 

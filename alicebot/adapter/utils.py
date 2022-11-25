@@ -198,7 +198,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
                     error_or_exception(
                         "WebSocket connection error:",
                         e,
-                        self.bot.config.verbose_exception_log,
+                        self.bot.config.bot.log.verbose_exception,
                     )
                 if self.bot.should_exit.is_set():
                     break

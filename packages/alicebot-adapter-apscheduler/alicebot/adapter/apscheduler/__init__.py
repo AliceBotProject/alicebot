@@ -64,7 +64,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                     f"Plugin {plugin.__name__} add_job filed, "
                     "please check trigger and trigger_args:",
                     e,
-                    self.bot.config.verbose_exception_log,
+                    self.bot.config.bot.log.verbose_exception,
                 )
             else:
                 logger.info(f"Plugin {plugin.__name__} has been scheduled to run")

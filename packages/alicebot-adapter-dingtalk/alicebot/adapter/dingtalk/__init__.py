@@ -77,7 +77,9 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
                 dingtalk_event = DingTalkEvent(adapter=self, **(await request.json()))
             except Exception as e:
                 error_or_exception(
-                    "Request parsing error:", e, self.bot.config.verbose_exception_log
+                    "Request parsing error:",
+                    e,
+                    self.bot.config.bot.log.verbose_exception,
                 )
                 return web.Response()
             await self.handle_event(dingtalk_event)

@@ -13,9 +13,9 @@ from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable
 from pydantic import ValidationError, create_model
 
 from alicebot.adapter import Adapter
-from alicebot.config import MainConfig
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
+from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
 from alicebot.typing import (
     T_Event,
     T_BotHook,
@@ -180,39 +180,13 @@ class Bot:
                     signal.signal(sig, self._handle_exit)
 
         # 加载配置文件
-        self._raw_config_dict = {}
-        if self._config_dict is not None:
-            self._raw_config_dict = self._config_dict
-        elif self._config_file is not None:
-            try:
-                with open(self._config_file, "rb") as f:
-                    if self._config_file.endswith(".json"):
-                        self._raw_config_dict = json.load(f)
-                    elif self._config_file.endswith(".toml"):
-                        self._raw_config_dict = tomllib.load(f)
-                    else:
-                        logger.error("Unable to determine config file type")
-            except OSError as e:
-                error_or_exception(
-                    "Can not open config file:", e, self.config.verbose_exception_log
-                )
-            except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
-                error_or_exception(
-                    "Read config file failed:", e, self.config.verbose_exception_log
-                )
+        self._reload_config_dict()
 
-        try:
-            self.config = MainConfig(**self._raw_config_dict)
-        except ValidationError as e:
-            self.config = MainConfig()
-            error_or_exception(
-                "Config dict parse error:", e, self.config.verbose_exception_log
-            )
-
-        self._load_plugins_from_dirs(*self.config.plugin_dir)
-        self._load_plugins(*self.config.plugins)
-        self._load_adapters(*self.config.adapters)
-        self._reload_config()
+        # 加载插件和适配器
+        self._load_plugins_from_dirs(*self.config.bot.plugin_dirs)
+        self._load_plugins(*self.config.bot.plugins)
+        self._load_adapters(*self.config.bot.adapters)
+        self._update_config()
 
         # 启动 AliceBot
         logger.info("Running AliceBot...")
@@ -234,7 +208,7 @@ class Bot:
                     error_or_exception(
                         f"Startup adapter {_adapter!r} failed:",
                         e,
-                        self.config.verbose_exception_log,
+                        self.config.bot.log.verbose_exception,
                     )
 
             for _adapter in self.adapters:
@@ -295,7 +269,7 @@ class Bot:
             *map(
                 lambda x: x.resolve(),
                 set(self._extend_plugin_dirs)
-                .union(self.config.plugin_dir)
+                .union(self.config.bot.plugin_dirs)
                 .union(
                     {Path(self._config_file)}
                     if self._config_dict is None and self._config_file is not None
@@ -313,7 +287,10 @@ class Bot:
                     and change_type == change_type.modified
                 ):
                     logger.info(f'Reload config file "{self._config_file}"')
-                    self.restart()
+                    old_config = self.config
+                    self._reload_config_dict()
+                    if self.config.bot != old_config.bot:
+                        self.restart()
                     continue
 
                 # 更改插件文件夹
@@ -334,26 +311,92 @@ class Bot:
                 if change_type == Change.added:
                     logger.info(f"Hot reload: added file: {file}")
                     self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
-                    self._reload_config()
+                    self._update_config()
                     continue
                 elif change_type == Change.deleted:
                     logger.info(f"Hot reload: Deleted file: {file}")
                     self._remove_plugin_by_path(file)
-                    self._reload_config()
+                    self._update_config()
                 elif change_type == Change.modified:
                     logger.info(f"Hot reload: Modified file: {file}")
                     self._remove_plugin_by_path(file)
                     self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
-                    self._reload_config()
+                    self._update_config()
+
+    def _update_config(self):
+        """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
+
+        def update_config(
+            source: List, name: str, base: Type[ConfigModel]
+        ) -> ConfigModel:
+            config_update_dict = {}
+            for i in source:
+                config_class = getattr(i, "Config", None)
+                if is_config_class(config_class):
+                    try:
+                        default_value = config_class()
+                    except ValidationError:
+                        default_value = ...
+                    config_update_dict[getattr(config_class, "__config_name__")] = (
+                        config_class,
+                        default_value,
+                    )
+            return create_model(name, **config_update_dict, __base__=base)(
+                **self._raw_config_dict
+            )
+
+        self.config = create_model(
+            "Config",
+            plugin=update_config(self.plugins, "PluginConfig", PluginConfig),
+            adapter=update_config(self.adapters, "AdapterConfig", AdapterConfig),
+            __base__=MainConfig,
+        )(**self._raw_config_dict)
+        # 更新 log 级别
+        logger.remove()
+        logger.add(sys.stderr, level=self.config.bot.log.level)
+
+    def _reload_config_dict(self):
+        """重新加载配置文件。"""
+        self._raw_config_dict = {}
+        if self._config_dict is not None:
+            self._raw_config_dict = self._config_dict
+        elif self._config_file is not None:
+            try:
+                with open(self._config_file, "rb") as f:
+                    if self._config_file.endswith(".json"):
+                        self._raw_config_dict = json.load(f)
+                    elif self._config_file.endswith(".toml"):
+                        self._raw_config_dict = tomllib.load(f)
+                    else:
+                        logger.error("Unable to determine config file type")
+            except OSError as e:
+                error_or_exception(
+                    "Can not open config file:",
+                    e,
+                    self.config.bot.log.verbose_exception,
+                )
+            except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
+                error_or_exception(
+                    "Read config file failed:", e, self.config.bot.log.verbose_exception
+                )
+
+        try:
+            self.config = MainConfig(**self._raw_config_dict)
+        except ValidationError as e:
+            self.config = MainConfig()
+            error_or_exception(
+                "Config dict parse error:", e, self.config.bot.log.verbose_exception
+            )
+        self._update_config()
 
     def reload_plugins(self):
         """手动重新加载所有插件。"""
         self.plugins_priority_dict.clear()
-        self._load_plugins(*self.config.plugins)
-        self._load_plugins_from_dirs(*self.config.plugin_dir)
+        self._load_plugins(*self.config.bot.plugins)
+        self._load_plugins_from_dirs(*self.config.bot.plugin_dirs)
         self._load_plugins(*self._extend_plugins)
         self._load_plugins_from_dirs(*self._extend_plugin_dirs)
-        self._reload_config()
+        self._update_config()
 
     def _handle_exit(self, *args):  # noqa
         """当机器人收到退出信号时，根据情况进行处理。"""
@@ -427,7 +470,7 @@ class Bot:
                         error_or_exception(
                             f'Exception in plugin "{_plugin}":',
                             e,
-                            self.config.verbose_exception_log,
+                            self.config.bot.log.verbose_exception,
                         )
                 if stop:
                     break
@@ -435,7 +478,7 @@ class Bot:
                 error_or_exception(
                     f"Exception in handling event {current_event!r}:",
                     e,
-                    self.config.verbose_exception_log,
+                    self.config.bot.log.verbose_exception,
                 )
 
         for _hook_func in self._event_postprocessor_hooks:
@@ -527,7 +570,7 @@ class Bot:
                 LoadModuleError(
                     f'Plugin priority incorrect in the class "{plugin_class!r}"'
                 ),
-                self.config.verbose_exception_log,
+                self.config.bot.log.verbose_exception,
             )
 
     def _load_plugins_from_module_name(
@@ -540,7 +583,7 @@ class Bot:
             error_or_exception(
                 f'Import module "{module_name}" failed:',
                 e,
-                self.config.verbose_exception_log,
+                self.config.bot.log.verbose_exception,
             )
         else:
             for plugin_class, module in plugin_classes:
@@ -694,7 +737,7 @@ class Bot:
                 error_or_exception(
                     f'Load adapter "{adapter_}" failed:',
                     e,
-                    self.config.verbose_exception_log,
+                    self.config.bot.log.verbose_exception,
                 )
             else:
                 self.adapters.append(adapter_object)
@@ -714,24 +757,6 @@ class Bot:
         """
         self._extend_adapters.extend(adapters)
         return self._load_adapters(*adapters)
-
-    def _reload_config(self):
-        """更新 config，合并入来自 Plugin 和 Adapter 的 Config"""
-        _config_update_dict = {}
-        for i in chain(self.plugins, self.adapters):
-            config_class = getattr(i, "Config", None)
-            if is_config_class(config_class):
-                try:
-                    default_value = config_class()
-                except ValidationError:
-                    default_value = ...
-                _config_update_dict[getattr(config_class, "__config_name__")] = (
-                    config_class,
-                    default_value,
-                )
-        self.config = create_model(
-            "Config", **_config_update_dict, __base__=MainConfig
-        )(**self._raw_config_dict)
 
     def get_loaded_adapter_by_name(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。

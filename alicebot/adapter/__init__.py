@@ -45,7 +45,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         """适配器配置。"""
         config_class: ConfigModel = getattr(self, "Config", None)
         if is_config_class(config_class):
-            return getattr(self.bot.config, config_class.__config_name__, None)
+            return getattr(self.bot.config.adapter, config_class.__config_name__, None)
         return None
 
     async def safe_run(self):
@@ -56,7 +56,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
             error_or_exception(
                 f"Run adapter {self.__class__.__name__} failed:",
                 e,
-                self.bot.config.verbose_exception_log,
+                self.bot.config.bot.log.verbose_exception,
             )
 
     @abstractmethod

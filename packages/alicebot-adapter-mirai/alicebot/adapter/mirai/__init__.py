@@ -89,7 +89,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 error_or_exception(
                     "WebSocket message parsing error, not json:",
                     e,
-                    self.bot.config.verbose_exception_log,
+                    self.bot.config.bot.log.verbose_exception,
                 )
                 return
 

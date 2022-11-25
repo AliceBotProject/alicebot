@@ -77,7 +77,7 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         """插件配置。"""
         config_class: ConfigModel = getattr(self, "Config", None)
         if is_config_class(config_class):
-            return getattr(self.bot.config, config_class.__config_name__, None)
+            return getattr(self.bot.config.plugin, config_class.__config_name__, None)
         return None
 
     def stop(self) -> NoReturn:

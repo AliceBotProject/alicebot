@@ -487,7 +487,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "sophia-doc"
-version = "0.1.2"
+version = "0.1.3"
 description = "A python package to automatically generate API documents for Python modules."
 category = "dev"
 optional = false
@@ -1102,8 +1102,8 @@ sniffio = [
     {file = "sniffio-1.3.0.tar.gz", hash = "sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101"},
 ]
 sophia-doc = [
-    {file = "sophia_doc-0.1.2-py3-none-any.whl", hash = "sha256:b9724f12602ac4371c821e979f88eb8c9acd218f5e2a266ed048f696452dfed7"},
-    {file = "sophia_doc-0.1.2.tar.gz", hash = "sha256:fb378327cb9e7a5422dff0dc6164ec79303b319c09951797f0931cb91ba3ed9c"},
+    {file = "sophia_doc-0.1.3-py3-none-any.whl", hash = "sha256:cef694cf29ade4e38214b97afc7489e2edff4e05594fa418d67d2bbe2650a82f"},
+    {file = "sophia_doc-0.1.3.tar.gz", hash = "sha256:389aa5453270f01b54d339107ad46ff5cccad5fabcf60d3ab9dddbd7702dca7e"},
 ]
 toml = [
     {file = "toml-0.10.2-py2.py3-none-any.whl", hash = "sha256:806143ae5bfb6a3c6e736a764057db0e6a0e05e338b5630894a5f779cabb4f9b"},

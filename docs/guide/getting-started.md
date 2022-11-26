@@ -61,15 +61,14 @@ pip install alicebot[dingtalk]
    
    ```
 
-3. 创建一个 `config.json` 文件并写入以下内容
+3. 创建一个 `config.toml` 文件并写入以下内容
 
-   ```json
-   {
-       "plugin_dir": ["plugins"],
-       "adapters": ["alicebot.adapter.cqhttp"]
-   }
+   ```toml
+   [bot]
+   plugin_dirs = ["plugins"]
+   adapters = ["alicebot.adapter.cqhttp"]
    ```
-
+   
 4. 创建一个 `plugins` 目录
 
    ```sh
@@ -85,7 +84,8 @@ pip install alicebot[dingtalk]
 你应该会看到以下输出的日志
 
 ```text
-2021-07-24 00:00:00.000 | INFO     | alicebot:load_adapter:235 - Succeeded to load adapter "alicebot.adapter.cqhttp"
+2021-07-24 00:00:00.000 | INFO     | alicebot.bot:_load_plugins_from_dirs:689 - Loading plugins from dirs "/xxx/plugins"
+2021-07-24 00:00:00.000 | INFO     | alicebot.bot:_load_adapters:746 - Succeeded to load adapter "CQHTTPAdapter" from "alicebot.adapter.cqhttp"
 2021-07-24 00:00:00.000 | INFO     | alicebot:run:90 - Running AliceBot...
 ```
 
@@ -97,11 +97,11 @@ AliceBot 推荐的目录结构如下：
 .
 ├── plugins (插件目录)
 │   └── xxx.py
-├── config.json (配置文件)
+├── config.toml (配置文件)
 └── main.py
 ```
 
-其中 `main.py` 和 `config.json` 文件如上文所示。
+其中 `main.py` 和 `config.toml` 文件如上文所示。
 
 ## 配置协议端
 

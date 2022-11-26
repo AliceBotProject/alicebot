@@ -5,7 +5,7 @@
 AliceBot 提供了一个 `restart()` 方法用于退出并重新启动 AliceBot，你可以编写这样一个插件用于重新启动 AliceBot：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class Restart(Plugin):
@@ -25,7 +25,7 @@ class Restart(Plugin):
 
 ## 重新加载插件
 
-除此之外 AliceBot 还提供了一个 `reload_plugins()` 方法用于重新加载所有插件，此方法不会重新加载配置文件、适配器等。
+除此之外 AliceBot 还提供了一个 `reload_plugins()` 方法用于重新加载所有插件，此方法不会重新加载配置文件、适配器等。
 
 ## 自动热重载
 
@@ -33,9 +33,9 @@ class Restart(Plugin):
 
 此功能需要 `watchfiles` 库的支持，请手动安装此 Python 库。
 
-当配置文件发生更新时，会调用 `restart()` 方法重新启动 AliceBot。
+当配置文件发生更新时，会重新加载配置文件，而如果 `bot` 表发生变化时，则会调用 `restart()` 方法重新启动 AliceBot。
 
-而当 `plugin_dir` 设置的的目录中的插件文件发生新增、修改、删除时，则会自动尝试导入、重新加载、删除对应的插件。
+而当 `plugin_dirs` 设置的的目录中的插件文件发生新增、修改、删除时，则会自动尝试导入、重新加载、删除对应的插件。
 
 开启方式非常简单，只需要在实例化 `Bot` 类时传入 `hot_reload` 参数即可。
 

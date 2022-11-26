@@ -51,34 +51,32 @@ adapterSettings:
 
 ## 配置 AliceBot
 
-编辑 AliceBot 的配置文件 `config.json` 。
+编辑 AliceBot 的配置文件 `config.toml` 。
 
 更多项目请参考 [Mirai 配置](/api/adapter/mirai/config.md) 。
 
 ### Websocket Adapter 模式
 
-```json
-{
-    "adapters": ["alicebot.adapter.mirai"],
-    "mirai": {
-        "adapter_type": "ws",
-        "verify_key": "1234567890",
-        "qq": 机器人QQ号
-    }
-}
+```toml
+[bot]
+adapters = ["alicebot.adapter.mirai"]
+
+[adapter.mirai]
+adapter_type = "ws"
+verify_key = "1234567890"
+qq = 机器人QQ号
 ```
 
 ### Reverse Websocket Adapter 模式
 
-```json
-{
-    "adapters": ["alicebot.adapter.mirai"],
-    "mirai": {
-        "adapter_type": "reverse-ws",
-        "verify_key": "1234567890",
-        "qq": 机器人QQ号
-    }
-}
+```toml
+[bot]
+adapters = ["alicebot.adapter.mirai"]
+
+[adapter.mirai]
+adapter_type = "reverse-ws"
+verify_key = "1234567890"
+qq = 机器人QQ号
 ```
 
 ## 发送富文本消息
@@ -86,14 +84,14 @@ adapterSettings:
 与 CQHTTP 协议适配器类似，Mirai 适配器也可以轻松地构建富文本消息。
 
 ```python
-from alicebot.plugin import Plugin
-from alicebot.adapter.mirai.message import CQHTTPMessageSegment
+from alicebot import Plugin
+from alicebot.adapter.mirai.message import MiraiMessageSegment
 
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        msg = CQHTTPMessageSegment.plain("Hello, Alice!") + \
-              CQHTTPMessageSegment.image(url="https://www.example.org/1.jpg")
+        msg = MiraiMessageSegment.plain("Hello, Alice!") + \
+              MiraiMessageSegment.image(url="https://www.example.org/1.jpg")
         await self.event.reply(msg)
 
     async def rule(self) -> bool:
@@ -112,7 +110,7 @@ class HalloAlice(Plugin):
 你可以使用下面的方法调用 mirai-api-http API：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class TestPlugin(Plugin):

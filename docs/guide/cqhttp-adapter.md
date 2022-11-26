@@ -29,7 +29,6 @@ account:
 
 message:
   # 上报数据类型
-  # 可选: string,array
   post-format: array
 
 # 连接服务列表，下面的反向WS和正向WS请只选择一个
@@ -37,7 +36,6 @@ servers:
   # 反向WS设置
   - ws-reverse:
       # 反向WS Universal 地址
-      # 注意 设置了此项地址后下面两项将会被忽略
       universal: ws://127.0.0.1:8080/cqhttp/ws
       # 重连间隔 单位毫秒
       reconnect-interval: 3000
@@ -59,7 +57,7 @@ servers:
 
 如果你安装上面配置 go-cqhttp 的话并且使用了反向 WebSocket 连接方式，将不需要对 AliceBot 进行配置。
 
-如果你有其他特别的需求的话可以编辑 `config.json` 来配置，参考 [基本配置](./basic-config.md) 和 [CQHTTP 配置](/api/adapter/cqhttp/config.md) 。
+如果你有其他特别的需求的话可以编辑 `config.toml` 来配置，参考 [基本配置](./basic-config.md) 和 [CQHTTP 配置](/api/adapter/cqhttp/config.md) 。
 
 ## 运行测试
 
@@ -74,7 +72,7 @@ servers:
 在编写插件时，除了发送普通的文本消息外，也可以轻松地构造并发送富文本消息，请确保查看本节时你已经阅读了 [内置消息](./builtin-message.md) 。
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 from alicebot.adapter.cqhttp.message import CQHTTPMessageSegment
 
 
@@ -100,7 +98,7 @@ class HalloAlice(Plugin):
 你可以使用下面的方法调用 OneBot API：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class TestPlugin(Plugin):

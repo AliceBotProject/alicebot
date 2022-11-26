@@ -4,9 +4,9 @@
 
 在 [快速上手](./getting-started.md) 一章中我们创建了一个 `plugins` 目录，并在配置文件中设置其为插件目录。所以，放入 `plugins`
 目录的任何不以 `_` 开头的 Python
-模块都会被自动加载并测试是否是插件。你也可以不配置 `plugin_dir` 并通过以下方式加载插件。
+模块都会被自动加载并测试是否是插件。你也可以不配置 `plugin_dirs` 并通过以下方式“程序式”地加载插件。
 
-但通常情况下，不需要使用下面的方法，推荐通过配置 `plugin_dir` 或 `plugins` 配置项来加载插件。
+但通常情况下，不需要使用下面的方法，推荐通过配置 `plugin_dirs` 或 `plugins` 配置项来加载插件。
 
 ### 加载插件目录
 
@@ -16,36 +16,41 @@
 from alicebot import Bot
 
 bot = Bot()
-bot.load_plugins_from_dir(["plugins", "/home/xxx/alicebot/plugins"])
+bot.load_plugins_from_dirs(["plugins", "/home/xxx/alicebot/plugins"])
 
 if __name__ == "__main__":
     bot.run()
 
 ```
 
-这实际上和配置 `plugin_dir` 为 `["plugins", "/home/xxx/alicebot/plugins"]`
+这实际上和配置 `plugin_dirs` 为 `["plugins", "/home/xxx/alicebot/plugins"]`
 是相同的，目录可以是相对路径或者绝对路径。以 `_` 开头的插件不会被加载。
 
 ### 加载单个插件
 
 在 `main.py` 文件中添加以下行：
 
-```python {4}
+```python {7}
 from alicebot import Bot
 
+class TestPlugin(Plugin):
+    pass
+
 bot = Bot()
-bot.load_plugin("plugins.hello")
+bot.load_plugins("plugins.hello", TestPlugin)
 
 if __name__ == "__main__":
     bot.run()
 
 ```
 
-加载插件的名称和 Python 的 `import` 语句相同。
+`load_plugins` 方法可以传入插件类、字符串或者 `pathlib.Path` 对象，如果为后两者会分别视为插件模块的名称（格式和 Python `import` 语句相同）和插件模块文件的路径进行加载。
 
 ## 编写插件
 
-每个插件都是一个 Python 模块，所以它既可以是单个 Python 文件，也可以是一个 Python 包。
+每个插件即是一个插件类。
+
+虽然并非强制，但建议将一个插件类存放在一个单独的 Python 模块中。
 
 ```text
 .
@@ -53,14 +58,14 @@ if __name__ == "__main__":
 │   ├── a.py (单个 Python 文件)
 │   └── b (Python 包)
 │      └── __init__.py
-├── config.json
+├── config.toml
 └── main.py
 ```
 
-每个插件类都应该是 `alicebot.plugin.Plugin` 类的子类，并必须实现 `rule()` 和 `handle()` 方法。
+插件类都必须是 `Plugin` 类的子类，并必须实现 `rule()` 和 `handle()` 方法。
 
 ```python {5-6}
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class TestPlugin(Plugin):
@@ -83,7 +88,7 @@ class TestPlugin(Plugin):
 
 以上两个属性都是可选的，默认为 `0` 和 `False` 。
 
-如 [它是如何工作的？](./#它是如何工作的？) 一节中所说，当协议适配器产生一个事件后，会按照优先级分发事件给各个插件，AliceBot
+如 [它是如何工作的？](./#它是如何工作的？) 一节中所说，当协议适配器产生一个事件（比如机器人接收到了一条消息）后，会按照优先级分发事件给各个插件，AliceBot
 会依次执行每个插件的 `rule()` 方法，根据返回值判断是否要执行 `handle()`
 方法。
 
@@ -92,17 +97,19 @@ class TestPlugin(Plugin):
 - `self.event` ：当前正在被此插件处理的事件。
 - `self.name` ：插件类名称。
 - `self.bot` ：机器人对象。
-- `self.config` ：机器人配置。
+- `self.config` ：插件配置。
+- `self.state` ：插件状态。
 - `self.stop()` ：停止当前事件传播。
 - `self.skip()` ：跳过自身继续当前事件传播。
-- `self.state` ：插件状态。
+
+除了 `self.event` 之外的属性和方法将在 [插件进阶](./plugin-advanced) 一节中详细介绍。
 
 不同适配器产生的事件是不同的，下文以 CQHTTP 适配器为例编写一个 Hello 插件。
 
 ### 编写 `rule()` 方法
 
-```python {9}
-from alicebot.plugin import Plugin
+```python {9-13}
+from alicebot import Plugin
 
 
 class HalloAlice(Plugin):
@@ -121,7 +128,7 @@ class HalloAlice(Plugin):
 如果你觉得把所有条件都写在一行不够好看的话也可以这样写：
 
 ```python {9-13}
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class HalloAlice(Plugin):
@@ -156,7 +163,7 @@ AliceBot 内置的 `Message` 类实现了许多实用的方法，建议所有适
 ### 编写 `handle()` 方法
 
 ```python {6}
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class HalloAlice(Plugin):
@@ -183,7 +190,7 @@ class HalloAlice(Plugin):
 ## 示例：天气插件
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 from alicebot.exceptions import GetEventTimeout
 
 
@@ -210,9 +217,7 @@ class Weather(Plugin):
             return False
         if self.event.type != "message":
             return False
-        return self.event.message.startswith("天气") or self.event.message.startswith(
-            "weather"
-        )
+        return self.event.message.startswith("天气")
 
     @staticmethod
     async def get_weather(city):

@@ -72,7 +72,7 @@ type(msg)  # Message
 下面让我们来实践一下，尝试使用 CQHTTP 协议适配器的消息类构建一个富文本消息。
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 from alicebot.adapter.cqhttp.message import CQHTTPMessage, CQHTTPMessageSegment
 
 

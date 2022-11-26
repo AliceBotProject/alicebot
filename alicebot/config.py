@@ -47,7 +47,7 @@ class BotConfig(ConfigModel):
     Attributes:
         plugins: 将被加载的插件列表，将被 `Bot` 类的 `load_plugins()` 方法加载。
         plugin_dirs: 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dirs()` 方法加载。
-        adapters: 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapter()` 方法加载。
+        adapters: 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
         log: AliceBot 日志相关设置。
     """
 

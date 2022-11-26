@@ -16,12 +16,11 @@ pip install alicebot-adapter-apscheduler
 pip install aliebot[apscheduler]
 ```
 
-下载后，你可以像加载一个普通的适配器一样在 `config.json` 配置文件中配置：
+下载后，你可以像加载一个普通的适配器一样在 `config.toml` 配置文件中配置：
 
-```json
-{
-    "adapters": ["alicebot.adapter.xxxx", "alicebot.adapter.apscheduler"]
-}
+```toml
+[bot]
+adapters = ["alicebot.adapter.xxxx", "alicebot.adapter.apscheduler"]
 ```
 
 或者也可以手动加载：
@@ -30,7 +29,7 @@ pip install aliebot[apscheduler]
 from alicebot import Bot
 
 bot = Bot()
-bot.load_adapter("alicebot.adapter.apscheduler")
+bot.load_adapters("alicebot.adapter.apscheduler")
 
 if __name__ == "__main__":
     bot.run()
@@ -43,15 +42,12 @@ if __name__ == "__main__":
 
 `alicebot-adapter-apscheduler` 适配器只有一个配置项 `scheduler_config` ：
 
-```json
-{
-    "adapters": ["alicebot.adapter.apscheduler"],
-    "apscheduler": {
-        "scheduler_config": {
-            "apscheduler.timezone": "Asia/Shanghai"
-        }
-    }
-}
+```toml
+[bot]
+adapters = ["alicebot.adapter.xxxx", "alicebot.adapter.apscheduler"]
+
+[adapter.apscheduler]
+scheduler_config = { "apscheduler.timezone" = "Asia/Shanghai" }
 ```
 
 具体配置项请参考 APScheduler 文档： [scheduler-config](https://apscheduler.readthedocs.io/en/latest/userguide.html#scheduler-config) 。
@@ -63,7 +59,7 @@ if __name__ == "__main__":
 加载适配器后，对于需要定时被执行的插件需要具有类似下面的格式：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class TestPlugin(Plugin):
@@ -101,7 +97,7 @@ APScheduler 适配器在启动时会遍历所有插件，寻找符合上述条�
 除了上面的方法外，你还可以使用类装饰器将一个已有的插件装饰为定时任务插件。
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 from alicebot.adapter.apscheduler import scheduler_decorator
 
 
@@ -124,7 +120,7 @@ class TestPlugin(Plugin):
 上面的写法等效于：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class TestPlugin(Plugin):
@@ -156,7 +152,7 @@ class TestPlugin(Plugin):
 第一个插件：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 from alicebot.adapter.apscheduler import scheduler_decorator
 
 
@@ -183,7 +179,7 @@ class PluginA(Plugin):
 第二个插件：
 
 ```python
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class PluginB(Plugin):

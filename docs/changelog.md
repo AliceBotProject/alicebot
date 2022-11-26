@@ -5,6 +5,39 @@ sidebar: auto
 # 更新日志
 
 
+## [0.6.0](https://github.com/st1020/alicebot/compare/v0.5.1...v0.6.0) (2022-11-26)
+
+
+### Bug Fixes
+
+* **bot:** 修复 docstring 错误 ([95521b0](https://github.com/st1020/alicebot/commit/95521b0ad125a7eb8240495b8ae3c8032c09c779))
+* **bot:** 修复加载 json 配置文件出错时的日志等级错误 ([b9bbfff](https://github.com/st1020/alicebot/commit/b9bbfff85fdc9d060612110595f30ab1f1aa27e5))
+* **bot:** 修复热更新时不会监控使用 load\_plugins\_from\_dirs() 方法程序式加载的插件目录的错误 ([500c2bc](https://github.com/st1020/alicebot/commit/500c2bc3cfd5aee0e3014818bf9363794bd78f75))
+
+
+### Features
+
+* **adapter:** 为 Adapter 类添加泛型支持，并添加 config 属性 ([cf629da](https://github.com/st1020/alicebot/commit/cf629da89b3efa349e36f130315440264570816a))
+* **bot:** 添加 toml 格式配置文件支持，并作为默认配置文件格式 ([207275d](https://github.com/st1020/alicebot/commit/207275daa92e8c34160d61e7a66327bd339c366c))
+* **config:** 修改配置模型，允许配置发生改变时不一定重新启动 Bot ([9c471c3](https://github.com/st1020/alicebot/commit/9c471c340677657473616f978e43484a6971b52b))
+* **config:** 新增 ConfigModel 类，要求所有配置类必须是 ConfigModel 的子类 ([eec7cae](https://github.com/st1020/alicebot/commit/eec7caebc283e8e4d75d58a7768bf89511285592))
+* **cqhttp:** 完善配置类的类型注解 ([bf04235](https://github.com/st1020/alicebot/commit/bf04235bbe79a09fad572026725ee13038999a3f))
+* **mirai:** 完善配置类的类型注解 ([bebf36d](https://github.com/st1020/alicebot/commit/bebf36d154f9e7bd41870e9fd25d025ddc2ed0e0))
+* **plugin:** 修改 Plugin 类的 config 属性的定义为插件配置，并修改 Plugin 类的泛型参数 ([35576fa](https://github.com/st1020/alicebot/commit/35576fa6419782ae58b8a6148294a5231151162a))
+* 修改插件和适配器的定义为 Plugin 或 Adapter 的子类，而非一个 Python 模块，修改配置类的定义方式，并修改 Bot 的大量与加载插件和适配器相关的公开方法 ([759216a](https://github.com/st1020/alicebot/commit/759216a856caed514ee221ec474c18467d826e00))
+* 调整项目结构，增加 alicebot 模块对子模块的快捷导入 ([c482e7f](https://github.com/st1020/alicebot/commit/c482e7ffc9ec6c5348c776451721acfe2c06a333))
+
+
+### BREAKING CHANGES
+
+* **config:** 修改配置模型
+* **plugin:** 修改 Plugin 类的 config 属性的定义为插件配置而非 "self.bot.config" 的别名，并修改 Plugin 类的泛型参数
+* **config:** 要求所有配置类必须是 ConfigModel 的子类，而非仅仅是 pydantic.BaseModel 的子类
+* **bot:** Bot 的默认配置配置文件名修改为 config.toml
+* 修改插件和适配器的定义为 Plugin 或 Adapter 的子类，修改插件和适配器配置类的定义方式，删除 Bot 类中程序化加载插件和适配器的所有方法，替换为 load\_plugins(), load\_plugins\_from\_dirs(), load\_adapters() 方法
+
+
+
 ## [0.5.1](https://github.com/st1020/alicebot/compare/v0.5.0...v0.5.1) (2022-09-11)
 
 

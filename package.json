@@ -1,6 +1,6 @@
 {
   "name": "alicebot",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A simple asynchronous python chat bot framework.",
   "private": true,
   "repository": {
@@ -13,7 +13,7 @@
   "devDependencies": {
     "conventional-changelog": "^3.1.25",
     "markdownlint-cli": "^0.31.1",
-    "vitepress": "^1.0.0-alpha.13"
+    "vitepress": "^1.0.0-alpha.29"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",
@@ -24,9 +24,6 @@
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
-        "@types/react",
-        "react",
-        "react-dom",
         "@algolia/client-search"
       ]
     }

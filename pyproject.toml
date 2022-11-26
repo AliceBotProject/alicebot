@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alicebot"
-version = "0.5.1"
+version = "0.6.0"
 description = "A simply asynchronous python chatbot framework."
 license = "MIT"
 authors = ["st1020 <stone_1020@qq.com>"]

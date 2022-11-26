@@ -31,7 +31,7 @@ frozenlist = ">=1.1.0"
 
 [[package]]
 name = "alicebot-adapter-apscheduler"
-version = "0.2.2"
+version = "0.6.0"
 description = "APScheduler adapter for AliceBot."
 category = "dev"
 optional = false
@@ -39,7 +39,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.5.0"
+alicebot = "^0.6.0"
 apscheduler = "^3.7"
 
 [package.source]
@@ -48,7 +48,7 @@ url = "packages/alicebot-adapter-apscheduler"
 
 [[package]]
 name = "alicebot-adapter-cqhttp"
-version = "0.2.2"
+version = "0.6.0"
 description = "OneBot(CQHTTP) adapter for AliceBot."
 category = "dev"
 optional = false
@@ -56,7 +56,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.5.0"
+alicebot = "^0.6.0"
 
 [package.source]
 type = "directory"
@@ -64,7 +64,7 @@ url = "packages/alicebot-adapter-cqhttp"
 
 [[package]]
 name = "alicebot-adapter-dingtalk"
-version = "0.2.2"
+version = "0.6.0"
 description = "DingTalk adapter for AliceBot."
 category = "dev"
 optional = false
@@ -72,7 +72,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.5.0"
+alicebot = "^0.6.0"
 
 [package.source]
 type = "directory"
@@ -80,7 +80,7 @@ url = "packages/alicebot-adapter-dingtalk"
 
 [[package]]
 name = "alicebot-adapter-mirai"
-version = "0.2.2"
+version = "0.6.0"
 description = "Mirai adapter for AliceBot."
 category = "dev"
 optional = false
@@ -88,7 +88,7 @@ python-versions = "^3.8"
 develop = true
 
 [package.dependencies]
-alicebot = "^0.5.0"
+alicebot = "^0.6.0"
 
 [package.source]
 type = "directory"

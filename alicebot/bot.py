@@ -605,7 +605,7 @@ class Bot:
         """加载插件。
 
         Args:
-            plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
+            *plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
                 如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
                 如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
                     例如：`path.of.plugin`。
@@ -668,7 +668,7 @@ class Bot:
         """加载插件。
 
         Args:
-            plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
+            *plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
                 如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
                 如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
                     例如：`path.of.plugin`。
@@ -682,9 +682,8 @@ class Bot:
         """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
 
         Args:
-            dirs: 储存包含插件的模块的模块路径。
-                例如：`[pathlib.Path("path/of/plugins/"),
-                pathlib.Path("/home/xxx/alicebot/plugins")]` 。
+            *dirs: 储存包含插件的模块的模块路径。
+                例如：`pathlib.Path("path/of/plugins/")` 。
         """
         dirs = list(map(lambda x: str(x.resolve()), dirs))
         logger.info(f'Loading plugins from dirs "{", ".join(map(str, dirs))}"')
@@ -696,9 +695,8 @@ class Bot:
         """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
 
         Args:
-            dirs: 储存包含插件的模块的模块路径。
-                例如：`[pathlib.Path("path/of/plugins/"),
-                pathlib.Path("/home/xxx/alicebot/plugins")]` 。
+            *dirs: 储存包含插件的模块的模块路径。
+                例如：`pathlib.Path("path/of/plugins/")` 。
         """
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)
@@ -707,7 +705,7 @@ class Bot:
         """加载适配器。
 
         Args:
-            adapters: 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
+            *adapters: 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
                 如果为 `Type[Adapter]` 类型时，将作为适配器类进行加载。
                 如果为 `str` 类型时，将作为适配器模块名称进行加载，格式和 Python `import` 语句相同。
                     例如：`path.of.adapter`。
@@ -754,7 +752,7 @@ class Bot:
         """加载适配器。
 
         Args:
-            adapters: 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
+            *adapters: 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
                 如果为 `Type[Adapter]` 类型时，将作为适配器类进行加载。
                 如果为 `str` 类型时，将作为适配器模块名称进行加载，格式和 Python `import` 语句相同。
                     例如：`path.of.adapter`。

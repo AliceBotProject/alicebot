@@ -70,7 +70,7 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
    from alicebot import Bot
    
    bot = Bot()
-   bot.load_adapter("alicebot.adapter.cqhttp")
+   bot.load_adapters("alicebot.adapter.cqhttp")
    
    bot.run()
    ```
@@ -78,7 +78,7 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 3. 第一个 AliceBot 插件：
 
    ```python
-   from alicebot.plugin import Plugin
+   from alicebot import Plugin
    
    
    class Echo(Plugin):

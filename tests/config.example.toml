@@ -1,0 +1,21 @@
+[bot]
+plugins = []
+plugin_dirs = ["plugins"]
+adapters = ["alicebot.adapter.cqhttp"]
+
+[bot.log]
+level = "INFO"
+verbose_exception = true
+
+[adapter.cqhttp]
+adapter_type = "reverse-ws"
+host = "127.0.0.1"
+port = 8080
+url = "/cqhttp/ws"
+api_timeout = 100
+
+[adapter.mirai]
+adapter_type = "reverse-ws"
+verify_key = "1234567890"
+qq = 123456
+api_timeout = 100

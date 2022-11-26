@@ -1,4 +1,4 @@
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 from alicebot.exceptions import GetEventTimeout
 
 

@@ -1,4 +1,4 @@
-from alicebot.plugin import Plugin
+from alicebot import Plugin
 
 
 class Schedule(Plugin):

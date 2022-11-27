@@ -137,22 +137,22 @@ function sidebarApi() {
         {
           text: 'alicebot.adapter.cqhttp',
           link: '/api/adapter/cqhttp/index.md',
-          children: getSidebarChildrenItems('/api/adapter/cqhttp/'),
+          items: getSidebarChildrenItems('/api/adapter/cqhttp/'),
         },
         {
           text: 'alicebot.adapter.mirai',
           link: '/api/adapter/mirai/index.md',
-          children: getSidebarChildrenItems('/api/adapter/mirai/'),
+          items: getSidebarChildrenItems('/api/adapter/mirai/'),
         },
         {
           text: 'alicebot.adapter.dingtalk',
           link: '/api/adapter/dingtalk/index.md',
-          children: getSidebarChildrenItems('/api/adapter/dingtalk/'),
+          items: getSidebarChildrenItems('/api/adapter/dingtalk/'),
         },
         {
           text: 'alicebot.adapter.apscheduler',
           link: '/api/adapter/apscheduler/index.md',
-          children: getSidebarChildrenItems('/api/adapter/apscheduler/'),
+          items: getSidebarChildrenItems('/api/adapter/apscheduler/'),
         }
       ]
     }

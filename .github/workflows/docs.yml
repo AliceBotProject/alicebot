@@ -18,7 +18,7 @@ jobs:
       - name: Install poetry
         run: pipx install poetry
         shell: bash
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           architecture: 'x64'
@@ -46,7 +46,7 @@ jobs:
         run: pnpm docs:build
 
       - name: Deploy to GitHub Pages
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: crazy-max/ghaction-github-pages@v3
         with:
           repo: st1020/docs.alicebot.dev
           target_branch: master

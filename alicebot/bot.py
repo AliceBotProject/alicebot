@@ -772,7 +772,7 @@ class Bot:
         Raises:
             LookupError: 找不到此名称的适配器对象。
         """
-        for _adapter, _ in self.adapters:
+        for _adapter in self.adapters:
             if _adapter.name == name:
                 return _adapter
         raise LookupError

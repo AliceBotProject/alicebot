@@ -48,11 +48,6 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     _api_response_cond: asyncio.Condition = None
     _sync_id: int = 0
 
-    @property
-    def config(self):
-        """本适配器的配置。"""
-        return getattr(self.bot.config, Config.__config_name__)
-
     def __getattr__(self, item):
         return partial(self.call_api, item)
 

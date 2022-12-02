@@ -760,7 +760,7 @@ class Bot:
         self._extend_adapters.extend(adapters)
         return self._load_adapters(*adapters)
 
-    def get_loaded_adapter_by_name(self, name: str) -> Adapter:
+    def get_adapter(self, name: str) -> Adapter:
         """按照名称获取已经加载的适配器。
 
         Args:

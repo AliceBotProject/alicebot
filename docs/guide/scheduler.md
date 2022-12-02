@@ -198,3 +198,31 @@ class PluginB(Plugin):
 ```
 
 你需要为定义了定时任务的插件设置一个独一无二的 `scheduler_flag` 属性，当然这个属性也可以叫做任何其他的名称，然后第二个插件判断 `scheduler_flag` 的值，即可判断当前事件是否是第一个插件定义的定时事件。
+
+## 示例
+
+下面让我们来实践一下，尝试使用 CQHTTP 协议适配器定时发送一条消息。
+
+```python
+from time import strftime, localtime
+
+from alicebot import Plugin
+from alicebot.adapter.apscheduler import scheduler_decorator
+
+
+@scheduler_decorator(
+    trigger="interval", trigger_args={"seconds": 100}, override_rule=True
+)
+class Schedule(Plugin):
+    async def handle(self) -> None:
+        await self.bot.get_adapter("cqhttp").send(
+            f"Time: {strftime('%Y-%m-%d %H:%M:%S', localtime())}",
+            message_type="group",
+            id_=1234567890,  # 群号
+        )
+
+    async def rule(self) -> bool:
+        return False
+
+```
+

@@ -775,7 +775,24 @@ class Bot:
         for _adapter in self.adapters:
             if _adapter.name == name:
                 return _adapter
-        raise LookupError
+        raise LookupError(f'Can not find adapter named "{name}"')
+
+    def get_plugin(self, name: str) -> Type[Plugin]:
+        """按照名称获取已经加载的插件类。
+
+        Args:
+            name: 插件名称
+
+        Returns:
+            获取到的插件类。
+
+        Raises:
+            LookupError: 找不到此名称的插件类。
+        """
+        for _plugin in self.plugins:
+            if _plugin.name == name:
+                return _plugin
+        raise LookupError(f'Can not find plugin named "{name}"')
 
     def bot_run_hook(self, func: T_BotHook) -> T_BotHook:
         """注册一个 Bot 启动时的函数。

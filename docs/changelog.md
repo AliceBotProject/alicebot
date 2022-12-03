@@ -5,6 +5,27 @@ sidebar: auto
 # 更新日志
 
 
+## [0.6.1](https://github.com/st1020/alicebot/compare/v0.6.0...v0.6.1) (2022-12-03)
+
+
+### Bug Fixes
+
+* **bot:** 修复 Bot 类 get\_loaded\_adapter\_by\_name 方法错误 ([2b682b8](https://github.com/st1020/alicebot/commit/2b682b8f2aa9294f1c0e03fcd082e4d4ffed97d7))
+* **mirai:** 修复 Mirai 适配器初始化错误 ([0d875bd](https://github.com/st1020/alicebot/commit/0d875bd0f9b5b002b09b70a3bb5b53e623eda6e0))
+
+
+### Features
+
+* **bot:** Bot 类添加 get\_plugin() 方法 ([a434bf8](https://github.com/st1020/alicebot/commit/a434bf82cb541812adc75546aae696ab3deeb682))
+* **bot:** 修改 Bot 类 get\_loaded\_adapter\_by\_name 方法的名称为 get\_adapter ([2257674](https://github.com/st1020/alicebot/commit/225767456246618356373f2baf714d6695748e25))
+
+
+### BREAKING CHANGES
+
+* **bot:** 修改 Bot 类 get\_loaded\_adapter\_by\_name 方法的名称为 get\_adapter
+
+
+
 ## [0.6.0](https://github.com/st1020/alicebot/compare/v0.5.1...v0.6.0) (2022-11-26)
 
 

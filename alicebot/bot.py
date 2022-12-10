@@ -293,7 +293,10 @@ class Bot:
                     logger.info(f'Reload config file "{self._config_file}"')
                     old_config = self.config
                     self._reload_config_dict()
-                    if self.config.bot != old_config.bot:
+                    if (
+                        self.config.bot != old_config.bot
+                        or self.config.adapter != old_config.adapter
+                    ):
                         self.restart()
                     continue
 

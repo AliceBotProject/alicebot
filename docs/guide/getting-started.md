@@ -28,7 +28,7 @@ AliceBot 本身只是一个聊天机器人框架，需要额外安装对应协�
 ```sh
 pip install alicebot-adapter-cqhttp
 pip install alicebot-adapter-mirai
-pip install alicebot-adapter-digntalk
+pip install alicebot-adapter-dingtalk
 ```
 
 或者你也可以在安装 AliceBot 的同时搭配对应的适配器，如：

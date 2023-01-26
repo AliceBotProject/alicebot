@@ -6,6 +6,7 @@
 import dataclasses
 from copy import copy, deepcopy
 from dataclasses import field, dataclass
+from functools import cached_property
 from typing import (
     Any,
     Dict,
@@ -158,6 +159,15 @@ class Message(List[T_MessageSegment]):
             是否是纯文本消息。
         """
         return all(map(lambda x: x.is_text(), self))
+
+    @cached_property
+    def plain_text(self) -> str:
+        """获取消息中的纯文本部分(缓存)。
+
+        Returns:
+            消息中的纯文本部分。
+        """
+        return self.get_plain_text()
 
     def get_plain_text(self) -> str:
         """获取消息中的纯文本部分。

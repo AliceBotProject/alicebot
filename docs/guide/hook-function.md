@@ -9,7 +9,7 @@ bot = Bot()
 
 
 @bot.bot_run_hook
-def hook_func(_bot: Bot):
+async def hook_func(_bot: Bot):
     pass
 
 
@@ -36,7 +36,7 @@ async def hook_func(_bot: Bot):
 
 ```python
 @bot.bot_exit_hook
-def hook_func(_bot: Bot):
+async def hook_func(_bot: Bot):
     pass
 ```
 

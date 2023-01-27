@@ -24,7 +24,6 @@ __all__ = [
     "T_MessageSegment",
     "T_MS",
     "T_BotHook",
-    "T_BotExitHook",
     "T_AdapterHook",
     "T_EventHook",
 ]
@@ -36,6 +35,5 @@ T_Adapter = TypeVar("T_Adapter", bound="Adapter")
 T_Config = TypeVar("T_Config", bound="ConfigModel")
 
 T_BotHook = Callable[["Bot"], Awaitable[NoReturn]]
-T_BotExitHook = Callable[["Bot"], NoReturn]
 T_AdapterHook = Callable[[T_Adapter], Awaitable[NoReturn]]
 T_EventHook = Callable[[T_Event], Awaitable[NoReturn]]

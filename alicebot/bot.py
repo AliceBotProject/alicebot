@@ -19,14 +19,8 @@ from pydantic import ValidationError, create_model
 from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
+from alicebot.typing import T_Event, T_BotHook, T_EventHook, T_AdapterHook
 from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
-from alicebot.typing import (
-    T_Event,
-    T_BotHook,
-    T_EventHook,
-    T_AdapterHook,
-    T_BotExitHook,
-)
 from alicebot.exceptions import (
     SkipException,
     StopException,
@@ -93,7 +87,7 @@ class Bot:
     _extend_plugin_dirs: List[Path]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
     _extend_adapters: List[str]  # 使用 load_adapter() 方法程序化加载的适配器列表
     _bot_run_hooks: List[T_BotHook]
-    _bot_exit_hooks: List[T_BotExitHook]
+    _bot_exit_hooks: List[T_BotHook]
     _adapter_startup_hooks: List[T_AdapterHook]
     _adapter_run_hooks: List[T_AdapterHook]
     _adapter_shutdown_hooks: List[T_AdapterHook]
@@ -230,7 +224,7 @@ class Bot:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
             for _hook_func in self._bot_exit_hooks:
-                _hook_func(self)
+                await _hook_func(self)
 
             self.adapters.clear()
             self.plugins_priority_dict.clear()
@@ -809,7 +803,7 @@ class Bot:
         self._bot_run_hooks.append(func)
         return func
 
-    def bot_exit_hook(self, func: T_BotExitHook) -> T_BotExitHook:
+    def bot_exit_hook(self, func: T_BotHook) -> T_BotHook:
         """注册一个 Bot 退出时的函数。
 
         Args:

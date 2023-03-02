@@ -217,7 +217,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         message_type: Literal["private", "friend", "group"],
         target: int,
         quote: int = None,
-    ) -> Dict[str, Any]:
+    ) -> Any:
         """调用 Mirai API 发送消息。
 
         Args:

@@ -136,7 +136,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         else:
             await self.handle_event(cqhttp_event)
 
-    async def call_api(self, api: str, **params) -> Dict[str, Any]:
+    async def call_api(self, api: str, **params) -> Any:
         """调用 CQHTTP API，协程会等待直到获得 API 响应。
 
         Args:

@@ -35,6 +35,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
             type=type, data={k: v for k, v in data.items() if v is not None}
         )
 
+    @property
     def _message_class(self) -> Type["MiraiMessage"]:
         return MiraiMessage
 

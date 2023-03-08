@@ -23,7 +23,7 @@ class ConfigModel(BaseModel):
         __config_name__: 配置名称。
     """
 
-    __config_name__: str
+    __config_name__: str = ""
 
     class Config:
         extra = Extra.allow
@@ -75,6 +75,3 @@ class MainConfig(ConfigModel):
     bot: BotConfig = BotConfig()
     plugin: PluginConfig = PluginConfig()
     adapter: AdapterConfig = AdapterConfig()
-
-    class Config:
-        extra = Extra.allow

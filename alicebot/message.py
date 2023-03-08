@@ -5,6 +5,7 @@
 """
 import dataclasses
 from copy import copy, deepcopy
+from typing_extensions import Self
 from dataclasses import field, dataclass
 from typing import (
     Any,
@@ -17,6 +18,8 @@ from typing import (
     TypeVar,
     Iterable,
     Iterator,
+    Optional,
+    SupportsIndex,
 )
 
 __all__ = ["T_Message", "T_MessageSegment", "T_MS", "Message", "MessageSegment"]
@@ -25,14 +28,14 @@ T_Message = TypeVar("T_Message", bound="Message")
 T_MessageSegment = TypeVar("T_MessageSegment", bound="MessageSegment")
 
 # 可以转化为 MessageSegment 的类型
-T_MS = Union[T_MessageSegment, str, Mapping]
+T_MS = Union[T_MessageSegment, str, Mapping[str, Any]]
 
 
 class Message(List[T_MessageSegment]):
     """消息。
 
     本类是 `List` 的子类，并重写了 `__init__()` 方法，
-    可以直接处理 str, Mapping, Iterable[Mapping], T_MessageSegment, T_Message。
+    可以直接处理 str, Mapping, Iterable[Mapping], MessageSegment, Message。
     其中 str 的支持需要适配器开发者重写 `_str_to_message_segment()` 方法实现。
     本类重写了 `+` 和 `+=` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
     若开发者实现了 MessageSegment 的子类则需要重写 `_message_segment_class()` 方法，
@@ -41,15 +44,13 @@ class Message(List[T_MessageSegment]):
 
     def __init__(
         self,
-        message: Union[None, T_Message, T_MS, Iterable[T_MS]] = None,
-        *args,
-        **kwargs,
+        message: Union[Self, T_MS, Iterable[T_MS]] = None,
+        *args: Any,
+        **kwargs: Any,
     ):
         super().__init__(*args, **kwargs)
-        if message is None:
-            return
-        elif isinstance(message, self.__class__):
-            self.extend(message)
+        if isinstance(message, self.__class__):
+            self.extend(message)  # type: ignore
         else:
             self.extend(self._construct(message))
 
@@ -60,7 +61,7 @@ class Message(List[T_MessageSegment]):
         Returns:
             MessageSegment 类。
         """
-        return MessageSegment
+        return MessageSegment  # type: ignore
 
     @classmethod
     def __get_validators__(cls):
@@ -68,7 +69,7 @@ class Message(List[T_MessageSegment]):
         yield cls._validate
 
     @classmethod
-    def _validate(cls, value):
+    def _validate(cls, value: Mapping[str, Any]):
         return cls(value)
 
     def _construct(
@@ -86,16 +87,16 @@ class Message(List[T_MessageSegment]):
         if isinstance(msg, self._message_segment_class):
             yield msg
         elif isinstance(msg, Mapping):
-            yield self._mapping_to_message_segment(msg)
+            yield self._mapping_to_message_segment(msg)  # type: ignore
         elif isinstance(msg, str):
             yield self._str_to_message_segment(msg)
-        elif isinstance(msg, Iterable):
+        else:
             for seg in msg:
                 for i in self._construct(seg):
                     yield i
 
-    def _mapping_to_message_segment(self, msg: Mapping) -> T_MessageSegment:
-        """用于将 Mapping 转换为 MessageSegment，如有需要，子类可重写此方法以更改对 Mapping 的默认行为。
+    def _mapping_to_message_segment(self, msg: Mapping[str, Any]) -> T_MessageSegment:
+        """用于将 Mapping 转换为 MessageSegment ，如有需要，子类可重写此方法以更改对 Mapping 的默认行为。
 
         Args:
             msg: 要解析为 MessageSegment 的数据。
@@ -106,7 +107,7 @@ class Message(List[T_MessageSegment]):
         return self._message_segment_class(**msg)
 
     def _str_to_message_segment(self, msg: str) -> T_MessageSegment:
-        """用于将 str 转换为 MessageSegment，子类应重写此方法以支持 str 及支持新的消息字段类。
+        """用于将 str 转换为 MessageSegment ，子类应重写此方法以支持 str 及支持新的消息字段类。
 
         Args:
             msg: 要解析为 MessageSegment 的数据。
@@ -122,7 +123,7 @@ class Message(List[T_MessageSegment]):
     def __str__(self) -> str:
         return "".join(map(lambda x: str(x), self))
 
-    def __contains__(self, item) -> bool:
+    def __contains__(self, item: object) -> bool:
         if isinstance(item, str):
             return item in str(self)
         return super().__contains__(item)
@@ -167,7 +168,7 @@ class Message(List[T_MessageSegment]):
         """
         return "".join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
 
-    def copy(self) -> T_Message:
+    def copy(self) -> Self:
         """返回自身的浅复制。
 
         Returns:
@@ -175,7 +176,7 @@ class Message(List[T_MessageSegment]):
         """
         return self.__class__(self)
 
-    def deepcopy(self) -> T_Message:
+    def deepcopy(self) -> Self:
         """返回自身的深复制。
 
         Returns:
@@ -184,12 +185,15 @@ class Message(List[T_MessageSegment]):
         return deepcopy(self)
 
     def startswith(
-        self, prefix: Union[str, T_MessageSegment], start=None, end=None
+        self,
+        prefix: Union[str, T_MessageSegment],
+        start: Optional[SupportsIndex] = None,
+        end: Optional[SupportsIndex] = None,
     ) -> bool:
         """实现类似字符串的 `startswith()` 方法。
 
         当 `prefix` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 `startswith()` 方法。
-        当 `prefix` 类型是 T_MessageSegment 时，`start` 和 `end` 参数将不其作用，
+        当 `prefix` 类型是 MessageSegment 时，`start` 和 `end` 参数将不其作用，
             会判断列表的第一个消息字段是否和 `prefix` 相等。
 
         Args:
@@ -207,16 +211,19 @@ class Message(List[T_MessageSegment]):
                 return False
             return self[0] == prefix
         raise TypeError(
-            f"first arg must be str or {self._message_segment_class}，not {type(prefix)}"
+            f"first arg must be str or {self._message_segment_class}, not {type(prefix)}"
         )
 
     def endswith(
-        self, suffix: Union[str, T_MessageSegment], start=None, end=None
+        self,
+        suffix: Union[str, T_MessageSegment],
+        start: Optional[SupportsIndex] = None,
+        end: Optional[SupportsIndex] = None,
     ) -> bool:
         """实现类似字符串的 `endswith()` 方法。
 
         当 `suffix` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 `endswith()` 方法。
-        当 `suffix` 类型是 T_MessageSegment 时，`start` 和 `end` 参数将不其作用，
+        当 `suffix` 类型是 MessageSegment 时，`start` 和 `end` 参数将不其作用，
             会判断列表的最后一个消息字段是否和 `suffix` 相等。
 
         Args:
@@ -234,19 +241,19 @@ class Message(List[T_MessageSegment]):
                 return False
             return self[-1] == suffix
         raise TypeError(
-            f"first arg must be str or {self._message_segment_class}，not {type(suffix)}"
+            f"first arg must be str or {self._message_segment_class}, not {type(suffix)}"
         )
 
     def replace(
         self,
         old: Union[str, T_MessageSegment],
-        new: Union[str, T_MessageSegment, None],
+        new: Optional[Union[str, T_MessageSegment]],
         count: int = -1,
-    ) -> T_Message:
+    ) -> Self:
         """实现类似字符串的 `replace()` 方法。
 
         当 `old` 为 str 类型时，`new` 也必须是 str ，本方法将仅对 `is_text()` 为 True 的消息字段进行处理。
-        当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None，本方法将对所有消息字段进行处理，
+        当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None ，本方法将对所有消息字段进行处理，
             并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
 
         Args:
@@ -257,8 +264,8 @@ class Message(List[T_MessageSegment]):
         Returns:
             替换后的消息对象。
         """
-        if type(old) == str:
-            if type(new) != str:
+        if type(old) is str:
+            if type(new) is not str:
                 raise TypeError("when type of old is str, type of new must be str.")
             return self._replace_str(old, new, count)
         elif isinstance(old, self._message_segment_class):
@@ -272,15 +279,15 @@ class Message(List[T_MessageSegment]):
                 if count == 0:
                     break
                 if item == old:
-                    temp_msg[index] = new
+                    temp_msg[index] = new  # type: ignore
                     count -= 1
             if new is None:
-                temp_msg = self.__class__(filter(lambda x: x is not None, self))
+                temp_msg = self.__class__(filter(lambda x: x is not None, self))  # type: ignore
             return temp_msg
         else:
             raise TypeError("type of old must be str or MessageSegment")
 
-    def _replace_str(self, old: str, new: str, count: int = -1) -> T_Message:
+    def _replace_str(self, old: str, new: str, count: int = -1) -> Self:
         """实现类似字符串的 `replace()` 方法。
 
         本方法将被 `replace()` 方法调用以处理 str 类型的替换，
@@ -297,7 +304,7 @@ class Message(List[T_MessageSegment]):
         """
         temp_msg = self.deepcopy()
         for index, item in enumerate(temp_msg):
-            item: MessageSegment
+            item: T_MessageSegment
             if count == 0:
                 break
             if item.is_text() and old in item.data["text"]:
@@ -313,7 +320,7 @@ class Message(List[T_MessageSegment]):
 
 
 @dataclass
-class MessageSegment(Mapping, Generic[T_Message]):
+class MessageSegment(Mapping[str, Any], Generic[T_Message]):
     """消息字段。
 
     本类实现了所有映射类型的方法，这些方法全部是对 `data` 属性的操作。
@@ -335,7 +342,7 @@ class MessageSegment(Mapping, Generic[T_Message]):
         Returns:
             Message 类。
         """
-        return Message
+        return Message  # type: ignore
 
     def as_dict(self) -> Dict[str, Any]:
         """将当前对象解析为 Dict 对象，开发者可重写本方法以适配特殊的解析方式。
@@ -351,13 +358,13 @@ class MessageSegment(Mapping, Generic[T_Message]):
     def __repr__(self) -> str:
         return f"MessageSegment<{self.type}>:{str(self)}"
 
-    def __getitem__(self, key) -> Any:
+    def __getitem__(self, key: str) -> Any:
         return self.data[key]
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any):
         self.data[key] = value
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: str):
         del self.data[key]
 
     def __len__(self) -> int:
@@ -366,22 +373,22 @@ class MessageSegment(Mapping, Generic[T_Message]):
     def __iter__(self):
         yield from self.data.__iter__()
 
-    def __contains__(self, key) -> bool:
+    def __contains__(self, key: object) -> bool:
         return key in self.data
 
-    def __eq__(self, other: T_MessageSegment) -> bool:
+    def __eq__(self, other: Self) -> bool:
         return self.type == other.type and self.data == other.data
 
-    def __ne__(self, other: T_MessageSegment) -> bool:
+    def __ne__(self, other: Self) -> bool:
         return not self.__eq__(other)
 
-    def __add__(self, other) -> T_Message:
+    def __add__(self, other: Any) -> T_Message:
         return self._message_class(self) + other
 
-    def __radd__(self, other) -> T_Message:
+    def __radd__(self, other: Any) -> T_Message:
         return self._message_class(other) + self
 
-    def get(self, key: str, default=None):
+    def get(self, key: str, default: Any = None):
         return self.data.get(key, default)
 
     def keys(self):
@@ -400,7 +407,7 @@ class MessageSegment(Mapping, Generic[T_Message]):
         """
         return self.type == "text"
 
-    def copy(self) -> T_MessageSegment:
+    def copy(self) -> Self:
         """返回自身的浅复制。
 
         Returns:
@@ -408,10 +415,11 @@ class MessageSegment(Mapping, Generic[T_Message]):
         """
         return copy(self)
 
-    def deepcopy(self) -> T_MessageSegment:
+    def deepcopy(self) -> Self:
         """返回自身的深复制。
 
         Returns:
             自身的深复制。
         """
+        return deepcopy(self)
         return deepcopy(self)

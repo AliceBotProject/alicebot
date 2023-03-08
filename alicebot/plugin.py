@@ -4,9 +4,8 @@
 """
 from enum import Enum
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional
+from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional, final
 
-from alicebot.config import ConfigModel
 from alicebot.utils import is_config_class
 from alicebot.typing import T_Event, T_State, T_Config
 from alicebot.exceptions import SkipException, StopException
@@ -41,11 +40,12 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     event: T_Event
     priority: int = 0
     block: bool = False
-    Config: Type[ConfigModel]
+    Config: Type[T_Config] = type(None)  # type: ignore
 
     __plugin_load_type__: PluginLoadType
     __plugin_file_path__: Optional[str]
 
+    @final
     def __init__(self, event: T_Event):
         self.event = event
 
@@ -62,37 +62,43 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         """用于初始化后处理，被 `__init__()` 方法调用。"""
         pass
 
+    @final
     @property
     def name(self) -> str:
         """插件类名称。"""
         return self.__class__.__name__
 
+    @final
     @property
     def bot(self) -> "Bot":
         """机器人对象。"""
         return self.event.adapter.bot
 
+    @final
     @property
-    def config(self) -> Optional[T_Config]:
+    def config(self) -> T_Config:
         """插件配置。"""
-        config_class: ConfigModel = getattr(self, "Config", None)
-        if is_config_class(config_class):
-            return getattr(self.bot.config.plugin, config_class.__config_name__, None)
-        return None
+        if is_config_class(self.Config):
+            return getattr(self.bot.config.plugin, self.Config.__config_name__, None)  # type: ignore
+        return None  # type: ignore
 
+    @final
     def stop(self) -> NoReturn:
         """停止当前事件传播。"""
         raise StopException()
 
+    @final
     def skip(self) -> NoReturn:
         """跳过自身继续当前事件传播。"""
         raise SkipException()
 
+    @final
     @property
     def state(self) -> T_State:
         """插件状态。"""
         return self.bot.plugin_state[self.name]
 
+    @final
     @state.setter
     def state(self, value: T_State):
         self.bot.plugin_state[self.name] = value

@@ -1,4 +1,6 @@
 """CQHTTP 适配器异常。"""
+from typing import Any, Dict
+
 from alicebot.exceptions import AdapterException
 
 
@@ -13,7 +15,7 @@ class NetworkError(CQHTTPException):
 class ActionFailed(CQHTTPException):
     """API 请求成功响应，但响应表示 API 操作失败。"""
 
-    def __init__(self, resp):
+    def __init__(self, resp: Dict[str, Any]):
         """
         Args:
             resp: 返回的响应。
@@ -22,7 +24,7 @@ class ActionFailed(CQHTTPException):
 
 
 class ApiNotAvailable(ActionFailed):
-    """API 请求返回 404，表示当前请求的 API 不可用或不存在。"""
+    """API 请求返回 404 ，表示当前请求的 API 不可用或不存在。"""
 
 
 class ApiTimeout(CQHTTPException):

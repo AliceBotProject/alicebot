@@ -8,8 +8,8 @@
 - `Adapter` => [`alicebot.adapter.Adapter`](./adapter/#Adapter)
 - `ConfigModel` => [`alicebot.config.ConfigModel`](./config#ConfigModel)
 """
-from alicebot.bot import Bot
-from alicebot.event import Event
-from alicebot.plugin import Plugin
-from alicebot.adapter import Adapter
-from alicebot.config import ConfigModel
+from alicebot.bot import Bot  # type: ignore
+from alicebot.event import Event  # type: ignore
+from alicebot.plugin import Plugin  # type: ignore
+from alicebot.adapter import Adapter  # type: ignore
+from alicebot.config import ConfigModel  # type: ignore

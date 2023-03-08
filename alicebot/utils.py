@@ -10,12 +10,29 @@ import dataclasses
 from abc import ABC
 from types import ModuleType
 from functools import partial
-from typing_extensions import ParamSpec
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from typing import Any, List, Type, Tuple, TypeVar, Callable, Iterable, Coroutine
+from typing_extensions import ParamSpec, TypeGuard
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    List,
+    Type,
+    Tuple,
+    Union,
+    TypeVar,
+    Callable,
+    Iterable,
+    Optional,
+    Sequence,
+    Awaitable,
+    Coroutine,
+)
 
 from alicebot.config import ConfigModel
+
+if TYPE_CHECKING:
+    from alicebot.event import Event
 
 __all__ = [
     "ModulePathFinder",
@@ -26,6 +43,7 @@ __all__ = [
     "DataclassEncoder",
     "samefile",
     "sync_func_wrapper",
+    "wrap_get_func",
 ]
 
 _T = TypeVar("_T")
@@ -38,13 +56,18 @@ class ModulePathFinder(MetaPathFinder):
 
     path: List[str] = []
 
-    def find_spec(self, fullname, path=None, target=None):
+    def find_spec(
+        self,
+        fullname: str,
+        path: Optional[Sequence[str]] = None,
+        target: Optional[ModuleType] = None,
+    ):
         if path is None:
             path = []
         return PathFinder.find_spec(fullname, self.path + list(path), target)
 
 
-def is_config_class(config_class: Any) -> bool:
+def is_config_class(config_class: Any) -> TypeGuard[Type[ConfigModel]]:
     """判断一个对象是否是配置类。
 
     Args:
@@ -145,7 +168,7 @@ def get_classes_from_dir(
 class DataclassEncoder(json.JSONEncoder):
     """用于解析 MessageSegment 的 JSONEncoder 类。"""
 
-    def default(self, o):
+    def default(self, o: Any):
         if dataclasses.is_dataclass(o):
             return o.as_dict()
         return super().default(o)
@@ -192,3 +215,22 @@ def sync_func_wrapper(
             return func(*args, **kwargs)
 
     return _wrapper
+
+
+def wrap_get_func(
+    func: Optional[Callable[["Event"], Union[bool, Awaitable[bool]]]]
+) -> Callable[["Event"], Awaitable[bool]]:
+    """将 `get()` 函数接受的参数包装为一个异步函数。
+
+    Args:
+        func: `get()` 函数接受的参数。
+
+    Returns:
+        异步函数。
+    """
+    if func is None:
+        return sync_func_wrapper(lambda _: True)
+    elif not asyncio.iscoroutinefunction(func):
+        return sync_func_wrapper(func)  # type: ignore
+    else:
+        return func

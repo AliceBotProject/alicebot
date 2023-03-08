@@ -6,7 +6,7 @@ from alicebot.message import MessageSegment
 __all__ = ["DingTalkMessage"]
 
 
-class DingTalkMessage(MessageSegment[None]):
+class DingTalkMessage(MessageSegment):
     """DingTalk 消息"""
 
     @property

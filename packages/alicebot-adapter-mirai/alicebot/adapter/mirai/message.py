@@ -8,7 +8,11 @@ from alicebot.message import Message, MessageSegment
 __all__ = ["T_MiraiMSG", "MiraiMessage", "MiraiMessageSegment"]
 
 T_MiraiMSG = Union[
-    str, Mapping, Iterable[Mapping], "MiraiMessageSegment", "MiraiMessage"
+    str,
+    Mapping[str, Any],
+    Iterable[Mapping[str, Any]],
+    "MiraiMessageSegment",
+    "MiraiMessage",
 ]
 
 
@@ -30,7 +34,7 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
 
 
 class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
-    def __init__(self, type: str, **data):  # noqa
+    def __init__(self, type: str, **data: Any):
         super().__init__(
             type=type, data={k: v for k, v in data.items() if v is not None}
         )

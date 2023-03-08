@@ -1,5 +1,7 @@
 """Mirai 适配器异常。
 """
+from typing import Any, Dict
+
 from alicebot.exceptions import AdapterException
 
 
@@ -14,7 +16,7 @@ class NetworkError(MiraiException):
 class ActionFailed(MiraiException):
     """API 请求成功响应，但响应表示 API 操作失败。"""
 
-    def __init__(self, code, resp):
+    def __init__(self, code: int, resp: Dict[str, Any]):
         """
         Args:
             code: 错误代码。

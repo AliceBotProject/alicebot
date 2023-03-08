@@ -17,8 +17,8 @@ from alicebot.log import logger, error_or_exception
 
 from .config import Config
 from .event import DingTalkEvent
+from .exceptions import NetworkError
 from .message import DingTalkMessage
-from .exceptions import ApiTimeout, NetworkError
 
 __all__ = ["DingTalkAdapter"]
 
@@ -29,11 +29,11 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
     name: str = "dingtalk"
     Config = Config
 
-    app: web.Application = None
-    runner: web.AppRunner = None
-    site: web.TCPSite = None
+    app: web.Application
+    runner: web.AppRunner
+    site: web.TCPSite
 
-    session: aiohttp.ClientSession = None
+    session: aiohttp.ClientSession
 
     async def startup(self):
         """创建 aiohttp Application。"""
@@ -51,12 +51,9 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
 
     async def shutdown(self):
         """清理 aiohttp AppRunner。"""
-        if self.session is not None:
-            await self.session.close()
-        if self.site is not None:
-            await self.site.stop()
-        if self.runner is not None:
-            await self.runner.cleanup()
+        await self.session.close()
+        await self.site.stop()
+        await self.runner.cleanup()
 
     async def handler(self, request: web.Request):
         """处理 aiohttp 服务器的接收。

@@ -1,13 +1,11 @@
-from typing import TYPE_CHECKING, Literal, TypeVar
+from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel
 
 from alicebot.event import Event
 
 if TYPE_CHECKING:
-    from .. import MiraiAdapter  # noqa
-
-T_MiraiEvent = TypeVar("T_MiraiEvent", bound="MiraiEvent")
+    from .. import MiraiAdapter
 
 Permission = Literal["OWNER", "ADMINISTRATOR", "MEMBER"]
 

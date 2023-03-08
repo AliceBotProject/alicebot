@@ -3,8 +3,8 @@
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
 import asyncio
-from typing import Union, Literal
 from abc import ABCMeta, abstractmethod
+from typing import Union, Literal, Optional
 
 import aiohttp
 from aiohttp import web
@@ -17,7 +17,7 @@ from alicebot.log import logger, error_or_exception
 class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """轮询式适配器示例。"""
 
-    delay: Union[int, float] = 0.1
+    delay: float = 0.1
     create_task: bool = False
 
     async def run(self):
@@ -66,7 +66,7 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
                     await self.handle_response(msg)
 
     @abstractmethod
-    def handle_response(self, msg: aiohttp.WSMessage):
+    async def handle_response(self, msg: aiohttp.WSMessage):
         pass
 
 
@@ -100,17 +100,17 @@ class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         await self.runner.cleanup()
 
     @abstractmethod
-    async def handle_response(self, request: web.Request):
+    async def handle_response(self, request: web.Request) -> web.StreamResponse:
         pass
 
 
 class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """WebSocket 服务端适配器示例。"""
 
-    app: web.Application = None
-    runner: web.AppRunner = None
-    site: web.TCPSite = None
-    websocket: web.WebSocketResponse = None
+    app: web.Application
+    runner: web.AppRunner
+    site: web.TCPSite
+    websocket: web.WebSocketResponse
     host: str
     port: int
     url: str
@@ -126,14 +126,11 @@ class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         await self.site.start()
 
     async def shutdown(self):
-        if self.websocket is not None:
-            await self.websocket.close()
-        if self.site is not None:
-            await self.site.stop()
-        if self.runner is not None:
-            await self.runner.cleanup()
+        await self.websocket.close()
+        await self.site.stop()
+        await self.runner.cleanup()
 
-    async def handle_response(self, request: web.Request):
+    async def handle_response(self, request: web.Request) -> web.WebSocketResponse:
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         self.websocket = ws
@@ -158,15 +155,15 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     同时支持 WebSocket 客户端和服务端。
     """
 
-    websocket: Union[web.WebSocketResponse, aiohttp.ClientWebSocketResponse] = None
+    websocket: Union[web.WebSocketResponse, aiohttp.ClientWebSocketResponse]
 
     # ws
-    session: aiohttp.ClientSession = None
+    session: Optional[aiohttp.ClientSession]
 
     # reverse-ws
-    app: web.Application = None
-    runner: web.AppRunner = None
-    site: web.TCPSite = None
+    app: Optional[web.Application]
+    runner: Optional[web.AppRunner]
+    site: Optional[web.TCPSite]
 
     # config
     adapter_type: Literal["ws", "reverse-ws"]
@@ -204,6 +201,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
                     break
                 await asyncio.sleep(self.reconnect_interval)
         elif self.adapter_type == "reverse-ws":
+            assert self.app is not None
             self.runner = web.AppRunner(self.app)
             await self.runner.setup()
             self.site = web.TCPSite(self.runner, self.host, self.port)
@@ -211,8 +209,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     async def shutdown(self):
         """关闭并清理连接。"""
-        if self.websocket is not None:
-            await self.websocket.close()
+        await self.websocket.close()
         if self.adapter_type == "ws":
             if self.session is not None:
                 await self.session.close()
@@ -222,7 +219,9 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
             if self.runner is not None:
                 await self.runner.cleanup()
 
-    async def handle_reverse_ws_response(self, request: web.Request):
+    async def handle_reverse_ws_response(
+        self, request: web.Request
+    ) -> web.WebSocketResponse:
         """处理 aiohttp WebSocket 服务器的接收。"""
         self.websocket = web.WebSocketResponse()
         await self.websocket.prepare(request)
@@ -236,6 +235,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""
+        assert self.session is not None
         logger.info("Tying to connect to WebSocket server...")
         async with self.session.ws_connect(
             f"ws://{self.host}:{self.port}{self.url}"

@@ -12,7 +12,3 @@ class NetworkError(DingTalkException):
 
 class WebhookExpiredError(DingTalkException):
     """Webhook 地址已到期。"""
-
-
-class ApiTimeout(DingTalkException):
-    """API 请求响应超时。"""

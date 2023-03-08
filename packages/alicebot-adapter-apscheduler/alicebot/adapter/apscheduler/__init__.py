@@ -6,9 +6,10 @@ APScheduler 使用方法请参考: [APScheduler](https://apscheduler.readthedocs
 import asyncio
 import inspect
 from functools import wraps
-from typing import Any, Dict, Type
+from typing import Any, Dict, Type, Union, Callable, Awaitable
 
 from apscheduler.job import Job
+from apscheduler.triggers.base import BaseTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.plugin import Plugin
@@ -46,8 +47,8 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                 )
                 continue
 
-            trigger = getattr(plugin, "trigger")
-            trigger_args = getattr(plugin, "trigger_args")
+            trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")
+            trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")
 
             if not isinstance(trigger, str) or not isinstance(trigger_args, dict):
                 logger.error(
@@ -73,8 +74,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
 
     async def shutdown(self):
         """关闭调度器。"""
-        if self.scheduler is not None:
-            self.scheduler.shutdown()
+        self.scheduler.shutdown()
 
     async def create_event(self, plugin_class: Type[Plugin]):
         """创建 APSchedulerEvent 事件。
@@ -85,13 +85,15 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         logger.info(f"APSchedulerEvent set by {plugin_class} is created as scheduled")
         asyncio.create_task(
             self.bot.handle_event(
-                APSchedulerEvent(adapter=self, plugin_class=plugin_class),
+                APSchedulerEvent(
+                    adapter=self, type="apscheduler", plugin_class=plugin_class
+                ),
                 handle_get=False,
                 show_log=False,
             )
         )
 
-    async def send(self, *args, **kwargs):
+    async def send(self, *args: Any, **kwargs: Any):
         raise NotImplementedError
 
 
@@ -103,10 +105,10 @@ def scheduler_decorator(
     Args:
         trigger: APScheduler 触发器。
         trigger_args: APScheduler 触发器参数。
-        override_rule: 是否重写 rule() 方法，若为 True，则会在 rule() 方法中添加处理本插件定义的计划任务事件的逻辑。
+        override_rule: 是否重写 rule() 方法，若为 True ，则会在 rule() 方法中添加处理本插件定义的计划任务事件的逻辑。
     """
 
-    def _decorator(cls: Type):
+    def _decorator(cls: Type[Plugin]):
         if not inspect.isclass(cls):
             raise TypeError(f"can only decorate class")
         if not issubclass(cls, Plugin):
@@ -116,21 +118,20 @@ def scheduler_decorator(
         setattr(cls, "trigger_args", trigger_args)
         if override_rule:
 
-            def _rule_decorator(func):
+            def _rule_decorator(func: Callable[[Plugin], Awaitable[bool]]):
                 @wraps(func)
-                async def _wrapper(self, *args, **kwargs):
+                async def _wrapper(self: Plugin):
                     if (
                         self.event.type == "apscheduler"
                         and type(self) == self.event.plugin_class
                     ):
                         return True
                     else:
-                        return await func(self, *args, **kwargs)
+                        return await func(self)
 
                 return _wrapper
 
-            handle_func = getattr(cls, "rule")
-            setattr(cls, "rule", _rule_decorator(handle_func))
+            cls.rule = _rule_decorator(cls.rule)
         return cls
 
     return _decorator

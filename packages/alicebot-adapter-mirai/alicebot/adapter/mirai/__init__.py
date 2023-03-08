@@ -9,7 +9,7 @@ import json
 import time
 import asyncio
 from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, Literal, Callable, Optional, Awaitable
 
 import aiohttp
 
@@ -37,18 +37,18 @@ __all__ = ["MiraiAdapter"]
 class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     """Mirai 协议适配器。
 
-    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，
+    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API ，
     和调用 `call_api()` 方法相同。
     """
 
     name: str = "mirai"
     Config = Config
 
-    _api_response: Any
-    _api_response_cond: asyncio.Condition = None
+    _api_response: Dict[str, Any]
+    _api_response_cond: asyncio.Condition
     _sync_id: int = 0
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
         return partial(self.call_api, item)
 
     async def startup(self):
@@ -68,6 +68,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""
+        assert self.session is not None
         logger.info("Trying to verify identity and create connection...")
         async with self.session.ws_connect(
             f"ws://{self.host}:{self.port}/all?"
@@ -123,7 +124,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         Args:
             msg: 接收到的信息。
         """
-        mirai_event = get_event_class(msg.get("type"))(adapter=self, **msg)
+        mirai_event = get_event_class(msg["type"])(adapter=self, **msg)
 
         if isinstance(mirai_event, MateEvent):
             # meta_event 不交由插件处理
@@ -157,9 +158,9 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 return
 
     async def call_api(
-        self, command: str, sub_command: Optional[str] = None, **content
-    ) -> Dict[str, Any]:
-        """调用 Mirai API，协程会等待直到获得 API 响应。
+        self, command: str, sub_command: Optional[str] = None, **content: Dict[str, Any]
+    ) -> Any:
+        """调用 Mirai API ，协程会等待直到获得 API 响应。
 
         Args:
             command: 命令字。
@@ -208,15 +209,14 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                         raise ActionFailed(code=status_code, resp=self._api_response)
                     return self._api_response.get("data")
 
-        if not self.bot.should_exit.is_set():
-            raise ApiTimeout
+        raise ApiTimeout
 
     async def send(
         self,
         message_: "T_MiraiMSG",
         message_type: Literal["private", "friend", "group"],
         target: int,
-        quote: int = None,
+        quote: Optional[int] = None,
     ) -> Any:
         """调用 Mirai API 发送消息。
 
@@ -225,7 +225,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 'MiraiMessageSegment', 'MiraiMessage'。
                 将使用 `MiraiMessage` 进行封装。
             message_type: 消息类型。应该是 private, friend 或者 group。其中 private 和 friend 相同。
-            target: 发送对象的 ID ，QQ 号码或者群号码。
+            target: 发送对象的 ID ， QQ 号码或者群号码。
             quote: 引用的消息的 messageId。默认为 `None` ，不引用任何消息。
 
         Returns:

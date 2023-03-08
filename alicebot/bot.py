@@ -16,10 +16,11 @@ from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable
 
 from pydantic import ValidationError, create_model
 
+from alicebot.event import Event
 from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
-from alicebot.typing import T_Event, T_BotHook, T_EventHook, T_AdapterHook
+from alicebot.typing import T_BotHook, T_EventHook, T_AdapterHook
 from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
 from alicebot.exceptions import (
     SkipException,
@@ -30,16 +31,17 @@ from alicebot.exceptions import (
 from alicebot.utils import (
     ModulePathFinder,
     samefile,
+    wrap_get_func,
     is_config_class,
-    sync_func_wrapper,
     get_classes_from_dir,
     get_classes_from_module_name,
 )
 
 try:
-    import tomllib  # noqa
+    import tomllib  # type: ignore
 except ModuleNotFoundError:
-    import tomli as tomllib
+    import tomli as tomllib  # type: ignore
+
 
 __all__ = ["Bot"]
 
@@ -70,7 +72,7 @@ class Bot:
     global_state: Dict[Any, Any]
 
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
-    _current_event: T_Event  # 当前待处理的 Event
+    _current_event: Event  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
@@ -85,7 +87,7 @@ class Bot:
         Union[Type[Plugin], str, Path]
     ]  # 使用 load_plugins() 方法程序化加载的插件列表
     _extend_plugin_dirs: List[Path]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
-    _extend_adapters: List[str]  # 使用 load_adapter() 方法程序化加载的适配器列表
+    _extend_adapters: List[Union[Type[Adapter], str]]  # 使用 load_adapter() 方法程序化加载的适配器列表
     _bot_run_hooks: List[T_BotHook]
     _bot_exit_hooks: List[T_BotHook]
     _adapter_startup_hooks: List[T_AdapterHook]
@@ -98,14 +100,14 @@ class Bot:
         self,
         *,
         config_file: Optional[str] = "config.toml",
-        config_dict: Optional[Dict] = None,
+        config_dict: Optional[Dict[str, Any]] = None,
         hot_reload: bool = False,
     ):
         """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
         Args:
             config_file: 配置文件，如不指定则使用默认的 `config.toml`。
-                若指定为 None，则不加载配置文件。
+                若指定为 None ，则不加载配置文件。
             config_dict: 配置字典，默认为 None。
                 若指定字典，则会忽略 config_file 配置，不再读取配置文件。
             hot_reload: 热重载。
@@ -113,7 +115,7 @@ class Bot:
         """
         self.config = MainConfig()
         self.plugins_priority_dict = defaultdict(list)
-        self.plugin_state = defaultdict(type(None))
+        self.plugin_state = defaultdict(lambda: type(None)())
         self.global_state = {}
 
         self.adapters = []
@@ -144,7 +146,7 @@ class Bot:
         return list(chain(*self.plugins_priority_dict.values()))
 
     def run(self):
-        """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
+        """运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。"""
         self._restart_flag = True
         while self._restart_flag:
             self._restart_flag = False
@@ -254,7 +256,7 @@ class Bot:
     async def _run_hot_reload(self):
         """热重载。"""
         try:
-            from watchfiles import Change, PythonFilter, DefaultFilter, awatch
+            from watchfiles import Change, awatch
         except ImportError:
             logger.warning(
                 'Hot reload needs to install "watchfiles", '
@@ -281,7 +283,8 @@ class Bot:
             for change_type, file in sorted(changes, key=lambda x: x[0], reverse=True):
                 # 更改配置文件
                 if (
-                    samefile(self._config_file, file)
+                    self._config_file is not None
+                    and samefile(self._config_file, file)
                     and change_type == change_type.modified
                 ):
                     logger.info(f'Reload config file "{self._config_file}"')
@@ -325,7 +328,7 @@ class Bot:
                     self._update_config()
 
     def _update_config(self):
-        """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
+        """更新 config ，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
             source: List, name: str, base: Type[ConfigModel]
@@ -399,7 +402,7 @@ class Bot:
         self._load_plugins_from_dirs(*self._extend_plugin_dirs)
         self._update_config()
 
-    def _handle_exit(self, *args):  # noqa
+    def _handle_exit(self, *args: Any):
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info("Stopping AliceBot...")
         if self.should_exit.is_set():
@@ -409,7 +412,11 @@ class Bot:
             self.should_exit.set()
 
     async def handle_event(
-        self, current_event: T_Event, *, handle_get: bool = True, show_log: bool = True
+        self,
+        current_event: Event,
+        *,
+        handle_get: bool = True,
+        show_log: bool = True,
     ):
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
@@ -434,7 +441,7 @@ class Bot:
         else:
             asyncio.create_task(self._handle_event(current_event))
 
-    async def _handle_event(self, current_event: Optional[T_Event] = None):
+    async def _handle_event(self, current_event: Optional[Event] = None):
         if current_event is None:
             async with self._condition:
                 await self._condition.wait()
@@ -489,11 +496,11 @@ class Bot:
 
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[Event], Union[bool, Awaitable[bool]]]] = None,
         *,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> T_Event:
+    ) -> Event:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         Args:
@@ -509,10 +516,7 @@ class Bot:
         Raises:
             GetEventTimeout: 超过最大事件数或超时。
         """
-        if func is None:
-            func = sync_func_wrapper(lambda x: True)
-        elif not asyncio.iscoroutinefunction(func):
-            func = sync_func_wrapper(func)
+        _func = wrap_get_func(func)
 
         try_times = 0
         start_time = time.time()
@@ -535,14 +539,13 @@ class Bot:
                         break
 
                 if not self._current_event.__handled__:
-                    if await func(self._current_event):
+                    if await _func(self._current_event):
                         self._current_event.__handled__ = True
                         return self._current_event
 
                 try_times += 1
 
-        if not self.should_exit.is_set():
-            raise GetEventTimeout
+        raise GetEventTimeout
 
     def _load_plugin_class(
         self,
@@ -682,10 +685,10 @@ class Bot:
             *dirs: 储存包含插件的模块的模块路径。
                 例如：`pathlib.Path("path/of/plugins/")` 。
         """
-        dirs = list(map(lambda x: str(x.resolve()), dirs))
-        logger.info(f'Loading plugins from dirs "{", ".join(map(str, dirs))}"')
-        self._module_path_finder.path.extend(dirs)
-        for plugin_class, module in get_classes_from_dir(dirs, Plugin):
+        dir_list = list(map(lambda x: str(x.resolve()), dirs))
+        logger.info(f'Loading plugins from dirs "{", ".join(map(str, dir_list))}"')
+        self._module_path_finder.path.extend(dir_list)
+        for plugin_class, module in get_classes_from_dir(dir_list, Plugin):
             self._load_plugin_class(plugin_class, PluginLoadType.DIR, module.__file__)
 
     def load_plugins_from_dirs(self, *dirs: Path):
@@ -727,7 +730,7 @@ class Bot:
                         raise LoadModuleError(
                             f"More then one Adapter class in the {adapter_} module"
                         )
-                    adapter_object = adapter_classes[0][0](self)
+                    adapter_object = adapter_classes[0][0](self)  # type: ignore
                 else:
                     raise LoadModuleError(
                         f"Type error: {adapter_} can not be loaded as adapter"
@@ -787,7 +790,7 @@ class Bot:
             LookupError: 找不到此名称的插件类。
         """
         for _plugin in self.plugins:
-            if _plugin.name == name:
+            if _plugin.__name__ == name:
                 return _plugin
         raise LookupError(f'Can not find plugin named "{name}"')
 

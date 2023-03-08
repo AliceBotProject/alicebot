@@ -8,9 +8,10 @@ import json
 import time
 import asyncio
 from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, Literal
+from typing import TYPE_CHECKING, Any, Dict, Literal, Callable, Awaitable
 
 import aiohttp
+from aiohttp import web
 
 from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
@@ -18,8 +19,14 @@ from alicebot.log import logger, error_or_exception
 
 from .config import Config
 from .message import CQHTTPMessage
-from .event import CQHTTPEvent, get_event_class
 from .exceptions import ApiTimeout, ActionFailed, NetworkError, ApiNotAvailable
+from .event import (
+    MetaEvent,
+    CQHTTPEvent,
+    HeartbeatMetaEvent,
+    LifecycleMetaEvent,
+    get_event_class,
+)
 
 if TYPE_CHECKING:
     from .message import T_CQMSG
@@ -33,18 +40,19 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     name = "cqhttp"
     Config = Config
 
-    _api_response: Dict[Any, Any]
-    _api_response_cond: asyncio.Condition = None
+    _api_response: Dict[str, Any]
+    _api_response_cond: asyncio.Condition
     _api_id: int = 0
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
         return partial(self.call_api, item)
 
     async def startup(self):
         """初始化适配器。"""
-        self.adapter_type = self.config.adapter_type
-        if self.adapter_type == "ws-reverse":
-            self.adapter_type = "reverse-ws"
+        adapter_type = self.config.adapter_type
+        if adapter_type == "ws-reverse":
+            adapter_type = "reverse-ws"
+        self.adapter_type = adapter_type
         self.host = self.config.host
         self.port = self.config.port
         self.url = self.config.url
@@ -56,6 +64,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info(f"WebSocket connected!")
         if self.config.access_token:
+            assert isinstance(self.websocket, web.WebSocketResponse)
             if (
                 self.websocket.headers.get("Authorization", "")
                 != f"Bearer {self.config.access_token}"
@@ -64,6 +73,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""
+        assert self.session is not None
         logger.info("Tying to connect to WebSocket server...")
         async with self.session.ws_connect(
             f"ws://{self.host}:{self.port}/",
@@ -110,7 +120,9 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             msg: 接收到的信息。
         """
         post_type = msg.get("post_type")
+        assert type(post_type) is str
         event_type = msg.get(post_type + "_type")
+        assert type(event_type) is str
         sub_type = msg.get("sub_type", None)
         event_class = get_event_class(post_type, event_type, sub_type)
 
@@ -118,15 +130,16 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         if cqhttp_event.post_type == "meta_event":
             # meta_event 不交由插件处理
-            if (
-                cqhttp_event.meta_event_type == "lifecycle"
-                and cqhttp_event.sub_type == "connect"
-            ):
-                logger.info(
-                    f"WebSocket connection "
-                    f"from CQHTTP Bot {msg.get('self_id')} accepted!"
-                )
+            assert isinstance(cqhttp_event, MetaEvent)
+            if cqhttp_event.meta_event_type == "lifecycle":
+                assert isinstance(cqhttp_event, LifecycleMetaEvent)
+                if cqhttp_event.sub_type == "connect":
+                    logger.info(
+                        f"WebSocket connection "
+                        f"from CQHTTP Bot {msg.get('self_id')} accepted!"
+                    )
             elif cqhttp_event.meta_event_type == "heartbeat":
+                assert isinstance(cqhttp_event, HeartbeatMetaEvent)
                 if cqhttp_event.status.good and cqhttp_event.status.online:
                     pass
                 else:
@@ -136,8 +149,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         else:
             await self.handle_event(cqhttp_event)
 
-    async def call_api(self, api: str, **params) -> Any:
-        """调用 CQHTTP API，协程会等待直到获得 API 响应。
+    async def call_api(self, api: str, **params: Any) -> Any:
+        """调用 CQHTTP API ，协程会等待直到获得 API 响应。
 
         Args:
             api: API 名称。
@@ -148,8 +161,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         Raises:
             NetworkError: 网络错误。
-            ApiNotAvailable: API 请求响应 404， API 不可用。
-            ActionFailed: API 请求响应 failed， API 操作失败。
+            ApiNotAvailable: API 请求响应 404 ， API 不可用。
+            ActionFailed: API 请求响应 failed ， API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
         api_echo = self._get_api_echo()
@@ -187,7 +200,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     async def send(
         self, message_: "T_CQMSG", message_type: Literal["private", "group"], id_: int
-    ) -> Dict[str, Any]:
+    ) -> Any:
         """发送消息，调用 send_private_msg 或 send_group_msg API 发送消息。
 
         Args:
@@ -195,7 +208,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                 'CQHTTPMessageSegment', 'CQHTTPMessage'。
                 将使用 `CQHTTPMessage` 进行封装。
             message_type: 消息类型。应该是 private 或者 group。
-            id_: 发送对象的 ID ，QQ 号码或者群号码。
+            id_: 发送对象的 ID ， QQ 号码或者群号码。
 
         Returns:
             API 响应。

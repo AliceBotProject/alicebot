@@ -1,6 +1,6 @@
 """CQHTTP 适配器事件。"""
 import inspect
-from typing import TYPE_CHECKING, Any, Dict, Type, Literal, TypeVar, Optional
+from typing import TYPE_CHECKING, Any, Dict, Type, Literal, Optional
 
 from pydantic import Field, BaseModel
 
@@ -9,10 +9,8 @@ from alicebot.event import Event
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
+    from . import CQHTTPAdapter
     from .message import T_CQMSG
-    from . import CQHTTPAdapter  # noqa
-
-T_CQHTTPEvent = TypeVar("T_CQHTTPEvent", bound="CQHTTPEvent")
 
 
 class Sender(BaseModel):
@@ -224,7 +222,7 @@ class NotifyEvent(NoticeEvent):
     __event__ = "notice.notify"
     notice_type: Literal["notify"]
     sub_type: str
-    group_id: int
+    group_id: Optional[int]
     user_id: int
 
 
@@ -242,6 +240,7 @@ class GroupLuckyKingNotifyEvent(NotifyEvent):
 
     __event__ = "notice.notify.lucky_king"
     sub_type: Literal["lucky_king"]
+    group_id: int
     target_id: int
 
 
@@ -250,6 +249,7 @@ class GroupHonorNotifyEvent(NotifyEvent):
 
     __event__ = "notice.notify.honor"
     sub_type: Literal["honor"]
+    group_id: int
     honor_type: Literal["talkative", "performer", "emotion"]
 
 
@@ -367,7 +367,7 @@ _cqhttp_events = {
 
 def get_event_class(
     post_type: str, event_type: str, sub_type: Optional[str] = None
-) -> Type[T_CQHTTPEvent]:
+) -> Type[CQHTTPEvent]:
     """根据接收到的消息类型返回对应的事件类。
 
     Args:

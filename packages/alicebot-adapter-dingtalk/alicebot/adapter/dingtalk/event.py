@@ -10,7 +10,7 @@ from .message import DingTalkMessage
 from .exceptions import WebhookExpiredError
 
 if TYPE_CHECKING:
-    from . import DingTalkAdapter  # noqa
+    from . import DingTalkAdapter
 
 
 class UserInfo(BaseModel):
@@ -51,7 +51,7 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
     response_at: Union[None, Dict, DingTalkMessage] = None
 
     @validator("message", always=True)
-    def set_ts_now(cls, v, values, **kwargs):  # noqa
+    def set_message(cls, v, values, **kwargs):  # type: ignore
         return DingTalkMessage.text(values["text"].content)
 
     async def reply(
@@ -63,7 +63,7 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
 
         Args:
             msg: 回复消息的内容，可以是 str, Dict 或 DingTalkMessage。
-            at: 回复消息时 At 的对象，必须时 at 类型的 DingTalkMessage，或者符合标准的 Dict。
+            at: 回复消息时 At 的对象，必须时 at 类型的 DingTalkMessage ，或者符合标准的 Dict。
 
         Returns:
             调用 Webhook 地址后钉钉服务器的响应。

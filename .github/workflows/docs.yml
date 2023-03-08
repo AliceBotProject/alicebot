@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths-ignore:
-      - '**/tests/**'
+      - "**/tests/**"
   workflow_dispatch:
 
 jobs:
@@ -20,9 +20,9 @@ jobs:
         shell: bash
       - uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
-          architecture: 'x64'
-          cache: 'poetry'
+          python-version: "3.9"
+          architecture: "x64"
+          cache: "poetry"
       - run: poetry install
         shell: bash
 
@@ -30,15 +30,15 @@ jobs:
         run: poetry run sophia-doc alicebot -o docs/api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
         env:
-          ALICEBOT_DEV: '1'
+          ALICEBOT_DEV: "1"
 
       - uses: pnpm/action-setup@v2
         with:
           version: ^6.10.0
       - uses: actions/setup-node@v3
         with:
-          node-version: '16'
-          cache: 'pnpm'
+          node-version: "16"
+          cache: "pnpm"
       - run: pnpm install
         shell: bash
 

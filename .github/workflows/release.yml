@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+        shell: bash
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+          architecture: "x64"
+          cache: "poetry"
+      - run: poetry install
+        shell: bash
+
+      - run: poetry config pypi-token.pypi "$PYPI_TOKEN"
+        shell: bash
+        env:
+          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+
+      - run: poetry publish --build
+        shell: bash
+
+      - run: poetry publish --build
+        shell: bash
+        working-directory: ./packages/alicebot-adapter-apscheduler
+
+      - run: poetry publish --build
+        shell: bash
+        working-directory: ./packages/alicebot-adapter-cqhttp
+
+      - run: poetry publish --build
+        shell: bash
+        working-directory: ./packages/alicebot-adapter-dingtalk
+
+      - run: poetry publish --build
+        shell: bash
+        working-directory: ./packages/alicebot-adapter-mirai

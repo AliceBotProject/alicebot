@@ -54,7 +54,7 @@ adapter_type = "reverse-ws"
 host = "127.0.0.1"
 port = 8080
 url = "/cqhttp/ws"
-
+debug = false
 ```
 
 你可以写入任意未被定义的配置项，它们同样会被 AliceBot 加载，这些自定义配置可以用于插件中，如你可以通过定义 `superuser` 来表示控制当前当前机器的特殊用户，或者用 `nickname` 表示当前机器人的昵称。

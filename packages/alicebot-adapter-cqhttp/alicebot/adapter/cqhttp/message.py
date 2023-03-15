@@ -1,16 +1,12 @@
 """CQHTTP 适配器消息。"""
-from typing import Any, Type, Union, Literal, Mapping, Iterable, Optional
+from typing import Type, Union, Literal, Mapping, Iterable, Optional
 
 from alicebot.message import Message, MessageSegment
 
 __all__ = ["T_CQMSG", "CQHTTPMessage", "CQHTTPMessageSegment", "escape"]
 
 T_CQMSG = Union[
-    str,
-    Mapping[str, Any],
-    Iterable[Mapping[str, Any]],
-    "CQHTTPMessageSegment",
-    "CQHTTPMessage",
+    str, Mapping, Iterable[Mapping], "CQHTTPMessageSegment", "CQHTTPMessage"
 ]
 
 
@@ -21,7 +17,7 @@ class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
     def _message_segment_class(self) -> Type["CQHTTPMessageSegment"]:
         return CQHTTPMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> "CQHTTPMessageSegment":
+    def _str_to_message_segment(self, msg) -> "CQHTTPMessageSegment":
         return CQHTTPMessageSegment.text(msg)
 
 
@@ -226,7 +222,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
 
     @classmethod
     def node_custom(
-        cls, user_id: int, nickname: str, content: "CQHTTPMessage"
+        cls, user_id: int, nickname, content: "CQHTTPMessage"
     ) -> "CQHTTPMessageSegment":
         """合并转发自定义节点"""
         return cls(

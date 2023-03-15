@@ -1,3 +1,7 @@
+import sys
+
+sys.path.append('..')
+
 from alicebot import Bot
 
 bot = Bot(hot_reload=True)

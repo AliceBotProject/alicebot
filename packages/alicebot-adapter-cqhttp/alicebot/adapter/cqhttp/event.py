@@ -1,6 +1,6 @@
 """CQHTTP 适配器事件。"""
 import inspect
-from typing import TYPE_CHECKING, Any, Dict, Type, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, Type, Literal, TypeVar, Optional
 
 from pydantic import Field, BaseModel
 
@@ -9,8 +9,10 @@ from alicebot.event import Event
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
-    from . import CQHTTPAdapter
     from .message import T_CQMSG
+    from . import CQHTTPAdapter  # noqa
+
+T_CQHTTPEvent = TypeVar("T_CQHTTPEvent", bound="CQHTTPEvent")
 
 
 class Sender(BaseModel):
@@ -53,7 +55,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
     type: Optional[str] = Field(alias="post_type")
     time: int
     self_id: int
-    post_type: Literal["message", "notice", "request", "meta_event"]
+    post_type: Literal["message", "message_sent", "notice", "request", "meta_event"]
 
     @property
     def to_me(self) -> bool:
@@ -97,19 +99,65 @@ class MessageEvent(CQHTTPEvent):
         """
         raise NotImplementedError
 
+class MessageSentEvent(CQHTTPEvent):
+    """自身消息事件"""
+
+    __event__ = "message_sent"
+    post_type: Literal["message_sent"]
+    message_type: Literal["private", "group"]
+    sub_type: str
+    message_id: int
+    user_id: int
+    message: CQHTTPMessage
+    raw_message: str
+    font: int
+    sender: Sender
+
+    def __repr__(self) -> str:
+        return f'Event<{self.type}>: "{self.message}"'
+
+    def get_plain_text(self) -> str:
+        """获取消息的纯文本内容。
+
+        Returns:
+            消息的纯文本内容。
+        """
+        return self.message.get_plain_text()
+
+    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            msg: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
 
 class PrivateMessageEvent(MessageEvent):
     """私聊消息"""
 
     __event__ = "message.private"
     message_type: Literal["private"]
-    sub_type: Literal["friend", "group", "other"]
+    sub_type: Literal["friend", "group", "group_self", "other"]
 
     async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
         return await self.adapter.send_private_msg(
             user_id=self.user_id, message=CQHTTPMessage(msg)
         )
 
+class PrivateMessageSentEvent(MessageSentEvent):
+    """自身私聊消息"""
+
+    __event__ = "message_sent.private"
+    message_type: Literal["private", "group"]
+    sub_type: Literal["friend", "group", "group_self", "other"]
+
+    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+        return await self.adapter.send_private_msg(
+            user_id=self.user_id, message=CQHTTPMessage(msg)
+        )
 
 class GroupMessageEvent(MessageEvent):
     """群消息"""
@@ -125,6 +173,19 @@ class GroupMessageEvent(MessageEvent):
             group_id=self.group_id, message=CQHTTPMessage(msg)
         )
 
+class GroupMessageSentEvent(MessageSentEvent):
+    """自身群消息"""
+
+    __event__ = "message_sent.group"
+    message_type: Literal["group"]
+    sub_type: Literal["normal", "anonymous", "notice"]
+    group_id: int
+    anonymous: Optional[Anonymous] = None
+
+    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+        return await self.adapter.send_group_msg(
+            group_id=self.group_id, message=CQHTTPMessage(msg)
+        )
 
 class NoticeEvent(CQHTTPEvent):
     """通知事件"""
@@ -222,7 +283,7 @@ class NotifyEvent(NoticeEvent):
     __event__ = "notice.notify"
     notice_type: Literal["notify"]
     sub_type: str
-    group_id: Optional[int]
+    group_id: int
     user_id: int
 
 
@@ -240,7 +301,6 @@ class GroupLuckyKingNotifyEvent(NotifyEvent):
 
     __event__ = "notice.notify.lucky_king"
     sub_type: Literal["lucky_king"]
-    group_id: int
     target_id: int
 
 
@@ -249,7 +309,6 @@ class GroupHonorNotifyEvent(NotifyEvent):
 
     __event__ = "notice.notify.honor"
     sub_type: Literal["honor"]
-    group_id: int
     honor_type: Literal["talkative", "performer", "emotion"]
 
 
@@ -367,7 +426,7 @@ _cqhttp_events = {
 
 def get_event_class(
     post_type: str, event_type: str, sub_type: Optional[str] = None
-) -> Type[CQHTTPEvent]:
+) -> Type[T_CQHTTPEvent]:
     """根据接收到的消息类型返回对应的事件类。
 
     Args:

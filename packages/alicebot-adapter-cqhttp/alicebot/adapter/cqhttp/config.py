@@ -25,3 +25,4 @@ class Config(ConfigModel):
     reconnect_interval: int = 3
     api_timeout: int = 1000
     access_token: str = ""
+    debug: bool = False

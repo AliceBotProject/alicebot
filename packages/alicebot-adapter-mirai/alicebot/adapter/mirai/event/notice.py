@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Optional
 
 from pydantic import create_model
 
@@ -127,7 +127,7 @@ class GroupRecallEvent(GroupNoticeEvent):
     messageId: int
     time: int
     group: GroupInfo
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class GroupNameChangeEvent(GroupNoticeEvent):
@@ -137,7 +137,7 @@ class GroupNameChangeEvent(GroupNoticeEvent):
     origin: str
     current: str
     group: GroupInfo
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
@@ -147,7 +147,7 @@ class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
     origin: str
     current: str
     group: GroupInfo
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class GroupMuteAllEvent(GroupNoticeEvent):
@@ -157,7 +157,7 @@ class GroupMuteAllEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
@@ -167,7 +167,7 @@ class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class GroupAllowConfessTalkEvent(GroupNoticeEvent):
@@ -187,7 +187,7 @@ class GroupAllowMemberInviteEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class GroupMemberEvent(GroupEvent):
@@ -206,7 +206,7 @@ class MemberLeaveEventKick(GroupMemberEvent):
     """成员被踢出群（该成员不是Bot）"""
 
     type: Literal["MemberLeaveEventKick"]
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class MemberLeaveEventQuit(GroupMemberEvent):
@@ -244,14 +244,14 @@ class MemberMuteEvent(GroupMemberEvent):
 
     type: Literal["MemberMuteEvent"]
     durationSeconds: int
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class MemberUnmuteEvent(GroupMemberEvent):
     """群成员被取消禁言事件（该成员不是Bot）"""
 
     type: Literal["MemberUnmuteEvent"]
-    operator: GroupMemberInfo
+    operator: Optional[GroupMemberInfo]
 
 
 class MemberHonorChangeEvent(GroupMemberEvent):

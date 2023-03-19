@@ -44,7 +44,8 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: "https://github.com/st1020/alicebot/edit/main/docs/:path",
+      pattern:
+        "https://github.com/AliceBotProject/alicebot/edit/main/docs/:path",
       text: "在 GitHub 上编辑此页",
     },
 
@@ -53,7 +54,7 @@ export default defineConfig({
     socialLinks: [
       {
         icon: "github",
-        link: "https://github.com/st1020/alicebot",
+        link: "https://github.com/AliceBotProject/alicebot",
       },
     ],
 

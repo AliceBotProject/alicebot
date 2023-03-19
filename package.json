@@ -5,7 +5,7 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/st1020/alicebot.git"
+    "url": "git+ssh://git@github.com/AliceBotProject/alicebot.git"
   },
   "author": "st1020 <stone_1020@qq.com>",
   "homepage": "https://docs.alicebot.dev/",

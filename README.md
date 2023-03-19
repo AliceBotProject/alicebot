@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://docs.alicebot.dev/"><img src="https://raw.githubusercontent.com/st1020/alicebot/master/docs/public/logo.png" width="200" height="200" alt="logo"></a>
+  <a href="https://docs.alicebot.dev/"><img src="https://raw.githubusercontent.com/AliceBotProject/alicebot/master/docs/public/logo.png" width="200" height="200" alt="logo"></a>
 
 # AliceBot
 
@@ -8,8 +8,8 @@
 </div>
 
 <div align="center">
-  <a href="https://raw.githubusercontent.com/st1020/alicebot/master/LICENSE">
-    <img src="https://img.shields.io/github/license/st1020/alicebot" alt="license">
+  <a href="https://raw.githubusercontent.com/AliceBotProject/alicebot/master/LICENSE">
+    <img src="https://img.shields.io/github/license/AliceBotProject/alicebot" alt="license">
   </a>
   <a href="https://pypi.python.org/pypi/alicebot">
     <img src="https://img.shields.io/pypi/v/alicebot" alt="pypi">
@@ -17,8 +17,8 @@
   <a href="https://pypi.python.org/pypi/alicebot">
     <img src="https://img.shields.io/pypi/pyversions/alicebot" alt="pypi">
   </a>
-  <a href="https://github.com/st1020/alicebot/">
-    <img src="https://img.shields.io/github/stars/st1020/alicebot?style=social" alt="github">
+  <a href="https://github.com/AliceBotProject/alicebot/">
+    <img src="https://img.shields.io/github/stars/AliceBotProject/alicebot?style=social" alt="github">
   </a>
   <br />
   <a href="https://jq.qq.com/?_wv=1027&k=ZbE3p6tq">
@@ -33,7 +33,7 @@
   ·
   <a href="https://docs.alicebot.dev/guide/">API 参考</a>
   ·
-  <a href="https://github.com/st1020/alicebot-example">示例</a>
+  <a href="https://github.com/AliceBotProject/alicebot-example">示例</a>
 </p>
 
 ## 简介

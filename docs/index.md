@@ -13,7 +13,7 @@ hero:
       link: /guide/
     - theme: alt
       text: Github
-      link: https://github.com/st1020/alicebot
+      link: https://github.com/AliceBotProject/alicebot
 
 features:
   - icon: 💡

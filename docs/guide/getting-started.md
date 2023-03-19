@@ -15,7 +15,7 @@ pip install alicebot
 从 GitHub 中安装最新的测试版：
 
 ```sh
-git clone https://github.com/st1020/alicebot.git
+git clone https://github.com/AliceBotProject/alicebot.git
 cd alicebot
 poetry install --no-dev  # 推荐
 pip install .  # 不推荐
@@ -48,19 +48,17 @@ pip install alicebot[dingtalk]
    ```sh
    mkdir alicebot-starter && cd alicebot-starter
    ```
-
 2. 创建一个 `main.py` 文件并写入以下内容
 
    ```python
    from alicebot import Bot
-   
+
    bot = Bot()
-   
+
    if __name__ == "__main__":
        bot.run()
-   
-   ```
 
+   ```
 3. 创建一个 `config.toml` 文件并写入以下内容
 
    ```toml
@@ -68,13 +66,11 @@ pip install alicebot[dingtalk]
    plugin_dirs = ["plugins"]
    adapters = ["alicebot.adapter.cqhttp"]
    ```
-   
 4. 创建一个 `plugins` 目录
 
    ```sh
    mkdir plugins
    ```
-
 5. 试试运行 `main.py` 吧！
 
    ```sh

@@ -3,7 +3,6 @@ import json
 import asyncio
 import inspect
 import os.path
-import pkgutil
 import importlib
 import traceback
 import dataclasses
@@ -22,7 +21,6 @@ from typing import (
     Union,
     TypeVar,
     Callable,
-    Iterable,
     Optional,
     Sequence,
     Awaitable,
@@ -39,7 +37,6 @@ __all__ = [
     "is_config_class",
     "get_classes_from_module",
     "get_classes_from_module_name",
-    "get_classes_from_dir",
     "DataclassEncoder",
     "samefile",
     "sync_func_wrapper",
@@ -139,30 +136,6 @@ def get_classes_from_module_name(
         if isinstance(e, KeyboardInterrupt):
             raise e
         raise ImportError(e, traceback.format_exc()) from e
-
-
-def get_classes_from_dir(
-    dirs: Iterable[str], super_class: Type[_T]
-) -> List[Tuple[Type[_T], ModuleType]]:
-    """从指定路径列表中的所有模块中查找指定类型的类，以 `_` 开头的插件不会被导入。路径可以是相对路径或绝对路径。
-
-    Args:
-        dirs: 储存模块的路径的列表。
-        super_class: 要查找的类的超类。
-
-    Returns:
-        返回由符合条件的类和模块组成的元组的列表。
-    """
-    classes: List[Tuple[Type[_T], ModuleType]] = []
-    for module_info in pkgutil.iter_modules(dirs):
-        if not module_info.name.startswith("_"):
-            try:
-                classes.extend(
-                    get_classes_from_module_name(module_info.name, super_class)
-                )
-            except ImportError:
-                continue
-    return classes
 
 
 class DataclassEncoder(json.JSONEncoder):

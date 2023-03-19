@@ -8,6 +8,7 @@ import json
 import time
 import signal
 import asyncio
+import pkgutil
 import threading
 from pathlib import Path
 from itertools import chain
@@ -33,7 +34,6 @@ from alicebot.utils import (
     samefile,
     wrap_get_func,
     is_config_class,
-    get_classes_from_dir,
     get_classes_from_module_name,
 )
 
@@ -688,8 +688,11 @@ class Bot:
         dir_list = list(map(lambda x: str(x.resolve()), dirs))
         logger.info(f'Loading plugins from dirs "{", ".join(map(str, dir_list))}"')
         self._module_path_finder.path.extend(dir_list)
-        for plugin_class, module in get_classes_from_dir(dir_list, Plugin):
-            self._load_plugin_class(plugin_class, PluginLoadType.DIR, module.__file__)
+        for module_info in pkgutil.iter_modules(dir_list):
+            if not module_info.name.startswith("_"):
+                self._load_plugins_from_module_name(
+                    module_info.name, PluginLoadType.DIR
+                )
 
     def load_plugins_from_dirs(self, *dirs: Path):
         """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。

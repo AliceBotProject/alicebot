@@ -154,10 +154,7 @@ class Message(List[T_MessageSegment]):
         return self
 
     def is_text(self) -> bool:
-        """
-        Returns:
-            是否是纯文本消息。
-        """
+        """是否是纯文本消息。"""
         return all(map(lambda x: x.is_text(), self))
 
     def get_plain_text(self) -> str:

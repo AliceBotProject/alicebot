@@ -21,7 +21,7 @@ from alicebot.event import Event
 from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
-from alicebot.typing import T_BotHook, T_EventHook, T_AdapterHook
+from alicebot.typing import T_Adapter, T_BotHook, T_EventHook, T_AdapterHook
 from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
 from alicebot.exceptions import (
     SkipException,
@@ -763,11 +763,13 @@ class Bot:
         self._extend_adapters.extend(adapters)
         return self._load_adapters(*adapters)
 
-    def get_adapter(self, name: str) -> Adapter:
-        """按照名称获取已经加载的适配器。
+    def get_adapter(
+        self, adapter: Union[str, Type[T_Adapter]]
+    ) -> Union[Adapter, T_Adapter]:
+        """按照名称或适配器类获取已经加载的适配器。
 
         Args:
-            name: 适配器名称。
+            adapter: 适配器名称或适配器类。
 
         Returns:
             获取到的适配器对象。
@@ -776,9 +778,12 @@ class Bot:
             LookupError: 找不到此名称的适配器对象。
         """
         for _adapter in self.adapters:
-            if _adapter.name == name:
+            if isinstance(adapter, str):
+                if _adapter.name == adapter:
+                    return _adapter
+            elif isinstance(_adapter, adapter):
                 return _adapter
-        raise LookupError(f'Can not find adapter named "{name}"')
+        raise LookupError(f'Can not find adapter named "{adapter}"')
 
     def get_plugin(self, name: str) -> Type[Plugin]:
         """按照名称获取已经加载的插件类。

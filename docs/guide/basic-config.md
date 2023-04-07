@@ -80,7 +80,7 @@ from alicebot import Plugin
 
 class HalloAlice(Plugin):
     async def handle(self) -> None:
-        await self.event.reply(f"Hello, I am {self.config.nickname}!")
+        await self.event.reply(f"Hello, I am {self.bot.config.nickname}!")
 
     async def rule(self) -> bool:
         if self.event.adapter.name != "cqhttp":

@@ -85,6 +85,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
         """处理 WebSocket 消息。"""
+        assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:
                 msg_dict = msg.json()
@@ -165,6 +166,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             ActionFailed: API 请求响应 failed ， API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
+        assert self.websocket is not None
         api_echo = self._get_api_echo()
         try:
             await self.websocket.send_str(

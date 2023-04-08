@@ -155,7 +155,9 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     同时支持 WebSocket 客户端和服务端。
     """
 
-    websocket: Union[web.WebSocketResponse, aiohttp.ClientWebSocketResponse]
+    websocket: Union[
+        web.WebSocketResponse, aiohttp.ClientWebSocketResponse, None
+    ] = None
 
     # ws
     session: Optional[aiohttp.ClientSession]
@@ -209,7 +211,8 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     async def shutdown(self):
         """关闭并清理连接。"""
-        await self.websocket.close()
+        if self.websocket is not None:
+            await self.websocket.close()
         if self.adapter_type == "ws":
             if self.session is not None:
                 await self.session.close()
@@ -244,7 +247,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     async def handle_websocket(self):
         """处理 WebSocket。"""
-        if self.websocket.closed:
+        if self.websocket is None or self.websocket.closed:
             return
         async for msg in self.websocket:
             msg: aiohttp.WSMessage

@@ -78,6 +78,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
         """处理 WebSocket 消息。"""
+        assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:
                 msg_dict = msg.json()
@@ -175,6 +176,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
             ActionFailed: API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
+        assert self.websocket is not None
         sync_id = str(self._get_sync_id())
         try:
             await self.websocket.send_str(

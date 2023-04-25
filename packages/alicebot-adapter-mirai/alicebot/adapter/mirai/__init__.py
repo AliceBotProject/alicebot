@@ -8,8 +8,19 @@ import sys
 import json
 import time
 import asyncio
+import inspect
 from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, Literal, Callable, Optional, Awaitable
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Type,
+    Literal,
+    Callable,
+    ClassVar,
+    Optional,
+    Awaitable,
+)
 
 import aiohttp
 
@@ -17,16 +28,11 @@ from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import logger, error_or_exception
 
+from . import event
 from .config import Config
 from .message import MiraiMessage
 from .exceptions import ApiTimeout, ActionFailed, NetworkError
-from .event import (
-    BotEvent,
-    MateEvent,
-    MiraiEvent,
-    CommandExecutedEvent,
-    get_event_class,
-)
+from .event import BotEvent, MateEvent, MiraiEvent, CommandExecutedEvent
 
 if TYPE_CHECKING:
     from .message import T_MiraiMSG
@@ -43,6 +49,12 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     name: str = "mirai"
     Config = Config
+
+    event_models: ClassVar[Dict[str, Type[MiraiEvent]]] = {
+        name: model
+        for name, model in inspect.getmembers(event, inspect.isclass)
+        if issubclass(model, MiraiEvent)
+    }
 
     _api_response: Dict[str, Any]
     _api_response_cond: asyncio.Condition
@@ -119,13 +131,25 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         self._sync_id = (self._sync_id + 1) % sys.maxsize
         return self._sync_id
 
+    @classmethod
+    def get_event_model(cls, event_type: str) -> Type[MiraiEvent]:
+        """根据接收到的消息类型返回对应的事件类。
+
+        Args:
+            event_type: 事件类型。
+
+        Returns:
+            对应的事件类。
+        """
+        return cls.event_models[event_type]
+
     async def handle_mirai_event(self, msg: Dict[str, Any]):
         """处理 Mirai 事件。
 
         Args:
             msg: 接收到的信息。
         """
-        mirai_event = get_event_class(msg["type"])(adapter=self, **msg)
+        mirai_event = self.get_event_model(msg["type"])(adapter=self, **msg)
 
         if isinstance(mirai_event, MateEvent):
             # meta_event 不交由插件处理

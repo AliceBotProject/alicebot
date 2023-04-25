@@ -7,8 +7,20 @@ import sys
 import json
 import time
 import asyncio
+import inspect
 from functools import partial
-from typing import TYPE_CHECKING, Any, Dict, Literal, Callable, Awaitable
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Type,
+    Tuple,
+    Literal,
+    Callable,
+    ClassVar,
+    Optional,
+    Awaitable,
+)
 
 import aiohttp
 from aiohttp import web
@@ -17,21 +29,25 @@ from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import logger, error_or_exception
 
+from . import event
 from .config import Config
 from .message import CQHTTPMessage
 from .exceptions import ApiTimeout, ActionFailed, NetworkError, ApiNotAvailable
-from .event import (
-    MetaEvent,
-    CQHTTPEvent,
-    HeartbeatMetaEvent,
-    LifecycleMetaEvent,
-    get_event_class,
-)
+from .event import MetaEvent, CQHTTPEvent, HeartbeatMetaEvent, LifecycleMetaEvent
 
 if TYPE_CHECKING:
     from .message import T_CQMSG
 
 __all__ = ["CQHTTPAdapter"]
+
+T_EventModels = Dict[
+    Tuple[Optional[str], Optional[str], Optional[str]], Type[CQHTTPEvent]
+]
+
+DEFAULT_EVENT_MODELS: T_EventModels = {}
+for _, model in inspect.getmembers(event, inspect.isclass):
+    if issubclass(model, CQHTTPEvent):
+        DEFAULT_EVENT_MODELS[model.get_event_type()] = model
 
 
 class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
@@ -39,6 +55,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     name = "cqhttp"
     Config = Config
+
+    event_models: ClassVar[T_EventModels] = DEFAULT_EVENT_MODELS
 
     _api_response: Dict[str, Any]
     _api_response_cond: asyncio.Condition
@@ -114,18 +132,54 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         self._api_id = (self._api_id + 1) % sys.maxsize
         return self._api_id
 
+    @classmethod
+    def add_event_model(cls, event_model: Type[CQHTTPEvent]) -> None:
+        """添加自定义事件模型，事件模型类必须继承于 `CQHTTPEvent`。
+
+        Args:
+            event_model: 事件模型类。
+        """
+        cls.event_models[event_model.get_event_type()] = event_model
+
+    @classmethod
+    def get_event_model(
+        cls,
+        post_type: Optional[str],
+        detail_type: Optional[str],
+        sub_type: Optional[str],
+    ) -> Type[CQHTTPEvent]:
+        """根据接收到的消息类型返回对应的事件类。
+
+        Args:
+            post_type: 请求类型。
+            detail_type: 事件类型。
+            sub_type: 子类型。
+
+        Returns:
+            对应的事件类。
+        """
+        return (
+            cls.event_models.get((post_type, detail_type, sub_type), None)
+            or cls.event_models.get((post_type, detail_type, None), None)
+            or cls.event_models.get((post_type, None, None), None)
+            or cls.event_models[(None, None, None)]
+        )
+
     async def handle_cqhttp_event(self, msg: Dict[str, Any]):
         """处理 CQHTTP 事件。
 
         Args:
             msg: 接收到的信息。
         """
-        post_type = msg.get("post_type")
-        assert type(post_type) is str
-        event_type = msg.get(post_type + "_type")
-        assert type(event_type) is str
-        sub_type = msg.get("sub_type", None)
-        event_class = get_event_class(post_type, event_type, sub_type)
+        post_type = msg.get("post_type", None)
+        if post_type is None:
+            event_class = self.get_event_model(None, None, None)
+        else:
+            event_class = self.get_event_model(
+                post_type,
+                msg.get(post_type + "_type", None),
+                msg.get("sub_type", None),
+            )
 
         cqhttp_event = event_class(adapter=self, **msg)
 

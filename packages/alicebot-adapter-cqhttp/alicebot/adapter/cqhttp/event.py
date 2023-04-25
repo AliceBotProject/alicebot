@@ -1,8 +1,10 @@
 """CQHTTP 适配器事件。"""
 import inspect
-from typing import TYPE_CHECKING, Any, Dict, Type, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, Tuple, Literal, Optional
 
 from pydantic import Field, BaseModel
+from pydantic.fields import ModelField
+from pydantic.typing import is_literal_type, all_literal_values
 
 from alicebot.event import Event
 
@@ -46,6 +48,15 @@ class Status(BaseModel):
         extra = "allow"
 
 
+def _get_literal_field(field: ModelField) -> Optional[str]:
+    if not is_literal_type(field.outer_type_):
+        return None
+    literal_values = all_literal_values(field.outer_type_)
+    if len(literal_values) != 1:
+        return None
+    return literal_values[0]
+
+
 class CQHTTPEvent(Event["CQHTTPAdapter"]):
     """CQHTTP 事件基类"""
 
@@ -53,12 +64,29 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
     type: Optional[str] = Field(alias="post_type")
     time: int
     self_id: int
-    post_type: Literal["message", "notice", "request", "meta_event"]
+    post_type: str
 
     @property
     def to_me(self) -> bool:
         """当前事件的 user_id 是否等于 self_id。"""
         return getattr(self, "user_id") == self.self_id
+
+    @classmethod
+    def get_event_type(cls) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+        """获取事件类型。
+
+        Returns:
+            事件类型。
+        """
+        post_type_field = cls.__fields__.get("post_type", None)
+        post_type = post_type_field and _get_literal_field(post_type_field)
+        if post_type is None:
+            return (None, None, None)
+        detail_type_field = cls.__fields__.get(post_type + "_type", None)
+        detail_type = detail_type_field and _get_literal_field(detail_type_field)
+        sub_type_field = cls.__fields__.get("sub_type", None)
+        sub_type = sub_type_field and _get_literal_field(sub_type_field)
+        return (post_type, detail_type, sub_type)
 
 
 class MessageEvent(CQHTTPEvent):
@@ -363,24 +391,3 @@ _cqhttp_events = {
     for model in globals().values()
     if inspect.isclass(model) and issubclass(model, CQHTTPEvent)
 }
-
-
-def get_event_class(
-    post_type: str, event_type: str, sub_type: Optional[str] = None
-) -> Type[CQHTTPEvent]:
-    """根据接收到的消息类型返回对应的事件类。
-
-    Args:
-        post_type: 请求类型。
-        event_type: 事件类型。
-        sub_type: 子类型。
-
-    Returns:
-        对应的事件类。
-    """
-    if sub_type is None:
-        return _cqhttp_events[".".join((post_type, event_type))]
-    return (
-        _cqhttp_events.get(".".join((post_type, event_type, sub_type)))
-        or _cqhttp_events[".".join((post_type, event_type))]
-    )

@@ -1117,6 +1117,18 @@ files = [
 ]
 
 [[package]]
+name = "tomlkit"
+version = "0.11.7"
+description = "Style preserving TOML library"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "tomlkit-0.11.7-py3-none-any.whl", hash = "sha256:5325463a7da2ef0c6bbfefb62a3dc883aebe679984709aee32a317907d0a8d3c"},
+    {file = "tomlkit-0.11.7.tar.gz", hash = "sha256:f392ef70ad87a672f02519f99967d28a4d3047133e2d1df936511465fbb3791d"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1330,4 +1342,4 @@ mirai = []
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "2fb9df1b0c85db5adf20cf4b0e54bdabdb39b767b3cfb988261b460137289a23"
+content-hash = "86ed56722315449b360b6dc62d9dcf61d0aea2a6d7b1aa735fb724bbba96dc18"

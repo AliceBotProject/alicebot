@@ -11,15 +11,15 @@
   "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
   "devDependencies": {
-    "conventional-changelog": "^3.1.25",
-    "markdownlint-cli": "^0.31.1",
-    "vitepress": "1.0.0-alpha.50"
+    "conventional-changelog-cli": "^2.2.2",
+    "markdownlint-cli": "^0.33.0",
+    "vitepress": "1.0.0-alpha.74"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "release": "node .release.js"
+    "changelog": "conventional-changelog -p angular -i docs/changelog.md -s -r 0"
   },
   "pnpm": {
     "peerDependencyRules": {

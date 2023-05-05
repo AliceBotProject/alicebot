@@ -1,0 +1,47 @@
+[tool.poetry]
+name = "alicebot-adapter-onebot"
+version = "0.6.2"
+description = "OneBot v12 adapter for AliceBot."
+license = "MIT"
+authors = ["st1020 <stone_1020@qq.com>"]
+readme = "README.md"
+homepage = "https://docs.alicebot.dev/"
+repository = "https://github.com/st1020/alicebot"
+documentation = "https://docs.alicebot.dev/"
+keywords = ["bot", "chatbot", "qq", "ontbot", "cqhttp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat",
+]
+packages = [{ include = "alicebot" }]
+exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+alicebot = "0.6.2"
+
+[tool.poetry.dev-dependencies]
+alicebot = { path = "../../", develop = true }
+
+[tool.pydantic-pycharm-plugin]
+ignore-init-method-arguments = true
+
+[tool.black]
+target-version = ["py38", "py39", "py310"]
+
+[tool.isort]
+profile = "black"
+length_sort = true
+skip_gitignore = true
+force_sort_within_sections = true
+src_paths = ["alicebot", "tests"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

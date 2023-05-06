@@ -217,7 +217,7 @@ class Weather(Plugin):
             return False
         if self.event.type != "message":
             return False
-        return self.event.message.startswith("天气")
+        return self.event.message.get_plain_text().startswith("天气")
 
     @staticmethod
     async def get_weather(city):

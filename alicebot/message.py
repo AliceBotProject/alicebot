@@ -118,10 +118,10 @@ class Message(List[T_MessageSegment]):
         raise NotImplementedError
 
     def __repr__(self) -> str:
-        return "Message:[{}]".format(",".join(map(lambda x: repr(x), self)))
+        return "Message:[{}]".format(",".join(map(repr, self)))
 
     def __str__(self) -> str:
-        return "".join(map(lambda x: str(x), self))
+        return "".join(map(str, self))
 
     def __contains__(self, item: object) -> bool:
         if isinstance(item, str):
@@ -163,7 +163,7 @@ class Message(List[T_MessageSegment]):
         Returns:
             消息中的纯文本部分。
         """
-        return "".join(map(lambda x: str(x), filter(lambda x: x.is_text(), self)))
+        return "".join(map(str, filter(lambda x: x.is_text(), self)))
 
     def copy(self) -> Self:
         """返回自身的浅复制。

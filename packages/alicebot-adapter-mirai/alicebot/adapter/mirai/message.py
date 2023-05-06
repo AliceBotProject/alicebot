@@ -44,6 +44,8 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return MiraiMessage
 
     def __str__(self) -> str:
+        if self.type == "Source":
+            return ""
         if self.type == "Plain":
             return self.data.get("text", "")
         return json.dumps(self, cls=DataclassEncoder)

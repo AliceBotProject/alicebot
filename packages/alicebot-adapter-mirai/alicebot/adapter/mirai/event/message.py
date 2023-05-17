@@ -51,7 +51,7 @@ class FriendMessage(MessageEvent):
                 msg,
                 message_type="friend",
                 target=self.sender.id,
-                quote=self.messageChain[0].id,  # type: ignore
+                quote=self.messageChain[0]['id'],  # type: ignore
             )
         else:
             return await self.adapter.send(
@@ -71,7 +71,7 @@ class GroupMessage(MessageEvent):
                 msg,
                 message_type="group",
                 target=self.sender.group.id,
-                quote=self.messageChain[0].id,  # type: ignore
+                quote=self.messageChain[0]['id'],  # type: ignore
             )
         else:
             return await self.adapter.send(
@@ -91,7 +91,7 @@ class TempMessage(MessageEvent):
                 qq=self.sender.id,
                 group=self.sender.group.id,
                 messageChain=msg,
-                quote=self.messageChain[0].id,  # type: ignore
+                quote=self.messageChain[0]['id'],  # type: ignore
             )
         else:
             return await self.adapter.sendTempMessage(
@@ -111,7 +111,7 @@ class StrangerMessage(MessageEvent):
                 msg,
                 message_type="friend",
                 target=self.sender.id,
-                quote=self.messageChain[0].id,  # type: ignore
+                quote=self.messageChain[0]['id'],  # type: ignore
             )
         else:
             return await self.adapter.send(

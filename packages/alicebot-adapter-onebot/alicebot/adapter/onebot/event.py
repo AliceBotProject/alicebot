@@ -1,5 +1,5 @@
 """OntBot 适配器事件。"""
-from typing import TYPE_CHECKING, List, Tuple, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Literal, Optional
 
 from pydantic import Extra, BaseModel
 from pydantic.fields import ModelField
@@ -11,6 +11,7 @@ from .message import OneBotMessage
 
 if TYPE_CHECKING:
     from . import OneBotAdapter
+    from .message import T_OBMSG
 
 
 class BotSelf(BaseModel):
@@ -81,6 +82,10 @@ class BotEvent(OntBotEvent):
 
     self: BotSelf
 
+    @property
+    def to_me(self) -> bool:
+        return getattr(self, "user_id", None) == self.self.user_id
+
 
 class MetaEvent(OntBotEvent):
     """元事件"""
@@ -118,11 +123,40 @@ class MessageEvent(BotEvent):
     alt_message: str
     user_id: str
 
+    def __repr__(self) -> str:
+        return f'Event<{self.type}>: "{self.message}"'
+
+    def get_plain_text(self) -> str:
+        """获取消息的纯文本内容。
+
+        Returns:
+            消息的纯文本内容。
+        """
+        return self.message.get_plain_text()
+
+    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            msg: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
+
 
 class PrivateMessageEvent(MessageEvent):
     """私聊消息事件"""
 
     detail_type: Literal["private"]
+
+    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+        return await self.adapter.send_message(
+            detail_type="private",
+            user_id=self.user_id,
+            message=msg,
+        )
 
 
 class GroupMessageEvent(MessageEvent):
@@ -131,6 +165,13 @@ class GroupMessageEvent(MessageEvent):
     detail_type: Literal["group"]
     group_id: str
 
+    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+        return await self.adapter.send_message(
+            detail_type="group",
+            group_id=self.group_id,
+            message=msg,
+        )
+
 
 class ChannelMessageEvent(MessageEvent):
     """频道消息事件"""
@@ -138,6 +179,14 @@ class ChannelMessageEvent(MessageEvent):
     detail_type: Literal["channel"]
     guild_id: str
     channel_id: str
+
+    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+        return await self.adapter.send_message(
+            detail_type="channel",
+            guild_id=self.guild_id,
+            channel_id=self.channel_id,
+            message=msg,
+        )
 
 
 class NoticeEvent(BotEvent):

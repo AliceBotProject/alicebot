@@ -15,6 +15,7 @@ from typing import (
     Dict,
     Type,
     Tuple,
+    Union,
     Literal,
     Callable,
     ClassVar,
@@ -266,15 +267,19 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             raise ApiTimeout
 
     async def send(
-        self, message_: "T_OBMSG", message_type: Literal["private", "group"], id_: int
+        self,
+        message_: "T_OBMSG",
+        message_type: Union[Literal["private", "group"], str],
+        id_: str,
     ) -> Any:
-        """发送消息，调用 `send_private_msg` 或 `send_group_msg` API 发送消息。
+        """发送消息，调用 `send_message` API 发送消息。
 
         Args:
             message_: 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
                 `OneBotMessageSegment`, `OneBotMessage`。
                 将使用 `OneBotMessage` 进行封装。
-            message_type: 消息类型。应该是 "private" 或者 "group"。
+            message_type: 消息类型。
+                可以为 "private", "group" 或扩展的类型，和消息事件的 `detail_type` 字段对应。
             id_: 发送对象的 ID ， QQ 号码或者群号码。
 
         Returns:
@@ -285,12 +290,12 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             ...: 同 `call_api()` 方法。
         """
         if message_type == "private":
-            return await self.send_private_msg(
-                user_id=id_, message=OneBotMessage(message_)
+            return await self.send_message(
+                detail_type=message_type, user_id=id_, message=OneBotMessage(message_)
             )
         elif message_type == "group":
-            return await self.send_group_msg(
-                group_id=id_, message=OneBotMessage(message_)
+            return await self.send_message(
+                detail_type=message_type, group_id=id_, message=OneBotMessage(message_)
             )
         else:
             raise TypeError('message_type must be "private" or "group"')

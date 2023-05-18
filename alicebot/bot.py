@@ -107,9 +107,9 @@ class Bot:
 
         Args:
             config_file: 配置文件，如不指定则使用默认的 `config.toml`。
-                若指定为 None ，则不加载配置文件。
-            config_dict: 配置字典，默认为 None。
-                若指定字典，则会忽略 config_file 配置，不再读取配置文件。
+                若指定为 `None`，则不加载配置文件。
+            config_dict: 配置字典，默认为 `None。`
+                若指定字典，则会忽略 `config_file` 配置，不再读取配置文件。
             hot_reload: 热重载。
                 启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
         """
@@ -424,8 +424,8 @@ class Bot:
 
         Args:
             current_event: 当前待处理的 `Event`。
-            handle_get: 当前事件是否可以被 get 方法捕获，默认为 True。
-            show_log: 是否在日志中显示，默认为 True。
+            handle_get: 当前事件是否可以被 get 方法捕获，默认为 `True`。
+            show_log: 是否在日志中显示，默认为 `True`。
         """
         if show_log:
             logger.info(
@@ -511,7 +511,7 @@ class Bot:
             timeout: 超时时间。
 
         Returns:
-            返回满足 func 条件的事件。
+            返回满足 `func` 条件的事件。
 
         Raises:
             GetEventTimeout: 超过最大事件数或超时。
@@ -611,7 +611,7 @@ class Bot:
                     例如：`path.of.plugin`。
                 如果为 `pathlib.Path` 类型时，将作为插件模块文件路径进行加载。
                     例如：`pathlib.Path("path/of/plugin")`。
-            plugin_load_type: 插件加载类型，如果为 None 则自动判断，否则使用指定的类型。
+            plugin_load_type: 插件加载类型，如果为 `None` 则自动判断，否则使用指定的类型。
         """
         for plugin_ in plugins:
             if isinstance(plugin_, type):
@@ -668,7 +668,8 @@ class Bot:
         """加载插件。
 
         Args:
-            *plugins: 插件类、插件模块名称或者插件模块文件路径。类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
+            *plugins: 插件类、插件模块名称或者插件模块文件路径。
+                类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
                 如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
                 如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
                     例如：`path.of.plugin`。

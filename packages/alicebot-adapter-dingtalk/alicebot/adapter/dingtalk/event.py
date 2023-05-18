@@ -62,8 +62,8 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
         """回复消息。
 
         Args:
-            msg: 回复消息的内容，可以是 str, Dict 或 DingTalkMessage。
-            at: 回复消息时 At 的对象，必须时 at 类型的 DingTalkMessage ，或者符合标准的 Dict。
+            msg: 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
+            at: 回复消息时 At 的对象，必须时 at 类型的 `DingTalkMessage`，或者符合标准的 `Dict`。
 
         Returns:
             调用 Webhook 地址后钉钉服务器的响应。

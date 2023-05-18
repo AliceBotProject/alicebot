@@ -31,7 +31,7 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     Attributes:
         event: 当前正在被此插件处理的事件。
         priority: 插件的优先级，数字越小表示优先级越高，默认为 0。
-        block: 插件执行结束后是否阻止事件的传播。True 表示阻止。
+        block: 插件执行结束后是否阻止事件的传播。`True` 表示阻止。
         __plugin_load_type__: 插件加载类型，由 AliceBot 自动设置，反映了此插件是如何被加载的。
         __plugin_file_path__: 当插件加载类型为 `PluginLoadType.CLASS` 时为 `None`，
             否则为定义插件在的 Python 模块的位置。

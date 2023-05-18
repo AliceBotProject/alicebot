@@ -35,11 +35,11 @@ class Message(List[T_MessageSegment]):
     """消息。
 
     本类是 `List` 的子类，并重写了 `__init__()` 方法，
-    可以直接处理 str, Mapping, Iterable[Mapping], MessageSegment, Message。
-    其中 str 的支持需要适配器开发者重写 `_str_to_message_segment()` 方法实现。
-    本类重写了 `+` 和 `+=` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算。
-    若开发者实现了 MessageSegment 的子类则需要重写 `_message_segment_class()` 方法，
-    并在 MessageSegment 的子类中重写 `_message_class()` 方法。
+    可以直接处理 `str`, `Mapping`, `Iterable[Mapping]`, `MessageSegment`, `Message`。
+    其中 `str` 的支持需要适配器开发者重写 `_str_to_message_segment()` 方法实现。
+    本类重写了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算。
+    若开发者实现了 `MessageSegment` 的子类则需要重写 `_message_segment_class()` 方法，
+    并在 `MessageSegment` 的子类中重写 `_message_class()` 方法。
     """
 
     def __init__(
@@ -56,10 +56,10 @@ class Message(List[T_MessageSegment]):
 
     @property
     def _message_segment_class(self) -> Type[T_MessageSegment]:
-        """若开发者实现了 MessageSegment 的子类则需要重写此方法。
+        """若开发者实现了 `MessageSegment` 的子类则需要重写此方法。
 
         Returns:
-            MessageSegment 类。
+            `MessageSegment` 类。
         """
         return MessageSegment  # type: ignore
 
@@ -75,14 +75,14 @@ class Message(List[T_MessageSegment]):
     def _construct(
         self, msg: Union[T_MS, Iterable[T_MS]]
     ) -> Iterator[T_MessageSegment]:
-        """用于将 str, Mapping, Iterable[Mapping] 等类型转换为 MessageSegment。
+        """用于将 `str`, `Mapping`, `Iterable[Mapping]` 等类型转换为 `MessageSegment。`
         用于 pydantic 数据解析和方便用户使用。
 
         Args:
-            msg: 要解析为 MessageSegment 的数据。
+            msg: 要解析为 `MessageSegment` 的数据。
 
         Returns:
-            MessageSegment 生成器。
+            `MessageSegment` 生成器。
         """
         if isinstance(msg, self._message_segment_class):
             yield msg
@@ -96,24 +96,25 @@ class Message(List[T_MessageSegment]):
                     yield i
 
     def _mapping_to_message_segment(self, msg: Mapping[str, Any]) -> T_MessageSegment:
-        """用于将 Mapping 转换为 MessageSegment ，如有需要，子类可重写此方法以更改对 Mapping 的默认行为。
+        """用于将 `Mapping` 转换为 `MessageSegment`。
+        如有需要，子类可重写此方法以更改对 `Mapping` 的默认行为。
 
         Args:
-            msg: 要解析为 MessageSegment 的数据。
+            msg: 要解析为 `MessageSegment` 的数据。
 
         Returns:
-            由 Mapping 转换的 MessageSegment。
+            由 Mapping 转换的 `MessageSegment`。
         """
         return self._message_segment_class(**msg)
 
     def _str_to_message_segment(self, msg: str) -> T_MessageSegment:
-        """用于将 str 转换为 MessageSegment ，子类应重写此方法以支持 str 及支持新的消息字段类。
+        """用于将 `str` 转换为 `MessageSegment`，子类应重写此方法以支持 `str` 及支持新的消息字段类。
 
         Args:
-            msg: 要解析为 MessageSegment 的数据。
+            msg: 要解析为 `MessageSegment` 的数据。
 
         Returns:
-            由 str 转换的 MessageSegment。
+            由 `str` 转换的 `MessageSegment`。
         """
         raise NotImplementedError
 
@@ -189,8 +190,8 @@ class Message(List[T_MessageSegment]):
     ) -> bool:
         """实现类似字符串的 `startswith()` 方法。
 
-        当 `prefix` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 `startswith()` 方法。
-        当 `prefix` 类型是 MessageSegment 时，`start` 和 `end` 参数将不其作用，
+        当 `prefix` 类型是 `str` 时，会将自身转换为 `str` 类型，再调用 `str` 类型的 `startswith()` 方法。
+        当 `prefix` 类型是 `MessageSegment` 时，`start` 和 `end` 参数将不其作用，
             会判断列表的第一个消息字段是否和 `prefix` 相等。
 
         Args:
@@ -219,7 +220,7 @@ class Message(List[T_MessageSegment]):
     ) -> bool:
         """实现类似字符串的 `endswith()` 方法。
 
-        当 `suffix` 类型是 str 时，会将自身转换为 str 类型，再调用 str 类型的 `endswith()` 方法。
+        当 `suffix` 类型是 `str` 时，会将自身转换为 `str` 类型，再调用 `str` 类型的 `endswith()` 方法。
         当 `suffix` 类型是 MessageSegment 时，`start` 和 `end` 参数将不其作用，
             会判断列表的最后一个消息字段是否和 `suffix` 相等。
 
@@ -249,9 +250,9 @@ class Message(List[T_MessageSegment]):
     ) -> Self:
         """实现类似字符串的 `replace()` 方法。
 
-        当 `old` 为 str 类型时，`new` 也必须是 str ，本方法将仅对 `is_text()` 为 True 的消息字段进行处理。
-        当 `old` 为 MessageSegment 类型时，`new` 可以是 MessageSegment 或 None ，本方法将对所有消息字段进行处理，
-            并替换符合条件的消息字段。None 表示删除匹配到的消息字段。
+        当 `old` 为 `str` 类型时，`new` 也必须是 `str`，本方法将仅对 `is_text()` 为 `True` 的消息字段进行处理。
+        当 `old` 为 MessageSegment 类型时，`new` 可以是 `MessageSegment` 或 `None`，本方法将对所有消息字段进行处理，
+            并替换符合条件的消息字段。`None` 表示删除匹配到的消息字段。
 
         Args:
             old: 被匹配的字符串或消息字段。
@@ -287,8 +288,8 @@ class Message(List[T_MessageSegment]):
     def _replace_str(self, old: str, new: str, count: int = -1) -> Self:
         """实现类似字符串的 `replace()` 方法。
 
-        本方法将被 `replace()` 方法调用以处理 str 类型的替换，
-        默认将 MessageSegment 对象的 data['text'] 视为存放纯文本的位置。
+        本方法将被 `replace()` 方法调用以处理 `str` 类型的替换，
+        默认将 `MessageSegment` 对象的 `data['text']` 视为存放纯文本的位置。
         适配器开发者可自行重写此方法以适配其他情况。
 
         Args:
@@ -321,8 +322,8 @@ class MessageSegment(Mapping[str, Any], Generic[T_Message]):
     """消息字段。
 
     本类实现了所有映射类型的方法，这些方法全部是对 `data` 属性的操作。
-    本类重写了 `+` 和 `+=` 运算符，可以直接和 Message, MessageSegment 等类型的对象执行取和运算，返回 Message 对象。
-    若开发者实现了 Message 和 MessageSegment 的子类则需要重写 `_message_class()` 方法。
+    本类重写了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算，返回 `Message` 对象。
+    若开发者实现了 `Message` 和 `MessageSegment` 的子类则需要重写 `_message_class()` 方法。
 
     Attributes:
         type: 消息字段类型。
@@ -334,18 +335,18 @@ class MessageSegment(Mapping[str, Any], Generic[T_Message]):
 
     @property
     def _message_class(self) -> Type[T_Message]:
-        """若开发者实现了 Message 和 MessageSegment 的子类则需要重写此方法。
+        """若开发者实现了 `Message` 和 `MessageSegment` 的子类则需要重写此方法。
 
         Returns:
-            Message 类。
+            `Message` 类。
         """
         return Message  # type: ignore
 
     def as_dict(self) -> Dict[str, Any]:
-        """将当前对象解析为 Dict 对象，开发者可重写本方法以适配特殊的解析方式。
+        """将当前对象解析为 `dict` 对象，开发者可重写本方法以适配特殊的解析方式。
 
         Returns:
-            Dict 对象。
+            `dict` 对象。
         """
         return dataclasses.asdict(self)
 
@@ -418,5 +419,4 @@ class MessageSegment(Mapping[str, Any], Generic[T_Message]):
         Returns:
             自身的深复制。
         """
-        return deepcopy(self)
         return deepcopy(self)

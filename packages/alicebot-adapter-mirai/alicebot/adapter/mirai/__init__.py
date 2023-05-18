@@ -247,12 +247,12 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """调用 Mirai API 发送消息。
 
         Args:
-            message_: 消息内容，可以是 str, Mapping, Iterable[Mapping],
-                'MiraiMessageSegment', 'MiraiMessage'。
+            message_: 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
+                `MiraiMessageSegment`, `MiraiMessage`。
                 将使用 `MiraiMessage` 进行封装。
-            message_type: 消息类型。应该是 private, friend 或者 group。其中 private 和 friend 相同。
+            message_type: 消息类型。应该是 "private", "friend" 或者 "group"。其中 "private" 和 "friend" 相同。
             target: 发送对象的 ID ， QQ 号码或者群号码。
-            quote: 引用的消息的 messageId。默认为 `None` ，不引用任何消息。
+            quote: 引用的消息的 `messageId`。默认为 `None`，不引用任何消息。
 
         Returns:
             API 响应。

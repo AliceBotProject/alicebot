@@ -34,7 +34,7 @@ class LogConfig(ConfigModel):
 
     Attributes:
         level: 日志级别。
-        verbose_exception: 详细的异常记录，设置为 True 时会在日志中添加异常的 Traceback。
+        verbose_exception: 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
     """
 
     level: Union[str, int] = "DEBUG"

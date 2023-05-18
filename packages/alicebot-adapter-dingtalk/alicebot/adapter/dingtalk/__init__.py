@@ -59,7 +59,7 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
         """处理 aiohttp 服务器的接收。
 
         Args:
-            request: aiohttp 服务器的 Request 对象。
+            request: aiohttp 服务器的 `Request` 对象。
         """
         if "timestamp" not in request.headers or "sign" not in request.headers:
             logger.error(f"Illegal http header, incomplete http header")
@@ -109,7 +109,7 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
 
         Args:
             webhook: Webhook 网址。
-            conversation_type: 聊天类型，'1' 表示单聊，'2' 表示群聊。
+            conversation_type: 聊天类型，"1" 表示单聊，"2" 表示群聊。
             msg: 消息。
             at: At 对象，仅在群聊时生效，默认为空。
 

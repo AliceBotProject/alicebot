@@ -10,7 +10,7 @@ class Config(ConfigModel):
         port: 监听的端口。
         url: 路径。
         api_timeout: 进行 API 调用时等待返回响应的超时时间。
-        app_secret: 机器人的 appSecret。
+        app_secret: 机器人的 `appSecret`。
     """
 
     __config_name__ = "dingtalk"

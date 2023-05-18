@@ -139,7 +139,7 @@ def get_classes_from_module_name(
 
 
 class DataclassEncoder(json.JSONEncoder):
-    """用于解析 MessageSegment 的 JSONEncoder 类。"""
+    """用于解析 `MessageSegment` 的 `JSONEncoder` 类。"""
 
     def default(self, o: Any):
         if dataclasses.is_dataclass(o):

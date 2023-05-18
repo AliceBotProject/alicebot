@@ -30,7 +30,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     plugin_class_to_job: Dict[Type[Plugin], Job]
 
     async def startup(self):
-        """创建 AsyncIOScheduler 对象。"""
+        """创建 `AsyncIOScheduler` 对象。"""
         self.scheduler = AsyncIOScheduler(self.config.scheduler_config)
         self.plugin_class_to_job = {}
 
@@ -77,10 +77,10 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         self.scheduler.shutdown()
 
     async def create_event(self, plugin_class: Type[Plugin]):
-        """创建 APSchedulerEvent 事件。
+        """创建 `APSchedulerEvent` 事件。
 
         Args:
-            plugin_class: Plugin 类。
+            plugin_class: `Plugin` 类。
         """
         logger.info(f"APSchedulerEvent set by {plugin_class} is created as scheduled")
         asyncio.create_task(
@@ -105,7 +105,8 @@ def scheduler_decorator(
     Args:
         trigger: APScheduler 触发器。
         trigger_args: APScheduler 触发器参数。
-        override_rule: 是否重写 rule() 方法，若为 True ，则会在 rule() 方法中添加处理本插件定义的计划任务事件的逻辑。
+        override_rule: 是否重写 `rule()` 方法。
+            若为 `True`，则会在 `rule()` 方法中添加处理本插件定义的计划任务事件的逻辑。
     """
 
     def _decorator(cls: Type[Plugin]):

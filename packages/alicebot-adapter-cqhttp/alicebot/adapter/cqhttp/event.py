@@ -1,5 +1,4 @@
 """CQHTTP 适配器事件。"""
-import inspect
 from typing import TYPE_CHECKING, Any, Dict, Tuple, Literal, Optional
 
 from pydantic import Field, BaseModel
@@ -384,10 +383,3 @@ class HeartbeatMetaEvent(MetaEvent):
     meta_event_type: Literal["heartbeat"]
     status: Status
     interval: int
-
-
-_cqhttp_events = {
-    model.__event__: model
-    for model in globals().values()
-    if inspect.isclass(model) and issubclass(model, CQHTTPEvent)
-}

@@ -1,6 +1,5 @@
 """OntBot 适配器事件。"""
-import inspect
-from typing import TYPE_CHECKING, List, Type, Tuple, Literal, Optional
+from typing import TYPE_CHECKING, List, Tuple, Literal, Optional
 
 from pydantic import Extra, BaseModel
 from pydantic.fields import ModelField
@@ -268,22 +267,3 @@ class RequestEvent(BotEvent):
     """请求事件"""
 
     type: Literal["request"]
-
-
-_onebot_events = {
-    name: model
-    for name, model in globals().items()
-    if inspect.isclass(model) and issubclass(model, OntBotEvent)
-}
-
-
-def get_event_class(event_type: str) -> Type[OntBotEvent]:
-    """根据接收到的消息类型返回对应的事件类。
-
-    Args:
-        event_type: 事件类型。
-
-    Returns:
-        对应的事件类。
-    """
-    return _onebot_events[event_type]

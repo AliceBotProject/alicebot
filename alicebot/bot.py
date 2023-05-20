@@ -342,7 +342,7 @@ class Bot:
                         default_value = config_class()
                     except ValidationError:
                         default_value = ...
-                    config_update_dict[getattr(config_class, "__config_name__")] = (
+                    config_update_dict[config_class.__config_name__] = (
                         config_class,
                         default_value,
                     )

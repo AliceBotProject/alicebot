@@ -4,7 +4,16 @@
 """
 from enum import Enum
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional, cast, final
+from typing import (
+    TYPE_CHECKING,
+    Type,
+    Generic,
+    ClassVar,
+    NoReturn,
+    Optional,
+    cast,
+    final,
+)
 
 from alicebot.event import Event
 from alicebot.dependencies import Depends
@@ -40,12 +49,15 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     """
 
     event: T_Event = cast(T_Event, Depends(Event))
-    priority: int = 0
-    block: bool = False
-    Config: Type[T_Config] = type(None)  # type: ignore
 
-    __plugin_load_type__: PluginLoadType
-    __plugin_file_path__: Optional[str]
+    priority: ClassVar[int] = 0
+    block: ClassVar[bool] = False
+
+    # 不能使用 ClassVar 因为 PEP 526 不允许这样做
+    Config: Type[T_Config]
+
+    __plugin_load_type__: ClassVar[PluginLoadType]
+    __plugin_file_path__: ClassVar[Optional[str]]
 
     if TYPE_CHECKING:
 
@@ -69,8 +81,13 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     @property
     def config(self) -> T_Config:
         """插件配置。"""
-        if is_config_class(self.Config):
-            return getattr(self.bot.config.plugin, self.Config.__config_name__, None)  # type: ignore
+        config_class = getattr(self, "Config", None)
+        if is_config_class(config_class):
+            return getattr(
+                self.bot.config.plugin,
+                config_class.__config_name__,
+                None,
+            )  # type: ignore
         return None  # type: ignore
 
     @final

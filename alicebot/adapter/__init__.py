@@ -41,7 +41,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
 
     name: str
     bot: "Bot"
-    Config: Type[T_Config] = type(None)  # type: ignore
+    Config: Type[T_Config]
 
     def __init__(self, bot: "Bot"):
         if not hasattr(self, "name"):
@@ -52,8 +52,13 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     @property
     def config(self) -> T_Config:
         """适配器配置。"""
-        if is_config_class(self.Config):
-            return getattr(self.bot.config.adapter, self.Config.__config_name__, None)  # type: ignore
+        config_class = getattr(self, "Config", None)
+        if is_config_class(config_class):
+            return getattr(
+                self.bot.config.adapter,
+                config_class.__config_name__,
+                None,
+            )  # type: ignore
         return None  # type: ignore
 
     @final

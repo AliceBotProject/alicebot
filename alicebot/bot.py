@@ -462,6 +462,12 @@ class Bot:
                 for _plugin in self.plugins_priority_dict[plugin_priority]:
                     try:
                         _plugin = await solve_dependencies(_plugin, event=current_event)
+                        if _plugin.name not in self.plugin_state and hasattr(
+                            _plugin, "__init_state__"
+                        ):
+                            plugin_state = _plugin.__init_state__()
+                            if plugin_state is not None:
+                                self.plugin_state[_plugin.name] = plugin_state
                         if await _plugin.rule():
                             logger.info(f"Event will be handled by {_plugin!r}")
                             try:

@@ -47,6 +47,12 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     __plugin_load_type__: PluginLoadType
     __plugin_file_path__: Optional[str]
 
+    if TYPE_CHECKING:
+
+        def __init_state__(self) -> T_State:
+            """初始化插件状态。"""
+            ...
+
     @final
     @property
     def name(self) -> str:

@@ -65,6 +65,18 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
             """初始化插件状态。"""
             ...
 
+    def __init_subclass__(
+        cls,
+        /,
+        config: Optional[Type[T_Config]] = None,  # type: ignore
+        init_state: Optional[T_State] = None,
+    ) -> None:
+        super().__init_subclass__()
+        if not hasattr(cls, "Config") and config is not None:
+            cls.Config = config
+        if init_state is not None:
+            cls.__init_state__ = lambda self: init_state
+
     @final
     @property
     def name(self) -> str:

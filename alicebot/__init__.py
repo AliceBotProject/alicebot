@@ -7,9 +7,11 @@
 - `Plugin` => [`alicebot.plugin.Plugin`](./plugin#Plugin)
 - `Adapter` => [`alicebot.adapter.Adapter`](./adapter/#Adapter)
 - `ConfigModel` => [`alicebot.config.ConfigModel`](./config#ConfigModel)
+- `Depends` => [`alicebot.dependencies.Depends`](./dependencies#Depends)
 """
 from alicebot.bot import Bot  # type: ignore
 from alicebot.event import Event  # type: ignore
 from alicebot.plugin import Plugin  # type: ignore
 from alicebot.adapter import Adapter  # type: ignore
 from alicebot.config import ConfigModel  # type: ignore
+from alicebot.dependencies import Depends  # type: ignore

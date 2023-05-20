@@ -4,8 +4,10 @@
 """
 from enum import Enum
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional, final
+from typing import TYPE_CHECKING, Type, Generic, NoReturn, Optional, cast, final
 
+from alicebot.event import Event
+from alicebot.dependencies import Depends
 from alicebot.utils import is_config_class
 from alicebot.typing import T_Event, T_State, T_Config
 from alicebot.exceptions import SkipException, StopException
@@ -37,23 +39,13 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
             否则为定义插件在的 Python 模块的位置。
     """
 
-    event: T_Event
+    event: T_Event = cast(T_Event, Depends(Event))
     priority: int = 0
     block: bool = False
     Config: Type[T_Config] = type(None)  # type: ignore
 
     __plugin_load_type__: PluginLoadType
     __plugin_file_path__: Optional[str]
-
-    @final
-    def __init__(self, event: T_Event):
-        self.event = event
-
-        self.__post_init__()
-
-    def __post_init__(self):
-        """用于初始化后处理，被 `__init__()` 方法调用。"""
-        pass
 
     @final
     @property

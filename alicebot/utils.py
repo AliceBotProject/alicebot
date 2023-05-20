@@ -1,4 +1,5 @@
 import os
+import sys
 import json
 import asyncio
 import inspect
@@ -7,14 +8,15 @@ import importlib
 import traceback
 import dataclasses
 from abc import ABC
-from types import ModuleType
 from functools import partial
 from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
+from types import ModuleType, GetSetDescriptorType
 from typing_extensions import ParamSpec, TypeGuard
 from typing import (
     TYPE_CHECKING,
     Any,
+    Dict,
     List,
     Type,
     Tuple,
@@ -207,3 +209,54 @@ def wrap_get_func(
         return sync_func_wrapper(func)  # type: ignore
     else:
         return func
+
+
+if sys.version_info >= (3, 10):
+    from inspect import get_annotations
+else:
+
+    def get_annotations(
+        obj: Union[Callable[..., object], Type[Any], ModuleType]
+    ) -> Dict[str, Any]:
+        """计算一个对象的标注字典。
+
+        Args:
+            obj: 一个可调用对象、类或模块。
+
+        Raises:
+            TypeError: `obj` 不是一个可调用对象、类或模块。
+            ValueError: 对象的 `__annotations__` 不是一个字典或 `None`。
+
+        Returns:
+            对象的标注字典。
+        """
+        if isinstance(obj, type):
+            # class
+            obj_dict = getattr(obj, "__dict__", None)
+            if obj_dict and hasattr(obj_dict, "get"):
+                ann = obj_dict.get("__annotations__", None)
+                if isinstance(ann, GetSetDescriptorType):
+                    ann = None
+            else:
+                ann = None
+        elif isinstance(obj, ModuleType):
+            # module
+            ann = getattr(obj, "__annotations__", None)
+        elif callable(obj):
+            # this includes types.Function, types.BuiltinFunctionType,
+            # types.BuiltinMethodType, functools.partial, functools.singledispatch,
+            # "class funclike" from Lib/test/test_inspect... on and on it goes.
+            ann = getattr(obj, "__annotations__", None)
+        else:
+            raise TypeError(f"{obj!r} is not a module, class, or callable.")
+
+        if ann is None:
+            return {}
+
+        if not isinstance(ann, dict):
+            raise ValueError(f"{obj!r}.__annotations__ is neither a dict nor None")
+
+        if not ann:
+            return {}
+
+        return dict(ann)

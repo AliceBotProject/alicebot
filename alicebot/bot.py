@@ -21,6 +21,7 @@ from alicebot.event import Event
 from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
+from alicebot.dependencies import solve_dependencies
 from alicebot.typing import T_Adapter, T_BotHook, T_EventHook, T_AdapterHook
 from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
 from alicebot.exceptions import (
@@ -460,7 +461,7 @@ class Bot:
                 stop = False
                 for _plugin in self.plugins_priority_dict[plugin_priority]:
                     try:
-                        _plugin = _plugin(current_event)
+                        _plugin = await solve_dependencies(_plugin, event=current_event)
                         if await _plugin.rule():
                             logger.info(f"Event will be handled by {_plugin!r}")
                             try:

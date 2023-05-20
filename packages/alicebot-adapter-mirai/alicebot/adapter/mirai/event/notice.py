@@ -114,6 +114,12 @@ class BotLeaveEventKick(GroupBotEvent):
     type: Literal["BotLeaveEventKick"]
     group: GroupInfo
 
+class BotLeaveEventDisband(GroupBotEvent):
+    """Bot 所在的群被解散"""
+
+    type: Literal["BotLeaveEventDisband"]
+    group: GroupInfo
+
 
 class GroupNoticeEvent(GroupEvent):
     """其他群事件"""

@@ -140,3 +140,5 @@ docs_build/_build
 /tests/config.json
 /tests/config.toml
 /docs/api/**/*.md
+/docs/.vitepress/cache
+/docs/.vitepress/dist

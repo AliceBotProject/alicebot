@@ -41,11 +41,11 @@ singleMode: true
 adapterSettings:
   reverse-ws:
     destinations:
-    - host: localhost
-      port: 8080
-      path: /mirai/ws
-      protocol: ws
-      method: GET
+      - host: localhost
+        port: 8080
+        path: /mirai/ws
+        protocol: ws
+        method: GET
     reservedSyncId: -1
 ```
 

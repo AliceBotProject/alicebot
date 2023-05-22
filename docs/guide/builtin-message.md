@@ -38,7 +38,7 @@ msg += msg_seg
 msg = msg + "Hello"  # 内置的 Message 原生并不支持这种用法
 ```
 
-实现了 `startswith()` ， `endswith()` 和 `replace()` 方法，类似字符串的对应方法，但可以传入 `MessageSegment` 或 `str` 类型的对象，具体请参考 [API文档](/api/message.md) 。
+实现了 `startswith()` ， `endswith()` 和 `replace()` 方法，类似字符串的对应方法，但可以传入 `MessageSegment` 或 `str` 类型的对象，具体请参考 [API 文档](/api/message.md) 。
 
 ```python
 msg.startswith("a")
@@ -48,7 +48,7 @@ msg.startswith("a")
 
 消息字段类（`MessageSegment`）是一个数据类，同时继承自 `Mapping`，之所以没有使用 pydantic 的模型类是为了方便在适配器中转化为 json。
 
-它拥有两个字段 `type` 和 `data` ，分别表示消息字段的类型和内容。`type` 类型是 str， `data` 是 dict，你可以直接对  `MessageSegment` 对象使用对字典的相关操作，这和对  `data` 字段进行操作是相同的。如：
+它拥有两个字段 `type` 和 `data` ，分别表示消息字段的类型和内容。`type` 类型是 str， `data` 是 dict，你可以直接对 `MessageSegment` 对象使用对字典的相关操作，这和对 `data` 字段进行操作是相同的。如：
 
 ```python
 msg_seg = MessageSegment()
@@ -91,4 +91,3 @@ class Hello(Plugin):
         return str(self.event.message) == "hello"
 
 ```
-

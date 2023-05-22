@@ -15,7 +15,7 @@ DingTalk 协议适配器是钉钉企业机器人协议的适配器，钉钉的�
 - [机器人概述](https://open.dingtalk.com/document/group/robot-overview)
 - [企业内部开发机器人](https://open.dingtalk.com/document/group/enterprise-created-chatbot)
 
-在测试时你可能没有自己的公网域名或IP，钉钉官方提供了一个内网穿透工具：[内网穿透工具](https://open.dingtalk.com/document/resourcedownload/http-intranet-penetration)。
+在测试时你可能没有自己的公网域名或 IP，钉钉官方提供了一个内网穿透工具：[内网穿透工具](https://open.dingtalk.com/document/resourcedownload/http-intranet-penetration)。
 
 ## 配置 AliceBot
 

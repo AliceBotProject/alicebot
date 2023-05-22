@@ -50,7 +50,7 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 
 目前 AliceBot 官方维护了以下协议适配：
 
-- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) （支持QQ等）[ws](https://github.com/botuniverse/onebot-11/blob/master/communication/ws.md) 和 [ws-reverse](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 连接方式
+- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) （支持 QQ 等）[ws](https://github.com/botuniverse/onebot-11/blob/master/communication/ws.md) 和 [ws-reverse](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 连接方式
 - [mirai-api-http 协议](https://github.com/project-mirai/mirai-api-http) 2.0+ [ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/WebsocketAdapter.md) 和 [reverse-ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/ReverseWebsocketAdapter.md) 连接方式
 - [钉钉](https://developers.dingtalk.com/document/robots/robot-overview) 企业机器人的 outgoing （回调）连接方式
 
@@ -68,10 +68,10 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 
    ```python
    from alicebot import Bot
-   
+
    bot = Bot()
    bot.load_adapters("alicebot.adapter.cqhttp")
-   
+
    bot.run()
    ```
 
@@ -79,12 +79,12 @@ AliceBot 的适配协议并不与任何一种库或网络协议绑定，您可�
 
    ```python
    from alicebot import Plugin
-   
-   
+
+
    class Echo(Plugin):
        async def handle(self) -> None:
            await self.event.reply(self.event.message.replace("echo ", ""))
-   
+
        async def rule(self) -> bool:
            if self.event.adapter.name != "cqhttp":
                return False

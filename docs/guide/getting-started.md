@@ -48,6 +48,7 @@ pip install alicebot[dingtalk]
    ```sh
    mkdir alicebot-starter && cd alicebot-starter
    ```
+
 2. 创建一个 `main.py` 文件并写入以下内容
 
    ```python
@@ -59,6 +60,7 @@ pip install alicebot[dingtalk]
        bot.run()
 
    ```
+
 3. 创建一个 `config.toml` 文件并写入以下内容
 
    ```toml
@@ -66,11 +68,13 @@ pip install alicebot[dingtalk]
    plugin_dirs = ["plugins"]
    adapters = ["alicebot.adapter.cqhttp"]
    ```
+
 4. 创建一个 `plugins` 目录
 
    ```sh
    mkdir plugins
    ```
+
 5. 试试运行 `main.py` 吧！
 
    ```sh

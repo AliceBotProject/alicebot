@@ -225,4 +225,3 @@ class Schedule(Plugin):
         return False
 
 ```
-

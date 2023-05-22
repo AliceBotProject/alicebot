@@ -59,6 +59,7 @@ with open("docs/changelog.md", "w", encoding="utf-8") as f:
             )
         ).replace("_", "\\_")
     )
+subprocess.run(["pnpm", "exec", "prettier", "--write", "docs/changelog.md"])
 subprocess.run(["git", "tag", "-d", "v" + version])
 subprocess.run(["git", "add", "."])
 subprocess.run(["git", "commit", "-m", "chore: 发布 " + version])

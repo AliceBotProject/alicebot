@@ -2,15 +2,33 @@
 
 实现依赖注入相关功能。
 """
-import asyncio
 import inspect
-from typing import Any, Dict, Type, Union, TypeVar, Callable, Optional, Coroutine, cast
+from contextlib import AsyncExitStack, contextmanager, asynccontextmanager
+from typing import (
+    Any,
+    Dict,
+    Type,
+    Union,
+    TypeVar,
+    Callable,
+    Optional,
+    Generator,
+    AsyncGenerator,
+    ContextManager,
+    AsyncContextManager,
+    cast,
+)
 
-from alicebot.event import Event
-from alicebot.utils import get_annotations, sync_func_wrapper
+from alicebot.utils import get_annotations, sync_ctx_manager_wrapper
 
 T = TypeVar("T")
-T_Dependency = Union[Type[T], Callable[..., T], Callable[..., Coroutine[None, None, T]]]
+T_Dependency = Union[
+    # Class
+    Type[Union[T, AsyncContextManager[T], ContextManager[T]]],
+    # GeneratorContextManager
+    Callable[[], AsyncGenerator[T, None]],
+    Callable[[], Generator[T, None, None]],
+]
 
 
 __all__ = ["Depends"]
@@ -59,9 +77,9 @@ def Depends(
 async def solve_dependencies(
     dependent: T_Dependency[T],
     *,
-    event: Event,
-    use_cache: bool = True,
-    dependency_cache: Optional[Dict[T_Dependency[Any], Any]] = None,
+    use_cache: bool,
+    stack: AsyncExitStack,
+    dependency_cache: Dict[T_Dependency[Any], Any],
 ) -> T:
     """解析子依赖。
 
@@ -76,17 +94,11 @@ async def solve_dependencies(
     Returns:
         解析完成子依赖的对象。
     """
-    dependency_cache = {} if dependency_cache is None else dependency_cache
-
-    # 对于 Event 的特殊处理
-    if isinstance(dependent, type) and issubclass(event.__class__, dependent):
-        return cast(T, event)
-
-    # 使用缓存
     if use_cache and dependent in dependency_cache:
         return dependency_cache[dependent]
 
     if isinstance(dependent, type):
+        # Type[T]
         values = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
@@ -101,21 +113,31 @@ async def solve_dependencies(
                     sub_dependent.dependency = dependent_ann
             values[name] = await solve_dependencies(
                 sub_dependent.dependency,
-                event=event,
                 use_cache=sub_dependent.use_cache,
+                stack=stack,
                 dependency_cache=dependency_cache,
             )
         depend = cast(T, dependent.__new__(dependent))  # type: ignore
         for key, value in values.items():
             setattr(depend, key, value)
         depend.__init__()
-    elif callable(dependent):
-        if asyncio.iscoroutinefunction(dependent):
-            depend = cast(T, await dependent())
-        else:
-            depend = cast(T, await sync_func_wrapper(dependent)())
+
+        if isinstance(depend, AsyncContextManager):
+            depend = cast(T, await stack.enter_async_context(depend))
+        elif isinstance(depend, ContextManager):
+            depend = cast(
+                T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))
+            )
+    elif inspect.isasyncgenfunction(dependent):
+        # Callable[[], AsyncGenerator[T, None]]
+        cm = asynccontextmanager(dependent)()
+        depend = cast(T, await stack.enter_async_context(cm))
+    elif inspect.isgeneratorfunction(dependent):
+        # Callable[[], Generator[T, None, None]]
+        cm = sync_ctx_manager_wrapper(contextmanager(dependent)())
+        depend = cast(T, await stack.enter_async_context(cm))
     else:
-        raise TypeError("dependent is not callable")
+        raise TypeError("dependent is not a class or generator function")
 
     dependency_cache[dependent] = depend
     return depend

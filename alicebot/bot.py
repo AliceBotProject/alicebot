@@ -13,6 +13,7 @@ import threading
 from pathlib import Path
 from itertools import chain
 from collections import defaultdict
+from contextlib import AsyncExitStack
 from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable
 
 from pydantic import ValidationError, create_model
@@ -454,14 +455,22 @@ class Bot:
             await _hook_func(current_event)
 
         for plugin_priority in sorted(self.plugins_priority_dict.keys()):
-            try:
-                logger.debug(
-                    f"Checking for matching plugins with priority {plugin_priority!r}"
-                )
-                stop = False
-                for _plugin in self.plugins_priority_dict[plugin_priority]:
-                    try:
-                        _plugin = await solve_dependencies(_plugin, event=current_event)
+            logger.debug(
+                f"Checking for matching plugins with priority {plugin_priority!r}"
+            )
+            stop = False
+            for _plugin in self.plugins_priority_dict[plugin_priority]:
+                try:
+                    async with AsyncExitStack() as stack:
+                        _plugin = await solve_dependencies(
+                            _plugin,
+                            use_cache=True,
+                            stack=stack,
+                            dependency_cache={
+                                Bot: self,
+                                Event: current_event,
+                            },
+                        )
                         if _plugin.name not in self.plugin_state and hasattr(
                             _plugin, "__init_state__"
                         ):
@@ -475,26 +484,20 @@ class Bot:
                             finally:
                                 if _plugin.block:
                                     stop = True
-                    except SkipException:
-                        # 插件要求跳过自身继续当前事件传播
-                        continue
-                    except StopException:
-                        # 插件要求停止当前事件传播
-                        stop = True
-                    except Exception as e:
-                        error_or_exception(
-                            f'Exception in plugin "{_plugin}":',
-                            e,
-                            self.config.bot.log.verbose_exception,
-                        )
-                if stop:
-                    break
-            except Exception as e:
-                error_or_exception(
-                    f"Exception in handling event {current_event!r}:",
-                    e,
-                    self.config.bot.log.verbose_exception,
-                )
+                except SkipException:
+                    # 插件要求跳过自身继续当前事件传播
+                    continue
+                except StopException:
+                    # 插件要求停止当前事件传播
+                    stop = True
+                except Exception as e:
+                    error_or_exception(
+                        f'Exception in plugin "{_plugin}":',
+                        e,
+                        self.config.bot.log.verbose_exception,
+                    )
+            if stop:
+                break
 
         for _hook_func in self._event_postprocessor_hooks:
             await _hook_func(current_event)

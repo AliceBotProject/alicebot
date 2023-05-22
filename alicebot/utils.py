@@ -10,6 +10,7 @@ import dataclasses
 from abc import ABC
 from functools import partial
 from importlib.abc import MetaPathFinder
+from contextlib import asynccontextmanager
 from importlib.machinery import PathFinder
 from types import ModuleType, GetSetDescriptorType
 from typing_extensions import ParamSpec, TypeGuard
@@ -27,6 +28,8 @@ from typing import (
     Sequence,
     Awaitable,
     Coroutine,
+    AsyncGenerator,
+    ContextManager,
 )
 
 from alicebot.config import ConfigModel
@@ -166,13 +169,13 @@ def samefile(path1: str, path2: str) -> bool:
 
 
 def sync_func_wrapper(
-    func: Callable[_P, _R], to_thread: bool = False
+    func: Callable[_P, _R], *, to_thread: bool = False
 ) -> Callable[_P, Coroutine[None, None, _R]]:
-    """包装一个同步函数为异步函数，当 func 为
+    """包装一个同步函数为异步函数。
 
     Args:
         func: 待包装的同步函数。
-        to_thread: 在独立的线程中运行同步函数。
+        to_thread: 是否在独立的线程中运行同步函数。默认为 `False`。
 
     Returns:
         异步函数。
@@ -190,6 +193,29 @@ def sync_func_wrapper(
             return func(*args, **kwargs)
 
     return _wrapper
+
+
+@asynccontextmanager
+async def sync_ctx_manager_wrapper(
+    cm: ContextManager[_T], *, to_thread: bool = False
+) -> AsyncGenerator[_T, None]:
+    """将同步上下文管理器包装为异步上下文管理器。
+
+    Args:
+        cm: 待包装的同步上下文管理器。
+
+    Returns:
+        异步上下文管理器。
+    """
+    try:
+        yield await sync_func_wrapper(cm.__enter__, to_thread=to_thread)()
+    except Exception as e:
+        if not await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(
+            type(e), e, e.__traceback__
+        ):
+            raise e
+    else:
+        await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(None, None, None)
 
 
 def wrap_get_func(

@@ -3,7 +3,7 @@
 此模块定义了部分 AliceBot 使用的类型。
 """
 
-from typing import TYPE_CHECKING, TypeVar, Callable, Optional, Awaitable
+from typing import TYPE_CHECKING, Any, TypeVar, Callable, Optional, Awaitable
 
 from alicebot.message import T_MS, T_Message, T_MessageSegment
 
@@ -29,11 +29,11 @@ __all__ = [
 ]
 
 T_State = TypeVar("T_State")
-T_Event = TypeVar("T_Event", bound="Event")
-T_Plugin = TypeVar("T_Plugin", bound="Plugin")
-T_Adapter = TypeVar("T_Adapter", bound="Adapter")
+T_Event = TypeVar("T_Event", bound="Event[Any]")
+T_Plugin = TypeVar("T_Plugin", bound="Plugin[Any, Any, Any]")
+T_Adapter = TypeVar("T_Adapter", bound="Adapter[Any, Any]")
 T_Config = TypeVar("T_Config", bound=Optional["ConfigModel"])
 
 T_BotHook = Callable[["Bot"], Awaitable[None]]
-T_AdapterHook = Callable[["Adapter"], Awaitable[None]]
-T_EventHook = Callable[["Event"], Awaitable[None]]
+T_AdapterHook = Callable[["Adapter[Any, Any]"], Awaitable[None]]
+T_EventHook = Callable[["Event[Any]"], Awaitable[None]]

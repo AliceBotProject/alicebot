@@ -15,7 +15,6 @@ from importlib.machinery import PathFinder
 from types import ModuleType, GetSetDescriptorType
 from typing_extensions import ParamSpec, TypeGuard
 from typing import (
-    TYPE_CHECKING,
     Any,
     Dict,
     List,
@@ -32,10 +31,8 @@ from typing import (
     ContextManager,
 )
 
+from alicebot.typing import T_Event
 from alicebot.config import ConfigModel
-
-if TYPE_CHECKING:
-    from alicebot.event import Event
 
 __all__ = [
     "ModulePathFinder",
@@ -219,8 +216,8 @@ async def sync_ctx_manager_wrapper(
 
 
 def wrap_get_func(
-    func: Optional[Callable[["Event"], Union[bool, Awaitable[bool]]]]
-) -> Callable[["Event"], Awaitable[bool]]:
+    func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]]
+) -> Callable[[T_Event], Awaitable[bool]]:
     """将 `get()` 函数接受的参数包装为一个异步函数。
 
     Args:

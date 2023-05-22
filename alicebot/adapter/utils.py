@@ -256,6 +256,6 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
             logger.warning("WebSocket connection closed!")
 
     @abstractmethod
-    async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
+    async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
         """处理 WebSocket 消息。"""
         raise NotImplementedError

@@ -47,8 +47,8 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
     text: Text
 
     message: Optional[DingTalkMessage]
-    response_msg: Union[None, str, Dict, DingTalkMessage] = None
-    response_at: Union[None, Dict, DingTalkMessage] = None
+    response_msg: Union[None, str, Dict[str, Any], DingTalkMessage] = None
+    response_at: Union[None, Dict[str, Any], DingTalkMessage] = None
 
     @validator("message", always=True)
     def set_message(cls, v, values, **kwargs):  # type: ignore
@@ -56,8 +56,8 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
 
     async def reply(
         self,
-        msg: Union[str, Dict, DingTalkMessage],
-        at: Union[None, Dict, DingTalkMessage] = None,
+        msg: Union[str, Dict[str, Any], DingTalkMessage],
+        at: Union[None, Dict[str, Any], DingTalkMessage] = None,
     ) -> Dict[str, Any]:
         """回复消息。
 

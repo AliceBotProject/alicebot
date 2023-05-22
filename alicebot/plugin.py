@@ -68,7 +68,7 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     def __init_subclass__(
         cls,
         /,
-        config: Optional[Type[T_Config]] = None,  # type: ignore
+        config: Optional[Type[T_Config]] = None,
         init_state: Optional[T_State] = None,
     ) -> None:
         super().__init_subclass__()

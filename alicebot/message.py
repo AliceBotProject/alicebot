@@ -20,12 +20,13 @@ from typing import (
     Iterator,
     Optional,
     SupportsIndex,
+    overload,
 )
 
 __all__ = ["T_Message", "T_MessageSegment", "T_MS", "Message", "MessageSegment"]
 
-T_Message = TypeVar("T_Message", bound="Message")
-T_MessageSegment = TypeVar("T_MessageSegment", bound="MessageSegment")
+T_Message = TypeVar("T_Message", bound="Message[Any]")
+T_MessageSegment = TypeVar("T_MessageSegment", bound="MessageSegment[Any]")
 
 # 可以转化为 MessageSegment 的类型
 T_MS = Union[T_MessageSegment, str, Mapping[str, Any]]
@@ -44,12 +45,16 @@ class Message(List[T_MessageSegment]):
 
     def __init__(
         self,
-        message: Union[Self, T_MS, Iterable[T_MS]] = None,
+        message: Union[
+            Self, T_MS[T_MessageSegment], Iterable[T_MS[T_MessageSegment]], None
+        ] = None,
         *args: Any,
         **kwargs: Any,
     ):
         super().__init__(*args, **kwargs)
-        if isinstance(message, self.__class__):
+        if message is None:
+            return
+        elif isinstance(message, self.__class__):
             self.extend(message)  # type: ignore
         else:
             self.extend(self._construct(message))
@@ -73,7 +78,7 @@ class Message(List[T_MessageSegment]):
         return cls(value)
 
     def _construct(
-        self, msg: Union[T_MS, Iterable[T_MS]]
+        self, msg: Union[T_MS[T_MessageSegment], Iterable[T_MS[T_MessageSegment]]]
     ) -> Iterator[T_MessageSegment]:
         """用于将 `str`, `Mapping`, `Iterable[Mapping]` 等类型转换为 `MessageSegment。`
         用于 pydantic 数据解析和方便用户使用。
@@ -242,6 +247,16 @@ class Message(List[T_MessageSegment]):
             f"first arg must be str or {self._message_segment_class}, not {type(suffix)}"
         )
 
+    @overload
+    def replace(self, old: str, new: str, count: int = -1) -> Self:
+        ...
+
+    @overload
+    def replace(
+        self, old: T_MessageSegment, new: Optional[T_MessageSegment], count: int = -1
+    ) -> Self:
+        ...
+
     def replace(
         self,
         old: Union[str, T_MessageSegment],
@@ -368,7 +383,7 @@ class MessageSegment(Mapping[str, Any], Generic[T_Message]):
     def __len__(self) -> int:
         return len(self.data)
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[str]:
         yield from self.data.__iter__()
 
     def __contains__(self, key: object) -> bool:

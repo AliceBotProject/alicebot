@@ -14,6 +14,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
+from alicebot.typing import T_Plugin
 from alicebot.log import logger, error_or_exception
 
 from .config import Config
@@ -27,7 +28,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     Config = Config
 
     scheduler: AsyncIOScheduler
-    plugin_class_to_job: Dict[Type[Plugin], Job]
+    plugin_class_to_job: Dict[Type[Plugin[Any, Any, Any]], Job]
 
     async def startup(self):
         """创建 `AsyncIOScheduler` 对象。"""
@@ -76,7 +77,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         """关闭调度器。"""
         self.scheduler.shutdown()
 
-    async def create_event(self, plugin_class: Type[Plugin]):
+    async def create_event(self, plugin_class: Type[Plugin[Any, Any, Any]]):
         """创建 `APSchedulerEvent` 事件。
 
         Args:
@@ -93,7 +94,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
             )
         )
 
-    async def send(self, *args: Any, **kwargs: Any):
+    async def send(self, *args: Any, **kwargs: Any) -> Any:
         raise NotImplementedError
 
 
@@ -109,7 +110,7 @@ def scheduler_decorator(
             若为 `True`，则会在 `rule()` 方法中添加处理本插件定义的计划任务事件的逻辑。
     """
 
-    def _decorator(cls: Type[Plugin]):
+    def _decorator(cls: Type[T_Plugin]) -> Type[T_Plugin]:
         if not inspect.isclass(cls):
             raise TypeError(f"can only decorate class")
         if not issubclass(cls, Plugin):
@@ -119,9 +120,9 @@ def scheduler_decorator(
         setattr(cls, "trigger_args", trigger_args)
         if override_rule:
 
-            def _rule_decorator(func: Callable[[Plugin], Awaitable[bool]]):
+            def _rule_decorator(func: Callable[[T_Plugin], Awaitable[bool]]):
                 @wraps(func)
-                async def _wrapper(self: Plugin):
+                async def _wrapper(self: T_Plugin):
                     if (
                         self.event.type == "apscheduler"
                         and type(self) == self.event.plugin_class

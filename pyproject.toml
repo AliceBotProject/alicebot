@@ -71,16 +71,14 @@ exclude = ["tests"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
-reportImportCycles = false
 reportIncompatibleMethodOverride = false
-reportMissingTypeArgument = false
 reportMissingTypeStubs = false
 reportUnknownArgumentType = false
 reportUnknownLambdaType = false
 reportUnknownMemberType = false
-reportUnknownParameterType = false
 reportUnknownVariableType = false
 reportUnnecessaryIsInstance = false
+reportPropertyTypeMismatch = true
 
 [tool.pydantic-pycharm-plugin]
 ignore-init-method-arguments = true

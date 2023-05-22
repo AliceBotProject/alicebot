@@ -14,7 +14,7 @@ from pathlib import Path
 from itertools import chain
 from collections import defaultdict
 from contextlib import AsyncExitStack
-from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable
+from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable, overload
 
 from pydantic import ValidationError, create_model
 
@@ -68,13 +68,13 @@ class Bot:
 
     config: MainConfig
     should_exit: asyncio.Event
-    adapters: List[Adapter]
-    plugins_priority_dict: Dict[int, List[Type[Plugin]]]
+    adapters: List[Adapter[Any, Any]]
+    plugins_priority_dict: Dict[int, List[Type[Plugin[Any, Any, Any]]]]
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
-    _current_event: Event  # 当前待处理的 Event
+    _current_event: Event[Any]  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
@@ -86,10 +86,12 @@ class Bot:
     _hot_reload: bool  # 热重载
 
     _extend_plugins: List[
-        Union[Type[Plugin], str, Path]
+        Union[Type[Plugin[Any, Any, Any]], str, Path]
     ]  # 使用 load_plugins() 方法程序化加载的插件列表
     _extend_plugin_dirs: List[Path]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
-    _extend_adapters: List[Union[Type[Adapter], str]]  # 使用 load_adapter() 方法程序化加载的适配器列表
+    _extend_adapters: List[
+        Union[Type[Adapter[Any, Any]], str]
+    ]  # 使用 load_adapter() 方法程序化加载的适配器列表
     _bot_run_hooks: List[T_BotHook]
     _bot_exit_hooks: List[T_BotHook]
     _adapter_startup_hooks: List[T_AdapterHook]
@@ -143,7 +145,7 @@ class Bot:
         sys.meta_path.insert(0, self._module_path_finder)
 
     @property
-    def plugins(self) -> List[Type[Plugin]]:
+    def plugins(self) -> List[Type[Plugin[Any, Any, Any]]]:
         """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
@@ -234,9 +236,9 @@ class Bot:
             self.plugins_priority_dict.clear()
             self._module_path_finder.path.clear()
 
-    def _remove_plugin_by_path(self, file: str) -> List[Type[Plugin]]:
+    def _remove_plugin_by_path(self, file: str) -> List[Type[Plugin[Any, Any, Any]]]:
         """根据路径删除已加载的插件。"""
-        removed_plugins: List[Type[Plugin]] = []
+        removed_plugins: List[Type[Plugin[Any, Any, Any]]] = []
         for plugins in self.plugins_priority_dict.values():
             _removed_plugins = list(
                 filter(
@@ -333,7 +335,9 @@ class Bot:
         """更新 config ，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
-            source: List, name: str, base: Type[ConfigModel]
+            source: Union[List[Type[Plugin[Any, Any, Any]]], List[Adapter[Any, Any]]],
+            name: str,
+            base: Type[ConfigModel],
         ) -> ConfigModel:
             config_update_dict = {}
             for i in source:
@@ -415,7 +419,7 @@ class Bot:
 
     async def handle_event(
         self,
-        current_event: Event,
+        current_event: Event[Any],
         *,
         handle_get: bool = True,
         show_log: bool = True,
@@ -443,7 +447,7 @@ class Bot:
         else:
             asyncio.create_task(self._handle_event(current_event))
 
-    async def _handle_event(self, current_event: Optional[Event] = None):
+    async def _handle_event(self, current_event: Optional[Event[Any]] = None):
         if current_event is None:
             async with self._condition:
                 await self._condition.wait()
@@ -506,11 +510,11 @@ class Bot:
 
     async def get(
         self,
-        func: Optional[Callable[[Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[Event[Any]], Union[bool, Awaitable[bool]]]] = None,
         *,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> Event:
+    ) -> Event[Any]:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         Args:
@@ -559,7 +563,7 @@ class Bot:
 
     def _load_plugin_class(
         self,
-        plugin_class: Type[Plugin],
+        plugin_class: Type[Plugin[Any, Any, Any]],
         plugin_load_type: PluginLoadType,
         plugin_file_path: Optional[str],
     ):
@@ -609,7 +613,7 @@ class Bot:
 
     def _load_plugins(
         self,
-        *plugins: Union[Type[Plugin], str, Path],
+        *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path],
         plugin_load_type: Optional[PluginLoadType] = None,
     ):
         """加载插件。
@@ -674,7 +678,7 @@ class Bot:
             else:
                 logger.error(f"Type error: {plugin_} can not be loaded as plugin")
 
-    def load_plugins(self, *plugins: Union[Type[Plugin], str, Path]):
+    def load_plugins(self, *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path]):
         """加载插件。
 
         Args:
@@ -715,7 +719,7 @@ class Bot:
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)
 
-    def _load_adapters(self, *adapters: Union[Type[Adapter], str]):
+    def _load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]):
         """加载适配器。
 
         Args:
@@ -762,7 +766,7 @@ class Bot:
                     f'from "{adapter_}"'
                 )
 
-    def load_adapters(self, *adapters: Union[Type[Adapter], str]):
+    def load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]):
         """加载适配器。
 
         Args:
@@ -774,9 +778,17 @@ class Bot:
         self._extend_adapters.extend(adapters)
         return self._load_adapters(*adapters)
 
+    @overload
+    def get_adapter(self, adapter: str) -> Adapter[Any, Any]:
+        ...
+
+    @overload
+    def get_adapter(self, adapter: Type[T_Adapter]) -> T_Adapter:
+        ...
+
     def get_adapter(
         self, adapter: Union[str, Type[T_Adapter]]
-    ) -> Union[Adapter, T_Adapter]:
+    ) -> Union[Adapter[Any, Any], T_Adapter]:
         """按照名称或适配器类获取已经加载的适配器。
 
         Args:
@@ -796,7 +808,7 @@ class Bot:
                 return _adapter
         raise LookupError(f'Can not find adapter named "{adapter}"')
 
-    def get_plugin(self, name: str) -> Type[Plugin]:
+    def get_plugin(self, name: str) -> Type[Plugin[Any, Any, Any]]:
         """按照名称获取已经加载的插件类。
 
         Args:

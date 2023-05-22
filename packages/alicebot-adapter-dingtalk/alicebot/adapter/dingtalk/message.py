@@ -6,7 +6,7 @@ from alicebot.message import MessageSegment
 __all__ = ["DingTalkMessage"]
 
 
-class DingTalkMessage(MessageSegment):
+class DingTalkMessage(MessageSegment):  # type: ignore
     """DingTalk 消息"""
 
     @property
@@ -83,7 +83,7 @@ class DingTalkMessage(MessageSegment):
 
     @classmethod
     def action_card_multi_btns(
-        cls, title: str, text: str, btns: list, btn_orientation: str = "0"
+        cls, title: str, text: str, btns: List[Any], btn_orientation: str = "0"
     ):
         """DingTalk 独立跳转 actionCard 消息"""
         return cls(
@@ -97,7 +97,7 @@ class DingTalkMessage(MessageSegment):
         )
 
     @classmethod
-    def feed_card(cls, links: list):
+    def feed_card(cls, links: List[Any]):
         """DingTalk feedCard 消息"""
         return cls(type="feedCard", data={"links": links})
 

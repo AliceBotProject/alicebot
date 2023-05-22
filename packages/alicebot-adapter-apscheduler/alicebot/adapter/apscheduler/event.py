@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class APSchedulerEvent(Event["APSchedulerAdapter"]):
     """APSchedulerEvent 事件基类。"""
 
-    plugin_class: Type[Plugin]
+    plugin_class: Type[Plugin[Any, Any, Any]]
 
     @property
     def job(self) -> "Job":

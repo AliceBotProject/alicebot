@@ -74,7 +74,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
             )
 
     @abstractmethod
-    async def run(self):
+    async def run(self) -> None:
         """适配器运行方法，适配器开发者必须实现该方法。
 
         适配器运行过程中保持保持运行，当此方法结束后， AliceBot 不会自动重新启动适配器。
@@ -96,14 +96,14 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         """
         pass
 
-    async def send(self, *args: Any, **kwargs: Any):
+    async def send(self, *args: Any, **kwargs: Any) -> Any:
         """发送消息，需要适配器开发者实现。"""
         raise NotImplementedError
 
     @final
     async def get(
         self,
-        func: Optional[Callable[["Event"], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[["Event[Any]"], Union[bool, Awaitable[bool]]]] = None,
         *,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
@@ -128,9 +128,9 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         """
 
         def func_wrapper(
-            _func: Callable[["Event"], Awaitable[bool]]
-        ) -> Callable[["Event"], Awaitable[bool]]:
-            async def _wrapper(_event: "Event") -> bool:
+            _func: Callable[["Event[Any]"], Awaitable[bool]]
+        ) -> Callable[["Event[Any]"], Awaitable[bool]]:
+            async def _wrapper(_event: "Event[Any]") -> bool:
                 if _event.adapter is not self:
                     return False
                 return await _func(_event)

@@ -1,7 +1,7 @@
 """DingTalk 协议适配器。
 
 本适配器适配了钉钉企业自建机器人协议。
-协议详情请参考: [钉钉开放平台](https://developers.dingtalk.com/document/robots/robot-overview) 。
+协议详情请参考: [钉钉开放平台](https://open.dingtalk.com/document/robots/robot-overview)。
 """
 import hmac
 import time
@@ -102,8 +102,8 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
         self,
         webhook: str,
         conversation_type: Literal["1", "2"],
-        msg: Union[str, Dict, DingTalkMessage],
-        at: Union[None, Dict, DingTalkMessage] = None,
+        msg: Union[str, Dict[str, Any], DingTalkMessage],
+        at: Union[None, Dict[str, Any], DingTalkMessage] = None,
     ) -> Dict[str, Any]:
         """发送消息。
 

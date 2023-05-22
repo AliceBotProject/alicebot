@@ -23,8 +23,8 @@ from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.log import logger, error_or_exception
 from alicebot.dependencies import solve_dependencies
-from alicebot.typing import T_Adapter, T_BotHook, T_EventHook, T_AdapterHook
 from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
+from alicebot.typing import T_Event, T_Adapter, T_BotHook, T_EventHook, T_AdapterHook
 from alicebot.exceptions import (
     SkipException,
     StopException,
@@ -508,10 +508,48 @@ class Bot:
 
         logger.info("Event Finished")
 
+    @overload
     async def get(
         self,
         func: Optional[Callable[[Event[Any]], Union[bool, Awaitable[bool]]]] = None,
         *,
+        event_type: None = None,
+        adapter_type: None = None,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> Event[Any]:
+        ...
+
+    @overload
+    async def get(
+        self,
+        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        *,
+        event_type: None = None,
+        adapter_type: Type[Adapter[T_Event, Any]],
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> T_Event:
+        ...
+
+    @overload
+    async def get(
+        self,
+        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        *,
+        event_type: Type[T_Event],
+        adapter_type: Optional[Type[T_Adapter]] = None,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> T_Event:
+        ...
+
+    async def get(
+        self,
+        func: Optional[Callable[[Event[Any]], Union[bool, Awaitable[bool]]]] = None,
+        *,
+        event_type: Optional[Type[Event[Any]]] = None,
+        adapter_type: Optional[Type[Adapter[Any, Any]]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
     ) -> Event[Any]:
@@ -521,6 +559,8 @@ class Bot:
             func: 协程或者函数，函数会被自动包装为协程执行。
                 要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
                 当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
+            event_type: 当指定时，只接受指定类型的事件，先于 func 条件生效。默认为 `None`。
+            adapter_type: 当指定时，只接受指定适配器产生的事件，先于 func 条件生效。默认为 `None`。
             max_try_times: 最大事件数。
             timeout: 超时时间。
 
@@ -553,7 +593,17 @@ class Bot:
                         break
 
                 if not self._current_event.__handled__:
-                    if await _func(self._current_event):
+                    if (
+                        (
+                            event_type is None
+                            or isinstance(self._current_event, event_type)
+                        )
+                        and (
+                            adapter_type is None
+                            or isinstance(self._current_event.adapter, adapter_type)
+                        )
+                        and await _func(self._current_event)
+                    ):
                         self._current_event.__handled__ = True
                         return self._current_event
 

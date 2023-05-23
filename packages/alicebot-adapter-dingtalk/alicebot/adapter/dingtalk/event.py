@@ -1,10 +1,11 @@
 """DingTalk 适配器事件。"""
 import time
+from functools import cached_property
 from typing import TYPE_CHECKING, Any, Dict, List, Union, Literal, Optional
 
-from pydantic import Field, BaseModel, validator
+from pydantic import Field, BaseModel
 
-from alicebot.event import Event
+from alicebot.event import MessageEvent
 
 from .message import DingTalkMessage
 from .exceptions import WebhookExpiredError
@@ -22,7 +23,7 @@ class Text(BaseModel):
     content: str
 
 
-class DingTalkEvent(Event["DingTalkAdapter"]):
+class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
     """DingTalk 事件基类"""
 
     type: Optional[str] = Field(alias="msgtype")
@@ -46,23 +47,30 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
     atUsers: List[UserInfo]
     text: Text
 
-    message: Optional[DingTalkMessage]
     response_msg: Union[None, str, Dict[str, Any], DingTalkMessage] = None
     response_at: Union[None, Dict[str, Any], DingTalkMessage] = None
 
-    @validator("message", always=True)
-    def set_message(cls, v, values, **kwargs):  # type: ignore
-        return DingTalkMessage.text(values["text"].content)
+    @cached_property
+    def message(self) -> DingTalkMessage:
+        return DingTalkMessage.text(self.text.content)
+
+    def get_plain_text(self) -> str:
+        """获取消息的纯文本内容。
+
+        Returns:
+            消息的纯文本内容。
+        """
+        return self.message.get_plain_text()
 
     async def reply(
         self,
-        msg: Union[str, Dict[str, Any], DingTalkMessage],
+        message: Union[str, Dict[str, Any], DingTalkMessage],
         at: Union[None, Dict[str, Any], DingTalkMessage] = None,
     ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
-            msg: 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
+            message: 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
             at: 回复消息时 At 的对象，必须时 at 类型的 `DingTalkMessage`，或者符合标准的 `Dict`。
 
         Returns:
@@ -76,7 +84,7 @@ class DingTalkEvent(Event["DingTalkAdapter"]):
             return await self.adapter.send(
                 webhook=self.sessionWebhook,
                 conversation_type=self.conversationType,
-                msg=msg,
+                msg=message,
                 at=at,
             )
         else:

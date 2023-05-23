@@ -19,6 +19,17 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         else:
             return super().__str__()
 
+    def get_plain_text(self) -> str:
+        """获取消息中的纯文本部分。
+
+        Returns:
+            消息中的纯文本部分。
+        """
+        if self.type == "text":
+            return self.data["content"]
+        else:
+            return ""
+
     def as_dict(self) -> Dict[str, Dict[str, Any]]:
         """返回符合钉钉消息标准的消息字段字典。
 

@@ -6,6 +6,7 @@ from pydantic.fields import ModelField
 from pydantic.typing import is_literal_type, all_literal_values
 
 from alicebot.event import Event
+from alicebot.event import MessageEvent as BaseMessageEvent
 
 from .message import OneBotMessage
 
@@ -114,7 +115,7 @@ class StatusUpdateMetaEvent(MetaEvent):
     status: Status
 
 
-class MessageEvent(BotEvent):
+class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter", OneBotMessage]):
     """消息事件"""
 
     type: Literal["message"]
@@ -134,11 +135,11 @@ class MessageEvent(BotEvent):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
-            msg: 回复消息的内容，同 `call_api()` 方法。
+            message: 回复消息的内容，同 `call_api()` 方法。
 
         Returns:
             API 请求响应。
@@ -151,11 +152,11 @@ class PrivateMessageEvent(MessageEvent):
 
     detail_type: Literal["private"]
 
-    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         return await self.adapter.send_message(
             detail_type="private",
             user_id=self.user_id,
-            message=msg,
+            message=message,
         )
 
 
@@ -165,11 +166,11 @@ class GroupMessageEvent(MessageEvent):
     detail_type: Literal["group"]
     group_id: str
 
-    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         return await self.adapter.send_message(
             detail_type="group",
             group_id=self.group_id,
-            message=msg,
+            message=message,
         )
 
 
@@ -180,12 +181,12 @@ class ChannelMessageEvent(MessageEvent):
     guild_id: str
     channel_id: str
 
-    async def reply(self, msg: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         return await self.adapter.send_message(
             detail_type="channel",
             guild_id=self.guild_id,
             channel_id=self.channel_id,
-            message=msg,
+            message=message,
         )
 
 

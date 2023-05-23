@@ -2,8 +2,8 @@
 
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
-from abc import ABC
-from typing import Any, Generic, Optional, final
+from abc import ABC, abstractmethod
+from typing import Any, Generic, TypeVar, Optional, final
 
 from pydantic import BaseModel, PrivateAttr
 
@@ -55,3 +55,27 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
     class Config:
         extra = "allow"
         json_encoders = {Message: DataclassEncoder}
+
+
+_T = TypeVar("_T")
+
+
+class MessageEvent(Event[T_Adapter], Generic[T_Adapter, _T]):
+    @abstractmethod
+    def get_plain_text(self) -> str:
+        """获取消息的纯文本内容。
+
+        Returns:
+            消息的纯文本内容。
+        """
+
+    @abstractmethod
+    async def reply(self, message: str, *args: Any, **kwargs: Any) -> Any:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容。
+
+        Returns:
+            回复消息动作的响应。
+        """

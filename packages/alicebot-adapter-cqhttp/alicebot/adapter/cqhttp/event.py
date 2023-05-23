@@ -6,6 +6,7 @@ from pydantic.fields import ModelField
 from pydantic.typing import is_literal_type, all_literal_values
 
 from alicebot.event import Event
+from alicebot.event import MessageEvent as BaseMessageEvent
 
 from .message import CQHTTPMessage
 
@@ -88,7 +89,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         return (post_type, detail_type, sub_type)
 
 
-class MessageEvent(CQHTTPEvent):
+class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter", CQHTTPMessage]):
     """消息事件"""
 
     __event__ = "message"
@@ -113,11 +114,11 @@ class MessageEvent(CQHTTPEvent):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
-            msg: 回复消息的内容，同 `call_api()` 方法。
+            message: 回复消息的内容，同 `call_api()` 方法。
 
         Returns:
             API 请求响应。
@@ -132,9 +133,9 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal["private"]
     sub_type: Literal["friend", "group", "other"]
 
-    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
         return await self.adapter.send_private_msg(
-            user_id=self.user_id, message=CQHTTPMessage(msg)
+            user_id=self.user_id, message=CQHTTPMessage(message)
         )
 
 
@@ -147,9 +148,9 @@ class GroupMessageEvent(MessageEvent):
     group_id: int
     anonymous: Optional[Anonymous] = None
 
-    async def reply(self, msg: "T_CQMSG") -> Dict[str, Any]:
+    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
         return await self.adapter.send_group_msg(
-            group_id=self.group_id, message=CQHTTPMessage(msg)
+            group_id=self.group_id, message=CQHTTPMessage(message)
         )
 
 

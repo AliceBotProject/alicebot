@@ -9,6 +9,7 @@ from .base import (
     MiraiEvent,
     Permission,
     GroupMemberInfo,
+    OtherClientSender,
 )
 
 
@@ -266,3 +267,23 @@ class MemberHonorChangeEvent(GroupMemberEvent):
 
     type: Literal["MemberHonorChangeEvent"]
     action: Literal["achieve", "lose"]
+
+
+class OtherClinetEvent(NoticeEvent):
+    """其他客户端事件"""
+
+    client: OtherClientSender
+
+
+class OtherClientOnlineEvent(OtherClinetEvent):
+    """其他客户端上线"""
+
+    type: Literal["OtherClientOnlineEvent"]
+    kind: Optional[int]
+
+
+class OtherClientOfflineEvent(OtherClinetEvent):
+    """其他客户端下线"""
+
+    type: Literal["OtherClientOfflineEvent"]
+    

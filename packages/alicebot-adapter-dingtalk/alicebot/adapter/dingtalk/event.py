@@ -1,5 +1,4 @@
 """DingTalk 适配器事件。"""
-from functools import cached_property
 import time
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 from typing_extensions import Self
@@ -55,7 +54,7 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
     response_msg: Union[None, str, Dict[str, Any], DingTalkMessage] = None
     response_at: Union[None, Dict[str, Any], DingTalkMessage] = None
 
-    @cached_property
+    @property
     def message(self) -> DingTalkMessage:
         """返回 message 字段。"""
         return DingTalkMessage.text(self.text.content)

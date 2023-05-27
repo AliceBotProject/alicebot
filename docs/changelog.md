@@ -4,6 +4,12 @@ sidebar: auto
 
 # 更新日志
 
+## [0.7.1](https://github.com/AliceBotProject/alicebot/compare/v0.7.0...v0.7.1) (2023-05-27)
+
+### Bug Fixes
+
+- **dingtalk:** 修复 DingTalk 适配器错误 ([787a7dd](https://github.com/AliceBotProject/alicebot/commit/787a7dd2039a080a6dc005efd9ea8a116929a8a3))
+
 ## [0.7.0](https://github.com/AliceBotProject/alicebot/compare/v0.6.2...v0.7.0) (2023-05-27)
 
 ### Bug Fixes

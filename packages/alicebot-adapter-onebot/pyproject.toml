@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alicebot-adapter-onebot"
-version = "0.7.0"
+version = "0.7.1"
 description = "OneBot v12 adapter for AliceBot."
 license = "MIT"
 authors = ["st1020 <stone_1020@qq.com>"]
@@ -24,7 +24,7 @@ exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-alicebot = "0.7.0"
+alicebot = "0.7.1"
 
 [tool.poetry.dev-dependencies]
 alicebot = { path = "../../", develop = true }

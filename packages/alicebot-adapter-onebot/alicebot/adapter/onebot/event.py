@@ -1,9 +1,9 @@
 """OntBot 适配器事件。"""
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple
 
-from pydantic import Extra, BaseModel
+from pydantic import BaseModel, Extra
 from pydantic.fields import ModelField
-from pydantic.typing import is_literal_type, all_literal_values
+from pydantic.typing import all_literal_values, is_literal_type
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -11,7 +11,7 @@ from alicebot.event import MessageEvent as BaseMessageEvent
 from .message import OneBotMessage
 
 if TYPE_CHECKING:
-    from . import OneBotAdapter
+    from . import OneBotAdapter  # noqa: F401
     from .message import T_OBMSG
 
 
@@ -85,6 +85,7 @@ class BotEvent(OntBotEvent):
 
     @property
     def to_me(self) -> bool:
+        """是否是发给自己的。"""
         return getattr(self, "user_id", None) == self.self.user_id
 
 
@@ -153,6 +154,14 @@ class PrivateMessageEvent(MessageEvent):
     detail_type: Literal["private"]
 
     async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.send_message(
             detail_type="private",
             user_id=self.user_id,
@@ -167,6 +176,14 @@ class GroupMessageEvent(MessageEvent):
     group_id: str
 
     async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.send_message(
             detail_type="group",
             group_id=self.group_id,
@@ -182,6 +199,14 @@ class ChannelMessageEvent(MessageEvent):
     channel_id: str
 
     async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.send_message(
             detail_type="channel",
             guild_id=self.guild_id,

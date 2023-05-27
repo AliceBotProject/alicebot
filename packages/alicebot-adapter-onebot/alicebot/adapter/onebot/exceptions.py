@@ -16,7 +16,8 @@ class ActionFailed(OneBotException):
     """API 请求成功响应，但响应表示 API 操作失败。"""
 
     def __init__(self, resp: Any):
-        """
+        """初始化。
+
         Args:
             resp: 返回的响应。
         """

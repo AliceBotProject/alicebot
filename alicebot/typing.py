@@ -3,16 +3,16 @@
 此模块定义了部分 AliceBot 使用的类型。
 """
 
-from typing import TYPE_CHECKING, Any, TypeVar, Callable, Optional, Awaitable
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, TypeVar
 
 from alicebot.message import T_MS, T_Message, T_MessageSegment
 
 if TYPE_CHECKING:
+    from alicebot.adapter import Adapter
     from alicebot.bot import Bot
+    from alicebot.config import ConfigModel
     from alicebot.event import Event
     from alicebot.plugin import Plugin
-    from alicebot.adapter import Adapter
-    from alicebot.config import ConfigModel
 
 __all__ = [
     "T_State",

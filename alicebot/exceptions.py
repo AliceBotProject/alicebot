@@ -17,7 +17,7 @@ class StopException(EventException):
     """停止当前事件传播。"""
 
 
-class AliceBotException(Exception):
+class AliceBotException(Exception):  # noqa: N818
     """所有 AliceBot 发生的异常的基类。"""
 
 

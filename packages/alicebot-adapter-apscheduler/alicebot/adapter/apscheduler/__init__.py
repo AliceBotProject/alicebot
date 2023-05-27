@@ -3,27 +3,30 @@
 本适配器用于实现定时任务，适配器将使用 APScheduler 实现定时任务，在设定的时间产生一个事件供插件处理。
 APScheduler 使用方法请参考: [APScheduler](https://apscheduler.readthedocs.io/) 。
 """
-import asyncio
-import inspect
 from functools import wraps
-from typing import Any, Dict, Type, Union, Callable, Awaitable
+import inspect
+from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Type, Union
 
 from apscheduler.job import Job
-from apscheduler.triggers.base import BaseTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
-from alicebot.plugin import Plugin
 from alicebot.adapter import Adapter
+from alicebot.log import error_or_exception, logger
+from alicebot.plugin import Plugin
 from alicebot.typing import T_Plugin
-from alicebot.log import logger, error_or_exception
 
 from .config import Config
 from .event import APSchedulerEvent
+
+if TYPE_CHECKING:
+    from apscheduler.triggers.base import BaseTrigger
 
 __all__ = ["APSchedulerAdapter", "scheduler_decorator"]
 
 
 class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
+    """APScheduler 适配器。"""
+
     name: str = "apscheduler"
     Config = Config
 
@@ -48,8 +51,10 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                 )
                 continue
 
-            trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")
-            trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")
+            trigger: Union[str, "BaseTrigger"] = getattr(  # noqa: B009
+                plugin, "trigger"
+            )
+            trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")  # noqa: B009
 
             if not isinstance(trigger, str) or not isinstance(trigger_args, dict):
                 logger.error(
@@ -84,17 +89,16 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
             plugin_class: `Plugin` 类。
         """
         logger.info(f"APSchedulerEvent set by {plugin_class} is created as scheduled")
-        asyncio.create_task(
-            self.bot.handle_event(
-                APSchedulerEvent(
-                    adapter=self, type="apscheduler", plugin_class=plugin_class
-                ),
-                handle_get=False,
-                show_log=False,
-            )
+        await self.handle_event(
+            APSchedulerEvent(
+                adapter=self, type="apscheduler", plugin_class=plugin_class
+            ),
+            handle_get=False,
+            show_log=False,
         )
 
     async def send(self, *args: Any, **kwargs: Any) -> Any:
+        """APScheduler 适配器不适用发送消息。"""
         raise NotImplementedError
 
 
@@ -112,12 +116,12 @@ def scheduler_decorator(
 
     def _decorator(cls: Type[T_Plugin]) -> Type[T_Plugin]:
         if not inspect.isclass(cls):
-            raise TypeError(f"can only decorate class")
+            raise TypeError("can only decorate class")
         if not issubclass(cls, Plugin):
-            raise TypeError(f"can only decorate Plugin class")
-        setattr(cls, "__schedule__", True)
-        setattr(cls, "trigger", trigger)
-        setattr(cls, "trigger_args", trigger_args)
+            raise TypeError("can only decorate Plugin class")
+        setattr(cls, "__schedule__", True)  # noqa: B010
+        setattr(cls, "trigger", trigger)  # noqa: B010
+        setattr(cls, "trigger_args", trigger_args)  # noqa: B010
         if override_rule:
 
             def _rule_decorator(func: Callable[[T_Plugin], Awaitable[bool]]):
@@ -128,8 +132,7 @@ def scheduler_decorator(
                         and type(self) == self.event.plugin_class
                     ):
                         return True
-                    else:
-                        return await func(self)
+                    return await func(self)
 
                 return _wrapper
 

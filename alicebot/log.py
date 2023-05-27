@@ -9,6 +9,13 @@ logger = _logger
 
 
 def error_or_exception(message: str, exception: Exception, verbose: bool):
+    """输出 error 或者 exception 日志。
+
+    Args:
+        message: 消息。
+        exception: 异常。
+        verbose: 是否使用 exception。
+    """
     if verbose:
         logger.exception(message)
     else:

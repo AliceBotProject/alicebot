@@ -1,3 +1,4 @@
+"""事件基类。"""
 from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel
@@ -5,29 +6,37 @@ from pydantic import BaseModel
 from alicebot.event import Event
 
 if TYPE_CHECKING:
-    from .. import MiraiAdapter
+    from .. import MiraiAdapter  # noqa: F401
 
 Permission = Literal["OWNER", "ADMINISTRATOR", "MEMBER"]
 
 
 class Subject(BaseModel):
+    """来源"""
+
     id: int
     kind: Literal["Friend", "Group"]
 
 
 class FriendInfo(BaseModel):
+    """好友信息"""
+
     id: int
     nickname: str
     remark: str
 
 
 class GroupInfo(BaseModel):
+    """群聊信息"""
+
     id: int
     name: str
     permission: Permission
 
 
 class GroupMemberInfo(BaseModel):
+    """群成员信息"""
+
     id: int
     memberName: str
     permission: Permission
@@ -39,6 +48,8 @@ class GroupMemberInfo(BaseModel):
 
 
 class OtherClientSender(BaseModel):
+    """其他客户端信息"""
+
     id: int
     platform: str
 

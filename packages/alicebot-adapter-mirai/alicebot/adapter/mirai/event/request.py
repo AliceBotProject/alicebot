@@ -1,3 +1,4 @@
+"""申请事件。"""
 from typing import Any, Dict, Literal
 
 from .base import MiraiEvent
@@ -40,6 +41,14 @@ class NewFriendRequestEvent(RequestEvent):
     message: str
 
     async def approve(self, message: str = "") -> Dict[str, Any]:
+        """同意请求。
+
+        Args:
+            message: 回复的信息，默认为空。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.resp_newFriendRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,
@@ -81,6 +90,14 @@ class MemberJoinRequestEvent(RequestEvent):
     message: str
 
     async def approve(self, message: str = "") -> Dict[str, Any]:
+        """同意请求。
+
+        Args:
+            message: 回复的信息，默认为空。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.resp_memberJoinRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,
@@ -142,6 +159,14 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
     message: str
 
     async def approve(self, message: str = "") -> Dict[str, Any]:
+        """同意请求。
+
+        Args:
+            message: 回复的信息，默认为空。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.resp_botInvitedJoinGroupRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,
@@ -151,6 +176,14 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
         )
 
     async def refuse(self, message: str = "") -> Dict[str, Any]:
+        """拒绝请求。
+
+        Args:
+            message: 回复的信息，默认为空。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.resp_botInvitedJoinGroupRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,

@@ -3,37 +3,37 @@
 本适配器适配了 OneBot v11 协议。
 协议详情请参考: [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 。
 """
-import sys
-import json
-import time
 import asyncio
-import inspect
 from functools import partial
+import inspect
+import json
+import sys
+import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    Type,
-    Tuple,
-    Literal,
+    Awaitable,
     Callable,
     ClassVar,
+    Dict,
+    Literal,
     Optional,
-    Awaitable,
+    Tuple,
+    Type,
 )
 
 import aiohttp
 from aiohttp import web
 
-from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import logger, error_or_exception
+from alicebot.log import error_or_exception, logger
+from alicebot.utils import DataclassEncoder
 
 from . import event
 from .config import Config
+from .event import CQHTTPEvent, HeartbeatMetaEvent, LifecycleMetaEvent, MetaEvent
+from .exceptions import ActionFailed, ApiNotAvailable, ApiTimeout, NetworkError
 from .message import CQHTTPMessage
-from .exceptions import ApiTimeout, ActionFailed, NetworkError, ApiNotAvailable
-from .event import MetaEvent, CQHTTPEvent, HeartbeatMetaEvent, LifecycleMetaEvent
 
 if TYPE_CHECKING:
     from .message import T_CQMSG
@@ -80,7 +80,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     async def reverse_ws_connection_hook(self):
         """反向 WebSocket 连接建立时的钩子函数。"""
-        logger.info(f"WebSocket connected!")
+        logger.info("WebSocket connected!")
         if self.config.access_token:
             assert isinstance(self.websocket, web.WebSocketResponse)
             if (
@@ -229,8 +229,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                     cls=DataclassEncoder,
                 )
             )
-        except Exception:
-            raise NetworkError
+        except Exception as e:
+            raise NetworkError from e
 
         start_time = time.time()
         while not self.bot.should_exit.is_set():
@@ -253,6 +253,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         if not self.bot.should_exit.is_set():
             raise ApiTimeout
+        return None
 
     async def send(
         self, message_: "T_CQMSG", message_type: Literal["private", "group"], id_: int
@@ -277,9 +278,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             return await self.send_private_msg(
                 user_id=id_, message=CQHTTPMessage(message_)
             )
-        elif message_type == "group":
+        if message_type == "group":
             return await self.send_group_msg(
                 group_id=id_, message=CQHTTPMessage(message_)
             )
-        else:
-            raise TypeError('message_type must be "private" or "group"')
+        raise TypeError('message_type must be "private" or "group"')

@@ -3,45 +3,45 @@
 本适配器适配了 OneBot v12 协议。
 协议详情请参考: [OneBot](https://12.onebot.dev/) 。
 """
-import sys
-import json
-import time
 import asyncio
-import inspect
 from functools import partial
+import inspect
+import json
+import sys
+import time
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    Type,
-    Tuple,
-    Union,
-    Literal,
+    Awaitable,
     Callable,
     ClassVar,
+    Dict,
+    Literal,
     Optional,
-    Awaitable,
+    Tuple,
+    Type,
+    Union,
 )
 
 import aiohttp
 from aiohttp import web
 
-from alicebot.utils import DataclassEncoder
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import logger, error_or_exception
+from alicebot.log import error_or_exception, logger
+from alicebot.utils import DataclassEncoder
 
 from . import event
 from .config import Config
-from .message import OneBotMessage
-from .exceptions import ApiTimeout, ActionFailed, NetworkError
 from .event import (
     BotSelf,
-    MetaEvent,
-    OntBotEvent,
     ConnectMetaEvent,
     HeartbeatMetaEvent,
+    MetaEvent,
+    OntBotEvent,
     StatusUpdateMetaEvent,
 )
+from .exceptions import ActionFailed, ApiTimeout, NetworkError
+from .message import OneBotMessage
 
 if TYPE_CHECKING:
     from .message import T_OBMSG
@@ -89,7 +89,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
     async def reverse_ws_connection_hook(self):
         """反向 WebSocket 连接建立时的钩子函数。"""
-        logger.info(f"WebSocket connected!")
+        logger.info("WebSocket connected!")
         if self.config.access_token:
             assert isinstance(self.websocket, web.WebSocketResponse)
             if (
@@ -215,6 +215,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
         Args:
             api: API 名称。
+            bot_self: `Self` 字段。
             **params: API 参数。
 
         Returns:
@@ -240,8 +241,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
                     cls=DataclassEncoder,
                 )
             )
-        except Exception:
-            raise NetworkError
+        except Exception as e:
+            raise NetworkError from e
 
         start_time = time.time()
         while not self.bot.should_exit.is_set():
@@ -265,6 +266,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
         if not self.bot.should_exit.is_set():
             raise ApiTimeout
+        return None
 
     async def send(
         self,
@@ -293,9 +295,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             return await self.send_message(
                 detail_type=message_type, user_id=id_, message=OneBotMessage(message_)
             )
-        elif message_type == "group":
+        if message_type == "group":
             return await self.send_message(
                 detail_type=message_type, group_id=id_, message=OneBotMessage(message_)
             )
-        else:
-            raise TypeError('message_type must be "private" or "group"')
+        raise TypeError('message_type must be "private" or "group"')

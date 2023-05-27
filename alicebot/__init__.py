@@ -1,4 +1,5 @@
 """AliceBot
+
 简单的 Python 异步多后端机器人框架
 
 本模块从子模块导入了以下内容：
@@ -9,9 +10,10 @@
 - `ConfigModel` => [`alicebot.config.ConfigModel`](./config#ConfigModel)
 - `Depends` => [`alicebot.dependencies.Depends`](./dependencies#Depends)
 """
-from alicebot.bot import Bot  # type: ignore
-from alicebot.event import Event  # type: ignore
-from alicebot.plugin import Plugin  # type: ignore
-from alicebot.adapter import Adapter  # type: ignore
-from alicebot.config import ConfigModel  # type: ignore
-from alicebot.dependencies import Depends  # type: ignore
+# pyright: reportUnusedImport=false
+from alicebot.adapter import Adapter
+from alicebot.bot import Bot
+from alicebot.config import ConfigModel
+from alicebot.dependencies import Depends
+from alicebot.event import Event
+from alicebot.plugin import Plugin

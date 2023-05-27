@@ -1,9 +1,9 @@
 """CQHTTP 适配器事件。"""
-from typing import TYPE_CHECKING, Any, Dict, Tuple, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Tuple
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 from pydantic.fields import ModelField
-from pydantic.typing import is_literal_type, all_literal_values
+from pydantic.typing import all_literal_values, is_literal_type
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -11,11 +11,13 @@ from alicebot.event import MessageEvent as BaseMessageEvent
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
-    from . import CQHTTPAdapter
+    from . import CQHTTPAdapter  # noqa: F401
     from .message import T_CQMSG
 
 
 class Sender(BaseModel):
+    """发送人信息"""
+
     user_id: Optional[int]
     nickname: Optional[str]
     card: Optional[str]
@@ -28,12 +30,16 @@ class Sender(BaseModel):
 
 
 class Anonymous(BaseModel):
+    """匿名信息"""
+
     id: int
     name: str
     flag: str
 
 
 class File(BaseModel):
+    """文件信息"""
+
     id: str
     name: str
     size: int
@@ -41,6 +47,8 @@ class File(BaseModel):
 
 
 class Status(BaseModel):
+    """状态信息"""
+
     online: bool
     good: bool
 
@@ -69,7 +77,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
     @property
     def to_me(self) -> bool:
         """当前事件的 `user_id` 是否等于 `self_id`。"""
-        return getattr(self, "user_id") == self.self_id
+        return getattr(self, "user_id", None) == self.self_id
 
     @classmethod
     def get_event_type(cls) -> Tuple[Optional[str], Optional[str], Optional[str]]:
@@ -134,6 +142,14 @@ class PrivateMessageEvent(MessageEvent):
     sub_type: Literal["friend", "group", "other"]
 
     async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.send_private_msg(
             user_id=self.user_id, message=CQHTTPMessage(message)
         )
@@ -149,6 +165,14 @@ class GroupMessageEvent(MessageEvent):
     anonymous: Optional[Anonymous] = None
 
     async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.send_group_msg(
             group_id=self.group_id, message=CQHTTPMessage(message)
         )
@@ -328,6 +352,11 @@ class FriendRequestEvent(RequestEvent):
         )
 
     async def refuse(self) -> Dict[str, Any]:
+        """拒绝请求。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.set_friend_add_request(flag=self.flag, approve=False)
 
 
@@ -343,6 +372,11 @@ class GroupRequestEvent(RequestEvent):
     flag: str
 
     async def approve(self) -> Dict[str, Any]:
+        """同意请求。
+
+        Returns:
+            API 请求响应。
+        """
         return await self.adapter.set_group_add_request(
             flag=self.flag, sub_type=self.sub_type, approve=True
         )

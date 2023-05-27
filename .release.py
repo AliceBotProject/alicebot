@@ -1,7 +1,8 @@
-import json
+"""用于发布新版本的脚本。"""
 import argparse
-import subprocess
+import json
 from pathlib import Path
+import subprocess
 
 import tomlkit
 
@@ -21,20 +22,33 @@ version = args.version
 
 
 def write_version_json(file: Path, version: str):
-    with open("package.json", encoding="utf-8") as f:
+    """写入 package.json。
+
+    Args:
+        file: 文件路径。
+        version: 版本信息。
+    """
+    with file.open(encoding="utf-8") as f:
         json_file = json.load(f)
     json_file["version"] = version
-    with open("package.json", "w", encoding="utf-8") as f:
+    with file.open("w", encoding="utf-8") as f:
         json.dump(json_file, f, indent=2)
 
 
 def write_version_toml(file: Path, version: str, *, is_package: bool = False):
-    with open(file, encoding="utf-8") as f:
+    """写入 pyproject.toml。
+
+    Args:
+        file: 文件路径。
+        version: 版本信息。
+        is_package: 是否是 packages 目录下的包。
+    """
+    with file.open(encoding="utf-8") as f:
         toml_file = tomlkit.load(f)
     toml_file["tool"]["poetry"]["version"] = version  # type: ignore
     if is_package:
         toml_file["tool"]["poetry"]["dependencies"]["alicebot"] = version  # type: ignore
-    with open(file, "w", encoding="utf-8") as f:
+    with file.open("w", encoding="utf-8") as f:
         tomlkit.dump(toml_file, f)
 
 
@@ -52,10 +66,8 @@ with open("docs/changelog.md", "w", encoding="utf-8") as f:
         CHANGELOG_PREFIX
         + (
             "\n".join(
-                map(
-                    lambda x: ("#" + x) if x.startswith("# ") else x,
-                    changelog_file.split("\n"),
-                )
+                ("#" + x) if x.startswith("# ") else x
+                for x in changelog_file.split("\n")
             )
         ).replace("_", "\\_")
     )

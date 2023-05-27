@@ -4,8 +4,8 @@
 """
 from asyncio import Condition
 
-from alicebot.event import Event
 from alicebot.adapter import Adapter
+from alicebot.event import Event
 
 
 class TestAdapterEvent(Event["TestAdapter"]):

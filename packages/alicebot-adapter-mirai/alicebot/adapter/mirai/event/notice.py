@@ -1,15 +1,16 @@
+"""通知事件。"""
 from typing import Literal, Optional
 
 from pydantic import create_model
 
 from .base import (
-    Subject,
-    GroupInfo,
     FriendInfo,
-    MiraiEvent,
-    Permission,
+    GroupInfo,
     GroupMemberInfo,
+    MiraiEvent,
     OtherClientSender,
+    Permission,
+    Subject,
 )
 
 
@@ -286,4 +287,3 @@ class OtherClientOfflineEvent(OtherClinetEvent):
     """其他客户端下线"""
 
     type: Literal["OtherClientOfflineEvent"]
-    

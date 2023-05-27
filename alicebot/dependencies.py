@@ -2,20 +2,20 @@
 
 实现依赖注入相关功能。
 """
+from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 import inspect
-from contextlib import AsyncExitStack, contextmanager, asynccontextmanager
 from typing import (
     Any,
-    Dict,
-    Type,
-    Union,
-    TypeVar,
-    Callable,
-    Optional,
-    Generator,
-    AsyncGenerator,
-    ContextManager,
     AsyncContextManager,
+    AsyncGenerator,
+    Callable,
+    ContextManager,
+    Dict,
+    Generator,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
     cast,
 )
 
@@ -59,7 +59,7 @@ class InnerDepends:
         return f"InnerDepends({attr}{cache})"
 
 
-def Depends(
+def Depends(  # noqa: N802
     dependency: Optional[T_Dependency[T]] = None, *, use_cache: bool = True
 ) -> T:
     """子依赖装饰器。
@@ -85,8 +85,9 @@ async def solve_dependencies(
 
     Args:
         dependent: 依赖类。
-        use_cache: 是否使用缓存。默认为 `True`。
-        dependency_cache: 依赖缓存。默认为 `None`。
+        use_cache: 是否使用缓存。
+        stack: `AsyncExitStack` 对象。
+        dependency_cache: 依赖缓存。
 
     Raises:
         TypeError: 解析错误。
@@ -109,8 +110,7 @@ async def solve_dependencies(
                 dependent_ann = ann.get(name, None)
                 if dependent_ann is None:
                     raise TypeError("can not solve dependent")
-                else:
-                    sub_dependent.dependency = dependent_ann
+                sub_dependent.dependency = dependent_ann
             values[name] = await solve_dependencies(
                 sub_dependent.dependency,
                 use_cache=sub_dependent.use_cache,

@@ -2,41 +2,52 @@
 
 AliceBot 的基础模块，每一个 AliceBot 机器人即是一个 `Bot` 实例。
 """
-import os
-import sys
-import json
-import time
-import signal
 import asyncio
-import pkgutil
-import threading
-from pathlib import Path
-from itertools import chain
 from collections import defaultdict
 from contextlib import AsyncExitStack
-from typing import Any, Dict, List, Type, Union, Callable, Optional, Awaitable, overload
+from itertools import chain
+import json
+import os
+from pathlib import Path
+import pkgutil
+import signal
+import sys
+import threading
+import time
+from typing import (
+    Any,
+    Awaitable,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    Set,
+    Type,
+    Union,
+    overload,
+)
 
 from pydantic import ValidationError, create_model
 
-from alicebot.event import Event
 from alicebot.adapter import Adapter
-from alicebot.plugin import Plugin, PluginLoadType
-from alicebot.log import logger, error_or_exception
+from alicebot.config import AdapterConfig, ConfigModel, MainConfig, PluginConfig
 from alicebot.dependencies import solve_dependencies
-from alicebot.config import MainConfig, ConfigModel, PluginConfig, AdapterConfig
-from alicebot.typing import T_Event, T_Adapter, T_BotHook, T_EventHook, T_AdapterHook
+from alicebot.event import Event
 from alicebot.exceptions import (
-    SkipException,
-    StopException,
     GetEventTimeout,
     LoadModuleError,
+    SkipException,
+    StopException,
 )
+from alicebot.log import error_or_exception, logger
+from alicebot.plugin import Plugin, PluginLoadType
+from alicebot.typing import T_Adapter, T_AdapterHook, T_BotHook, T_Event, T_EventHook
 from alicebot.utils import (
     ModulePathFinder,
+    get_classes_from_module_name,
+    is_config_class,
     samefile,
     wrap_get_func,
-    is_config_class,
-    get_classes_from_module_name,
 )
 
 try:
@@ -55,7 +66,8 @@ HANDLED_SIGNALS = (
 
 class Bot:
     """AliceBot 机器人对象，定义了机器人的基本方法。
-        读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
+
+    读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
 
     Attributes:
         config: 机器人配置。
@@ -79,6 +91,8 @@ class Bot:
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
     _raw_config_dict: Dict[str, Any]  # 原始配置字典
+    _adapter_tasks: Set["asyncio.Task[None]"]  # 适配器任务集合，用于保持对适配器任务的引用
+    _handle_event_tasks: Set["asyncio.Task[None]"]  # 事件处理任务，用于保持对适配器任务的引用
 
     # 以下属性不会在重启时清除
     _config_file: Optional[str]  # 配置文件
@@ -126,6 +140,8 @@ class Bot:
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._raw_config_dict = {}
+        self._adapter_tasks = set()
+        self._handle_event_tasks = set()
 
         self._config_file = config_file
         self._config_dict = config_dict
@@ -218,7 +234,9 @@ class Bot:
             for _adapter in self.adapters:
                 for _hook_func in self._adapter_run_hooks:
                     await _hook_func(_adapter)
-                asyncio.create_task(_adapter.safe_run())
+                _adapter_task = asyncio.create_task(_adapter.safe_run())
+                self._adapter_tasks.add(_adapter_task)
+                _adapter_task.add_done_callback(self._adapter_tasks.discard)
 
             await self.should_exit.wait()
 
@@ -229,6 +247,10 @@ class Bot:
                 for _hook_func in self._adapter_shutdown_hooks:
                     await _hook_func(_adapter)
                 await _adapter.shutdown()
+
+            while self._adapter_tasks:
+                await asyncio.sleep(0)
+
             for _hook_func in self._bot_exit_hooks:
                 await _hook_func(self)
 
@@ -270,15 +292,15 @@ class Bot:
 
         logger.info("Hot reload is working!")
         async for changes in awatch(
-            *map(
-                lambda x: x.resolve(),
-                set(self._extend_plugin_dirs)
+            *(
+                x.resolve()
+                for x in set(self._extend_plugin_dirs)
                 .union(self.config.bot.plugin_dirs)
                 .union(
                     {Path(self._config_file)}
                     if self._config_dict is None and self._config_file is not None
                     else set()
-                ),
+                )
             ),
             stop_event=self.should_exit,
         ):
@@ -305,23 +327,23 @@ class Bot:
                 if change_type == Change.deleted:
                     # 针对删除操作特殊处理
                     if not file.endswith(".py"):
-                        file = os.path.join(file, "__init__.py")
+                        file = os.path.join(file, "__init__.py")  # noqa: PLW2901
                 else:
                     if os.path.isdir(file) and os.path.isfile(
                         os.path.join(file, "__init__.py")
                     ):
                         # 当新增一个目录，且此目录中包含 __init__.py 文件
                         # 说明此时发生的是添加一个 Python 包，则视为添加了此包的 __init__.py 文件
-                        file = os.path.join(file, "__init__.py")
+                        file = os.path.join(file, "__init__.py")  # noqa: PLW2901
                     if not (os.path.isfile(file) and file.endswith(".py")):
                         continue
 
                 if change_type == Change.added:
-                    logger.info(f"Hot reload: added file: {file}")
+                    logger.info(f"Hot reload: Added file: {file}")
                     self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
                     self._update_config()
                     continue
-                elif change_type == Change.deleted:
+                elif change_type == Change.deleted:  # noqa: RET507
                     logger.info(f"Hot reload: Deleted file: {file}")
                     self._remove_plugin_by_path(file)
                     self._update_config()
@@ -408,7 +430,7 @@ class Bot:
         self._load_plugins_from_dirs(*self._extend_plugin_dirs)
         self._update_config()
 
-    def _handle_exit(self, *args: Any):
+    def _handle_exit(self, *args: Any):  # noqa: ARG002
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info("Stopping AliceBot...")
         if self.should_exit.is_set():
@@ -439,13 +461,17 @@ class Bot:
             )
 
         if handle_get:
-            asyncio.create_task(self._handle_event())
+            _handle_event_task = asyncio.create_task(self._handle_event())
+            self._handle_event_tasks.add(_handle_event_task)
+            _handle_event_task.add_done_callback(self._handle_event_tasks.discard)
             await asyncio.sleep(0)
             async with self._condition:
                 self._current_event = current_event
                 self._condition.notify_all()
         else:
-            asyncio.create_task(self._handle_event(current_event))
+            _handle_event_task = asyncio.create_task(self._handle_event(current_event))
+            self._handle_event_tasks.add(_handle_event_task)
+            _handle_event_task.add_done_callback(self._handle_event_tasks.discard)
 
     async def _handle_event(self, current_event: Optional[Event[Any]] = None):
         if current_event is None:
@@ -592,20 +618,20 @@ class Bot:
                     except asyncio.TimeoutError:
                         break
 
-                if not self._current_event.__handled__:
-                    if (
-                        (
-                            event_type is None
-                            or isinstance(self._current_event, event_type)
-                        )
-                        and (
-                            adapter_type is None
-                            or isinstance(self._current_event.adapter, adapter_type)
-                        )
-                        and await _func(self._current_event)
-                    ):
-                        self._current_event.__handled__ = True
-                        return self._current_event
+                if (
+                    not self._current_event.__handled__
+                    and (
+                        event_type is None
+                        or isinstance(self._current_event, event_type)
+                    )
+                    and (
+                        adapter_type is None
+                        or isinstance(self._current_event.adapter, adapter_type)
+                    )
+                    and await _func(self._current_event)
+                ):
+                    self._current_event.__handled__ = True
+                    return self._current_event
 
                 try_times += 1
 
@@ -750,7 +776,7 @@ class Bot:
             *dirs: 储存包含插件的模块的模块路径。
                 例如：`pathlib.Path("path/of/plugins/")` 。
         """
-        dir_list = list(map(lambda x: str(x.resolve()), dirs))
+        dir_list = [str(x.resolve()) for x in dirs]
         logger.info(f'Loading plugins from dirs "{", ".join(map(str, dir_list))}"')
         self._module_path_finder.path.extend(dir_list)
         for module_info in pkgutil.iter_modules(dir_list):
@@ -794,7 +820,7 @@ class Bot:
                         raise LoadModuleError(
                             f"Can not find Adapter class in the {adapter_} module"
                         )
-                    elif len(adapter_classes) > 1:
+                    if len(adapter_classes) > 1:
                         raise LoadModuleError(
                             f"More then one Adapter class in the {adapter_} module"
                         )

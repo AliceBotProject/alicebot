@@ -1,38 +1,39 @@
-import os
-import sys
-import json
-import asyncio
-import inspect
-import os.path
-import importlib
-import traceback
-import dataclasses
+"""AliceBot 内部使用的实用工具。"""
 from abc import ABC
-from functools import partial
-from importlib.abc import MetaPathFinder
+import asyncio
 from contextlib import asynccontextmanager
+import dataclasses
+from functools import partial
+import importlib
+from importlib.abc import MetaPathFinder
 from importlib.machinery import PathFinder
-from types import ModuleType, GetSetDescriptorType
-from typing_extensions import ParamSpec, TypeGuard
+import inspect
+import json
+import os
+import os.path
+import sys
+import traceback
+from types import GetSetDescriptorType, ModuleType
 from typing import (
     Any,
+    AsyncGenerator,
+    Awaitable,
+    Callable,
+    ContextManager,
+    Coroutine,
     Dict,
     List,
-    Type,
-    Tuple,
-    Union,
-    TypeVar,
-    Callable,
     Optional,
     Sequence,
-    Awaitable,
-    Coroutine,
-    AsyncGenerator,
-    ContextManager,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
 )
+from typing_extensions import ParamSpec, TypeGuard
 
-from alicebot.typing import T_Event
 from alicebot.config import ConfigModel
+from alicebot.typing import T_Event
 
 __all__ = [
     "ModulePathFinder",
@@ -61,6 +62,7 @@ class ModulePathFinder(MetaPathFinder):
         path: Optional[Sequence[str]] = None,
         target: Optional[ModuleType] = None,
     ):
+        """用于查找指定模块的 `spec`。"""
         if path is None:
             path = []
         return PathFinder.find_spec(fullname, self.path + list(path), target)
@@ -129,9 +131,7 @@ def get_classes_from_module_name(
         importlib.invalidate_caches()
         module = importlib.import_module(name)
         importlib.reload(module)
-        return list(
-            map(lambda x: (x, module), get_classes_from_module(module, super_class))
-        )
+        return [(x, module) for x in get_classes_from_module(module, super_class)]
     except BaseException as e:
         # 不捕获 KeyboardInterrupt
         # 捕获 KeyboardInterrupt 会阻止用户关闭 Python 当正在导入的模块陷入死循环时
@@ -144,6 +144,7 @@ class DataclassEncoder(json.JSONEncoder):
     """用于解析 `MessageSegment` 的 `JSONEncoder` 类。"""
 
     def default(self, o: Any):
+        """返回 `o` 的可序列化对象。"""
         if dataclasses.is_dataclass(o):
             return o.as_dict()
         return super().default(o)
@@ -200,6 +201,7 @@ async def sync_ctx_manager_wrapper(
 
     Args:
         cm: 待包装的同步上下文管理器。
+        to_thread: 是否在独立的线程中运行同步函数。默认为 `False`。
 
     Returns:
         异步上下文管理器。
@@ -228,10 +230,9 @@ def wrap_get_func(
     """
     if func is None:
         return sync_func_wrapper(lambda _: True)
-    elif not asyncio.iscoroutinefunction(func):
+    if not asyncio.iscoroutinefunction(func):
         return sync_func_wrapper(func)  # type: ignore
-    else:
-        return func
+    return func
 
 
 if sys.version_info >= (3, 10):
@@ -262,11 +263,8 @@ else:
                     ann = None
             else:
                 ann = None
-        elif isinstance(obj, ModuleType):
-            # module
-            ann = getattr(obj, "__annotations__", None)
-        elif callable(obj):
-            # this includes types.Function, types.BuiltinFunctionType,
+        elif isinstance(obj, ModuleType) or callable(obj):
+            # this includes types.ModuleType, types.Function, types.BuiltinFunctionType,
             # types.BuiltinMethodType, functools.partial, functools.singledispatch,
             # "class funclike" from Lib/test/test_inspect... on and on it goes.
             ann = getattr(obj, "__annotations__", None)

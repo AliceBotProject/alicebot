@@ -2,16 +2,16 @@
 
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
-import asyncio
 from abc import ABCMeta, abstractmethod
-from typing import Union, Literal, Optional
+import asyncio
+from typing import Literal, Optional, Union
 
 import aiohttp
 from aiohttp import web
 
 from alicebot.adapter import Adapter
-from alicebot.typing import T_Event, T_Config
-from alicebot.log import logger, error_or_exception
+from alicebot.log import error_or_exception, logger
+from alicebot.typing import T_Config, T_Event
 
 
 class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
@@ -19,18 +19,20 @@ class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     delay: float = 0.1
     create_task: bool = False
+    _on_tick_task: Optional["asyncio.Task[None]"] = None
 
     async def run(self):
+        """运行适配器。"""
         while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.delay)
             if self.create_task:
-                asyncio.create_task(self.on_tick())
+                self._on_tick_task = asyncio.create_task(self.on_tick())
             else:
                 await self.on_tick()
 
     @abstractmethod
     async def on_tick(self):
-        pass
+        """当轮询发生。"""
 
 
 class HttpClientAdapter(PollingAdapter[T_Event, T_Config], metaclass=ABCMeta):
@@ -39,13 +41,15 @@ class HttpClientAdapter(PollingAdapter[T_Event, T_Config], metaclass=ABCMeta):
     session: aiohttp.ClientSession
 
     async def startup(self):
+        """初始化适配器。"""
         self.session = aiohttp.ClientSession()
 
     @abstractmethod
     async def on_tick(self):
-        pass
+        """当轮询发生。"""
 
     async def shutdown(self):
+        """关闭并清理连接。"""
         await self.session.close()
 
 
@@ -55,6 +59,7 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     url: str
 
     async def run(self):
+        """运行适配器。"""
         async with aiohttp.ClientSession() as session:
             async with session.ws_connect(self.url) as ws:
                 msg: aiohttp.WSMessage
@@ -67,7 +72,7 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     @abstractmethod
     async def handle_response(self, msg: aiohttp.WSMessage):
-        pass
+        """处理响应。"""
 
 
 class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
@@ -82,6 +87,7 @@ class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     post_url: str
 
     async def startup(self):
+        """初始化适配器。"""
         self.app = web.Application()
         self.app.add_routes(
             [
@@ -91,17 +97,19 @@ class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         )
 
     async def run(self):
+        """运行适配器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.host, self.port)
         await self.site.start()
 
     async def shutdown(self):
+        """关闭并清理连接。"""
         await self.runner.cleanup()
 
     @abstractmethod
     async def handle_response(self, request: web.Request) -> web.StreamResponse:
-        pass
+        """处理响应。"""
 
 
 class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
@@ -116,21 +124,25 @@ class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     url: str
 
     async def startup(self):
+        """初始化适配器。"""
         self.app = web.Application()
         self.app.add_routes([web.get(self.url, self.handle_response)])
 
     async def run(self):
+        """运行适配器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.host, self.port)
         await self.site.start()
 
     async def shutdown(self):
+        """关闭并清理连接。"""
         await self.websocket.close()
         await self.site.stop()
         await self.runner.cleanup()
 
     async def handle_response(self, request: web.Request) -> web.WebSocketResponse:
+        """处理 WebSocket。"""
         ws = web.WebSocketResponse()
         await ws.prepare(request)
         self.websocket = ws
@@ -146,7 +158,7 @@ class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     @abstractmethod
     async def handle_ws_response(self, msg: aiohttp.WSMessage):
-        pass
+        """处理 WebSocket 响应。"""
 
 
 class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
@@ -234,7 +246,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     async def reverse_ws_connection_hook(self):
         """反向 WebSocket 连接建立时的钩子函数。"""
-        logger.info(f"WebSocket connected!")
+        logger.info("WebSocket connected!")
 
     async def websocket_connect(self):
         """创建正向 WebSocket 连接。"""

@@ -2,25 +2,25 @@
 
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
-import os
 from abc import ABC, abstractmethod
+import os
 from typing import (
     TYPE_CHECKING,
     Any,
-    Type,
-    Union,
-    Generic,
-    TypeVar,
-    Callable,
-    Optional,
     Awaitable,
+    Callable,
+    Generic,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
     final,
     overload,
 )
 
-from alicebot.utils import is_config_class
 from alicebot.log import error_or_exception
-from alicebot.typing import T_Event, T_Config
+from alicebot.typing import T_Config, T_Event
+from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
     from alicebot.bot import Bot
@@ -49,6 +49,11 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     Config: Type[T_Config]
 
     def __init__(self, bot: "Bot"):
+        """初始化。
+
+        Args:
+            bot: 当前机器人对象。
+        """
         if not hasattr(self, "name"):
             self.name = self.__class__.__name__
         self.bot: "Bot" = bot
@@ -91,7 +96,6 @@ class Adapter(Generic[T_Event, T_Config], ABC):
 
         AliceBot 依次运行并等待所有适配器的 `startup()` 方法，待运行完毕后再创建 `run()` 任务。
         """
-        pass
 
     async def shutdown(self):
         """在适配器结束运行时运行的方法，用于安全地关闭适配器。
@@ -99,7 +103,6 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 `shutdown()` 方法。
         当强制退出时此方法可能未被执行。
         """
-        pass
 
     async def send(self, *args: Any, **kwargs: Any) -> Any:
         """发送消息，需要适配器开发者实现。"""

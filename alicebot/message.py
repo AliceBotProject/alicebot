@@ -3,25 +3,25 @@
 实现了常用的基本消息 `Message` 和消息字段 `MessageSegment` 模型供适配器使用。
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 """
-import dataclasses
 from copy import copy, deepcopy
-from typing_extensions import Self
-from dataclasses import field, dataclass
+import dataclasses
+from dataclasses import dataclass, field
 from typing import (
     Any,
     Dict,
-    List,
-    Type,
-    Union,
     Generic,
-    Mapping,
-    TypeVar,
     Iterable,
     Iterator,
+    List,
+    Mapping,
     Optional,
     SupportsIndex,
+    Type,
+    TypeVar,
+    Union,
     overload,
 )
+from typing_extensions import Self
 
 __all__ = ["T_Message", "T_MessageSegment", "T_MS", "Message", "MessageSegment"]
 
@@ -48,13 +48,16 @@ class Message(List[T_MessageSegment]):
         message: Union[
             Self, T_MS[T_MessageSegment], Iterable[T_MS[T_MessageSegment]], None
         ] = None,
-        *args: Any,
-        **kwargs: Any,
     ):
-        super().__init__(*args, **kwargs)
+        """初始化。
+
+        Args:
+            message: 可以被转化为消息的数据。
+            *args: 其他参数。
+        """
         if message is None:
             return
-        elif isinstance(message, self.__class__):
+        if isinstance(message, self.__class__):
             self.extend(message)  # type: ignore
         else:
             self.extend(self._construct(message))
@@ -70,7 +73,7 @@ class Message(List[T_MessageSegment]):
 
     @classmethod
     def __get_validators__(cls):
-        """pydantic 自定义校验器。"""
+        """Pydantic 自定义校验器。"""
         yield cls._validate
 
     @classmethod
@@ -80,8 +83,9 @@ class Message(List[T_MessageSegment]):
     def _construct(
         self, msg: Union[T_MS[T_MessageSegment], Iterable[T_MS[T_MessageSegment]]]
     ) -> Iterator[T_MessageSegment]:
-        """用于将 `str`, `Mapping`, `Iterable[Mapping]` 等类型转换为 `MessageSegment。`
-        用于 pydantic 数据解析和方便用户使用。
+        """用于 Pydantic 数据解析和方便用户使用。
+
+        用于将 `str`, `Mapping`, `Iterable[Mapping]` 等类型转换为 `MessageSegment。`
 
         Args:
             msg: 要解析为 `MessageSegment` 的数据。
@@ -102,6 +106,7 @@ class Message(List[T_MessageSegment]):
 
     def _mapping_to_message_segment(self, msg: Mapping[str, Any]) -> T_MessageSegment:
         """用于将 `Mapping` 转换为 `MessageSegment`。
+
         如有需要，子类可重写此方法以更改对 `Mapping` 的默认行为。
 
         Args:
@@ -161,7 +166,7 @@ class Message(List[T_MessageSegment]):
 
     def is_text(self) -> bool:
         """是否是纯文本消息。"""
-        return all(map(lambda x: x.is_text(), self))
+        return all(x.is_text() for x in self)
 
     def get_plain_text(self) -> str:
         """获取消息中的纯文本部分。
@@ -206,10 +211,10 @@ class Message(List[T_MessageSegment]):
 
         Returns:
             检查结果。
-        """
+        """  # noqa: D402
         if isinstance(prefix, str):
             return str(self).startswith(prefix, start, end)
-        elif isinstance(prefix, self._message_segment_class):
+        if isinstance(prefix, self._message_segment_class):
             if len(self) == 0:
                 return False
             return self[0] == prefix
@@ -236,10 +241,10 @@ class Message(List[T_MessageSegment]):
 
         Returns:
             检查结果。
-        """
+        """  # noqa: D402
         if isinstance(suffix, str):
             return str(self).endswith(suffix, start, end)
-        elif isinstance(suffix, self._message_segment_class):
+        if isinstance(suffix, self._message_segment_class):
             if len(self) == 0:
                 return False
             return self[-1] == suffix
@@ -276,12 +281,12 @@ class Message(List[T_MessageSegment]):
 
         Returns:
             替换后的消息对象。
-        """
+        """  # noqa: D402
         if type(old) is str:
             if type(new) is not str:
                 raise TypeError("when type of old is str, type of new must be str.")
             return self._replace_str(old, new, count)
-        elif isinstance(old, self._message_segment_class):
+        if isinstance(old, self._message_segment_class):
             if not (isinstance(new, self._message_segment_class) or new is None):
                 raise TypeError(
                     "when type of old is MessageSegment, "
@@ -297,8 +302,7 @@ class Message(List[T_MessageSegment]):
             if new is None:
                 temp_msg = self.__class__(filter(lambda x: x is not None, self))  # type: ignore
             return temp_msg
-        else:
-            raise TypeError("type of old must be str or MessageSegment")
+        raise TypeError("type of old must be str or MessageSegment")
 
     def _replace_str(self, old: str, new: str, count: int = -1) -> Self:
         """实现类似字符串的 `replace()` 方法。
@@ -402,19 +406,24 @@ class MessageSegment(Mapping[str, Any], Generic[T_Message]):
         return self._message_class(other) + self
 
     def get(self, key: str, default: Any = None):
+        """如果 `key` 存在于 `data` 字典中则返回 `key` 的值，否则返回 `default`。"""
         return self.data.get(key, default)
 
     def keys(self):
+        """返回由 `data` 字典键组成的一个新视图。"""
         return self.data.keys()
 
     def values(self):
+        """返回由 `data` 字典值组成的一个新视图。"""
         return self.data.values()
 
     def items(self):
+        """返回由 `data` 字典项 (`(键, 值)` 对) 组成的一个新视图。"""
         return self.data.items()
 
     def is_text(self) -> bool:
-        """
+        """是否是纯文本消息字段。
+
         Returns:
             是否是纯文本消息字段。
         """

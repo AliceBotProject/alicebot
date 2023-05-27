@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from apscheduler.job import Job
     from apscheduler.triggers.base import BaseTrigger
 
-    from . import APSchedulerAdapter
+    from . import APSchedulerAdapter  # noqa: F401
 
 
 class APSchedulerEvent(Event["APSchedulerAdapter"]):
@@ -24,9 +24,9 @@ class APSchedulerEvent(Event["APSchedulerAdapter"]):
     @property
     def trigger(self) -> Union[str, "BaseTrigger"]:
         """当前事件对应的 Plugin 的 `trigger`。"""
-        return getattr(self.plugin_class, "trigger")
+        return getattr(self.plugin_class, "trigger")  # noqa: B009
 
     @property
     def trigger_args(self) -> Dict[str, Any]:
         """当前事件对应的 Plugin 的 `trigger_args`。"""
-        return getattr(self.plugin_class, "trigger_args")
+        return getattr(self.plugin_class, "trigger_args")  # noqa: B009

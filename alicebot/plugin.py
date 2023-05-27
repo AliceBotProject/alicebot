@@ -2,24 +2,24 @@
 
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
-from enum import Enum
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import (
     TYPE_CHECKING,
-    Type,
-    Generic,
     ClassVar,
+    Generic,
     NoReturn,
     Optional,
+    Type,
     cast,
     final,
 )
 
-from alicebot.event import Event
 from alicebot.dependencies import Depends
-from alicebot.utils import is_config_class
-from alicebot.typing import T_Event, T_State, T_Config
+from alicebot.event import Event
 from alicebot.exceptions import SkipException, StopException
+from alicebot.typing import T_Config, T_Event, T_State
+from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
     from alicebot.bot import Bot
@@ -75,7 +75,7 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         if not hasattr(cls, "Config") and config is not None:
             cls.Config = config
         if init_state is not None:
-            cls.__init_state__ = lambda self: init_state
+            cls.__init_state__ = lambda self: init_state  # noqa: ARG005
 
     @final
     @property
@@ -105,12 +105,12 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     @final
     def stop(self) -> NoReturn:
         """停止当前事件传播。"""
-        raise StopException()
+        raise StopException
 
     @final
     def skip(self) -> NoReturn:
         """跳过自身继续当前事件传播。"""
-        raise SkipException()
+        raise SkipException
 
     @final
     @property

@@ -6,8 +6,8 @@ from typing import TYPE_CHECKING, Union
 
 from aiohttp import web
 
-from alicebot.event import Event
 from alicebot.adapter.utils import HttpServerAdapter
+from alicebot.event import Event
 from alicebot.message import Message, MessageSegment
 
 if TYPE_CHECKING:

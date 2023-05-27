@@ -1,25 +1,29 @@
 """DingTalk 适配器事件。"""
-import time
 from functools import cached_property
-from typing import TYPE_CHECKING, Any, Dict, List, Union, Literal, Optional
+import time
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
 
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 
 from alicebot.event import MessageEvent
 
-from .message import DingTalkMessage
 from .exceptions import WebhookExpiredError
+from .message import DingTalkMessage
 
 if TYPE_CHECKING:
-    from . import DingTalkAdapter
+    from . import DingTalkAdapter  # noqa: F401
 
 
 class UserInfo(BaseModel):
+    """用户信息"""
+
     dingtalkId: str
     staffId: Optional[str]
 
 
 class Text(BaseModel):
+    """文本消息"""
+
     content: str
 
 
@@ -52,6 +56,7 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
 
     @cached_property
     def message(self) -> DingTalkMessage:
+        """返回 message 字段。"""
         return DingTalkMessage.text(self.text.content)
 
     def get_plain_text(self) -> str:
@@ -87,5 +92,4 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
                 msg=message,
                 at=at,
             )
-        else:
-            raise WebhookExpiredError
+        raise WebhookExpiredError

@@ -1,5 +1,5 @@
 """CQHTTP 适配器消息。"""
-from typing import Any, Type, Union, Literal, Mapping, Iterable, Optional
+from typing import Any, Iterable, Literal, Mapping, Optional, Type, Union
 
 from alicebot.message import Message, MessageSegment
 
@@ -38,7 +38,8 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         return self.get_cqcode()
 
     def get_cqcode(self) -> str:
-        """
+        """获取此消息字段的 CQ 码形式。
+
         Returns:
             此消息字段的 CQ 码形式。
         """

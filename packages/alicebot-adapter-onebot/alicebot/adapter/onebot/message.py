@@ -1,5 +1,5 @@
 """OneBot 适配器消息。"""
-from typing import Any, Type, Union, Mapping, Iterable
+from typing import Any, Iterable, Mapping, Type, Union
 
 from alicebot.message import Message, MessageSegment
 

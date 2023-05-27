@@ -3,7 +3,7 @@
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
 from abc import ABC, abstractmethod
-from typing import Any, Generic, TypeVar, Optional, final
+from typing import Any, Generic, Optional, TypeVar, final
 
 from pydantic import BaseModel, PrivateAttr
 
@@ -37,6 +37,12 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
     __handled__: bool = PrivateAttr(default=False)
 
     def __init__(self, adapter: T_Adapter, **data: Any):
+        """初始化。
+
+        Args:
+            adapter: 产生此事件的适配器对象。
+            **data: 事件数据。
+        """
         self._adapter = adapter
         super().__init__(**data)
 
@@ -70,7 +76,7 @@ class MessageEvent(Event[T_Adapter], Generic[T_Adapter, _T]):
         """
 
     @abstractmethod
-    async def reply(self, message: str, *args: Any, **kwargs: Any) -> Any:
+    async def reply(self, message: str, *args: Any, **kwargs: Any) -> Any:  # noqa: D417
         """回复消息。
 
         Args:

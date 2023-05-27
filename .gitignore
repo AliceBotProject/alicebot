@@ -132,6 +132,9 @@ dmypy.json
 node_modules/
 .temp/
 
+# Ruff
+.ruff_cache
+
 # Project
 .idea
 .vscode

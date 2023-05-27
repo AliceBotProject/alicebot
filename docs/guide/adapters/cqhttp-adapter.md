@@ -57,7 +57,7 @@ servers:
 
 如果你安装上面配置 go-cqhttp 的话并且使用了反向 WebSocket 连接方式，将不需要对 AliceBot 进行配置。
 
-如果你有其他特别的需求的话可以编辑 `config.toml` 来配置，参考 [基本配置](./basic-config.md) 和 [CQHTTP 配置](/api/adapter/cqhttp/config.md) 。
+如果你有其他特别的需求的话可以编辑 `config.toml` 来配置，参考 [基本配置](/guide/basic-config.md) 和 [CQHTTP 配置](/api/adapter/cqhttp/config.md) 。
 
 ## 运行测试
 
@@ -69,7 +69,7 @@ servers:
 
 ## 发送富文本消息
 
-在编写插件时，除了发送普通的文本消息外，也可以轻松地构造并发送富文本消息，请确保查看本节时你已经阅读了 [内置消息](./builtin-message.md) 。
+在编写插件时，除了发送普通的文本消息外，也可以轻松地构造并发送富文本消息，请确保查看本节时你已经阅读了 [内置消息](/guide/basics/builtin-message.md) 。
 
 ```python
 from alicebot import Plugin

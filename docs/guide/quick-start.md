@@ -112,7 +112,7 @@ AliceBot 推荐的目录结构如下：
 - [mirai](https://github.com/mamoe/mirai) + [onebot-kotlin](https://github.com/yyuueexxiinngg/onebot-kotlin)
 - [oicq](https://github.com/takayama-lily/oicq)
 
-更多信息详见 [CQHTTP 协议使用指南](./cqhttp-adapter.md) 。
+更多信息详见 [CQHTTP 协议使用指南](/guide/adapters/cqhttp-adapter.md) 。
 
 你也可以安装其他协议适配器或者尝试自己写一个协议适配器。
 

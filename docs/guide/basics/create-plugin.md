@@ -44,7 +44,7 @@ class HalloAlice(Plugin):
 
 以上两个属性都是可选的，默认为 `0` 和 `False` 。
 
-如 [它是如何工作的？](../#它是如何工作的) 一节中所说，当协议适配器产生一个事件（比如机器人接收到了一条消息）后，会按照优先级分发事件给各个插件，AliceBot 会依次执行每个插件的 `rule()` 方法，根据返回值判断是否要执行 `handle()` 方法。
+如 [它是如何工作的？](/guide/#它是如何工作的) 一节中所说，当协议适配器产生一个事件（比如机器人接收到了一条消息）后，会按照优先级分发事件给各个插件，AliceBot 会依次执行每个插件的 `rule()` 方法，根据返回值判断是否要执行 `handle()` 方法。
 
 `Plugin` 类内置了一些属性和方法：
 
@@ -56,7 +56,7 @@ class HalloAlice(Plugin):
 - `self.stop()` ：停止当前事件传播。
 - `self.skip()` ：跳过自身继续当前事件传播。
 
-除了 `self.event`  之外的属性和方法将在 [插件进阶](./plugin-advanced) 一节中详细介绍。
+除了 `self.event`  之外的属性和方法将在进阶中详细介绍。
 
 不同适配器产生的事件是不同的，下文以 CQHTTP 适配器为例编写一个 Hello 插件。
 
@@ -104,7 +104,7 @@ class HalloAlice(Plugin):
 
 CQHTTP 适配器消息事件的 `message` 属性表示当前接收到的消息，类型是 `CQHTTPMessage` ，是 AliceBot 内置 `Message` 类的子类。
 
-AliceBot 内置的 `Message` 类实现了许多实用的方法，建议所有适配器开发者尽可能使用，CQHTTP 适配器就使用了内置的 `Message` 类。具体使用在 [插件进阶](./plugin-advanced.md) 中有提到。在这里可以直接使用 `str()` 函数将 `Message` 类型的 `self.event.message` 转换为字符串。
+AliceBot 内置的 `Message` 类实现了许多实用的方法，建议所有适配器开发者尽可能使用，CQHTTP 适配器就使用了内置的 `Message` 类。具体使用在 [插件进阶](/guide/basics/builtin-message.md) 中有提到。在这里可以直接使用 `str()` 函数将 `Message` 类型的 `self.event.message` 转换为字符串。
 
 除此之外，在 `rule()` 方法中常用的还有 `self.event.message.startswith('xxx')` 和 `self.event.message.endswith('xxx')`。相当于字符串的 `startswith()` 和 `endswith()` 方法。
 

@@ -1,6 +1,6 @@
 # 插件配置
 
-在 [基础配置](../basic-config.md) 一节中提到，可以直接通过 `self.bot.config` 访问当前机器人的配置。但有时我们可能会希望插件配置像适配器配置一样放在一个独立的键中，以提高这个插件的可移植性，那么我们可以这样处理：
+在 [基础配置](/guide/basic-config.md) 一节中提到，可以直接通过 `self.bot.config` 访问当前机器人的配置。但有时我们可能会希望插件配置像适配器配置一样放在一个独立的键中，以提高这个插件的可移植性，那么我们可以这样处理：
 
 ```python
 from alicebot import Plugin, ConfigModel

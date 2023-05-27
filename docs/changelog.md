@@ -4,6 +4,35 @@ sidebar: auto
 
 # 更新日志
 
+## [0.7.0](https://github.com/AliceBotProject/alicebot/compare/v0.6.2...v0.7.0) (2023-05-27)
+
+### Bug Fixes
+
+- 完善部分类型注解并修改 Config 相关逻辑 ([98552ce](https://github.com/AliceBotProject/alicebot/commit/98552ce5f658afb3a4893db06a87ae88242ab234))
+- **mirai:** 修复 Mirai 适配器中 Message 事件回复消息时 quote 为 True 时的异常 ([#31](https://github.com/AliceBotProject/alicebot/issues/31)) ([5612209](https://github.com/AliceBotProject/alicebot/commit/5612209633f772b16f491c939b119231a2242644))
+- **mirai:** 修复 Mirai 适配器中缺少 BotLeaveEventDisband 事件的问题 ([#33](https://github.com/AliceBotProject/alicebot/issues/33)) ([dd02967](https://github.com/AliceBotProject/alicebot/commit/dd02967db661a5caf74a6f6adc7d458dc5e44221))
+- **mirai:** 修复缺少其他客户端上下线通知类的问题 ([#34](https://github.com/AliceBotProject/alicebot/issues/34)) ([2866c8e](https://github.com/AliceBotProject/alicebot/commit/2866c8e3aa4f60c8181682ef1a719e9e0c120928))
+
+### Features
+
+- 删除 Plugin 类的 get() 方法 ([3ad522f](https://github.com/AliceBotProject/alicebot/commit/3ad522fb9d2a1920eb9cdf438cac46c8d5b1fa15))
+- 添加依赖注入功能 ([23f3219](https://github.com/AliceBotProject/alicebot/commit/23f321945c6ff15625eb49c1991b49cef9dafadd))
+- 完善类型注解 ([162f4f7](https://github.com/AliceBotProject/alicebot/commit/162f4f7185a2069b06e08b48a851d7d27bcd0a21))
+- Bot 类的 get() 方法添加 event_type 和 adapter_type 参数 ([d6ad4a8](https://github.com/AliceBotProject/alicebot/commit/d6ad4a88f789991fc9fab4107b35a8c8e813dc65))
+- **dependencies:** 修改依赖注入相关逻辑并添加 Bot 类型和上下文管理器的注入支持 ([ee819ee](https://github.com/AliceBotProject/alicebot/commit/ee819ee814d6634e307629e3072facf2593d5ee6))
+- **event:** 添加通用的 MessageEvent 事件 ([38288db](https://github.com/AliceBotProject/alicebot/commit/38288dbf878506feea884b798783b0b29182e998))
+- **event:** MessageEvent 添加 is_same_sender(), get(), ask() 方法 ([834d358](https://github.com/AliceBotProject/alicebot/commit/834d3581ec792ac9c3b0d8ee8ef3216bc088f26b))
+- **mirai:** Mirai 适配器 Source 类型的消息段的 \_\_str\_\_() 将返回空字符串 ([a7bd151](https://github.com/AliceBotProject/alicebot/commit/a7bd151e91c67259e4f0d86d3a72a496e0540cc3))
+- **onebot:** 添加 OneBot v12 适配器 ([2448d64](https://github.com/AliceBotProject/alicebot/commit/2448d64f46f7e30e0b04bee0e9cd2b5735bfbdba))
+- **onebot:** 完善 OneBot 适配器事件操作 ([b003965](https://github.com/AliceBotProject/alicebot/commit/b0039658d8f6c1c3aa83fe52da9be6831c90087a))
+- **plugin:** 添加用于初始化插件状态的 \_\_init_state\_\_() 方法 ([129f7b0](https://github.com/AliceBotProject/alicebot/commit/129f7b0835e0c626a1e50334ea5c57cb629bc41c))
+- **plugin:** 为 Plugin 类添加 \_\_init_subclass\_\_() 特殊方法，用以在派生子类时进行一些自定义操作 ([920a315](https://github.com/AliceBotProject/alicebot/commit/920a31587312a6f0322666d54bb0042ef52b5e4b))
+
+### BREAKING CHANGES
+
+- 删除 Plugin 类用于初始化后处理的 \_\_post_init\_\_() 方法，现在可以直接重载 \_\_init\_\_() 方法
+- 删除 Plugin 类的 get() 方法，请使用 self.bot.get() 代替
+
 ## [0.6.2](https://github.com/AliceBotProject/alicebot/compare/v0.6.1...v0.6.2) (2023-04-25)
 
 ### Bug Fixes

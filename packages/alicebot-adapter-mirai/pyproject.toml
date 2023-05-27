@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "alicebot-adapter-mirai"
-version = "0.6.2"
+version = "0.7.0"
 description = "Mirai adapter for AliceBot."
 license = "AGPL-3.0-or-later"
 authors = ["st1020 <stone_1020@qq.com>"]
@@ -24,7 +24,7 @@ exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
 [tool.poetry.dependencies]
 python = "^3.8"
-alicebot = "0.6.2"
+alicebot = "0.7.0"
 
 [tool.poetry.dev-dependencies]
 alicebot = { path = "../../", develop = true }

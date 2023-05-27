@@ -12,13 +12,12 @@ AliceBot 仅支持 Python 3.8+ 版本。
 pip install alicebot
 ```
 
-从 GitHub 中安装最新的测试版：
+从 GitHub 中安装最新的开发版：
 
 ```sh
 git clone https://github.com/AliceBotProject/alicebot.git
 cd alicebot
-poetry install --no-dev  # 推荐
-pip install .  # 不推荐
+poetry install --no-dev
 ```
 
 ## 安装适配器
@@ -27,6 +26,7 @@ AliceBot 本身只是一个聊天机器人框架，需要额外安装对应协�
 
 ```sh
 pip install alicebot-adapter-cqhttp
+pip install alicebot-adapter-onebot
 pip install alicebot-adapter-mirai
 pip install alicebot-adapter-dingtalk
 ```
@@ -36,6 +36,8 @@ pip install alicebot-adapter-dingtalk
 ```sh
 pip install alicebot[all]
 pip install alicebot[cqhttp]
+pip install alicebot[onebot]
+pip install alicebot[mirai]
 pip install alicebot[dingtalk]
 ```
 
@@ -58,7 +60,6 @@ pip install alicebot[dingtalk]
 
    if __name__ == "__main__":
        bot.run()
-
    ```
 
 3. 创建一个 `config.toml` 文件并写入以下内容
@@ -83,7 +84,7 @@ pip install alicebot[dingtalk]
 
 你应该会看到以下输出的日志
 
-```text
+```txt
 2021-07-24 00:00:00.000 | INFO     | alicebot.bot:_load_plugins_from_dirs:689 - Loading plugins from dirs "/xxx/plugins"
 2021-07-24 00:00:00.000 | INFO     | alicebot.bot:_load_adapters:746 - Succeeded to load adapter "CQHTTPAdapter" from "alicebot.adapter.cqhttp"
 2021-07-24 00:00:00.000 | INFO     | alicebot:run:90 - Running AliceBot...
@@ -93,7 +94,7 @@ pip install alicebot[dingtalk]
 
 AliceBot 推荐的目录结构如下：
 
-```text
+```txt
 .
 ├── plugins (插件目录)
 │   └── xxx.py

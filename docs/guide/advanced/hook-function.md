@@ -10,7 +10,7 @@ bot = Bot()
 
 @bot.bot_run_hook
 async def hook_func(_bot: Bot):
-    pass
+    ...
 
 
 if __name__ == "__main__":
@@ -29,7 +29,7 @@ if __name__ == "__main__":
 ```python
 @bot.bot_run_hook
 async def hook_func(_bot: Bot):
-    pass
+    ...
 ```
 
 ### Bot 退出
@@ -37,12 +37,8 @@ async def hook_func(_bot: Bot):
 ```python
 @bot.bot_exit_hook
 async def hook_func(_bot: Bot):
-    pass
+    ...
 ```
-
-::: warning 注意
-只有这个钩子函数非协程！
-:::
 
 ## 适配器相关钩子
 
@@ -51,7 +47,7 @@ async def hook_func(_bot: Bot):
 ```python
 @bot.adapter_startup_hook
 async def hook_func(_adapter: "T_Adapter"):
-    pass
+    ...
 ```
 
 ### 适配器运行
@@ -59,7 +55,7 @@ async def hook_func(_adapter: "T_Adapter"):
 ```python
 @bot.adapter_run_hook
 async def hook_func(_adapter: "T_Adapter"):
-    pass
+    ...
 ```
 
 ### 适配器关闭
@@ -67,7 +63,7 @@ async def hook_func(_adapter: "T_Adapter"):
 ```python
 @bot.adapter_shutdown_hook
 async def hook_func(_adapter: "T_Adapter"):
-    pass
+    ...
 ```
 
 ## 事件处理相关钩子
@@ -77,7 +73,7 @@ async def hook_func(_adapter: "T_Adapter"):
 ```python
 @bot.event_preprocessor_hook
 async def hook_func(_event: "T_Event"):
-    pass
+    ...
 ```
 
 ### 事件后处理
@@ -85,5 +81,5 @@ async def hook_func(_event: "T_Event"):
 ```python
 @bot.event_postprocessor_hook
 async def hook_func(_event: "T_Event"):
-    pass
+    ...
 ```

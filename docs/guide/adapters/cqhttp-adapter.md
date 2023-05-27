@@ -63,7 +63,7 @@ servers:
 
 如果你正确配置了协议端和 AliceBot ，运行 AliceBot 后控制台将出现以下日志内容：
 
-```text
+```txt
 2021-09-01 18:05:29.740 | INFO     | alicebot.adapter.cqhttp:handle_cqhttp_event:138 - WebSocket connection from CQHTTP Bot xxxxxx accepted!
 ```
 

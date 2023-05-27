@@ -4,7 +4,7 @@
 
 AliceBot 的所有配置均储存在配置文件 `config.toml` 文件中。
 
-`config.toml` 文件为标准的 [TOML](https://toml.io/) v1.0.0 文件。TOML 是一种“语义明显且易于阅读的最小化配置文件格式”。建议在开始之前先简单了解一下 TOML 语言的基础格式。
+`config.toml` 文件为标准的 [TOML](https://toml.io/cn/) v1.0.0 文件。TOML 是一种“语义明显且易于阅读的最小化配置文件格式”。建议在开始之前先简单了解一下 TOML 语言的基础格式。
 
 AliceBot 的配置项将存储在不同的表（table）中，AliceBot 自身的配置位于 `bot` 表中，而所有适配器和插件的配置则分别位于 `adapter` 和 `plugin` 表中。
 
@@ -20,7 +20,7 @@ AliceBot 自身拥有如下配置项：
 
 - **adapters**
 
-  将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
+  将被加载的适配器列表，将被 `Bot` 类的 `load_adapters()` 方法加载。
 
 与日志记录相关的配置位于 `bot.log` 表中，如下：
 
@@ -30,7 +30,7 @@ AliceBot 自身拥有如下配置项：
 
 - **verbose_exception**
 
-  详细的异常记录，设置为 True 时会在日志中添加异常的 Traceback。
+  详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
 
 不同的适配器或插件的配置将位于 `adapter` 和 `plugin` 的子表中。
 
@@ -96,13 +96,16 @@ class HalloAlice(Plugin):
 
 ## 自定义配置文件或不使用配置文件
 
-你可以在实例化 `Bot` 对象时传入 `config_file` 或 `config_dict` 属性来实现自定义配置文件或者不使用配置文件或者直接在 Python 文件中配置。
+你可以在实例化 `Bot` 对象时传入 `config_file` 或 `config_dict` 属性来实现自定义配置文件、不使用配置文件或者直接在 Python 文件中配置。
 
 AliceBot 会判断 `config_file` 的拓展名，允许 `.toml` 或 `.json` 文件。如果配置文件是 JSON 文件，则要求文件是使用 UTF-8 编码的标准 [JSON](https://www.json.org/) 文件，内容等同于上述 TOML 格式配置文件对应的 JSON 格式内容。
 
 当指定 `config_dict` 属性时，AliceBot 将不再读取配置文件，并直接从给定的配置字典读取配置。
 
 ```python
+from alicebot import Bot
+
+
 # 自定义配置文件名
 bot = Bot(config_file="my_config.json")
 

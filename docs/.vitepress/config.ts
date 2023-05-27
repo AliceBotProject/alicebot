@@ -103,33 +103,46 @@ function getSidebarChildrenItems(dir: string): DefaultTheme.SidebarItem[] {
 function sidebarGuide() {
   return [
     {
-      text: "基础",
+      text: "开始",
       collapsible: false,
       items: [
         "/guide/index.md",
-        "/guide/getting-started.md",
+        "/guide/quick-start.md",
         "/guide/basic-config.md",
-        "/guide/plugin-basics.md",
+      ].map(getSidebarItem),
+    },
+    {
+      text: "基础",
+      collapsible: false,
+      items: [
+        "/guide/basics/basic-concepts.md",
+        "/guide/basics/load-plugin.md",
+        "/guide/basics/create-plugin.md",
+        "/guide/basics/builtin-message.md",
       ].map(getSidebarItem),
     },
     {
       text: "进阶",
       collapsible: false,
       items: [
-        "/guide/plugin-advanced.md",
-        "/guide/builtin-message.md",
-        "/guide/scheduler.md",
-        "/guide/hook-function.md",
-        "/guide/hot-reload.md",
+        "/guide/advanced/event-propagation.md",
+        "/guide/advanced/state-storage.md",
+        "/guide/advanced/plugin-config.md",
+        "/guide/advanced/generic-plugin.md",
+        "/guide/advanced/dependency.md",
+        "/guide/advanced/general-plugin.md",
+        "/guide/advanced/scheduler.md",
+        "/guide/advanced/hook-function.md",
+        "/guide/advanced/hot-reload.md",
       ].map(getSidebarItem),
     },
     {
       text: "协议适配器",
       collapsible: false,
       items: [
-        "/guide/cqhttp-adapter.md",
-        "/guide/mirai-adapter.md",
-        "/guide/dingtalk-adapter.md",
+        "/guide/adapters/cqhttp-adapter.md",
+        "/guide/adapters/mirai-adapter.md",
+        "/guide/adapters/dingtalk-adapter.md",
       ].map(getSidebarItem),
     },
   ];

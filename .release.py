@@ -57,7 +57,7 @@ write_version_toml(Path("pyproject.toml"), version)
 for package in Path("packages").iterdir():
     if package.is_dir():
         write_version_toml(package / "pyproject.toml", version, is_package=True)
-
+subprocess.run(["poetry", "update"])
 subprocess.run(["pnpm", "run", "changelog"])
 with open("docs/changelog.md", encoding="utf-8") as f:
     changelog_file = f.read()

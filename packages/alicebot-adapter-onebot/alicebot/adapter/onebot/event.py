@@ -1,5 +1,6 @@
 """OntBot 适配器事件。"""
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple
+from typing_extensions import Self
 
 from pydantic import BaseModel, Extra
 from pydantic.fields import ModelField
@@ -146,6 +147,17 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter", OneBotMessage]):
             API 请求响应。
         """
         raise NotImplementedError
+
+    async def is_same_sender(self, other: Self) -> bool:
+        """判断自身和另一个事件是否是同一个发送者。
+
+        Args:
+            other: 另一个事件。
+
+        Returns:
+            是否是同一个发送者。
+        """
+        return self.user_id == other.user_id
 
 
 class PrivateMessageEvent(MessageEvent):

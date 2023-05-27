@@ -3,7 +3,8 @@
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Optional, TypeVar, final
+from typing import Any, Generic, Optional, TypeVar, Union, final
+from typing_extensions import Self
 
 from pydantic import BaseModel, PrivateAttr
 
@@ -85,3 +86,63 @@ class MessageEvent(Event[T_Adapter], Generic[T_Adapter, _T]):
         Returns:
             回复消息动作的响应。
         """
+
+    @abstractmethod
+    async def is_same_sender(self, other: Self) -> bool:
+        """判断自身和另一个事件是否是同一个发送者。
+
+        Args:
+            other: 另一个事件。
+
+        Returns:
+            是否是同一个发送者。
+        """
+
+    async def get(
+        self,
+        *,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> Self:
+        """获取用户回复消息。
+
+        相当于 `Bot` 的 `get()`，条件为适配器、事件类型、发送人相同。
+
+        Args:
+            max_try_times: 最大事件数。
+            timeout: 超时时间。
+
+        Returns:
+            用户回复的消息事件。
+
+        Raises:
+            GetEventTimeout: 超过最大事件数或超时。
+        """
+        return await self.adapter.get(
+            self.is_same_sender,
+            event_type=type(self),
+            max_try_times=max_try_times,
+            timeout=timeout,
+        )
+
+    async def ask(
+        self,
+        message: str,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> Self:
+        """询问消息。
+
+        表示回复一个消息后获取用户的回复。
+        相当于 `reply()` 后执行 `get()`。
+
+        Args:
+            message: 回复消息的内容。
+            max_try_times: 最大事件数。
+            timeout: 超时时间。
+
+        Returns:
+            用户回复的消息事件。
+        """
+        await self.reply(message)
+        return await self.get(max_try_times=max_try_times, timeout=timeout)

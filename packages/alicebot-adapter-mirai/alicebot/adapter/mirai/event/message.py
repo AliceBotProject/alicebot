@@ -1,5 +1,6 @@
 """消息事件。"""
-from typing import TYPE_CHECKING, Any, Dict, Literal
+from typing import TYPE_CHECKING, Any, Dict, Literal, Union
+from typing_extensions import Self
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 
@@ -14,6 +15,7 @@ if TYPE_CHECKING:
 class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter", MiraiMessage]):
     """消息事件"""
 
+    sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
     messageChain: MiraiMessage
 
     @property
@@ -43,6 +45,17 @@ class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter", MiraiMessage]):
             API 请求响应。
         """
         raise NotImplementedError
+
+    async def is_same_sender(self, other: Self) -> bool:
+        """判断自身和另一个事件是否是同一个发送者。
+
+        Args:
+            other: 另一个事件。
+
+        Returns:
+            是否是同一个发送者。
+        """
+        return self.sender.id == other.sender.id
 
 
 class FriendMessage(MessageEvent):

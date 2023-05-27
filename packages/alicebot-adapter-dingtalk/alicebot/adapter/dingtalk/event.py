@@ -2,6 +2,7 @@
 from functools import cached_property
 import time
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
+from typing_extensions import Self
 
 from pydantic import BaseModel, Field
 
@@ -93,3 +94,14 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
                 at=at,
             )
         raise WebhookExpiredError
+
+    async def is_same_sender(self, other: Self) -> bool:
+        """判断自身和另一个事件是否是同一个发送者。
+
+        Args:
+            other: 另一个事件。
+
+        Returns:
+            是否是同一个发送者。
+        """
+        return self.senderId == other.senderId

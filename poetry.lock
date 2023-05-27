@@ -194,6 +194,23 @@ type = "directory"
 url = "packages/alicebot-adapter-mirai"
 
 [[package]]
+name = "alicebot-adapter-onebot"
+version = "0.7.1"
+description = "OneBot v12 adapter for AliceBot."
+category = "dev"
+optional = false
+python-versions = "^3.8"
+files = []
+develop = true
+
+[package.dependencies]
+alicebot = "0.7.1"
+
+[package.source]
+type = "directory"
+url = "packages/alicebot-adapter-onebot"
+
+[[package]]
 name = "anyio"
 version = "3.7.0"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
@@ -1346,8 +1363,9 @@ cqhttp = []
 dingtalk = []
 hot-reload = []
 mirai = []
+onebot = []
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8"
-content-hash = "e8054ae3d7bab13d1edc0b3a7009a2e376e5c418e4a45c17c61a39cbbf005eea"
+content-hash = "a57a6b8b6c4e1b51d7afe2159e8c27f8d7dd44b5c3788fddb51387b3f299d379"

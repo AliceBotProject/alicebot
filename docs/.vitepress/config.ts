@@ -165,6 +165,11 @@ function sidebarApi() {
           items: getSidebarChildrenItems("/api/adapter/cqhttp/"),
         },
         {
+          text: "alicebot.adapter.onebot",
+          link: "/api/adapter/onebot/index.md",
+          items: getSidebarChildrenItems("/api/adapter/onebot/"),
+        },
+        {
           text: "alicebot.adapter.mirai",
           link: "/api/adapter/mirai/index.md",
           items: getSidebarChildrenItems("/api/adapter/mirai/"),

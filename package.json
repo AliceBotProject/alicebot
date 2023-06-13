@@ -11,11 +11,11 @@
   "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.2.3",
-    "conventional-changelog-cli": "^2.2.2",
+    "@types/node": "^20.3.1",
+    "conventional-changelog-cli": "^3.0.0",
     "markdownlint-cli": "^0.34.0",
     "prettier": "^2.8.8",
-    "vitepress": "1.0.0-alpha.76"
+    "vitepress": "1.0.0-beta.2"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",

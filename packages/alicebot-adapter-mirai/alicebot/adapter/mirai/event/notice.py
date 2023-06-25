@@ -49,7 +49,7 @@ FriendNickChangedEvent = create_model(
         "type": (Literal["FriendNickChangedEvent"], None),
         "from": (str, None),
         "to": (str, None),
-    },
+    },  # type: ignore
     __base__=FriendEvent,
 )
 """好友昵称改变"""
@@ -270,20 +270,20 @@ class MemberHonorChangeEvent(GroupMemberEvent):
     action: Literal["achieve", "lose"]
 
 
-class OtherClinetEvent(NoticeEvent):
+class OtherClientEvent(NoticeEvent):
     """其他客户端事件"""
 
     client: OtherClientSender
 
 
-class OtherClientOnlineEvent(OtherClinetEvent):
+class OtherClientOnlineEvent(OtherClientEvent):
     """其他客户端上线"""
 
     type: Literal["OtherClientOnlineEvent"]
     kind: Optional[int]
 
 
-class OtherClientOfflineEvent(OtherClinetEvent):
+class OtherClientOfflineEvent(OtherClientEvent):
     """其他客户端下线"""
 
     type: Literal["OtherClientOfflineEvent"]

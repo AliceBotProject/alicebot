@@ -43,7 +43,9 @@ __all__ = [
     "DataclassEncoder",
     "samefile",
     "sync_func_wrapper",
+    "sync_ctx_manager_wrapper",
     "wrap_get_func",
+    "get_annotations",
 ]
 
 _T = TypeVar("_T")
@@ -143,7 +145,7 @@ def get_classes_from_module_name(
 class DataclassEncoder(json.JSONEncoder):
     """用于解析 `MessageSegment` 的 `JSONEncoder` 类。"""
 
-    def default(self, o: Any):
+    def default(self, o: Any) -> Any:
         """返回 `o` 的可序列化对象。"""
         if dataclasses.is_dataclass(o):
             return o.as_dict()

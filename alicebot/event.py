@@ -12,7 +12,7 @@ from alicebot.message import Message
 from alicebot.typing import T_Adapter
 from alicebot.utils import DataclassEncoder
 
-__all__ = ["Event"]
+__all__ = ["Event", "MessageEvent"]
 
 
 class Event(ABC, BaseModel, Generic[T_Adapter]):
@@ -68,6 +68,8 @@ _T = TypeVar("_T")
 
 
 class MessageEvent(Event[T_Adapter], Generic[T_Adapter, _T]):
+    """通用的消息事件类的基类。"""
+
     @abstractmethod
     def get_plain_text(self) -> str:
         """获取消息的纯文本内容。

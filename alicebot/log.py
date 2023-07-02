@@ -5,6 +5,8 @@ AliceBot 使用 [loguru](https://github.com/Delgan/loguru) 来记录日志信息
 """
 from loguru import logger as _logger
 
+__all__ = ["logger", "error_or_exception"]
+
 logger = _logger
 
 

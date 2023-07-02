@@ -3,6 +3,8 @@ from typing import Any, Dict
 
 from alicebot.exceptions import AdapterException
 
+__all__ = ["MiraiException", "NetworkError", "ActionFailed", "ApiTimeout"]
+
 
 class MiraiException(AdapterException):
     """Mirai 异常基类。"""

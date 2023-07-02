@@ -4,6 +4,16 @@
 对于适配器开发者，所有适配器抛出的异常都应该继承自 `AdapterException` 。
 """
 
+__all__ = [
+    "EventException",
+    "SkipException",
+    "StopException",
+    "AliceBotException",
+    "GetEventTimeout",
+    "AdapterException",
+    "LoadModuleError",
+]
+
 
 class EventException(BaseException):
     """事件处理过程中由插件抛出的异常，用于控制事件的传播，会被 AliceBot 自动捕获并处理。"""

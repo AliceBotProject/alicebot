@@ -10,10 +10,11 @@
 - `ConfigModel` => [`alicebot.config.ConfigModel`](./config#ConfigModel)
 - `Depends` => [`alicebot.dependencies.Depends`](./dependencies#Depends)
 """
-# pyright: reportUnusedImport=false
 from alicebot.adapter import Adapter
 from alicebot.bot import Bot
 from alicebot.config import ConfigModel
 from alicebot.dependencies import Depends
 from alicebot.event import Event
 from alicebot.plugin import Plugin
+
+__all__ = ["Adapter", "Bot", "ConfigModel", "Depends", "Event", "Plugin"]

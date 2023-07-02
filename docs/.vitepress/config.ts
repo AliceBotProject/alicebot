@@ -35,12 +35,13 @@ export default defineConfig({
       { text: "主页", link: "/" },
       { text: "指南", link: "/guide/" },
       { text: "API", link: "/api/" },
+      { text: "插件", link: "/plugin/" },
       { text: "更新日志", link: "/changelog" },
     ],
 
     sidebar: {
       "/guide/": sidebarGuide(),
-      "/api/": sidebarApi(),
+      // "/api/": sidebarApi(),
     },
 
     editLink: {

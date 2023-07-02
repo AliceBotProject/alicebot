@@ -12,5 +12,4 @@ import {data} from '../static/plugins.json'
 </script>
 
 # {{ $frontmatter.title }}
-
-<PluginList></PluginList>
+<PluginList :data="data"></PluginList>

@@ -3,6 +3,8 @@ from typing import Literal
 
 from alicebot.config import ConfigModel
 
+__all__ = ["Config"]
+
 
 class Config(ConfigModel):
     """Mirai 配置类，将在适配器被加载时被混入到机器人主配置中。

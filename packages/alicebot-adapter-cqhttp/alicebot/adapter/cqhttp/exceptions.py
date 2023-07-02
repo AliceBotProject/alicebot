@@ -3,6 +3,14 @@ from typing import Any, Dict
 
 from alicebot.exceptions import AdapterException
 
+__all__ = [
+    "CQHTTPException",
+    "NetworkError",
+    "ActionFailed",
+    "ApiNotAvailable",
+    "ApiTimeout",
+]
+
 
 class CQHTTPException(AdapterException):
     """CQHTTP 异常基类。"""

@@ -13,6 +13,8 @@ from .message import DingTalkMessage
 if TYPE_CHECKING:
     from . import DingTalkAdapter  # noqa: F401
 
+__all__ = ["UserInfo", "Text", "DingTalkEvent"]
+
 
 class UserInfo(BaseModel):
     """用户信息"""

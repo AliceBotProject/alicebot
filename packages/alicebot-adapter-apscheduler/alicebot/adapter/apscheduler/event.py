@@ -11,6 +11,9 @@ if TYPE_CHECKING:
     from . import APSchedulerAdapter  # noqa: F401
 
 
+__all__ = ["APSchedulerEvent"]
+
+
 class APSchedulerEvent(Event["APSchedulerAdapter"]):
     """APSchedulerEvent 事件基类。"""
 

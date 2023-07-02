@@ -13,6 +13,15 @@ from alicebot.adapter import Adapter
 from alicebot.log import error_or_exception, logger
 from alicebot.typing import T_Config, T_Event
 
+__all__ = [
+    "PollingAdapter",
+    "HttpClientAdapter",
+    "WebSocketClientAdapter",
+    "HttpServerAdapter",
+    "WebSocketServerAdapter",
+    "WebSocketAdapter",
+]
+
 
 class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     """轮询式适配器示例。"""

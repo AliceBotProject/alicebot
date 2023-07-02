@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref  } from 'vue';
+import { onMounted, ref,computed  } from 'vue';
 const props = defineProps(['modelValue', 'pageTotal'])
 const emit = defineEmits(['update:modelValue'])
 const onPrev = () => {
@@ -17,9 +17,7 @@ const setPageNum = (pageNum) => {
   emit('update:modelValue', pageNum)
 }
 
-const genPageArray = (size) => {
-  const current = props.modelValue
-  const total = props.pageTotal
+const genPageArray = (current,total,size) => {
   let arr = []
   if (total < size + 2) {
     arr = Array.from({ length: total }, (v, k) => k + 1)
@@ -40,13 +38,20 @@ const genPageArray = (size) => {
   }
   return arr
 }
-const pageArrayLg = ref([])
-const pageArrayMd = ref([])
-const pageArraySm = ref([])
-onMounted(() => {
-  pageArrayLg.value = genPageArray(17)
-  pageArrayMd.value = genPageArray(10)
-  pageArraySm.value = genPageArray(6)
+const pageArrayLg = computed(()=>{
+  const current = props.modelValue
+  const total = props.pageTotal
+  return genPageArray(current,total,17)
+})
+const pageArrayMd = computed(()=>{
+  const current = props.modelValue
+  const total = props.pageTotal
+  return genPageArray(current,total,10)
+})
+const pageArraySm = computed(()=>{
+  const current = props.modelValue
+  const total = props.pageTotal
+  return genPageArray(current,total,6)
 })
 </script>
 

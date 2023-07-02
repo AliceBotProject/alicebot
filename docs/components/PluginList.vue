@@ -4,7 +4,7 @@ import Pagination from './Pagination.vue';
 const props = defineProps(['data'])
 const pageSize = 10
 const type = ref('plugin')
-const pageTotal = ref(Math.ceil(props.data.filter(item => item.type == type.value).length / pageSize))
+const pageTotal = ref(Math.ceil(props.data.length / pageSize))
 const pageNum = ref(1)
 const searchText = ref('')
 const onsearchText = ref('')

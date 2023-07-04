@@ -98,7 +98,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         return (post_type, detail_type, sub_type)
 
 
-class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter", CQHTTPMessage]):
+class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
     """消息事件"""
 
     __event__ = "message"

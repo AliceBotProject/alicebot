@@ -6,6 +6,7 @@ on:
       - master
     paths-ignore:
       - "**/tests/**"
+      - "**/examples/**"
   workflow_dispatch:
 
 jobs:

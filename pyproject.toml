@@ -121,10 +121,10 @@ convention = "google"
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401", "F403"]
 ".release.py" = ["S603", "S607"]
-"tests/*.py" = ["D", "T"]
+"examples/*.py" = ["D", "T"]
 
 [tool.pyright]
-exclude = ["tests"]
+exclude = ["examples"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"

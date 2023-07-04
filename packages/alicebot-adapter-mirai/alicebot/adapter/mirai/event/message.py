@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from ..message import T_MiraiMSG
 
 
-class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter", MiraiMessage]):
+class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
     """消息事件"""
 
     sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]

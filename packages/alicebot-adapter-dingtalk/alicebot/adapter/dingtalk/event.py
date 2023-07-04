@@ -29,7 +29,7 @@ class Text(BaseModel):
     content: str
 
 
-class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
+class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
     """DingTalk 事件基类"""
 
     type: Optional[str] = Field(alias="msgtype")

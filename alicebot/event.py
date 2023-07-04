@@ -3,7 +3,7 @@
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
 from abc import ABC, abstractmethod
-from typing import Any, Generic, Optional, TypeVar, Union, final
+from typing import Any, Generic, Optional, Union, final
 from typing_extensions import Self
 
 from pydantic import BaseModel, PrivateAttr
@@ -64,10 +64,7 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
         json_encoders = {Message: DataclassEncoder}
 
 
-_T = TypeVar("_T")
-
-
-class MessageEvent(Event[T_Adapter], Generic[T_Adapter, _T]):
+class MessageEvent(Event[T_Adapter]):
     """通用的消息事件类的基类。"""
 
     @abstractmethod

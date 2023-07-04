@@ -117,7 +117,7 @@ class StatusUpdateMetaEvent(MetaEvent):
     status: Status
 
 
-class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter", OneBotMessage]):
+class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
     """消息事件"""
 
     type: Literal["message"]

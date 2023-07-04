@@ -70,6 +70,15 @@ _T = TypeVar("_T")
 class MessageEvent(Event[T_Adapter], Generic[T_Adapter, _T]):
     """通用的消息事件类的基类。"""
 
+    @property
+    def message(self) -> _T:
+        """当前消息事件的消息。
+
+        Returns:
+            返回当前消息事件的消息。
+        """
+        raise NotImplementedError
+
     @abstractmethod
     def get_plain_text(self) -> str:
         """获取消息的纯文本内容。

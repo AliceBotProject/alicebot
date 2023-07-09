@@ -8,8 +8,8 @@ aside: false
 import { ref } from 'vue'
 import PluginList from '../components/PluginList.vue'
 // from '../components/test.json'
-import {data} from '../static/plugins.json'
+// import {data} from '../static/plugins.json'
 </script>
 
 # {{ $frontmatter.title }}
-<PluginList :data="data"></PluginList>
+<Suspense><PluginList></PluginList></Suspense>

@@ -22,7 +22,7 @@ const openGithub = (url) => {
 }
 const setType = (type_) => {
   type.value = type_
-  searchText.value=""
+  searchText.value = ""
   onSearch()
 }
 const onSearch = () => {
@@ -61,7 +61,7 @@ const onSearch = () => {
       </div>
       <div class="divider" style="margin-bottom: 1rem;" />
     </div>
-    <Pagination :pageTotal="pageTotal" v-model="pageNum" style="width: 100%;" key="0"/>
+    <Pagination :pageTotal="pageTotal" v-model="pageNum" style="width: 100%;" key="0" />
     <div class="card-list">
       <div class="card" v-for="(item, index) in pluginLists" :key="index">
         <div class="card-head">
@@ -134,7 +134,7 @@ const onSearch = () => {
         </div>
       </div>
     </div>
-    <Pagination :pageTotal="pageTotal" v-model="pageNum" style="width: 100%;" key="2"/>
+    <Pagination :pageTotal="pageTotal" v-model="pageNum" style="width: 100%;" key="2" />
   </div>
 </template>
 
@@ -217,7 +217,7 @@ const onSearch = () => {
   cursor: pointer;
 }
 
-.card:hover{
+.card:hover {
   border: 1px solid #09f;
 }
 
@@ -304,15 +304,14 @@ const onSearch = () => {
 }
 
 @media (prefers-color-scheme: dark) {
-  /* #313136
-  #9ca3af0d */
-  .card-button{
+
+  .card-button {
     background-color: #9ca3af0d;
   }
-  .card-des{
+
+  .card-des {
     color: #9ca3af;
   }
-  .paper-item{
-    background-color: #9ca3af0d;
-  }
-}</style>
+
+}
+</style>

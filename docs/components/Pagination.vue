@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref,computed  } from 'vue';
+import { computed } from 'vue';
 const props = defineProps(['modelValue', 'pageTotal'])
 const emit = defineEmits(['update:modelValue'])
 const onPrev = () => {
@@ -17,7 +17,7 @@ const setPageNum = (pageNum) => {
   emit('update:modelValue', pageNum)
 }
 
-const genPageArray = (current,total,size) => {
+const genPageArray = (current, total, size) => {
   let arr = []
   if (total < size + 2) {
     arr = Array.from({ length: total }, (v, k) => k + 1)
@@ -38,30 +38,33 @@ const genPageArray = (current,total,size) => {
   }
   return arr
 }
-const pageArrayLg = computed(()=>{
+const pageArrayLg = computed(() => {
   const current = props.modelValue
   const total = props.pageTotal
-  return genPageArray(current,total,17)
+  return genPageArray(current, total, 17)
 })
-const pageArrayMd = computed(()=>{
+const pageArrayMd = computed(() => {
   const current = props.modelValue
   const total = props.pageTotal
-  return genPageArray(current,total,10)
+  return genPageArray(current, total, 10)
 })
-const pageArraySm = computed(()=>{
+const pageArraySm = computed(() => {
   const current = props.modelValue
   const total = props.pageTotal
-  return genPageArray(current,total,6)
+  return genPageArray(current, total, 6)
 })
 </script>
 
 <template>
   <div>
-    <div class="container" v-if="props.pageTotal>1">
+    <div class="container" v-if="props.pageTotal > 1">
       <div class="paper-item" @click="onPrev" style="display: flex;">&lt;</div>
-      <div v-for="(item, index) in pageArrayLg" :key="index" @click="setPageNum(item)" class="paper-item paper-lg" :class="{'active':item==props.modelValue}">{{ item }}</div>
-      <div v-for="(item, index) in pageArrayMd" :key="index" @click="setPageNum(item)" class="paper-item paper-md" :class="{'active':item==props.modelValue}">{{ item }}</div>
-      <div v-for="(item, index) in pageArraySm" :key="index" @click="setPageNum(item)" class="paper-item paper-sm" :class="{'active':item==props.modelValue}">{{ item }}</div>
+      <div v-for="(item, index) in pageArrayLg" :key="index" @click="setPageNum(item)" class="paper-item paper-lg"
+        :class="{ 'active': item == props.modelValue }">{{ item }}</div>
+      <div v-for="(item, index) in pageArrayMd" :key="index" @click="setPageNum(item)" class="paper-item paper-md"
+        :class="{ 'active': item == props.modelValue }">{{ item }}</div>
+      <div v-for="(item, index) in pageArraySm" :key="index" @click="setPageNum(item)" class="paper-item paper-sm"
+        :class="{ 'active': item == props.modelValue }">{{ item }}</div>
       <div class="paper-item" @click="onNext" style="display: flex;">></div>
     </div>
   </div>
@@ -131,9 +134,16 @@ const pageArraySm = computed(()=>{
   --un-text-opacity: 1;
   color: #0099ff;
 }
+
 .paper-item.active {
   background-color: #0099ff0d;
   --un-text-opacity: 1;
   color: #0099ff;
 }
-</style>
+
+@media (prefers-color-scheme: dark) {
+
+.paper-item {
+  background-color: #9ca3af0d;
+}
+}</style>

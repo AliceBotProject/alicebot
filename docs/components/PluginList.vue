@@ -208,12 +208,17 @@ const onSearch = () => {
 
 .card {
   display: block;
-  border: 1px solid rgba(60, 60, 67, .12);
+  border: 1px solid rgba(82, 82, 89, .32);
   border-radius: .5rem;
   padding: 1.5rem;
   width: 100%;
   height: 100%;
   transition: border-color .25s;
+  cursor: pointer;
+}
+
+.card:hover{
+  border: 1px solid #09f;
 }
 
 .card-head {
@@ -296,4 +301,18 @@ const onSearch = () => {
 
 .card-button:hover {
   fill: #09f;
+}
+
+@media (prefers-color-scheme: dark) {
+  /* #313136
+  #9ca3af0d */
+  .card-button{
+    background-color: #9ca3af0d;
+  }
+  .card-des{
+    color: #9ca3af;
+  }
+  .paper-item{
+    background-color: #9ca3af0d;
+  }
 }</style>

@@ -1,10 +1,18 @@
 """CQHTTP 适配器事件。"""
-from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Literal,
+    Optional,
+    Tuple,
+    get_args,
+    get_origin,
+)
 from typing_extensions import Self
 
-from pydantic import BaseModel, Field
-from pydantic.fields import ModelField
-from pydantic.typing import all_literal_values, is_literal_type
+from pydantic import BaseModel, ConfigDict, Extra, Field
+from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -19,15 +27,15 @@ if TYPE_CHECKING:
 class Sender(BaseModel):
     """发送人信息"""
 
-    user_id: Optional[int]
-    nickname: Optional[str]
-    card: Optional[str]
-    sex: Optional[Literal["male", "female", "unknown"]]
-    age: Optional[int]
-    area: Optional[str]
-    level: Optional[str]
-    role: Optional[str]
-    title: Optional[str]
+    user_id: Optional[int] = None
+    nickname: Optional[str] = None
+    card: Optional[str] = None
+    sex: Optional[Literal["male", "female", "unknown"]] = None
+    age: Optional[int] = None
+    area: Optional[str] = None
+    level: Optional[str] = None
+    role: Optional[str] = None
+    title: Optional[str] = None
 
 
 class Anonymous(BaseModel):
@@ -50,17 +58,17 @@ class File(BaseModel):
 class Status(BaseModel):
     """状态信息"""
 
+    model_config = ConfigDict(extra=Extra.allow)
+
     online: bool
     good: bool
 
-    class Config:
-        extra = "allow"
 
-
-def _get_literal_field(field: ModelField) -> Optional[str]:
-    if not is_literal_type(field.outer_type_):
+def _get_literal_field(field: FieldInfo) -> Optional[str]:
+    annotation = field.annotation
+    if annotation is None or get_origin(annotation) is not Literal:
         return None
-    literal_values = all_literal_values(field.outer_type_)
+    literal_values = get_args(annotation)
     if len(literal_values) != 1:
         return None
     return literal_values[0]
@@ -87,13 +95,13 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         Returns:
             事件类型。
         """
-        post_type_field = cls.__fields__.get("post_type", None)
+        post_type_field = cls.model_fields.get("post_type", None)
         post_type = post_type_field and _get_literal_field(post_type_field)
         if post_type is None:
             return (None, None, None)
-        detail_type_field = cls.__fields__.get(post_type + "_type", None)
+        detail_type_field = cls.model_fields.get(post_type + "_type", None)
         detail_type = detail_type_field and _get_literal_field(detail_type_field)
-        sub_type_field = cls.__fields__.get("sub_type", None)
+        sub_type_field = cls.model_fields.get("sub_type", None)
         sub_type = sub_type_field and _get_literal_field(sub_type_field)
         return (post_type, detail_type, sub_type)
 
@@ -286,7 +294,7 @@ class NotifyEvent(NoticeEvent):
     __event__ = "notice.notify"
     notice_type: Literal["notify"]
     sub_type: str
-    group_id: Optional[int]
+    group_id: Optional[int] = None
     user_id: int
 
 

@@ -136,7 +136,7 @@ class GroupRecallEvent(GroupNoticeEvent):
     messageId: int
     time: int
     group: GroupInfo
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class GroupNameChangeEvent(GroupNoticeEvent):
@@ -146,7 +146,7 @@ class GroupNameChangeEvent(GroupNoticeEvent):
     origin: str
     current: str
     group: GroupInfo
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
@@ -156,7 +156,7 @@ class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
     origin: str
     current: str
     group: GroupInfo
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class GroupMuteAllEvent(GroupNoticeEvent):
@@ -166,7 +166,7 @@ class GroupMuteAllEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
@@ -176,7 +176,7 @@ class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class GroupAllowConfessTalkEvent(GroupNoticeEvent):
@@ -196,7 +196,7 @@ class GroupAllowMemberInviteEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class GroupMemberEvent(GroupEvent):
@@ -253,14 +253,14 @@ class MemberMuteEvent(GroupMemberEvent):
 
     type: Literal["MemberMuteEvent"]
     durationSeconds: int
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class MemberUnmuteEvent(GroupMemberEvent):
     """群成员被取消禁言事件（该成员不是Bot）"""
 
     type: Literal["MemberUnmuteEvent"]
-    operator: Optional[GroupMemberInfo]
+    operator: Optional[GroupMemberInfo] = None
 
 
 class MemberHonorChangeEvent(GroupMemberEvent):
@@ -280,7 +280,7 @@ class OtherClientOnlineEvent(OtherClientEvent):
     """其他客户端上线"""
 
     type: Literal["OtherClientOnlineEvent"]
-    kind: Optional[int]
+    kind: Optional[int] = None
 
 
 class OtherClientOfflineEvent(OtherClientEvent):

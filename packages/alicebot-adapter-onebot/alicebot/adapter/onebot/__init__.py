@@ -28,7 +28,7 @@ from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
-from alicebot.utils import DataclassEncoder
+from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
@@ -236,9 +236,9 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
                         "action": api,
                         "params": params,
                         "echo": api_echo,
-                        "self": bot_self.dict(),
+                        "self": bot_self.model_dump(),
                     },
-                    cls=DataclassEncoder,
+                    cls=PydanticEncoder,
                 )
             )
         except Exception as e:

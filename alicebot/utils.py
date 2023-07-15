@@ -2,7 +2,6 @@
 from abc import ABC
 import asyncio
 from contextlib import asynccontextmanager
-import dataclasses
 from functools import partial
 import importlib
 from importlib.abc import MetaPathFinder
@@ -19,6 +18,7 @@ from typing import (
     AsyncGenerator,
     Awaitable,
     Callable,
+    ClassVar,
     ContextManager,
     Coroutine,
     Dict,
@@ -32,6 +32,8 @@ from typing import (
 )
 from typing_extensions import ParamSpec, TypeGuard
 
+from pydantic import BaseModel
+
 from alicebot.config import ConfigModel
 from alicebot.typing import T_Event
 
@@ -40,7 +42,7 @@ __all__ = [
     "is_config_class",
     "get_classes_from_module",
     "get_classes_from_module_name",
-    "DataclassEncoder",
+    "PydanticEncoder",
     "samefile",
     "sync_func_wrapper",
     "sync_ctx_manager_wrapper",
@@ -56,7 +58,7 @@ _R = TypeVar("_R")
 class ModulePathFinder(MetaPathFinder):
     """用于查找 AliceBot 组件的元路径查找器。"""
 
-    path: List[str] = []
+    path: ClassVar[List[str]] = []
 
     def find_spec(
         self,
@@ -142,13 +144,13 @@ def get_classes_from_module_name(
         raise ImportError(e, traceback.format_exc()) from e
 
 
-class DataclassEncoder(json.JSONEncoder):
-    """用于解析 `MessageSegment` 的 `JSONEncoder` 类。"""
+class PydanticEncoder(json.JSONEncoder):
+    """用于解析 `pydantic.BaseModel` 的 `JSONEncoder` 类。"""
 
     def default(self, o: Any) -> Any:
         """返回 `o` 的可序列化对象。"""
-        if dataclasses.is_dataclass(o):
-            return o.as_dict()
+        if isinstance(o, BaseModel):
+            return o.model_dump(mode="json")
         return super().default(o)
 
 

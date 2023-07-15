@@ -17,8 +17,13 @@ T_CQMSG = Union[
 class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
     """CQHTTP 消息。"""
 
-    @property
-    def _message_segment_class(self) -> Type["CQHTTPMessageSegment"]:
+    @classmethod
+    def get_segment_class(cls) -> Type["CQHTTPMessageSegment"]:
+        """获取消息字段类。
+
+        Returns:
+            消息字段类。
+        """
         return CQHTTPMessageSegment
 
     def _str_to_message_segment(self, msg: str) -> "CQHTTPMessageSegment":
@@ -28,8 +33,13 @@ class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
 class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     """CQHTTP 消息字段。"""
 
-    @property
-    def _message_class(self) -> Type["CQHTTPMessage"]:
+    @classmethod
+    def get_message_class(cls) -> Type[CQHTTPMessage]:
+        """获取消息类。
+
+        Returns:
+            消息类。
+        """
         return CQHTTPMessage
 
     def __str__(self) -> str:

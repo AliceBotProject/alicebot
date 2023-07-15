@@ -2,8 +2,10 @@
 import json
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Type, Union
 
+from pydantic import model_serializer
+
 from alicebot.message import Message, MessageSegment
-from alicebot.utils import DataclassEncoder
+from alicebot.utils import PydanticEncoder
 
 __all__ = ["T_MiraiMSG", "MiraiMessage", "MiraiMessageSegment"]
 
@@ -19,12 +21,17 @@ T_MiraiMSG = Union[
 class MiraiMessage(Message["MiraiMessageSegment"]):
     """Mirai 消息"""
 
-    @property
-    def _message_segment_class(self) -> Type["MiraiMessageSegment"]:
+    @classmethod
+    def get_segment_class(cls) -> Type["MiraiMessageSegment"]:
+        """获取消息字段类。
+
+        Returns:
+            消息字段类。
+        """
         return MiraiMessageSegment
 
     def _str_to_message_segment(self, msg: str) -> "MiraiMessageSegment":
-        return self._message_segment_class.plain(msg)
+        return self.get_segment_class().plain(msg)
 
     def as_message_chain(self) -> List[Dict[str, Any]]:
         """返回符合 Mirai-api-http 标准的 messageChain 数组。
@@ -32,7 +39,7 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
         Returns:
             messageChain 数组。
         """
-        return [x.as_dict() for x in self]
+        return [x.model_dump() for x in self]
 
 
 class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
@@ -49,8 +56,13 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
             type=type, data={k: v for k, v in data.items() if v is not None}
         )
 
-    @property
-    def _message_class(self) -> Type["MiraiMessage"]:
+    @classmethod
+    def get_message_class(cls) -> Type["MiraiMessage"]:
+        """获取消息类。
+
+        Returns:
+            消息类。
+        """
         return MiraiMessage
 
     def __str__(self) -> str:
@@ -58,9 +70,10 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
             return ""
         if self.type == "Plain":
             return self.data.get("text", "")
-        return json.dumps(self, cls=DataclassEncoder)
+        return json.dumps(self, cls=PydanticEncoder)
 
-    def as_dict(self) -> Dict[str, Any]:
+    @model_serializer
+    def ser_model(self) -> Dict[str, Any]:
         """返回符合 Mirai-api-http 标准的消息字段字典。
 
         Returns:

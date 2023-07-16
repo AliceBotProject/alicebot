@@ -786,13 +786,13 @@ files = [
 
 [[package]]
 name = "platformdirs"
-version = "3.8.1"
+version = "3.9.1"
 description = "A small Python package for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "platformdirs-3.8.1-py3-none-any.whl", hash = "sha256:cec7b889196b9144d088e4c57d9ceef7374f6c39694ad1577a0aab50d27ea28c"},
-    {file = "platformdirs-3.8.1.tar.gz", hash = "sha256:f87ca4fcff7d2b0f81c6a748a77973d7af0f4d526f98f308477c3c436c74d528"},
+    {file = "platformdirs-3.9.1-py3-none-any.whl", hash = "sha256:ad8291ae0ae5072f66c16945166cb11c63394c7a3ad1b1bc9828ca3162da8c2f"},
+    {file = "platformdirs-3.9.1.tar.gz", hash = "sha256:1b42b450ad933e981d56e59f1b97495428c9bd60698baab9f3eb3d00d5822421"},
 ]
 
 [package.extras]
@@ -1153,17 +1153,17 @@ files = [
 
 [[package]]
 name = "sophia-doc"
-version = "0.1.3"
+version = "0.1.4"
 description = "A python package to automatically generate API documents for Python modules."
 optional = false
-python-versions = ">=3.8,<4.0"
+python-versions = ">=3.8"
 files = [
-    {file = "sophia_doc-0.1.3-py3-none-any.whl", hash = "sha256:cef694cf29ade4e38214b97afc7489e2edff4e05594fa418d67d2bbe2650a82f"},
-    {file = "sophia_doc-0.1.3.tar.gz", hash = "sha256:389aa5453270f01b54d339107ad46ff5cccad5fabcf60d3ab9dddbd7702dca7e"},
+    {file = "sophia_doc-0.1.4-py3-none-any.whl", hash = "sha256:93b904d2120b838c69afd889231662e5706d87b34af7b43a8dc5cedbc1b2738e"},
+    {file = "sophia_doc-0.1.4.tar.gz", hash = "sha256:79667db437d62e159378ff6b13193007f1b2fd7c4ddfcb2d8c96fc061b869086"},
 ]
 
 [package.dependencies]
-docstring-parser = ">=0.15,<0.16"
+docstring-parser = ">=0.15"
 
 [[package]]
 name = "tomli"

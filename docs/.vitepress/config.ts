@@ -40,7 +40,8 @@ export default defineConfig({
 
     sidebar: {
       "/guide/": sidebarGuide(),
-      "/api/": sidebarApi(),
+      "/api/": sidebarApi("/api/"),
+      "/dev-api/": sidebarApi("/dev-api/"),
     },
 
     editLink: {
@@ -148,41 +149,41 @@ function sidebarGuide() {
   ];
 }
 
-function sidebarApi() {
+function sidebarApi(base: string) {
   return [
     {
       text: "AliceBot Api Reference",
       items: [
-        ...getSidebarChildrenItems("/api/"),
-        getSidebarItem("/api/adapter/index.md"),
+        ...getSidebarChildrenItems(base),
+        getSidebarItem(base + "adapter/index.md"),
         {
           text: "alicebot.adapter.utils",
-          link: "/api/adapter/utils.md",
+          link: base + "adapter/utils.md",
         },
         {
           text: "alicebot.adapter.cqhttp",
-          link: "/api/adapter/cqhttp/index.md",
-          items: getSidebarChildrenItems("/api/adapter/cqhttp/"),
+          link: base + "adapter/cqhttp/index.md",
+          items: getSidebarChildrenItems(base + "adapter/cqhttp/"),
         },
         {
           text: "alicebot.adapter.onebot",
-          link: "/api/adapter/onebot/index.md",
-          items: getSidebarChildrenItems("/api/adapter/onebot/"),
+          link: base + "adapter/onebot/index.md",
+          items: getSidebarChildrenItems(base + "adapter/onebot/"),
         },
         {
           text: "alicebot.adapter.mirai",
-          link: "/api/adapter/mirai/index.md",
-          items: getSidebarChildrenItems("/api/adapter/mirai/"),
+          link: base + "adapter/mirai/index.md",
+          items: getSidebarChildrenItems(base + "adapter/mirai/"),
         },
         {
           text: "alicebot.adapter.dingtalk",
-          link: "/api/adapter/dingtalk/index.md",
-          items: getSidebarChildrenItems("/api/adapter/dingtalk/"),
+          link: base + "adapter/dingtalk/index.md",
+          items: getSidebarChildrenItems(base + "adapter/dingtalk/"),
         },
         {
           text: "alicebot.adapter.apscheduler",
-          link: "/api/adapter/apscheduler/index.md",
-          items: getSidebarChildrenItems("/api/adapter/apscheduler/"),
+          link: base + "adapter/apscheduler/index.md",
+          items: getSidebarChildrenItems(base + "adapter/apscheduler/"),
         },
       ],
     },

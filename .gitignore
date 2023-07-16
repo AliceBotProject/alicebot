@@ -142,6 +142,6 @@ docs_build/**/*.rst
 docs_build/_build
 /examples/config.json
 /examples/config.toml
-/docs/api/**/*.md
+/docs/dev-api/**/*.md
 /docs/.vitepress/cache
 /docs/.vitepress/dist

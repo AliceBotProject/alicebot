@@ -17,7 +17,8 @@ __all__ = ["APSchedulerEvent"]
 class APSchedulerEvent(Event["APSchedulerAdapter"]):
     """APSchedulerEvent 事件基类。"""
 
-    plugin_class: Type[Plugin[Any, Any, Any]]
+    type: str = "apscheduler"
+    plugin_class: Type[Plugin]  # type: ignore
 
     @property
     def job(self) -> "Job":

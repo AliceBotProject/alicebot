@@ -23,7 +23,7 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 tomli = { version = "^2.0.0", python = "<3.11" }
-pydantic = "^1.10.0"
+pydantic = "^2.0.3"
 aiohttp = "^3.8.0"
 loguru = "^0.7.0"
 typing-extensions = "^4.5.0"
@@ -37,7 +37,7 @@ alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop =
 alicebot-adapter-dingtalk = { path = "./packages/alicebot-adapter-dingtalk", develop = true }
 alicebot-adapter-apscheduler = { path = "./packages/alicebot-adapter-apscheduler", develop = true }
 black = "^23.1.0"
-ruff = "^0.0.270"
+ruff = "*"
 pre-commit = "^3.1.0"
 pre-commit-hooks = "^4.4.0"
 tomlkit = "^0.11.7"

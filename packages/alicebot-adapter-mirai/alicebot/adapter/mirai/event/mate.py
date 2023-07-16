@@ -49,6 +49,6 @@ class CommandExecutedEvent(MateEvent):
 
     type: Literal["CommandExecutedEvent"]
     name: str
-    friend: Optional[FriendInfo]
-    member: Optional[GroupMemberInfo]
+    friend: Optional[FriendInfo] = None
+    member: Optional[GroupMemberInfo] = None
     args: List[Any]

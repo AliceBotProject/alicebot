@@ -26,7 +26,7 @@ import aiohttp
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
-from alicebot.utils import DataclassEncoder
+from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
@@ -210,7 +210,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                         "subCommand": sub_command,
                         "content": content,
                     },
-                    cls=DataclassEncoder,
+                    cls=PydanticEncoder,
                 )
             )
         except Exception as e:

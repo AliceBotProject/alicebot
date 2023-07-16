@@ -69,15 +69,16 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     async def run(self):
         """运行适配器。"""
-        async with aiohttp.ClientSession() as session:
-            async with session.ws_connect(self.url) as ws:
-                msg: aiohttp.WSMessage
-                async for msg in ws:
-                    if self.bot.should_exit.is_set():
-                        break
-                    if msg.type == aiohttp.WSMsgType.ERROR:
-                        break
-                    await self.handle_response(msg)
+        async with aiohttp.ClientSession() as session, session.ws_connect(
+            self.url
+        ) as ws:
+            msg: aiohttp.WSMessage
+            async for msg in ws:
+                if self.bot.should_exit.is_set():
+                    break
+                if msg.type == aiohttp.WSMsgType.ERROR:
+                    break
+                await self.handle_response(msg)
 
     @abstractmethod
     async def handle_response(self, msg: aiohttp.WSMessage):

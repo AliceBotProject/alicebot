@@ -147,9 +147,9 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
             data = msg
         elif conversation_type == "2":
             if at is None:
-                data = {"msgtype": msg.type, **msg.as_dict()}
+                data = {"msgtype": msg.type, **msg.model_dump()}
             else:
-                data = {"msgtype": msg.type, **msg.as_dict(), **at.as_dict()}
+                data = {"msgtype": msg.type, **msg.model_dump(), **at.model_dump()}
         else:
             raise ValueError(
                 f'conversation_type must be "1" or "2" not {conversation_type}'

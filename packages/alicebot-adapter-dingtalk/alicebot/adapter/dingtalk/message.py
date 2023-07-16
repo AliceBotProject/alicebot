@@ -1,6 +1,8 @@
 """DingTalk 适配器消息。"""
 from typing import Any, Dict, List, Optional
 
+from pydantic import model_serializer
+
 from alicebot.message import MessageSegment
 
 __all__ = ["DingTalkMessage"]
@@ -9,14 +11,29 @@ __all__ = ["DingTalkMessage"]
 class DingTalkMessage(MessageSegment):  # type: ignore
     """DingTalk 消息"""
 
-    @property
-    def _message_class(self) -> None:
-        return None
+    @classmethod
+    def get_segment_class(cls) -> None:
+        """获取消息字段类。
+
+        Returns:
+            消息字段类。
+        """
 
     def __str__(self):
         if self.type == "text":
             return self.data["content"]
         return super().__str__()
+
+    @model_serializer
+    def ser_model(self) -> Dict[str, Any]:
+        """返回符合钉钉消息标准的消息字段字典。
+
+        Returns:
+            符合钉钉消息标准的消息字段字典。
+        """
+        if self.type == "raw":
+            return self.data
+        return {self.type: self.data}
 
     def get_plain_text(self) -> str:
         """获取消息中的纯文本部分。
@@ -27,16 +44,6 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         if self.type == "text":
             return self.data["content"]
         return ""
-
-    def as_dict(self) -> Dict[str, Dict[str, Any]]:
-        """返回符合钉钉消息标准的消息字段字典。
-
-        Returns:
-            符合钉钉消息标准的消息字段字典。
-        """
-        if self.type == "raw":
-            return self.data
-        return {self.type: self.data}
 
     @classmethod
     def raw(cls, data: Dict[str, Any]) -> "DingTalkMessage":

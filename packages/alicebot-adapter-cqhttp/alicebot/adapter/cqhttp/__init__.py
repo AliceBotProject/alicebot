@@ -27,7 +27,7 @@ from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
-from alicebot.utils import DataclassEncoder
+from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
@@ -199,7 +199,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                     pass
                 else:
                     logger.error(
-                        f"CQHTTP Bot status is not good: {cqhttp_event.status.dict()}"
+                        f"CQHTTP Bot status is not good: {cqhttp_event.status.model_dump()}"
                     )
         else:
             await self.handle_event(cqhttp_event)
@@ -226,7 +226,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             await self.websocket.send_str(
                 json.dumps(
                     {"action": api, "params": params, "echo": api_echo},
-                    cls=DataclassEncoder,
+                    cls=PydanticEncoder,
                 )
             )
         except Exception as e:

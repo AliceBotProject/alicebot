@@ -90,9 +90,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         """
         logger.info(f"APSchedulerEvent set by {plugin_class} is created as scheduled")
         await self.handle_event(
-            APSchedulerEvent(
-                adapter=self, type="apscheduler", plugin_class=plugin_class
-            ),
+            APSchedulerEvent(adapter=self, plugin_class=plugin_class),
             handle_get=False,
             show_log=False,
         )

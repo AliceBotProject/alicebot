@@ -1,10 +1,19 @@
 """OntBot 适配器事件。"""
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Tuple
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Literal,
+    Optional,
+    Tuple,
+    get_args,
+    get_origin,
+)
 from typing_extensions import Self
 
 from pydantic import BaseModel, Extra
-from pydantic.fields import ModelField
-from pydantic.typing import all_literal_values, is_literal_type
+from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -45,10 +54,11 @@ class Status(BaseModel, extra=Extra.allow):
     bots: List[BotStatus]
 
 
-def _get_literal_field(field: ModelField) -> Optional[str]:
-    if not is_literal_type(field.outer_type_):
+def _get_literal_field(field: FieldInfo) -> Optional[str]:
+    annotation = field.annotation
+    if annotation is None or get_origin(annotation) is not Literal:
         return None
-    literal_values = all_literal_values(field.outer_type_)
+    literal_values = get_args(annotation)
     if len(literal_values) != 1:
         return None
     return literal_values[0]
@@ -70,11 +80,11 @@ class OntBotEvent(Event["OneBotAdapter"]):
         Returns:
             事件类型。
         """
-        type_field = cls.__fields__.get("type", None)
+        type_field = cls.model_fields.get("type", None)
         type = type_field and _get_literal_field(type_field)
-        detail_type_field = cls.__fields__.get("detail_type", None)
+        detail_type_field = cls.model_fields.get("detail_type", None)
         detail_type = detail_type_field and _get_literal_field(detail_type_field)
-        sub_type_field = cls.__fields__.get("sub_type", None)
+        sub_type_field = cls.model_fields.get("sub_type", None)
         sub_type = sub_type_field and _get_literal_field(sub_type_field)
         return (type, detail_type, sub_type)
 

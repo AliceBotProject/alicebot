@@ -1,6 +1,8 @@
 """APScheduler 适配器配置。"""
 from typing import Any, Dict
 
+from pydantic import Field
+
 from alicebot.config import ConfigModel
 
 __all__ = ["Config"]
@@ -14,4 +16,4 @@ class Config(ConfigModel):
     """
 
     __config_name__ = "apscheduler"
-    scheduler_config: Dict[str, Any] = {}
+    scheduler_config: Dict[str, Any] = Field(default_factory=dict)

@@ -16,19 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install poetry
-        run: pipx install poetry
-        shell: bash
-      - uses: actions/setup-python@v4
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
         with:
-          python-version: "3.9"
-          architecture: "x64"
-          cache: "poetry"
-      - run: poetry install
-        shell: bash
+          python-version: 3.9
+          architecture: x64
+          cache: true
+      - name: Install dependencies
+        run: pdm install
 
       - name: Build API Doc
-        run: poetry run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
+        run: pdm run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
         env:
           ALICEBOT_DEV: "1"

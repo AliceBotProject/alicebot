@@ -45,9 +45,9 @@ def write_version_toml(file: Path, version: str, *, is_package: bool = False):
     """
     with file.open(encoding="utf-8") as f:
         toml_file = tomlkit.load(f)
-    toml_file["tool"]["poetry"]["version"] = version  # type: ignore
+    toml_file["project"]["version"] = version  # type: ignore
     if is_package:
-        toml_file["tool"]["poetry"]["dependencies"]["alicebot"] = version  # type: ignore
+        toml_file["project"]["dependencies"][0] = f"alicebot=={version}"  # type: ignore
     with file.open("w", encoding="utf-8") as f:
         tomlkit.dump(toml_file, f)
 
@@ -57,7 +57,7 @@ write_version_toml(Path("pyproject.toml"), version)
 for package in Path("packages").iterdir():
     if package.is_dir():
         write_version_toml(package / "pyproject.toml", version, is_package=True)
-subprocess.run(["poetry", "update"])
+subprocess.run(["pdm", "update"])
 subprocess.run(["pnpm", "run", "changelog"])
 with open("docs/changelog.md", encoding="utf-8") as f:
     changelog_file = f.read()

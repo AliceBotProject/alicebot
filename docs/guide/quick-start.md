@@ -17,7 +17,7 @@ pip install alicebot
 ```sh
 git clone https://github.com/AliceBotProject/alicebot.git
 cd alicebot
-poetry install --no-dev
+pdm install
 ```
 
 ## 安装适配器

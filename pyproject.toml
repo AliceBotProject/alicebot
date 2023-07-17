@@ -1,13 +1,10 @@
-[tool.poetry]
+[project]
 name = "alicebot"
 version = "0.7.1"
 description = "A simply asynchronous python chatbot framework."
-license = "MIT"
-authors = ["st1020 <stone_1020@qq.com>"]
+authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
+license = { text = "MIT" }
 readme = "README.md"
-homepage = "https://docs.alicebot.dev/"
-repository = "https://github.com/AliceBotProject/alicebot"
-documentation = "https://docs.alicebot.dev/"
 keywords = ["bot", "chatbot", "qq", "qqbot", "cqhttp", "coolq"]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -19,30 +16,16 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Topic :: Communications :: Chat",
 ]
+requires-python = ">=3.8"
+dependencies = [
+  "tomli>=2.0.0,<3.0.0;python_version<'3.11'",
+  "pydantic>=2.0.3,<3.0.0",
+  "aiohttp>=3.8.0,<4.0.0",
+  "loguru>=0.7.0,<0.8.0",
+  "typing-extensions>=4.5.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-tomli = { version = "^2.0.0", python = "<3.11" }
-pydantic = "^2.0.3"
-aiohttp = "^3.8.0"
-loguru = "^0.7.0"
-typing-extensions = "^4.5.0"
-
-[tool.poetry.group.dev.dependencies]
-watchfiles = "^0.19.0"
-sophia-doc = "^0.1.0"
-alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
-alicebot-adapter-onebot = { path = "./packages/alicebot-adapter-onebot", develop = true }
-alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }
-alicebot-adapter-dingtalk = { path = "./packages/alicebot-adapter-dingtalk", develop = true }
-alicebot-adapter-apscheduler = { path = "./packages/alicebot-adapter-apscheduler", develop = true }
-black = "^23.1.0"
-ruff = "*"
-pre-commit = "^3.1.0"
-pre-commit-hooks = "^4.4.0"
-tomlkit = "^0.11.7"
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 cqhttp = ["alicebot-adapter-cqhttp"]
 onebot = ["alicebot-adapter-onebot"]
 mirai = ["alicebot-adapter-mirai"]
@@ -51,11 +34,29 @@ apscheduler = ["alicebot-adapter-apscheduler"]
 hot_reload = ["watchfiles"]
 all = [
   "alicebot-adapter-cqhttp",
+  "alicebot-adapter-onebot",
   "alicebot-adapter-mirai",
   "alicebot-adapter-dingtalk",
   "alicebot-adapter-apscheduler",
   "watchfiles",
 ]
+
+[tool.pdm.dev-dependencies]
+dev = [
+  "-e alicebot-adapter-cqhttp @ {root:uri}/packages/alicebot-adapter-cqhttp",
+  "-e alicebot-adapter-onebot @ {root:uri}/packages/alicebot-adapter-onebot",
+  "-e alicebot-adapter-mirai @ {root:uri}/packages/alicebot-adapter-mirai",
+  "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
+  "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
+]
+lint = ["black", "ruff"]
+docs = ["sophia-doc~=0.1.4", "tomlkit~=0.11.7"]
+
+[project.urls]
+Homepage = "https://docs.alicebot.dev/"
+Documentation = "https://docs.alicebot.dev/"
+Repository = "https://github.com/AliceBotProject/alicebot"
+Changelog = "https://docs.alicebot.dev/changelog.html"
 
 [tool.black]
 target-version = ["py38", "py39", "py310", "py311"]
@@ -124,7 +125,7 @@ convention = "google"
 "examples/*.py" = ["D", "T"]
 
 [tool.pyright]
-exclude = ["examples"]
+exclude = [".venv", "examples"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
@@ -137,9 +138,9 @@ reportUnknownVariableType = false
 reportUnnecessaryIsInstance = false
 reportPropertyTypeMismatch = true
 
-[tool.pydantic-pycharm-plugin]
-ignore-init-method-arguments = true
+[tool.hatch.build.targets.sdist]
+include = ["/README.md", "/alicebot"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

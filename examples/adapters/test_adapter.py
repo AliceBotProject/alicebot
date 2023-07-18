@@ -26,9 +26,11 @@ class TestAdapter(Adapter[TestAdapterEvent, None]):
     _cond: Condition
 
     async def startup(self):
+        """初始化适配器。"""
         self._cond = Condition()
 
     async def run(self):
+        """运行适配器。"""
         while not self.bot.should_exit.is_set():
             async with self._cond:
                 await self._cond.wait()

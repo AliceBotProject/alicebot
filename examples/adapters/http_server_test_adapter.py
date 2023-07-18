@@ -2,22 +2,17 @@
 
 这里是一个最简单可以直接使用的 HTTP 服务端适配器示例。
 """
-from typing import TYPE_CHECKING, Union
-
 from aiohttp import web
 
 from alicebot.adapter.utils import HttpServerAdapter
 from alicebot.event import Event
 from alicebot.message import Message, MessageSegment
 
-if TYPE_CHECKING:
-    from alicebot.message import T_Message, T_MessageSegment
-
 
 class HttpServerTestEvent(Event["HttpServerTestAdapter"]):
     """HTTP 服务端示例适配器事件类。"""
 
-    message: Message
+    message: Message  # type: ignore
 
 
 class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
@@ -29,6 +24,7 @@ class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
     port: int = 8080
 
     async def handle_response(self, request: web.Request):
+        """处理响应。"""
         event = HttpServerTestEvent(
             adapter=self,
             type="message",
@@ -38,7 +34,3 @@ class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
         )
         await self.handle_event(event)
         return web.Response()
-
-    @staticmethod
-    async def send(msg: Union[str, "T_Message", "T_MessageSegment"]):
-        print(msg)

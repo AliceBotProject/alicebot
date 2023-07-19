@@ -306,7 +306,8 @@ class Bot:
         ):
             # 按照 Change.deleted, Change.modified, Change.added 的顺序处理
             # 以确保发生重命名时先处理删除再处理新增
-            for change_type, file in sorted(changes, key=lambda x: x[0], reverse=True):
+            for change_type, file_ in sorted(changes, key=lambda x: x[0], reverse=True):
+                file = file_
                 # 更改配置文件
                 if (
                     self._config_file is not None
@@ -327,14 +328,14 @@ class Bot:
                 if change_type == Change.deleted:
                     # 针对删除操作特殊处理
                     if not file.endswith(".py"):
-                        file = os.path.join(file, "__init__.py")  # noqa: PLW2901
+                        file = os.path.join(file, "__init__.py")
                 else:
                     if os.path.isdir(file) and os.path.isfile(
                         os.path.join(file, "__init__.py")
                     ):
                         # 当新增一个目录，且此目录中包含 __init__.py 文件
                         # 说明此时发生的是添加一个 Python 包，则视为添加了此包的 __init__.py 文件
-                        file = os.path.join(file, "__init__.py")  # noqa: PLW2901
+                        file = os.path.join(file, "__init__.py")
                     if not (os.path.isfile(file) and file.endswith(".py")):
                         continue
 
@@ -343,7 +344,7 @@ class Bot:
                     self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
                     self._update_config()
                     continue
-                elif change_type == Change.deleted:  # noqa: RET507
+                if change_type == Change.deleted:
                     logger.info(f"Hot reload: Deleted file: {file}")
                     self._remove_plugin_by_path(file)
                     self._update_config()
@@ -808,23 +809,23 @@ class Bot:
                     if issubclass(adapter_, Adapter):
                         adapter_object = adapter_(self)
                     else:
-                        raise LoadModuleError(
+                        raise LoadModuleError(  # noqa: TRY301
                             f'The Adapter class "{adapter_!r}" '
                             "must be a subclass of Adapter"
                         )
                 elif isinstance(adapter_, str):
                     adapter_classes = get_classes_from_module_name(adapter_, Adapter)
                     if not adapter_classes:
-                        raise LoadModuleError(
+                        raise LoadModuleError(  # noqa: TRY301
                             f"Can not find Adapter class in the {adapter_} module"
                         )
                     if len(adapter_classes) > 1:
-                        raise LoadModuleError(
+                        raise LoadModuleError(  # noqa: TRY301
                             f"More then one Adapter class in the {adapter_} module"
                         )
                     adapter_object = adapter_classes[0][0](self)  # type: ignore
                 else:
-                    raise LoadModuleError(
+                    raise LoadModuleError(  # noqa: TRY301
                         f"Type error: {adapter_} can not be loaded as adapter"
                     )
             except Exception as e:

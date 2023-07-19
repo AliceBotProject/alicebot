@@ -20,6 +20,11 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         """
 
     def __str__(self):
+        """返回消息的文本表示。
+
+        Returns:
+            消息的文本表示。
+        """
         if self.type == "text":
             return self.data["content"]
         return super().__str__()

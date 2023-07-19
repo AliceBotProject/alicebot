@@ -43,6 +43,11 @@ class OneBotMessageSegment(MessageSegment["OneBotMessage"]):
         return OneBotMessage
 
     def __str__(self) -> str:
+        """返回消息的文本表示。
+
+        Returns:
+            消息的文本表示。
+        """
         if self.type == "text":
             return self.data.get("text", "")
         return f"[{self.type}: {self.data!r}]"

@@ -63,6 +63,14 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     _api_id: int = 0
 
     def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
+        """用于调用 API。可以直接通过访问适配器的属性访问对应名称的 API。
+
+        Args:
+            item: API 名称。
+
+        Returns:
+            用于调用 API 的函数。
+        """
         return partial(self.call_api, item)
 
     async def startup(self):
@@ -245,7 +253,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                 except asyncio.TimeoutError:
                     break
                 if self._api_response["echo"] == api_echo:
-                    if self._api_response.get("retcode") == 1404:
+                    if self._api_response.get("retcode") == ApiNotAvailable.ERROR_CODE:
                         raise ApiNotAvailable(resp=self._api_response)
                     if self._api_response.get("status") == "failed":
                         raise ActionFailed(resp=self._api_response)

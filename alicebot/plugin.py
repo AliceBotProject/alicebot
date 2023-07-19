@@ -71,6 +71,12 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         config: Optional[Type[T_Config]] = None,
         init_state: Optional[T_State] = None,
     ) -> None:
+        """初始化子类。
+
+        Args:
+            config: 配置类。
+            init_state: 初始状态。
+        """
         super().__init_subclass__()
         if not hasattr(cls, "Config") and config is not None:
             cls.Config = config

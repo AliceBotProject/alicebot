@@ -99,7 +99,7 @@ async def solve_dependencies(
         return dependency_cache[dependent]
 
     if isinstance(dependent, type):
-        # Type[T]
+        # type of dependent is Type[T]
         values = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
@@ -129,11 +129,11 @@ async def solve_dependencies(
                 T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))
             )
     elif inspect.isasyncgenfunction(dependent):
-        # Callable[[], AsyncGenerator[T, None]]
+        # type of dependent is Callable[[], AsyncGenerator[T, None]]
         cm = asynccontextmanager(dependent)()
         depend = cast(T, await stack.enter_async_context(cm))
     elif inspect.isgeneratorfunction(dependent):
-        # Callable[[], Generator[T, None, None]]
+        # type of dependent is Callable[[], Generator[T, None, None]]
         cm = sync_ctx_manager_wrapper(contextmanager(dependent)())
         depend = cast(T, await stack.enter_async_context(cm))
     else:

@@ -136,11 +136,11 @@ def get_classes_from_module_name(
         module = importlib.import_module(name)
         importlib.reload(module)
         return [(x, module) for x in get_classes_from_module(module, super_class)]
-    except BaseException as e:
+    except KeyboardInterrupt:
         # 不捕获 KeyboardInterrupt
         # 捕获 KeyboardInterrupt 会阻止用户关闭 Python 当正在导入的模块陷入死循环时
-        if isinstance(e, KeyboardInterrupt):
-            raise e
+        raise
+    except BaseException as e:
         raise ImportError(e, traceback.format_exc()) from e
 
 
@@ -216,7 +216,7 @@ async def sync_ctx_manager_wrapper(
         if not await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(
             type(e), e, e.__traceback__
         ):
-            raise e
+            raise
     else:
         await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(None, None, None)
 
@@ -279,7 +279,9 @@ else:
             return {}
 
         if not isinstance(ann, dict):
-            raise ValueError(f"{obj!r}.__annotations__ is neither a dict nor None")
+            raise ValueError(  # noqa: TRY004
+                f"{obj!r}.__annotations__ is neither a dict nor None"
+            )
 
         if not ann:
             return {}

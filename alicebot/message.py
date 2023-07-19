@@ -89,6 +89,7 @@ class Message(List[T_MessageSegment]):
     def __get_pydantic_core_schema__(
         cls, source: Type[Any], handler: GetCoreSchemaHandler
     ) -> core_schema.CoreSchema:
+        """Pydantic 自定义模式。"""
         return core_schema.union_schema(
             [
                 core_schema.is_instance_schema(cls),
@@ -124,23 +125,65 @@ class Message(List[T_MessageSegment]):
         raise NotImplementedError
 
     def __repr__(self) -> str:
+        """返回消息的描述。
+
+        Returns:
+            消息的描述。
+        """
         return "Message:[{}]".format(",".join(map(repr, self)))
 
     def __str__(self) -> str:
+        """返回消息的文本表示。
+
+        Returns:
+            消息的文本表示。
+        """
         return "".join(map(str, self))
 
-    def __contains__(self, item: object) -> bool:
+    def __contains__(self, item: Union[str, T_MessageSegment]) -> bool:
+        """判断消息中是否包含指定文本或消息字段。
+
+        Args:
+            item: 文本或消息字段。
+
+        Returns:
+            消息中是否包含指定文本或消息字段。
+        """
         if isinstance(item, str):
             return item in str(self)
         return super().__contains__(item)
 
     def __add__(self, other: Union[Self, T_BuildMessage[T_MessageSegment]]) -> Self:
+        """自定义消息与其他对象相加的方法。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            相加的结果。
+        """
         return self.__class__(self).__iadd__(other)
 
     def __radd__(self, other: Union[Self, T_BuildMessage[T_MessageSegment]]) -> Self:
+        """自定义消息与其他对象相加的方法。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            相加的结果。
+        """
         return self.__class__(other).__iadd__(self)
 
     def __iadd__(self, other: Union[Self, T_BuildMessage[T_MessageSegment]]) -> Self:
+        """自定义消息与其他对象相加的方法。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            相加的结果。
+        """
         try:
             self.extend(self.__class__(other))
         except TypeError as e:
@@ -346,39 +389,118 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[T_Message]):
         return Message  # type: ignore
 
     def __str__(self) -> str:
+        """返回消息字段的文本表示。
+
+        Returns:
+            消息字段的文本表示。
+        """
         return str(self.data)
 
     def __repr__(self) -> str:
+        """返回消息字段的描述。
+
+        Returns:
+            消息字段的描述。
+        """
         return f"MessageSegment<{self.type}>:{self!s}"
 
     def __getitem__(self, key: str) -> Any:
+        """取索引。相当于对 `data` 属性进行此操作。
+
+        Args:
+            key: 键。
+
+        Returns:
+            `data` 字典对应索引的值。
+        """
         return self.data[key]
 
     def __setitem__(self, key: str, value: Any):
+        """设置指定索引的值。相当于对 `data` 属性进行此操作。
+
+        Args:
+            key: 键。
+            value: 值。
+        """
         self.data[key] = value
 
     def __delitem__(self, key: str):
+        """删除索引。相当于对 `data` 属性进行此操作。
+
+        Args:
+            key: 键。
+        """
         del self.data[key]
 
     def __len__(self) -> int:
+        """取长度。相当于对 `data` 属性进行此操作。
+
+        Returns:
+            `data` 字典的长度。
+        """
         return len(self.data)
 
     def __iter__(self) -> Iterator[str]:
+        """迭代。相当于对 `data` 属性进行此操作。
+
+        Returns:
+            `data` 字典的迭代器。
+        """
         yield from self.data.__iter__()
 
     def __contains__(self, key: object) -> bool:
+        """索引是否包含在对象内。相当于对 `data` 属性进行此操作。
+
+        Args:
+            key: 键。
+
+        Returns:
+            索引是否包含在 `data` 字典内。
+        """
         return key in self.data
 
     def __eq__(self, other: Self) -> bool:
+        """判断是否相等。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            是否相等。
+        """
         return self.type == other.type and self.data == other.data
 
     def __ne__(self, other: Self) -> bool:
+        """判断是否不相等。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            是否不相等。
+        """
         return not self.__eq__(other)
 
     def __add__(self, other: Any) -> T_Message:
+        """自定义消息字段与其他对象相加的方法。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            相加的结果。
+        """
         return self.get_message_class()(self) + other
 
     def __radd__(self, other: Any) -> T_Message:
+        """自定义消息字段与其他对象相加的方法。
+
+        Args:
+            other: 其他对象。
+
+        Returns:
+            相加的结果。
+        """
         return self.get_message_class()(other) + self
 
     def get(self, key: str, default: Any = None):

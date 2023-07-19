@@ -1,6 +1,4 @@
 """AliceBot 内部使用的实用工具。"""
-from __future__ import annotations
-
 from abc import ABC
 import asyncio
 from contextlib import asynccontextmanager
@@ -16,7 +14,6 @@ import sys
 import traceback
 from types import GetSetDescriptorType, ModuleType
 from typing import (
-    TYPE_CHECKING,
     Any,
     AsyncGenerator,
     Awaitable,
@@ -24,17 +21,21 @@ from typing import (
     ClassVar,
     ContextManager,
     Coroutine,
+    Dict,
+    List,
+    Optional,
     Sequence,
+    Tuple,
+    Type,
     TypeVar,
+    Union,
 )
 from typing_extensions import ParamSpec, TypeGuard
 
 from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
-
-if TYPE_CHECKING:
-    from alicebot.typing import T_Event
+from alicebot.typing import T_Event
 
 __all__ = [
     "ModulePathFinder",
@@ -57,13 +58,13 @@ _R = TypeVar("_R")
 class ModulePathFinder(MetaPathFinder):
     """用于查找 AliceBot 组件的元路径查找器。"""
 
-    path: ClassVar[list[str]] = []
+    path: ClassVar[List[str]] = []
 
     def find_spec(
         self,
         fullname: str,
-        path: Sequence[str] | None = None,
-        target: ModuleType | None = None,
+        path: Optional[Sequence[str]] = None,
+        target: Optional[ModuleType] = None,
     ):
         """用于查找指定模块的 `spec`。"""
         if path is None:
@@ -71,7 +72,7 @@ class ModulePathFinder(MetaPathFinder):
         return PathFinder.find_spec(fullname, self.path + list(path), target)
 
 
-def is_config_class(config_class: Any) -> TypeGuard[type[ConfigModel]]:
+def is_config_class(config_class: Any) -> TypeGuard[Type[ConfigModel]]:
     """判断一个对象是否是配置类。
 
     Args:
@@ -90,8 +91,8 @@ def is_config_class(config_class: Any) -> TypeGuard[type[ConfigModel]]:
 
 
 def get_classes_from_module(
-    module: ModuleType, super_class: type[_T]
-) -> list[type[_T]]:
+    module: ModuleType, super_class: Type[_T]
+) -> List[Type[_T]]:
     """从模块中查找指定类型的类。
 
     Args:
@@ -101,7 +102,7 @@ def get_classes_from_module(
     Returns:
         返回符合条件的类的列表。
     """
-    classes: list[type[_T]] = []
+    classes: List[Type[_T]] = []
     for _, module_attr in inspect.getmembers(module, inspect.isclass):
         module_attr: type
         if (
@@ -116,8 +117,8 @@ def get_classes_from_module(
 
 
 def get_classes_from_module_name(
-    name: str, super_class: type[_T]
-) -> list[tuple[type[_T], ModuleType]]:
+    name: str, super_class: Type[_T]
+) -> List[Tuple[Type[_T], ModuleType]]:
     """从指定名称的模块中查找指定类型的类。
 
     Args:
@@ -135,11 +136,11 @@ def get_classes_from_module_name(
         module = importlib.import_module(name)
         importlib.reload(module)
         return [(x, module) for x in get_classes_from_module(module, super_class)]
-    except KeyboardInterrupt:
+    except BaseException as e:
         # 不捕获 KeyboardInterrupt
         # 捕获 KeyboardInterrupt 会阻止用户关闭 Python 当正在导入的模块陷入死循环时
-        raise
-    except BaseException as e:
+        if isinstance(e, KeyboardInterrupt):
+            raise e
         raise ImportError(e, traceback.format_exc()) from e
 
 
@@ -215,13 +216,13 @@ async def sync_ctx_manager_wrapper(
         if not await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(
             type(e), e, e.__traceback__
         ):
-            raise e  # noqa: TRY201
+            raise e
     else:
         await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(None, None, None)
 
 
 def wrap_get_func(
-    func: Callable[[T_Event], bool | Awaitable[bool]] | None
+    func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]]
 ) -> Callable[[T_Event], Awaitable[bool]]:
     """将 `get()` 函数接受的参数包装为一个异步函数。
 
@@ -243,8 +244,8 @@ if sys.version_info >= (3, 10):
 else:
 
     def get_annotations(
-        obj: Callable[..., object] | type[Any] | ModuleType
-    ) -> dict[str, Any]:
+        obj: Union[Callable[..., object], Type[Any], ModuleType]
+    ) -> Dict[str, Any]:
         """计算一个对象的标注字典。
 
         Args:
@@ -278,9 +279,7 @@ else:
             return {}
 
         if not isinstance(ann, dict):
-            raise ValueError(  # noqa: TRY004
-                f"{obj!r}.__annotations__ is neither a dict nor None"
-            )
+            raise ValueError(f"{obj!r}.__annotations__ is neither a dict nor None")
 
         if not ann:
             return {}

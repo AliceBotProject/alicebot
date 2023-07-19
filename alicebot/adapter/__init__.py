@@ -2,8 +2,6 @@
 
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 import os
 from typing import (
@@ -12,7 +10,10 @@ from typing import (
     Awaitable,
     Callable,
     Generic,
+    Optional,
+    Type,
     TypeVar,
+    Union,
     final,
     overload,
 )
@@ -44,10 +45,10 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     """
 
     name: str
-    bot: Bot
-    Config: type[T_Config]
+    bot: "Bot"
+    Config: Type[T_Config]
 
-    def __init__(self, bot: Bot):
+    def __init__(self, bot: "Bot"):
         """初始化。
 
         Args:
@@ -55,7 +56,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         """
         if not hasattr(self, "name"):
             self.name = self.__class__.__name__
-        self.bot: Bot = bot
+        self.bot: "Bot" = bot
         self.handle_event = self.bot.handle_event
 
     @property
@@ -110,34 +111,34 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     @overload
     async def get(
         self,
-        func: Callable[[T_Event], bool | Awaitable[bool]] | None = None,
+        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
-        max_try_times: int | None = None,
-        timeout: int | float | None = None,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
     ) -> T_Event:
         ...
 
     @overload
     async def get(
         self,
-        func: Callable[[_T_Event], bool | Awaitable[bool]] | None = None,
+        func: Optional[Callable[[_T_Event], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: type[_T_Event],
-        max_try_times: int | None = None,
-        timeout: int | float | None = None,
+        event_type: Type[_T_Event],
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
     ) -> _T_Event:
         ...
 
     @final
     async def get(
         self,
-        func: Callable[[T_Event], bool | Awaitable[bool]] | None = None,
+        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: type[T_Event] | type[_T_Event] | None = None,
-        max_try_times: int | None = None,
-        timeout: int | float | None = None,
-    ) -> T_Event | _T_Event:
+        event_type: Optional[Union[Type[T_Event], Type[_T_Event]]] = None,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
+    ) -> Union[T_Event, _T_Event]:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         类似 `Bot` 类的 `get()` 方法，但是隐含了判断产生事件的适配器是本适配器。

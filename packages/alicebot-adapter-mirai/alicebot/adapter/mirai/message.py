@@ -1,8 +1,6 @@
 """Mirai 适配器消息。"""
-from __future__ import annotations
-
 import json
-from typing import Any, Iterable, Mapping, Union
+from typing import Any, Dict, Iterable, List, Mapping, Optional, Type, Union
 
 from pydantic import model_serializer
 
@@ -24,7 +22,7 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
     """Mirai 消息"""
 
     @classmethod
-    def get_segment_class(cls) -> type[MiraiMessageSegment]:
+    def get_segment_class(cls) -> Type["MiraiMessageSegment"]:
         """获取消息字段类。
 
         Returns:
@@ -32,10 +30,10 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
         """
         return MiraiMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> MiraiMessageSegment:
+    def _str_to_message_segment(self, msg: str) -> "MiraiMessageSegment":
         return self.get_segment_class().plain(msg)
 
-    def as_message_chain(self) -> list[dict[str, Any]]:
+    def as_message_chain(self) -> List[Dict[str, Any]]:
         """返回符合 Mirai-api-http 标准的 messageChain 数组。
 
         Returns:
@@ -59,7 +57,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         )
 
     @classmethod
-    def get_message_class(cls) -> type[MiraiMessage]:
+    def get_message_class(cls) -> Type["MiraiMessage"]:
         """获取消息类。
 
         Returns:
@@ -75,7 +73,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return json.dumps(self, cls=PydanticEncoder)
 
     @model_serializer
-    def ser_model(self) -> dict[str, Any]:
+    def ser_model(self) -> Dict[str, Any]:
         """返回符合 Mirai-api-http 标准的消息字段字典。
 
         Returns:
@@ -126,7 +124,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return cls(type="AtAll")
 
     @classmethod
-    def face(cls, face_id: int | None = None, name: str | None = None):
+    def face(cls, face_id: Optional[int] = None, name: Optional[str] = None):
         """Face 消息"""
         return cls(type="Face", faceId=face_id, name=name)
 
@@ -138,9 +136,9 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     @classmethod
     def image(
         cls,
-        image_id: str | None = None,
-        url: str | None = None,
-        path: str | None = None,
+        image_id: Optional[str] = None,
+        url: Optional[str] = None,
+        path: Optional[str] = None,
     ):
         """Image 消息"""
         return cls(type="Image", imageId=image_id, url=url, path=path)
@@ -148,9 +146,9 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     @classmethod
     def flash_image(
         cls,
-        image_id: str | None = None,
-        url: str | None = None,
-        path: str | None = None,
+        image_id: Optional[str] = None,
+        url: Optional[str] = None,
+        path: Optional[str] = None,
     ):
         """FlashImage 消息"""
         return cls(type="FlashImage", imageId=image_id, url=url, path=path)
@@ -158,9 +156,9 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     @classmethod
     def voice(
         cls,
-        voice_id: str | None = None,
-        url: str | None = None,
-        path: str | None = None,
+        voice_id: Optional[str] = None,
+        url: Optional[str] = None,
+        path: Optional[str] = None,
     ):
         """Voice 消息"""
         return cls(type="Voice", imageId=voice_id, url=url, path=path)

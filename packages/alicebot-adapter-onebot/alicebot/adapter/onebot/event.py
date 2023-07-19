@@ -1,26 +1,28 @@
 """OntBot 适配器事件。"""
-from __future__ import annotations
-
 from typing import (
     TYPE_CHECKING,
     Any,
+    Dict,
+    List,
     Literal,
+    Optional,
+    Tuple,
     get_args,
     get_origin,
 )
+from typing_extensions import Self
 
 from pydantic import BaseModel, Extra
+from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
 
+from .message import OneBotMessage
+
 if TYPE_CHECKING:
-    from typing_extensions import Self
-
-    from pydantic.fields import FieldInfo
-
     from . import OneBotAdapter  # noqa: F401
-    from .message import T_OBMSG, OneBotMessage
+    from .message import T_OBMSG
 
 
 class BotSelf(BaseModel):
@@ -49,10 +51,10 @@ class Status(BaseModel, extra=Extra.allow):
     """运行状态"""
 
     good: bool
-    bots: list[BotStatus]
+    bots: List[BotStatus]
 
 
-def _get_literal_field(field: FieldInfo) -> str | None:
+def _get_literal_field(field: FieldInfo) -> Optional[str]:
     annotation = field.annotation
     if annotation is None or get_origin(annotation) is not Literal:
         return None
@@ -72,7 +74,7 @@ class OntBotEvent(Event["OneBotAdapter"]):
     sub_type: str
 
     @classmethod
-    def get_event_type(cls) -> tuple[str | None, str | None, str | None]:
+    def get_event_type(cls) -> Tuple[Optional[str], Optional[str], Optional[str]]:
         """获取事件类型。
 
         Returns:
@@ -145,7 +147,7 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, message: T_OBMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -173,7 +175,7 @@ class PrivateMessageEvent(MessageEvent):
 
     detail_type: Literal["private"]
 
-    async def reply(self, message: T_OBMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -195,7 +197,7 @@ class GroupMessageEvent(MessageEvent):
     detail_type: Literal["group"]
     group_id: str
 
-    async def reply(self, message: T_OBMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -218,7 +220,7 @@ class ChannelMessageEvent(MessageEvent):
     guild_id: str
     channel_id: str
 
-    async def reply(self, message: T_OBMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:

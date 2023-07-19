@@ -1,15 +1,18 @@
 """CQHTTP 适配器事件。"""
-from __future__ import annotations
-
 from typing import (
     TYPE_CHECKING,
     Any,
+    Dict,
     Literal,
+    Optional,
+    Tuple,
     get_args,
     get_origin,
 )
+from typing_extensions import Self
 
 from pydantic import BaseModel, ConfigDict, Extra, Field
+from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -17,10 +20,6 @@ from alicebot.event import MessageEvent as BaseMessageEvent
 from .message import CQHTTPMessage
 
 if TYPE_CHECKING:
-    from typing_extensions import Self
-
-    from pydantic.fields import FieldInfo
-
     from . import CQHTTPAdapter  # noqa: F401
     from .message import T_CQMSG
 
@@ -28,15 +27,15 @@ if TYPE_CHECKING:
 class Sender(BaseModel):
     """发送人信息"""
 
-    user_id: int | None = None
-    nickname: str | None = None
-    card: str | None = None
-    sex: Literal["male", "female", "unknown"] | None = None
-    age: int | None = None
-    area: str | None = None
-    level: str | None = None
-    role: str | None = None
-    title: str | None = None
+    user_id: Optional[int] = None
+    nickname: Optional[str] = None
+    card: Optional[str] = None
+    sex: Optional[Literal["male", "female", "unknown"]] = None
+    age: Optional[int] = None
+    area: Optional[str] = None
+    level: Optional[str] = None
+    role: Optional[str] = None
+    title: Optional[str] = None
 
 
 class Anonymous(BaseModel):
@@ -65,7 +64,7 @@ class Status(BaseModel):
     good: bool
 
 
-def _get_literal_field(field: FieldInfo) -> str | None:
+def _get_literal_field(field: FieldInfo) -> Optional[str]:
     annotation = field.annotation
     if annotation is None or get_origin(annotation) is not Literal:
         return None
@@ -79,7 +78,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
     """CQHTTP 事件基类"""
 
     __event__ = ""
-    type: str | None = Field(alias="post_type")
+    type: Optional[str] = Field(alias="post_type")
     time: int
     self_id: int
     post_type: str
@@ -90,7 +89,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         return getattr(self, "user_id", None) == self.self_id
 
     @classmethod
-    def get_event_type(cls) -> tuple[str | None, str | None, str | None]:
+    def get_event_type(cls) -> Tuple[Optional[str], Optional[str], Optional[str]]:
         """获取事件类型。
 
         Returns:
@@ -132,7 +131,7 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, message: T_CQMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -162,7 +161,7 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal["private"]
     sub_type: Literal["friend", "group", "other"]
 
-    async def reply(self, message: T_CQMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -183,9 +182,9 @@ class GroupMessageEvent(MessageEvent):
     message_type: Literal["group"]
     sub_type: Literal["normal", "anonymous", "notice"]
     group_id: int
-    anonymous: Anonymous | None = None
+    anonymous: Optional[Anonymous] = None
 
-    async def reply(self, message: T_CQMSG) -> dict[str, Any]:
+    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -295,7 +294,7 @@ class NotifyEvent(NoticeEvent):
     __event__ = "notice.notify"
     notice_type: Literal["notify"]
     sub_type: str
-    group_id: int | None = None
+    group_id: Optional[int] = None
     user_id: int
 
 
@@ -305,7 +304,7 @@ class PokeNotifyEvent(NotifyEvent):
     __event__ = "notice.notify.poke"
     sub_type: Literal["poke"]
     target_id: int
-    group_id: int | None = None
+    group_id: Optional[int] = None
 
 
 class GroupLuckyKingNotifyEvent(NotifyEvent):
@@ -333,7 +332,7 @@ class RequestEvent(CQHTTPEvent):
     post_type: Literal["request"]
     request_type: str
 
-    async def approve(self) -> dict[str, Any]:
+    async def approve(self) -> Dict[str, Any]:
         """同意请求。
 
         Returns:
@@ -341,7 +340,7 @@ class RequestEvent(CQHTTPEvent):
         """
         raise NotImplementedError
 
-    async def refuse(self) -> dict[str, Any]:
+    async def refuse(self) -> Dict[str, Any]:
         """拒绝请求。
 
         Returns:
@@ -359,7 +358,7 @@ class FriendRequestEvent(RequestEvent):
     comment: str
     flag: str
 
-    async def approve(self, remark: str = "") -> dict[str, Any]:
+    async def approve(self, remark: str = "") -> Dict[str, Any]:
         """同意请求。
 
         Args:
@@ -372,7 +371,7 @@ class FriendRequestEvent(RequestEvent):
             flag=self.flag, approve=True, remark=remark
         )
 
-    async def refuse(self) -> dict[str, Any]:
+    async def refuse(self) -> Dict[str, Any]:
         """拒绝请求。
 
         Returns:
@@ -392,7 +391,7 @@ class GroupRequestEvent(RequestEvent):
     comment: str
     flag: str
 
-    async def approve(self) -> dict[str, Any]:
+    async def approve(self) -> Dict[str, Any]:
         """同意请求。
 
         Returns:
@@ -402,7 +401,7 @@ class GroupRequestEvent(RequestEvent):
             flag=self.flag, sub_type=self.sub_type, approve=True
         )
 
-    async def refuse(self, reason: str = "") -> dict[str, Any]:
+    async def refuse(self, reason: str = "") -> Dict[str, Any]:
         """拒绝请求。
 
         Args:

@@ -1,23 +1,21 @@
 """消息事件。"""
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Any, Literal
+from typing import TYPE_CHECKING, Any, Dict, Literal, Union
+from typing_extensions import Self
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 
+from ..message import MiraiMessage
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent, OtherClientSender
 
 if TYPE_CHECKING:
-    from typing_extensions import Self
-
     from .. import MiraiAdapter  # noqa: F401
-    from ..message import MiraiMessage, T_MiraiMSG
+    from ..message import T_MiraiMSG
 
 
 class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
     """消息事件"""
 
-    sender: FriendInfo | GroupMemberInfo | OtherClientSender
+    sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
     messageChain: MiraiMessage
 
     @property
@@ -36,7 +34,7 @@ class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
         """
         return self.messageChain.get_plain_text()
 
-    async def reply(self, message: T_MiraiMSG, quote: bool = False) -> dict[str, Any]:
+    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -66,7 +64,7 @@ class FriendMessage(MessageEvent):
     type: Literal["FriendMessage"]
     sender: FriendInfo
 
-    async def reply(self, message: T_MiraiMSG, quote: bool = False) -> dict[str, Any]:
+    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -94,7 +92,7 @@ class GroupMessage(MessageEvent):
     type: Literal["GroupMessage"]
     sender: GroupMemberInfo
 
-    async def reply(self, message: T_MiraiMSG, quote: bool = False) -> dict[str, Any]:
+    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -122,7 +120,7 @@ class TempMessage(MessageEvent):
     type: Literal["TempMessage"]
     sender: GroupMemberInfo
 
-    async def reply(self, message: T_MiraiMSG, quote: bool = False) -> dict[str, Any]:
+    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -150,7 +148,7 @@ class StrangerMessage(MessageEvent):
     type: Literal["StrangerMessage"]
     sender: FriendInfo
 
-    async def reply(self, message: T_MiraiMSG, quote: bool = False) -> dict[str, Any]:
+    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -178,7 +176,7 @@ class OtherClientMessage(MessageEvent):
     type: Literal["OtherClientMessage"]
     sender: OtherClientSender
 
-    async def reply(self, message: T_MiraiMSG, quote: bool = False) -> dict[str, Any]:
+    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
         """回复消息。
 
         Args:

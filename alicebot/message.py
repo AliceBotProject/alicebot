@@ -3,26 +3,28 @@
 实现了常用的基本消息 `Message` 和消息字段 `MessageSegment` 模型供适配器使用。
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 """
+from __future__ import annotations
+
 from copy import copy, deepcopy
 from typing import (
+    TYPE_CHECKING,
     Any,
-    Dict,
     Generic,
     Iterable,
     Iterator,
     List,
     Mapping,
-    Optional,
     SupportsIndex,
-    Type,
     TypeVar,
     Union,
     overload,
 )
-from typing_extensions import Self
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import core_schema
+
+if TYPE_CHECKING:
+    from typing_extensions import Self
 
 __all__ = ["T_Message", "T_MessageSegment", "T_MS", "Message", "MessageSegment"]
 
@@ -47,9 +49,7 @@ class Message(List[T_MessageSegment]):
     并在 `MessageSegment` 的子类中重写 `get_message_class()` 方法。
     """
 
-    def __init__(
-        self, message: Optional[Union[Self, T_BuildMessage[T_MessageSegment]]] = None
-    ):
+    def __init__(self, message: Self | T_BuildMessage[T_MessageSegment] | None = None):
         """初始化。
 
         Args:
@@ -77,7 +77,7 @@ class Message(List[T_MessageSegment]):
             )
 
     @classmethod
-    def get_segment_class(cls) -> Type[T_MessageSegment]:
+    def get_segment_class(cls) -> type[T_MessageSegment]:
         """获取消息字段类。
 
         Returns:
@@ -87,7 +87,7 @@ class Message(List[T_MessageSegment]):
 
     @classmethod
     def __get_pydantic_core_schema__(
-        cls, source: Type[Any], handler: GetCoreSchemaHandler
+        cls, source: type[Any], handler: GetCoreSchemaHandler
     ) -> core_schema.CoreSchema:
         return core_schema.union_schema(
             [
@@ -134,13 +134,13 @@ class Message(List[T_MessageSegment]):
             return item in str(self)
         return super().__contains__(item)
 
-    def __add__(self, other: Union[Self, T_BuildMessage[T_MessageSegment]]) -> Self:
+    def __add__(self, other: Self | T_BuildMessage[T_MessageSegment]) -> Self:
         return self.__class__(self).__iadd__(other)
 
-    def __radd__(self, other: Union[Self, T_BuildMessage[T_MessageSegment]]) -> Self:
+    def __radd__(self, other: Self | T_BuildMessage[T_MessageSegment]) -> Self:
         return self.__class__(other).__iadd__(self)
 
-    def __iadd__(self, other: Union[Self, T_BuildMessage[T_MessageSegment]]) -> Self:
+    def __iadd__(self, other: Self | T_BuildMessage[T_MessageSegment]) -> Self:
         try:
             self.extend(self.__class__(other))
         except TypeError as e:
@@ -179,9 +179,9 @@ class Message(List[T_MessageSegment]):
 
     def startswith(
         self,
-        prefix: Union[str, T_MessageSegment],
-        start: Optional[SupportsIndex] = None,
-        end: Optional[SupportsIndex] = None,
+        prefix: str | T_MessageSegment,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
     ) -> bool:
         """实现类似字符串的 `startswith()` 方法。
 
@@ -209,9 +209,9 @@ class Message(List[T_MessageSegment]):
 
     def endswith(
         self,
-        suffix: Union[str, T_MessageSegment],
-        start: Optional[SupportsIndex] = None,
-        end: Optional[SupportsIndex] = None,
+        suffix: str | T_MessageSegment,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
     ) -> bool:
         """实现类似字符串的 `endswith()` 方法。
 
@@ -243,14 +243,14 @@ class Message(List[T_MessageSegment]):
 
     @overload
     def replace(
-        self, old: T_MessageSegment, new: Optional[T_MessageSegment], count: int = -1
+        self, old: T_MessageSegment, new: T_MessageSegment | None, count: int = -1
     ) -> Self:
         ...
 
     def replace(
         self,
-        old: Union[str, T_MessageSegment],
-        new: Optional[Union[str, T_MessageSegment]],
+        old: str | T_MessageSegment,
+        new: str | T_MessageSegment | None,
         count: int = -1,
     ) -> Self:
         """实现类似字符串的 `replace()` 方法。
@@ -334,10 +334,10 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[T_Message]):
     """
 
     type: str
-    data: Dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
-    def get_message_class(cls) -> Type[T_Message]:
+    def get_message_class(cls) -> type[T_Message]:
         """获取消息类。
 
         Returns:

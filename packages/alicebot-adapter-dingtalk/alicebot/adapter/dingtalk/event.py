@@ -1,7 +1,8 @@
 """DingTalk 适配器事件。"""
+from __future__ import annotations
+
 import time
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
-from typing_extensions import Self
+from typing import TYPE_CHECKING, Any, Literal
 
 from pydantic import BaseModel, Field
 
@@ -11,6 +12,8 @@ from .exceptions import WebhookExpiredError
 from .message import DingTalkMessage
 
 if TYPE_CHECKING:
+    from typing_extensions import Self
+
     from . import DingTalkAdapter  # noqa: F401
 
 __all__ = ["UserInfo", "Text", "DingTalkEvent"]
@@ -20,7 +23,7 @@ class UserInfo(BaseModel):
     """用户信息"""
 
     dingtalkId: str
-    staffId: Optional[str] = None
+    staffId: str | None = None
 
 
 class Text(BaseModel):
@@ -32,29 +35,29 @@ class Text(BaseModel):
 class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
     """DingTalk 事件基类"""
 
-    type: Optional[str] = Field(alias="msgtype")
+    type: str | None = Field(alias="msgtype")
 
     msgtype: str
     msgId: str
     createAt: str
     conversationType: Literal["1", "2"]
     conversationId: str
-    conversationTitle: Optional[str] = None
+    conversationTitle: str | None = None
     senderId: str
     senderNick: str
-    senderCorpId: Optional[str] = None
+    senderCorpId: str | None = None
     sessionWebhook: str
     sessionWebhookExpiredTime: int
-    isAdmin: Optional[bool] = None
-    chatbotCorpId: Optional[str] = None
-    isInAtList: Optional[bool] = None
-    senderStaffId: Optional[str] = None
+    isAdmin: bool | None = None
+    chatbotCorpId: str | None = None
+    isInAtList: bool | None = None
+    senderStaffId: str | None = None
     chatbotUserId: str
-    atUsers: List[UserInfo]
+    atUsers: list[UserInfo]
     text: Text
 
-    response_msg: Union[None, str, Dict[str, Any], DingTalkMessage] = None
-    response_at: Union[None, Dict[str, Any], DingTalkMessage] = None
+    response_msg: None | str | dict[str, Any] | DingTalkMessage = None
+    response_at: None | dict[str, Any] | DingTalkMessage = None
 
     @property
     def message(self) -> DingTalkMessage:
@@ -71,9 +74,9 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
 
     async def reply(
         self,
-        message: Union[str, Dict[str, Any], DingTalkMessage],
-        at: Union[None, Dict[str, Any], DingTalkMessage] = None,
-    ) -> Dict[str, Any]:
+        message: str | dict[str, Any] | DingTalkMessage,
+        at: None | dict[str, Any] | DingTalkMessage = None,
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:

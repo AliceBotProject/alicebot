@@ -3,11 +3,13 @@
 本适配器适配了钉钉企业自建机器人协议。
 协议详情请参考: [钉钉开放平台](https://open.dingtalk.com/document/robots/robot-overview)。
 """
+from __future__ import annotations
+
 import base64
 import hashlib
 import hmac
 import time
-from typing import Any, Dict, Literal, Union
+from typing import Any, Literal
 
 import aiohttp
 from aiohttp import web
@@ -102,9 +104,9 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
         self,
         webhook: str,
         conversation_type: Literal["1", "2"],
-        msg: Union[str, Dict[str, Any], DingTalkMessage],
-        at: Union[None, Dict[str, Any], DingTalkMessage] = None,
-    ) -> Dict[str, Any]:
+        msg: str | dict[str, Any] | DingTalkMessage,
+        at: None | dict[str, Any] | DingTalkMessage = None,
+    ) -> dict[str, Any]:
         """发送消息。
 
         Args:

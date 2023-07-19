@@ -2,9 +2,11 @@
 
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
 import asyncio
-from typing import Literal, Optional, Union
+from typing import Literal
 
 import aiohttp
 from aiohttp import web
@@ -28,7 +30,7 @@ class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     delay: float = 0.1
     create_task: bool = False
-    _on_tick_task: Optional["asyncio.Task[None]"] = None
+    _on_tick_task: asyncio.Task[None] | None = None
 
     async def run(self):
         """运行适配器。"""
@@ -177,17 +179,15 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     同时支持 WebSocket 客户端和服务端。
     """
 
-    websocket: Union[
-        web.WebSocketResponse, aiohttp.ClientWebSocketResponse, None
-    ] = None
+    websocket: web.WebSocketResponse | aiohttp.ClientWebSocketResponse | None = None
 
     # ws
-    session: Optional[aiohttp.ClientSession]
+    session: aiohttp.ClientSession | None
 
     # reverse-ws
-    app: Optional[web.Application]
-    runner: Optional[web.AppRunner]
-    site: Optional[web.TCPSite]
+    app: web.Application | None
+    runner: web.AppRunner | None
+    site: web.TCPSite | None
 
     # config
     adapter_type: Literal["ws", "reverse-ws"]

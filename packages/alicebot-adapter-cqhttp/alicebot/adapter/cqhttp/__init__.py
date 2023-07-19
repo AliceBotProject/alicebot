@@ -3,6 +3,8 @@
 本适配器适配了 OneBot v11 协议。
 协议详情请参考: [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 。
 """
+from __future__ import annotations
+
 import asyncio
 from functools import partial
 import inspect
@@ -58,7 +60,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     event_models: ClassVar[T_EventModels] = DEFAULT_EVENT_MODELS
 
-    _api_response: Dict[str, Any]
+    _api_response: dict[str, Any]
     _api_response_cond: asyncio.Condition
     _api_id: int = 0
 
@@ -133,7 +135,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         return self._api_id
 
     @classmethod
-    def add_event_model(cls, event_model: Type[CQHTTPEvent]) -> None:
+    def add_event_model(cls, event_model: type[CQHTTPEvent]) -> None:
         """添加自定义事件模型，事件模型类必须继承于 `CQHTTPEvent`。
 
         Args:
@@ -144,10 +146,10 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     @classmethod
     def get_event_model(
         cls,
-        post_type: Optional[str],
-        detail_type: Optional[str],
-        sub_type: Optional[str],
-    ) -> Type[CQHTTPEvent]:
+        post_type: str | None,
+        detail_type: str | None,
+        sub_type: str | None,
+    ) -> type[CQHTTPEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:
@@ -165,7 +167,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             or cls.event_models[(None, None, None)]
         )
 
-    async def handle_cqhttp_event(self, msg: Dict[str, Any]):
+    async def handle_cqhttp_event(self, msg: dict[str, Any]):
         """处理 CQHTTP 事件。
 
         Args:
@@ -256,7 +258,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         return None
 
     async def send(
-        self, message_: "T_CQMSG", message_type: Literal["private", "group"], id_: int
+        self, message_: T_CQMSG, message_type: Literal["private", "group"], id_: int
     ) -> Any:
         """发送消息，调用 `send_private_msg` 或 `send_group_msg` API 发送消息。
 

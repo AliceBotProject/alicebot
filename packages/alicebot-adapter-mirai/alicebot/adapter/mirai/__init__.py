@@ -4,6 +4,8 @@
 本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
 协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
 """
+from __future__ import annotations
+
 import asyncio
 from functools import partial
 import inspect
@@ -16,10 +18,7 @@ from typing import (
     Awaitable,
     Callable,
     ClassVar,
-    Dict,
     Literal,
-    Optional,
-    Type,
 )
 
 import aiohttp
@@ -50,16 +49,16 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     name: str = "mirai"
     Config = Config
 
-    event_models: ClassVar[Dict[str, Type[MiraiEvent]]] = {
+    event_models: ClassVar[dict[str, type[MiraiEvent]]] = {
         name: model
         for name, model in inspect.getmembers(event, inspect.isclass)
         if issubclass(model, MiraiEvent)
     }
 
-    _api_response: Dict[str, Any]
+    _api_response: dict[str, Any]
     _api_response_cond: asyncio.Condition
     _sync_id: int = 0
-    _verify_identity_task: "asyncio.Task[None]"
+    _verify_identity_task: asyncio.Task[None]
 
     def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
         return partial(self.call_api, item)
@@ -133,7 +132,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         return self._sync_id
 
     @classmethod
-    def get_event_model(cls, event_type: str) -> Type[MiraiEvent]:
+    def get_event_model(cls, event_type: str) -> type[MiraiEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:
@@ -144,7 +143,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         return cls.event_models[event_type]
 
-    async def handle_mirai_event(self, msg: Dict[str, Any]):
+    async def handle_mirai_event(self, msg: dict[str, Any]):
         """处理 Mirai 事件。
 
         Args:
@@ -182,7 +181,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 return
 
     async def call_api(
-        self, command: str, sub_command: Optional[str] = None, **content: Any
+        self, command: str, sub_command: str | None = None, **content: Any
     ) -> Any:
         """调用 Mirai API ，协程会等待直到获得 API 响应。
 
@@ -238,10 +237,10 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     async def send(
         self,
-        message_: "T_MiraiMSG",
+        message_: T_MiraiMSG,
         message_type: Literal["private", "friend", "group"],
         target: int,
-        quote: Optional[int] = None,
+        quote: int | None = None,
     ) -> Any:
         """调用 Mirai API 发送消息。
 

@@ -3,6 +3,8 @@
 本适配器适配了 OneBot v12 协议。
 协议详情请参考: [OneBot](https://12.onebot.dev/) 。
 """
+from __future__ import annotations
+
 import asyncio
 from functools import partial
 import inspect
@@ -20,7 +22,6 @@ from typing import (
     Optional,
     Tuple,
     Type,
-    Union,
 )
 
 import aiohttp
@@ -67,7 +68,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
     event_models: ClassVar[T_EventModels] = DEFAULT_EVENT_MODELS
 
-    _api_response: Dict[str, Any]
+    _api_response: dict[str, Any]
     _api_response_cond: asyncio.Condition
     _api_id: int = 0
 
@@ -142,7 +143,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         return self._api_id
 
     @classmethod
-    def add_event_model(cls, event_model: Type[OntBotEvent]) -> None:
+    def add_event_model(cls, event_model: type[OntBotEvent]) -> None:
         """添加自定义事件模型，事件模型类必须继承于 `OntBotEvent`。
 
         Args:
@@ -153,10 +154,10 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
     @classmethod
     def get_event_model(
         cls,
-        post_type: Optional[str],
-        detail_type: Optional[str],
-        sub_type: Optional[str],
-    ) -> Type[OntBotEvent]:
+        post_type: str | None,
+        detail_type: str | None,
+        sub_type: str | None,
+    ) -> type[OntBotEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:
@@ -174,7 +175,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             or cls.event_models[(None, None, None)]
         )
 
-    async def handle_onebot_event(self, msg: Dict[str, Any]):
+    async def handle_onebot_event(self, msg: dict[str, Any]):
         """处理 OneBot 事件。
 
         Args:
@@ -270,8 +271,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
     async def send(
         self,
-        message_: "T_OBMSG",
-        message_type: Union[Literal["private", "group"], str],
+        message_: T_OBMSG,
+        message_type: Literal["private", "group"] | str,
         id_: str,
     ) -> Any:
         """发送消息，调用 `send_message` API 发送消息。

@@ -2,6 +2,7 @@
 
 此模块定义了部分 AliceBot 使用的类型。
 """
+from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Optional, TypeVar
 

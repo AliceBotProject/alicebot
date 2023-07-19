@@ -2,6 +2,8 @@
 
 实现依赖注入相关功能。
 """
+from __future__ import annotations
+
 from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 import inspect
 from typing import (
@@ -10,9 +12,7 @@ from typing import (
     AsyncGenerator,
     Callable,
     ContextManager,
-    Dict,
     Generator,
-    Optional,
     Type,
     TypeVar,
     Union,
@@ -44,11 +44,11 @@ class InnerDepends:
         use_cache: 是否使用缓存。默认为 `True`。
     """
 
-    dependency: Optional[T_Dependency[Any]]
+    dependency: T_Dependency[Any] | None
     use_cache: bool
 
     def __init__(
-        self, dependency: Optional[T_Dependency[Any]] = None, *, use_cache: bool = True
+        self, dependency: T_Dependency[Any] | None = None, *, use_cache: bool = True
     ):
         self.dependency = dependency
         self.use_cache = use_cache
@@ -60,7 +60,7 @@ class InnerDepends:
 
 
 def Depends(  # noqa: N802
-    dependency: Optional[T_Dependency[T]] = None, *, use_cache: bool = True
+    dependency: T_Dependency[T] | None = None, *, use_cache: bool = True
 ) -> T:
     """子依赖装饰器。
 
@@ -79,7 +79,7 @@ async def solve_dependencies(
     *,
     use_cache: bool,
     stack: AsyncExitStack,
-    dependency_cache: Dict[T_Dependency[Any], Any],
+    dependency_cache: dict[T_Dependency[Any], Any],
 ) -> T:
     """解析子依赖。
 
@@ -99,7 +99,7 @@ async def solve_dependencies(
         return dependency_cache[dependent]
 
     if isinstance(dependent, type):
-        # Type[T]
+        # when dependent is `Type[T]`
         values = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
@@ -129,11 +129,11 @@ async def solve_dependencies(
                 T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))
             )
     elif inspect.isasyncgenfunction(dependent):
-        # Callable[[], AsyncGenerator[T, None]]
+        # when dependent is `Callable[[], AsyncGenerator[T, None]]`
         cm = asynccontextmanager(dependent)()
         depend = cast(T, await stack.enter_async_context(cm))
     elif inspect.isgeneratorfunction(dependent):
-        # Callable[[], Generator[T, None, None]]
+        # when dependent is `Callable[[], Generator[T, None, None]]`
         cm = sync_ctx_manager_wrapper(contextmanager(dependent)())
         depend = cast(T, await stack.enter_async_context(cm))
     else:

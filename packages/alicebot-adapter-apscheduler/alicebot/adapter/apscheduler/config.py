@@ -1,5 +1,7 @@
 """APScheduler 适配器配置。"""
-from typing import Any, Dict
+from __future__ import annotations
+
+from typing import Any
 
 from pydantic import Field
 
@@ -16,4 +18,4 @@ class Config(ConfigModel):
     """
 
     __config_name__ = "apscheduler"
-    scheduler_config: Dict[str, Any] = Field(default_factory=dict)
+    scheduler_config: dict[str, Any] = Field(default_factory=dict)

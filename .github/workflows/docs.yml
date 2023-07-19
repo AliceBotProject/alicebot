@@ -7,6 +7,7 @@ on:
     paths-ignore:
       - "**/tests/**"
       - "**/examples/**"
+  pull_request:
   workflow_dispatch:
 
 jobs:
@@ -45,11 +46,13 @@ jobs:
         run: pnpm docs:build
 
       - uses: actions/upload-pages-artifact@v1
+        if: github.event_name != 'pull_request'
         with:
           path: docs/.vitepress/dist
 
   deploy:
     needs: build
+    if: github.event_name != 'pull_request'
 
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:

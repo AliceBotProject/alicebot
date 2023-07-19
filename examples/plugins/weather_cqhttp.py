@@ -6,7 +6,7 @@ class Weather(Plugin):
     async def handle(self) -> None:
         args = self.event.get_plain_text().split(" ")
 
-        if len(args) >= 2:
+        if len(args) >= 2:  # noqa: PLR2004
             await self.event.reply(await self.get_weather(args[1]))
             return
 

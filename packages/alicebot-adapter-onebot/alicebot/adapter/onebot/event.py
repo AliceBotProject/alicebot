@@ -137,6 +137,11 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
     user_id: str
 
     def __repr__(self) -> str:
+        """返回消息事件的描述。
+
+        Returns:
+            消息事件的描述。
+        """
         return f'Event<{self.type}>: "{self.message}"'
 
     def get_plain_text(self) -> str:

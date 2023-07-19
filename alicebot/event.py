@@ -32,9 +32,19 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
     __handled__: bool = False
 
     def __str__(self) -> str:
+        """返回事件的文本表示。
+
+        Returns:
+            事件的文本表示。
+        """
         return f"Event<{self.type}>"
 
     def __repr__(self) -> str:
+        """返回事件的描述。
+
+        Returns:
+            事件的描述。
+        """
         return self.__str__()
 
 

@@ -66,6 +66,11 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return MiraiMessage
 
     def __str__(self) -> str:
+        """返回消息字段的文本表示。
+
+        Returns:
+            消息字段的文本表示。
+        """
         if self.type == "Source":
             return ""
         if self.type == "Plain":

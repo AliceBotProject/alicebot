@@ -62,6 +62,14 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     _verify_identity_task: "asyncio.Task[None]"
 
     def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
+        """用于调用 API。可以直接通过访问适配器的属性访问对应名称的 API。
+
+        Args:
+            item: API 名称。
+
+        Returns:
+            用于调用 API 的函数。
+        """
         return partial(self.call_api, item)
 
     async def startup(self):

@@ -63,7 +63,9 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
         """
         if "timestamp" not in request.headers or "sign" not in request.headers:
             logger.error("Illegal http header, incomplete http header")
-        elif abs(int(request.headers["timestamp"]) - time.time() * 1000) > 3600000:
+        elif (
+            abs(int(request.headers["timestamp"]) - time.time() * 1000) > 60 * 60 * 1000
+        ):
             logger.error(
                 f'Illegal http header, timestamp: {request.headers["timestamp"]}'
             )

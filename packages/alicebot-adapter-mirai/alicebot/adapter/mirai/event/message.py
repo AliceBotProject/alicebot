@@ -24,6 +24,11 @@ class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
         return self.messageChain
 
     def __repr__(self) -> str:
+        """返回消息事件的描述。
+
+        Returns:
+            消息事件的描述。
+        """
         return f'Event<{self.type}>: "{self.messageChain}"'
 
     def get_plain_text(self) -> str:

@@ -1,5 +1,5 @@
 """CQHTTP 适配器异常。"""
-from typing import Any, Dict
+from typing import Any, ClassVar, Dict
 
 from alicebot.exceptions import AdapterException
 
@@ -34,6 +34,8 @@ class ActionFailed(CQHTTPException):
 
 class ApiNotAvailable(ActionFailed):
     """API 请求返回 404 ，表示当前请求的 API 不可用或不存在。"""
+
+    ERROR_CODE: ClassVar[int] = 1404
 
 
 class ApiTimeout(CQHTTPException):

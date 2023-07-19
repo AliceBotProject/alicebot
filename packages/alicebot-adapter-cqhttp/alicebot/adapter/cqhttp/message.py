@@ -1,7 +1,5 @@
 """CQHTTP 适配器消息。"""
-from __future__ import annotations
-
-from typing import Any, Iterable, Literal, Mapping, Union
+from typing import Any, Iterable, Literal, Mapping, Optional, Type, Union
 
 from alicebot.message import Message, MessageSegment
 
@@ -20,7 +18,7 @@ class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
     """CQHTTP 消息。"""
 
     @classmethod
-    def get_segment_class(cls) -> type[CQHTTPMessageSegment]:
+    def get_segment_class(cls) -> Type["CQHTTPMessageSegment"]:
         """获取消息字段类。
 
         Returns:
@@ -28,7 +26,7 @@ class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
         """
         return CQHTTPMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> CQHTTPMessageSegment:
+    def _str_to_message_segment(self, msg: str) -> "CQHTTPMessageSegment":
         return CQHTTPMessageSegment.text(msg)
 
 
@@ -36,7 +34,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     """CQHTTP 消息字段。"""
 
     @classmethod
-    def get_message_class(cls) -> type[CQHTTPMessage]:
+    def get_message_class(cls) -> Type[CQHTTPMessage]:
         """获取消息类。
 
         Returns:
@@ -64,12 +62,12 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         return f'[CQ:{self.type}{"," if params else ""}{params}]'
 
     @classmethod
-    def text(cls, text: str) -> CQHTTPMessageSegment:
+    def text(cls, text: str) -> "CQHTTPMessageSegment":
         """纯文本"""
         return cls(type="text", data={"text": text})
 
     @classmethod
-    def face(cls, id_: int) -> CQHTTPMessageSegment:
+    def face(cls, id_: int) -> "CQHTTPMessageSegment":
         """QQ 表情"""
         return cls(type="face", data={"id": str(id_)})
 
@@ -77,11 +75,11 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     def image(
         cls,
         file: str,
-        type_: Literal["flash"] | None = None,
+        type_: Optional[Literal["flash"]] = None,
         cache: bool = True,
         proxy: bool = True,
-        timeout: int | None = None,
-    ) -> CQHTTPMessageSegment:
+        timeout: Optional[int] = None,
+    ) -> "CQHTTPMessageSegment":
         """图片"""
         return cls(
             type="image",
@@ -101,8 +99,8 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         magic: bool = False,
         cache: bool = True,
         proxy: bool = True,
-        timeout: int | None = None,
-    ) -> CQHTTPMessageSegment:
+        timeout: Optional[int] = None,
+    ) -> "CQHTTPMessageSegment":
         """语音"""
         return cls(
             type="record",
@@ -121,8 +119,8 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         file: str,
         cache: bool = True,
         proxy: bool = True,
-        timeout: int | None = None,
-    ) -> CQHTTPMessageSegment:
+        timeout: Optional[int] = None,
+    ) -> "CQHTTPMessageSegment":
         """短视频"""
         return cls(
             type="video",
@@ -130,32 +128,32 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def at(cls, qq: int | Literal["all"]) -> CQHTTPMessageSegment:
+    def at(cls, qq: Union[int, Literal["all"]]) -> "CQHTTPMessageSegment":
         """@某人"""
         return cls(type="at", data={"qq": str(qq)})
 
     @classmethod
-    def rps(cls) -> CQHTTPMessageSegment:
+    def rps(cls) -> "CQHTTPMessageSegment":
         """猜拳魔法表情"""
         return cls(type="rps", data={})
 
     @classmethod
-    def dice(cls) -> CQHTTPMessageSegment:
+    def dice(cls) -> "CQHTTPMessageSegment":
         """掷骰子魔法表情"""
         return cls(type="dice", data={})
 
     @classmethod
-    def shake(cls) -> CQHTTPMessageSegment:
+    def shake(cls) -> "CQHTTPMessageSegment":
         """窗口抖动（戳一戳）"""
         return cls(type="shake", data={})
 
     @classmethod
-    def poke(cls, type_: str, id_: int) -> CQHTTPMessageSegment:
+    def poke(cls, type_: str, id_: int) -> "CQHTTPMessageSegment":
         """戳一戳"""
         return cls(type="poke", data={"type": type_, "id": str(id_)})
 
     @classmethod
-    def anonymous(cls, ignore: bool | None = None) -> CQHTTPMessageSegment:
+    def anonymous(cls, ignore: Optional[bool] = None) -> "CQHTTPMessageSegment":
         """匿名发消息"""
         return cls(type="anonymous", data={"ignore": ignore})
 
@@ -164,9 +162,9 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         cls,
         url: str,
         title: str,
-        content: str | None = None,
-        image: str | None = None,
-    ) -> CQHTTPMessageSegment:
+        content: Optional[str] = None,
+        image: Optional[str] = None,
+    ) -> "CQHTTPMessageSegment":
         """链接分享"""
         return cls(
             type="share",
@@ -174,24 +172,24 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def contact(cls, type_: Literal["qq", "group"], id_: int) -> CQHTTPMessageSegment:
+    def contact(cls, type_: Literal["qq", "group"], id_: int) -> "CQHTTPMessageSegment":
         """推荐好友/推荐群"""
         return cls(type="contact", data={"type": type_, "id": str(id_)})
 
     @classmethod
-    def contact_friend(cls, id_: int) -> CQHTTPMessageSegment:
+    def contact_friend(cls, id_: int) -> "CQHTTPMessageSegment":
         """推荐好友"""
         return cls(type="contact", data={"type": "qq", "id": str(id_)})
 
     @classmethod
-    def contact_group(cls, id_: int) -> CQHTTPMessageSegment:
+    def contact_group(cls, id_: int) -> "CQHTTPMessageSegment":
         """推荐好友"""
         return cls(type="contact", data={"type": "group", "id": str(id_)})
 
     @classmethod
     def location(
-        cls, lat: float, lon: float, title: str | None, content: str | None = None
-    ) -> CQHTTPMessageSegment:
+        cls, lat: float, lon: float, title: Optional[str], content: Optional[str] = None
+    ) -> "CQHTTPMessageSegment":
         """位置"""
         return cls(
             type="location",
@@ -199,7 +197,9 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def music(cls, type_: Literal["qq", "163", "xm"], id_: int) -> CQHTTPMessageSegment:
+    def music(
+        cls, type_: Literal["qq", "163", "xm"], id_: int
+    ) -> "CQHTTPMessageSegment":
         """音乐分享"""
         return cls(type="music", data={"type": type_, "id": str(id_)})
 
@@ -209,9 +209,9 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         url: str,
         audio: str,
         title: str,
-        content: str | None = None,
-        image: str | None = None,
-    ) -> CQHTTPMessageSegment:
+        content: Optional[str] = None,
+        image: Optional[str] = None,
+    ) -> "CQHTTPMessageSegment":
         """音乐自定义分享"""
         return cls(
             type="music",
@@ -226,19 +226,19 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def reply(cls, id_: int) -> CQHTTPMessageSegment:
+    def reply(cls, id_: int) -> "CQHTTPMessageSegment":
         """回复"""
         return cls(type="reply", data={"id": str(id_)})
 
     @classmethod
-    def node(cls, id_: int) -> CQHTTPMessageSegment:
+    def node(cls, id_: int) -> "CQHTTPMessageSegment":
         """合并转发节点"""
         return cls(type="node", data={"id": str(id_)})
 
     @classmethod
     def node_custom(
-        cls, user_id: int, nickname: str, content: CQHTTPMessage
-    ) -> CQHTTPMessageSegment:
+        cls, user_id: int, nickname: str, content: "CQHTTPMessage"
+    ) -> "CQHTTPMessageSegment":
         """合并转发自定义节点"""
         return cls(
             type="node",
@@ -250,12 +250,12 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def xml_message(cls, data: str) -> CQHTTPMessageSegment:
+    def xml_message(cls, data: str) -> "CQHTTPMessageSegment":
         """XML 消息"""
         return cls(type="xml", data={"data": data})
 
     @classmethod
-    def json_message(cls, data: str) -> CQHTTPMessageSegment:
+    def json_message(cls, data: str) -> "CQHTTPMessageSegment":
         """JSON 消息"""
         return cls(type="json", data={"data": data})
 

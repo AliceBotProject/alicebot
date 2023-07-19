@@ -1,7 +1,5 @@
 """默认不会被传播的特殊事件。"""
-from __future__ import annotations
-
-from typing import Any, Literal
+from typing import Any, List, Literal, Optional
 
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent
 
@@ -51,6 +49,6 @@ class CommandExecutedEvent(MateEvent):
 
     type: Literal["CommandExecutedEvent"]
     name: str
-    friend: FriendInfo | None = None
-    member: GroupMemberInfo | None = None
-    args: list[Any]
+    friend: Optional[FriendInfo] = None
+    member: Optional[GroupMemberInfo] = None
+    args: List[Any]

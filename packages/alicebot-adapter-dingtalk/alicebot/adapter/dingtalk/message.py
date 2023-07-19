@@ -1,7 +1,5 @@
 """DingTalk 适配器消息。"""
-from __future__ import annotations
-
-from typing import Any
+from typing import Any, Dict, List, Optional
 
 from pydantic import model_serializer
 
@@ -27,7 +25,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         return super().__str__()
 
     @model_serializer
-    def ser_model(self) -> dict[str, Any]:
+    def ser_model(self) -> Dict[str, Any]:
         """返回符合钉钉消息标准的消息字段字典。
 
         Returns:
@@ -48,17 +46,19 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         return ""
 
     @classmethod
-    def raw(cls, data: dict[str, Any]) -> DingTalkMessage:
+    def raw(cls, data: Dict[str, Any]) -> "DingTalkMessage":
         """DingTalk 原始消息"""
         return cls(type="raw", data=data)
 
     @classmethod
-    def text(cls, content: str) -> DingTalkMessage:
+    def text(cls, content: str) -> "DingTalkMessage":
         """DingTalk text 消息"""
         return cls(type="text", data={"content": content})
 
     @classmethod
-    def link(cls, text: str, title: str, message_url: str, pic_url: str | None = None):
+    def link(
+        cls, text: str, title: str, message_url: str, pic_url: Optional[str] = None
+    ):
         """DingTalk link 消息"""
         return cls(
             type="link",
@@ -98,7 +98,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
 
     @classmethod
     def action_card_multi_btns(
-        cls, title: str, text: str, btns: list[Any], btn_orientation: str = "0"
+        cls, title: str, text: str, btns: List[Any], btn_orientation: str = "0"
     ):
         """DingTalk 独立跳转 actionCard 消息"""
         return cls(
@@ -112,15 +112,15 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         )
 
     @classmethod
-    def feed_card(cls, links: list[Any]):
+    def feed_card(cls, links: List[Any]):
         """DingTalk feedCard 消息"""
         return cls(type="feedCard", data={"links": links})
 
     @classmethod
     def at(
         cls,
-        at_mobiles: list[str] | None = None,
-        at_user_ids: list[str] | None = None,
+        at_mobiles: Optional[List[str]] = None,
+        at_user_ids: Optional[List[str]] = None,
         is_at_all: bool = False,
     ):
         """DingTalk At 信息"""

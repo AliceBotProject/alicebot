@@ -21,4 +21,4 @@ def error_or_exception(message: str, exception: Exception, verbose: bool):
     if verbose:
         logger.exception(message)
     else:
-        logger.error(f"{message} {exception!r}")  # noqa: G004
+        logger.error(f"{message} {exception!r}")

@@ -2,8 +2,6 @@
 
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import (
@@ -11,6 +9,8 @@ from typing import (
     ClassVar,
     Generic,
     NoReturn,
+    Optional,
+    Type,
     cast,
     final,
 )
@@ -54,10 +54,10 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     block: ClassVar[bool] = False
 
     # 不能使用 ClassVar 因为 PEP 526 不允许这样做
-    Config: type[T_Config]
+    Config: Type[T_Config]
 
     __plugin_load_type__: ClassVar[PluginLoadType]
-    __plugin_file_path__: ClassVar[str | None]
+    __plugin_file_path__: ClassVar[Optional[str]]
 
     if TYPE_CHECKING:
 
@@ -68,8 +68,8 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     def __init_subclass__(
         cls,
         /,
-        config: type[T_Config] | None = None,
-        init_state: T_State | None = None,
+        config: Optional[Type[T_Config]] = None,
+        init_state: Optional[T_State] = None,
     ) -> None:
         super().__init_subclass__()
         if not hasattr(cls, "Config") and config is not None:
@@ -85,7 +85,7 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
 
     @final
     @property
-    def bot(self) -> Bot:
+    def bot(self) -> "Bot":
         """机器人对象。"""
         return self.event.adapter.bot
 

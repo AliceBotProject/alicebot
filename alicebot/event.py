@@ -2,17 +2,13 @@
 
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
-from __future__ import annotations
-
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Generic
+from typing import TYPE_CHECKING, Any, Generic, Optional, Union
+from typing_extensions import Self
 
 from pydantic import BaseModel, ConfigDict, Extra
 
 from alicebot.typing import T_Adapter
-
-if TYPE_CHECKING:
-    from typing_extensions import Self
 
 __all__ = ["Event", "MessageEvent"]
 
@@ -32,7 +28,7 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
         adapter: T_Adapter
     else:
         adapter: Any
-    type: str | None
+    type: Optional[str]
     __handled__: bool = False
 
     def __str__(self) -> str:
@@ -78,8 +74,8 @@ class MessageEvent(Event[T_Adapter], Generic[T_Adapter]):
     async def get(
         self,
         *,
-        max_try_times: int | None = None,
-        timeout: int | float | None = None,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
     ) -> Self:
         """获取用户回复消息。
 
@@ -105,8 +101,8 @@ class MessageEvent(Event[T_Adapter], Generic[T_Adapter]):
     async def ask(
         self,
         message: str,
-        max_try_times: int | None = None,
-        timeout: int | float | None = None,
+        max_try_times: Optional[int] = None,
+        timeout: Optional[Union[int, float]] = None,
     ) -> Self:
         """询问消息。
 

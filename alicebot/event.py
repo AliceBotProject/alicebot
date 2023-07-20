@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, Optional, Union
 from typing_extensions import Self
 
-from pydantic import BaseModel, ConfigDict, Extra
+from pydantic import BaseModel, ConfigDict
 
 from alicebot.typing import T_Adapter
 
@@ -22,7 +22,7 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
         __handled__: 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
     """
 
-    model_config = ConfigDict(extra=Extra.allow)
+    model_config = ConfigDict(extra="allow")
 
     if TYPE_CHECKING:
         adapter: T_Adapter

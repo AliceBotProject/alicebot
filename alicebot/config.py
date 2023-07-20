@@ -4,7 +4,7 @@ AliceBot 使用 [pydantic](https://pydantic-docs.helpmanual.io/) 来读取配置
 """
 from typing import Set, Union
 
-from pydantic import BaseModel, ConfigDict, DirectoryPath, Extra, Field
+from pydantic import BaseModel, ConfigDict, DirectoryPath, Field
 
 __all__ = [
     "ConfigModel",
@@ -23,7 +23,7 @@ class ConfigModel(BaseModel):
         __config_name__: 配置名称。
     """
 
-    model_config = ConfigDict(extra=Extra.allow)
+    model_config = ConfigDict(extra="allow")
 
     __config_name__: str = ""
 

@@ -11,7 +11,7 @@ from typing import (
 )
 from typing_extensions import Self
 
-from pydantic import BaseModel, ConfigDict, Extra, Field
+from pydantic import BaseModel, ConfigDict, Field
 from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
@@ -58,7 +58,7 @@ class File(BaseModel):
 class Status(BaseModel):
     """状态信息"""
 
-    model_config = ConfigDict(extra=Extra.allow)
+    model_config = ConfigDict(extra="allow")
 
     online: bool
     good: bool

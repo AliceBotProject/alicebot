@@ -12,7 +12,7 @@ from typing import (
 )
 from typing_extensions import Self
 
-from pydantic import BaseModel, Extra
+from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
@@ -47,8 +47,10 @@ class BotStatus(BaseModel):
     online: bool
 
 
-class Status(BaseModel, extra=Extra.allow):
+class Status(BaseModel):
     """运行状态"""
+
+    model_config = ConfigDict(extra="allow")
 
     good: bool
     bots: List[BotStatus]

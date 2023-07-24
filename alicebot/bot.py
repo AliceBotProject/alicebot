@@ -22,6 +22,7 @@ from typing import (
     List,
     Optional,
     Set,
+    Tuple,
     Type,
     Union,
     overload,
@@ -361,7 +362,7 @@ class Bot:
             source: Union[List[Type[Plugin[Any, Any, Any]]], List[Adapter[Any, Any]]],
             name: str,
             base: Type[ConfigModel],
-        ) -> Type[ConfigModel]:
+        ) -> Tuple[Type[ConfigModel], ConfigModel]:
             config_update_dict = {}
             for i in source:
                 config_class = getattr(i, "Config", None)
@@ -374,12 +375,12 @@ class Bot:
                         config_class,
                         default_value,
                     )
-            return create_model(name, **config_update_dict, __base__=base)
+            return create_model(name, **config_update_dict, __base__=base), base()
 
         self.config = create_model(
             "Config",
-            plugin=(update_config(self.plugins, "PluginConfig", PluginConfig), {}),
-            adapter=(update_config(self.adapters, "AdapterConfig", AdapterConfig), {}),
+            plugin=update_config(self.plugins, "PluginConfig", PluginConfig),
+            adapter=update_config(self.adapters, "AdapterConfig", AdapterConfig),
             __base__=MainConfig,
         )(**self._raw_config_dict)
         # 更新 log 级别

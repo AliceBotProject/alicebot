@@ -268,7 +268,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
             TypeError: message_type 非法。
             ...: 同 `call_api()` 方法。
         """
-        if message_type == "private" or message_type == "friend":
+        if message_type in {"private", "friend"}:
             return await self.sendFriendMessage(
                 target=target, messageChain=MiraiMessage(message_), quote=quote
             )

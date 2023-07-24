@@ -51,9 +51,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                 )
                 continue
 
-            trigger: Union[str, "BaseTrigger"] = getattr(  # noqa: B009
-                plugin, "trigger"
-            )
+            trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")  # noqa: B009
             trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")  # noqa: B009
 
             if not isinstance(trigger, str) or not isinstance(trigger_args, dict):

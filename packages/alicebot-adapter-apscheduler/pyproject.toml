@@ -7,14 +7,14 @@ license = { text = "MIT" }
 readme = "README.md"
 keywords = ["bot", "chatbot", "scheduling", "apscheduler"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Framework :: AsyncIO",
-  "Framework :: Robot Framework",
-  "Framework :: Robot Framework :: Library",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3",
-  "Topic :: Communications :: Chat",
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat",
 ]
 requires-python = ">=3.8"
 dependencies = ["alicebot==0.7.1", "apscheduler>=3.7,<4.0"]

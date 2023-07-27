@@ -4,13 +4,11 @@ on:
   push:
     branches:
       - master
-    paths:
-      - "alicebot/**.py"
-      - "packages/**.py"
+    paths-ignore:
+      - "examples/**"
   pull_request:
-    paths:
-      - "alicebot/**.py"
-      - "packages/**.py"
+    paths-ignore:
+      - "examples/**"
   workflow_dispatch:
 
 jobs:

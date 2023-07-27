@@ -11,17 +11,19 @@
   "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.3.1",
+    "@types/node": "^20.4.5",
     "conventional-changelog-cli": "^3.0.0",
-    "markdownlint-cli": "^0.34.0",
-    "prettier": "^2.8.8",
-    "vitepress": "1.0.0-beta.2"
+    "markdownlint-cli": "^0.35.0",
+    "prettier": "^3.0.0",
+    "pyright": "^1.1.319",
+    "vitepress": "1.0.0-beta.6"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
-    "changelog": "conventional-changelog -p angular -i docs/changelog.md -s -r 0"
+    "changelog": "conventional-changelog -p angular -i docs/changelog.md -s -r 0",
+    "pyright": "pyright"
   },
   "pnpm": {
     "peerDependencyRules": {

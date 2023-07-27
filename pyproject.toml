@@ -7,22 +7,22 @@ license = { text = "MIT" }
 readme = "README.md"
 keywords = ["bot", "chatbot", "qq", "qqbot", "cqhttp", "coolq"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Framework :: AsyncIO",
-  "Framework :: Robot Framework",
-  "Framework :: Robot Framework :: Library",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3",
-  "Topic :: Communications :: Chat",
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat",
 ]
 requires-python = ">=3.8"
 dependencies = [
-  "tomli>=2.0.0,<3.0.0;python_version<'3.11'",
-  "pydantic>=2.0.3,<3.0.0",
-  "aiohttp>=3.8.0,<4.0.0",
-  "loguru>=0.7.0,<0.8.0",
-  "typing-extensions>=4.5.0",
+    "tomli>=2.0.0,<3.0.0;python_version<'3.11'",
+    "pydantic>=2.0.3,<3.0.0",
+    "aiohttp>=3.8.0,<4.0.0",
+    "loguru>=0.7.0,<0.8.0",
+    "typing-extensions>=4.5.0",
 ]
 
 [project.optional-dependencies]
@@ -33,21 +33,21 @@ dingtalk = ["alicebot-adapter-dingtalk"]
 apscheduler = ["alicebot-adapter-apscheduler"]
 hot_reload = ["watchfiles"]
 all = [
-  "alicebot-adapter-cqhttp",
-  "alicebot-adapter-onebot",
-  "alicebot-adapter-mirai",
-  "alicebot-adapter-dingtalk",
-  "alicebot-adapter-apscheduler",
-  "watchfiles",
+    "alicebot-adapter-cqhttp",
+    "alicebot-adapter-onebot",
+    "alicebot-adapter-mirai",
+    "alicebot-adapter-dingtalk",
+    "alicebot-adapter-apscheduler",
+    "watchfiles",
 ]
 
 [tool.pdm.dev-dependencies]
 dev = [
-  "-e alicebot-adapter-cqhttp @ {root:uri}/packages/alicebot-adapter-cqhttp",
-  "-e alicebot-adapter-onebot @ {root:uri}/packages/alicebot-adapter-onebot",
-  "-e alicebot-adapter-mirai @ {root:uri}/packages/alicebot-adapter-mirai",
-  "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
-  "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
+    "-e alicebot-adapter-cqhttp @ {root:uri}/packages/alicebot-adapter-cqhttp",
+    "-e alicebot-adapter-onebot @ {root:uri}/packages/alicebot-adapter-onebot",
+    "-e alicebot-adapter-mirai @ {root:uri}/packages/alicebot-adapter-mirai",
+    "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
+    "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
 ]
 lint = ["black", "ruff", "mypy"]
 docs = ["sophia-doc~=0.1.4", "tomlkit~=0.11.7"]
@@ -65,25 +65,25 @@ target-version = ["py38", "py39", "py310", "py311"]
 line-length = 88
 select = ["ALL"]
 ignore = [
-  "C90",     # mccabe
-  "ANN",     # flake8-annotations
-  "BLE",     # flake8-blind-except
-  "FBT",     # flake8-boolean-trap
-  "COM",     # flake8-commas
-  "EM",      # flake8-errmsg
-  "INP",     # flake8-no-pep420
-  "TID",     # flake8-tidy-imports
-  "E501",    # Line too long, handled by black
-  "D415",    # First line should end with a period, question mark, or exclamation point
-  "S101",    # Use of assert detected
-  "PGH003",  # Use specific rule codes when ignoring type issues
-  "PLR0912", # Too many branches
-  "PLR0913", # Too many arguments to function call
-  "TRY003",  # Avoid specifying long messages outside the exception class
-  "PERF203", # try-except within a loop incurs performance overhead
-  "RUF001",  # String contains ambiguous unicode character string
-  "RUF002",  # Docstring contains ambiguous unicode character string
-  "RUF003",  # Comment contains ambiguous unicode character string
+    "C90",     # mccabe
+    "ANN",     # flake8-annotations
+    "BLE",     # flake8-blind-except
+    "FBT",     # flake8-boolean-trap
+    "COM",     # flake8-commas
+    "EM",      # flake8-errmsg
+    "INP",     # flake8-no-pep420
+    "TID",     # flake8-tidy-imports
+    "E501",    # Line too long, handled by black
+    "D415",    # First line should end with a period, question mark, or exclamation point
+    "S101",    # Use of assert detected
+    "PGH003",  # Use specific rule codes when ignoring type issues
+    "PLR0912", # Too many branches
+    "PLR0913", # Too many arguments to function call
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "PERF203", # try-except within a loop incurs performance overhead
+    "RUF001",  # String contains ambiguous unicode character string
+    "RUF002",  # Docstring contains ambiguous unicode character string
+    "RUF003",  # Comment contains ambiguous unicode character string
 ]
 target-version = "py38"
 
@@ -126,9 +126,9 @@ python_version = "3.8"
 strict = true
 disable_error_code = ["override"]
 exclude = [
-  '^packages/.*/alicebot/__init__\.py$',
-  '^packages/.*/alicebot/adapter/__init__\.py$',
-  '^examples/.*\.py$',
+    '^packages/.*/alicebot/__init__\.py$',
+    '^packages/.*/alicebot/adapter/__init__\.py$',
+    '^examples/.*\.py$',
 ]
 warn_unused_ignores = false
 warn_return_any = false

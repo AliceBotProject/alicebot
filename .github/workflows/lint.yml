@@ -38,11 +38,19 @@ jobs:
       - name: Install dependencies
         run: pdm install
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: ^6.10.0
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "pnpm"
+      - run: pnpm install
+        shell: bash
+
       - run: |
           eval $(pdm venv activate)
-          echo PATH=$PATH >> $GITHUB_ENV
-
-      - uses: jakebailey/pyright-action@v1
+          pyright
 
   mypy:
     runs-on: ubuntu-latest

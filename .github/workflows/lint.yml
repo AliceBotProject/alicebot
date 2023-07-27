@@ -9,6 +9,7 @@ on:
   pull_request:
     paths:
       - "**.py"
+  workflow_dispatch:
 
 jobs:
   black:
@@ -22,3 +23,35 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: chartboost/ruff-action@v1
+
+  pyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          python-version: 3.9
+          architecture: x64
+          cache: true
+      - name: Install dependencies
+        run: pdm install
+
+      - uses: jakebailey/pyright-action@v1
+
+  mypy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          python-version: 3.9
+          architecture: x64
+          cache: true
+      - name: Install dependencies
+        run: pdm install
+
+      - run: mypy .

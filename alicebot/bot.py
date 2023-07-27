@@ -3,17 +3,16 @@
 AliceBot 的基础模块，每一个 AliceBot 机器人即是一个 `Bot` 实例。
 """
 import asyncio
-from collections import defaultdict
-from contextlib import AsyncExitStack
-from itertools import chain
 import json
-import os
-from pathlib import Path
 import pkgutil
 import signal
 import sys
 import threading
 import time
+from collections import defaultdict
+from contextlib import AsyncExitStack
+from itertools import chain
+from pathlib import Path
 from typing import (
     Any,
     Awaitable,
@@ -87,7 +86,7 @@ class Bot:
     global_state: Dict[Any, Any]
 
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
-    _current_event: Event[Any]  # 当前待处理的 Event
+    _current_event: Event[Any]  # 当前待处理的 Event # type: ignore
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
@@ -121,7 +120,7 @@ class Bot:
         config_file: Optional[str] = "config.toml",
         config_dict: Optional[Dict[str, Any]] = None,
         hot_reload: bool = False,
-    ):
+    ) -> None:
         """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
 
         Args:
@@ -133,11 +132,13 @@ class Bot:
                 启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
         """
         self.config = MainConfig()
+        self.should_exit = asyncio.Event()
         self.plugins_priority_dict = defaultdict(list)
-        self.plugin_state = defaultdict(lambda: type(None)())
+        self.plugin_state = defaultdict(lambda: None)
         self.global_state = {}
 
         self.adapters = []
+        self._condition = asyncio.Condition()
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._raw_config_dict = {}
@@ -166,7 +167,7 @@ class Bot:
         """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
-    def run(self):
+    def run(self) -> None:
         """运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。"""
         self._restart_flag = True
         while self._restart_flag:
@@ -177,17 +178,14 @@ class Bot:
                 self._load_plugins(*self._extend_plugins)
                 self._load_adapters(*self._extend_adapters)
 
-    def restart(self):
+    def restart(self) -> None:
         """退出并重新运行 AliceBot。"""
         logger.info("Restarting AliceBot...")
         self._restart_flag = True
         self.should_exit.set()
 
-    async def _run(self):
+    async def _run(self) -> None:
         """运行 AliceBot。"""
-        self.should_exit = asyncio.Event()
-        self._condition = asyncio.Condition()
-
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。
@@ -216,13 +214,13 @@ class Bot:
         if self._hot_reload:
             hot_reload_task = asyncio.create_task(self._run_hot_reload())
 
-        for _hook_func in self._bot_run_hooks:
-            await _hook_func(self)
+        for bot_run_hook_func in self._bot_run_hooks:
+            await bot_run_hook_func(self)
 
         try:
             for _adapter in self.adapters:
-                for _hook_func in self._adapter_startup_hooks:
-                    await _hook_func(_adapter)
+                for adapter_startup_hook_func in self._adapter_startup_hooks:
+                    await adapter_startup_hook_func(_adapter)
                 try:
                     await _adapter.startup()
                 except Exception as e:
@@ -233,8 +231,8 @@ class Bot:
                     )
 
             for _adapter in self.adapters:
-                for _hook_func in self._adapter_run_hooks:
-                    await _hook_func(_adapter)
+                for adapter_run_hook_func in self._adapter_run_hooks:
+                    await adapter_run_hook_func(_adapter)
                 _adapter_task = asyncio.create_task(_adapter.safe_run())
                 self._adapter_tasks.add(_adapter_task)
                 _adapter_task.add_done_callback(self._adapter_tasks.discard)
@@ -245,21 +243,21 @@ class Bot:
                 await hot_reload_task
         finally:
             for _adapter in self.adapters:
-                for _hook_func in self._adapter_shutdown_hooks:
-                    await _hook_func(_adapter)
+                for adapter_shutdown_hook_func in self._adapter_shutdown_hooks:
+                    await adapter_shutdown_hook_func(_adapter)
                 await _adapter.shutdown()
 
             while self._adapter_tasks:
                 await asyncio.sleep(0)
 
-            for _hook_func in self._bot_exit_hooks:
-                await _hook_func(self)
+            for bot_exit_hook_func in self._bot_exit_hooks:
+                await bot_exit_hook_func(self)
 
             self.adapters.clear()
             self.plugins_priority_dict.clear()
             self._module_path_finder.path.clear()
 
-    def _remove_plugin_by_path(self, file: str) -> List[Type[Plugin[Any, Any, Any]]]:
+    def _remove_plugin_by_path(self, file: Path) -> List[Type[Plugin[Any, Any, Any]]]:
         """根据路径删除已加载的插件。"""
         removed_plugins: List[Type[Plugin[Any, Any, Any]]] = []
         for plugins in self.plugins_priority_dict.values():
@@ -280,7 +278,7 @@ class Bot:
                 )
         return removed_plugins
 
-    async def _run_hot_reload(self):
+    async def _run_hot_reload(self) -> None:
         """热重载。"""
         try:
             from watchfiles import Change, awatch
@@ -308,7 +306,7 @@ class Bot:
             # 按照 Change.deleted, Change.modified, Change.added 的顺序处理
             # 以确保发生重命名时先处理删除再处理新增
             for change_type, file_ in sorted(changes, key=lambda x: x[0], reverse=True):
-                file = file_
+                file = Path(file_)
                 # 更改配置文件
                 if (
                     self._config_file is not None
@@ -328,16 +326,14 @@ class Bot:
                 # 更改插件文件夹
                 if change_type == Change.deleted:
                     # 针对删除操作特殊处理
-                    if not file.endswith(".py"):
-                        file = os.path.join(file, "__init__.py")
+                    if file.suffix != ".py":
+                        file = file / "__init__.py"
                 else:
-                    if os.path.isdir(file) and os.path.isfile(
-                        os.path.join(file, "__init__.py")
-                    ):
+                    if file.is_dir() and (file / "__init__.py").is_file():
                         # 当新增一个目录，且此目录中包含 __init__.py 文件
                         # 说明此时发生的是添加一个 Python 包，则视为添加了此包的 __init__.py 文件
-                        file = os.path.join(file, "__init__.py")
-                    if not (os.path.isfile(file) and file.endswith(".py")):
+                        file = file / "__init__.py"
+                    if not (file.is_file() and file.suffix == ".py"):
                         continue
 
                 if change_type == Change.added:
@@ -355,7 +351,7 @@ class Bot:
                     self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
                     self._update_config()
 
-    def _update_config(self):
+    def _update_config(self) -> None:
         """更新 config ，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
@@ -363,10 +359,11 @@ class Bot:
             name: str,
             base: Type[ConfigModel],
         ) -> Tuple[Type[ConfigModel], ConfigModel]:
-            config_update_dict = {}
+            config_update_dict: Dict[str, Any] = {}
             for i in source:
                 config_class = getattr(i, "Config", None)
                 if is_config_class(config_class):
+                    default_value: Any
                     try:
                         default_value = config_class()
                     except ValidationError:
@@ -387,14 +384,14 @@ class Bot:
         logger.remove()
         logger.add(sys.stderr, level=self.config.bot.log.level)
 
-    def _reload_config_dict(self):
+    def _reload_config_dict(self) -> None:
         """重新加载配置文件。"""
         self._raw_config_dict = {}
         if self._config_dict is not None:
             self._raw_config_dict = self._config_dict
         elif self._config_file is not None:
             try:
-                with open(self._config_file, "rb") as f:
+                with Path(self._config_file).open("rb") as f:
                     if self._config_file.endswith(".json"):
                         self._raw_config_dict = json.load(f)
                     elif self._config_file.endswith(".toml"):
@@ -421,7 +418,7 @@ class Bot:
             )
         self._update_config()
 
-    def reload_plugins(self):
+    def reload_plugins(self) -> None:
         """手动重新加载所有插件。"""
         self.plugins_priority_dict.clear()
         self._load_plugins(*self.config.bot.plugins)
@@ -430,7 +427,7 @@ class Bot:
         self._load_plugins_from_dirs(*self._extend_plugin_dirs)
         self._update_config()
 
-    def _handle_exit(self, *args: Any):  # noqa: ARG002
+    def _handle_exit(self, *_args: Any) -> None:
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info("Stopping AliceBot...")
         if self.should_exit.is_set():
@@ -445,7 +442,7 @@ class Bot:
         *,
         handle_get: bool = True,
         show_log: bool = True,
-    ):
+    ) -> None:
         """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
         此方法不应该被用户手动调用。
@@ -473,7 +470,7 @@ class Bot:
             self._handle_event_tasks.add(_handle_event_task)
             _handle_event_task.add_done_callback(self._handle_event_tasks.discard)
 
-    async def _handle_event(self, current_event: Optional[Event[Any]] = None):
+    async def _handle_event(self, current_event: Optional[Event[Any]] = None) -> None:
         if current_event is None:
             async with self._condition:
                 await self._condition.wait()
@@ -489,11 +486,11 @@ class Bot:
                 f"Checking for matching plugins with priority {plugin_priority!r}"
             )
             stop = False
-            for _plugin in self.plugins_priority_dict[plugin_priority]:
+            for plugin in self.plugins_priority_dict[plugin_priority]:
                 try:
                     async with AsyncExitStack() as stack:
                         _plugin = await solve_dependencies(
-                            _plugin,
+                            plugin,
                             use_cache=True,
                             stack=stack,
                             dependency_cache={
@@ -522,7 +519,7 @@ class Bot:
                     stop = True
                 except Exception as e:
                     error_or_exception(
-                        f'Exception in plugin "{_plugin}":',
+                        f'Exception in plugin "{plugin}":',
                         e,
                         self.config.bot.log.verbose_exception,
                     )
@@ -572,7 +569,7 @@ class Bot:
 
     async def get(
         self,
-        func: Optional[Callable[[Event[Any]], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: Optional[Type[Event[Any]]] = None,
         adapter_type: Optional[Type[Adapter[Any, Any]]] = None,
@@ -642,10 +639,10 @@ class Bot:
         plugin_class: Type[Plugin[Any, Any, Any]],
         plugin_load_type: PluginLoadType,
         plugin_file_path: Optional[str],
-    ):
+    ) -> None:
         """加载插件类。"""
         priority = getattr(plugin_class, "priority", None)
-        if type(priority) is int and priority >= 0:
+        if isinstance(priority, int) and priority >= 0:
             for _plugin in self.plugins:
                 if _plugin.__name__ == plugin_class.__name__:
                     logger.warning(
@@ -669,7 +666,7 @@ class Bot:
 
     def _load_plugins_from_module_name(
         self, module_name: str, plugin_load_type: PluginLoadType
-    ):
+    ) -> None:
         """从模块名称中插件模块。"""
         try:
             plugin_classes = get_classes_from_module_name(module_name, Plugin)
@@ -682,7 +679,7 @@ class Bot:
         else:
             for plugin_class, module in plugin_classes:
                 self._load_plugin_class(
-                    plugin_class,
+                    plugin_class,  # type: ignore
                     plugin_load_type,
                     module.__file__,
                 )
@@ -691,7 +688,7 @@ class Bot:
         self,
         *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path],
         plugin_load_type: Optional[PluginLoadType] = None,
-    ):
+    ) -> None:
         """加载插件。
 
         Args:
@@ -738,7 +735,7 @@ class Bot:
                         except OSError:
                             continue
                     if plugin_module_name is None:
-                        rel_path = plugin_.resolve().relative_to(Path(".").resolve())
+                        rel_path = plugin_.resolve().relative_to(Path().resolve())
                         if rel_path.stem == "__init__":
                             plugin_module_name = ".".join(rel_path.parts[:-1])
                         else:
@@ -754,7 +751,9 @@ class Bot:
             else:
                 logger.error(f"Type error: {plugin_} can not be loaded as plugin")
 
-    def load_plugins(self, *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path]):
+    def load_plugins(
+        self, *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path]
+    ) -> None:
         """加载插件。
 
         Args:
@@ -769,7 +768,7 @@ class Bot:
         self._extend_plugins.extend(plugins)
         return self._load_plugins(*plugins)
 
-    def _load_plugins_from_dirs(self, *dirs: Path):
+    def _load_plugins_from_dirs(self, *dirs: Path) -> None:
         """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
 
         Args:
@@ -785,7 +784,7 @@ class Bot:
                     module_info.name, PluginLoadType.DIR
                 )
 
-    def load_plugins_from_dirs(self, *dirs: Path):
+    def load_plugins_from_dirs(self, *dirs: Path) -> None:
         """从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
 
         Args:
@@ -795,7 +794,7 @@ class Bot:
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)
 
-    def _load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]):
+    def _load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]) -> None:
         """加载适配器。
 
         Args:
@@ -842,7 +841,7 @@ class Bot:
                     f'from "{adapter_}"'
                 )
 
-    def load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]):
+    def load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]) -> None:
         """加载适配器。
 
         Args:
@@ -852,7 +851,7 @@ class Bot:
                     例如：`path.of.adapter`。
         """
         self._extend_adapters.extend(adapters)
-        return self._load_adapters(*adapters)
+        self._load_adapters(*adapters)
 
     @overload
     def get_adapter(self, adapter: str) -> Adapter[Any, Any]:

@@ -2,8 +2,8 @@
 
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
-from abc import ABC, abstractmethod
 import os
+from abc import ABC, abstractmethod
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -18,13 +18,13 @@ from typing import (
     overload,
 )
 
+from alicebot.event import Event
 from alicebot.log import error_or_exception
 from alicebot.typing import T_Config, T_Event
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
     from alicebot.bot import Bot
-    from alicebot.event import Event
 
 __all__ = ["Adapter"]
 
@@ -48,7 +48,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     bot: "Bot"
     Config: Type[T_Config]
 
-    def __init__(self, bot: "Bot"):
+    def __init__(self, bot: "Bot") -> None:
         """初始化。
 
         Args:
@@ -62,17 +62,18 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     @property
     def config(self) -> T_Config:
         """适配器配置。"""
+        default: Any = None
         config_class = getattr(self, "Config", None)
         if is_config_class(config_class):
             return getattr(
                 self.bot.config.adapter,
                 config_class.__config_name__,
-                None,
-            )  # type: ignore
-        return None  # type: ignore
+                default,
+            )
+        return default
 
     @final
-    async def safe_run(self):
+    async def safe_run(self) -> None:
         """附带有异常处理地安全运行适配器。"""
         try:
             await self.run()
@@ -91,13 +92,13 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         """
         raise NotImplementedError
 
-    async def startup(self):
+    async def startup(self) -> None:
         """在适配器开始运行前运行的方法，用于初始化适配器。
 
         AliceBot 依次运行并等待所有适配器的 `startup()` 方法，待运行完毕后再创建 `run()` 任务。
         """
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """在适配器结束运行时运行的方法，用于安全地关闭适配器。
 
         AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 `shutdown()` 方法。
@@ -133,12 +134,12 @@ class Adapter(Generic[T_Event, T_Config], ABC):
     @final
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Optional[Union[Type[T_Event], Type[_T_Event]]] = None,
+        event_type: Any = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> Union[T_Event, _T_Event]:
+    ) -> Event[Any]:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         类似 `Bot` 类的 `get()` 方法，但是隐含了判断产生事件的适配器是本适配器。

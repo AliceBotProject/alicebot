@@ -64,7 +64,9 @@ class Status(BaseModel):
     good: bool
 
 
-def _get_literal_field(field: FieldInfo) -> Optional[str]:
+def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
+    if field is None:
+        return None
     annotation = field.annotation
     if annotation is None or get_origin(annotation) is not Literal:
         return None
@@ -95,15 +97,14 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         Returns:
             事件类型。
         """
-        post_type_field = cls.model_fields.get("post_type", None)
-        post_type = post_type_field and _get_literal_field(post_type_field)
+        post_type = _get_literal_field(cls.model_fields.get("post_type", None))
         if post_type is None:
             return (None, None, None)
-        detail_type_field = cls.model_fields.get(post_type + "_type", None)
-        detail_type = detail_type_field and _get_literal_field(detail_type_field)
-        sub_type_field = cls.model_fields.get("sub_type", None)
-        sub_type = sub_type_field and _get_literal_field(sub_type_field)
-        return (post_type, detail_type, sub_type)
+        return (
+            post_type,
+            _get_literal_field(cls.model_fields.get(post_type + "_type", None)),
+            _get_literal_field(cls.model_fields.get("sub_type", None)),
+        )
 
 
 class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):

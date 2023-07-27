@@ -1,6 +1,7 @@
 """Mirai 适配器消息。"""
 import json
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Type, Union
+from typing_extensions import Self
 
 from pydantic import model_serializer
 
@@ -95,7 +96,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return self.type == "Plain"
 
     @classmethod
-    def source(cls, id_: int, time: int):
+    def source(cls, id_: int, time: int) -> Self:
         """Source 消息"""
         return cls(type="Source", id=id_, time=time)
 
@@ -107,7 +108,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         sender_id: int,
         target_id: int,
         origin: MiraiMessage,
-    ):
+    ) -> Self:
         """Quote 消息"""
         return cls(
             type="Quote",
@@ -119,22 +120,22 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         )
 
     @classmethod
-    def at(cls, target: int):
+    def at(cls, target: int) -> Self:
         """At 消息"""
         return cls(type="At", target=target)
 
     @classmethod
-    def at_all(cls):
+    def at_all(cls) -> Self:
         """AtAll 消息"""
         return cls(type="AtAll")
 
     @classmethod
-    def face(cls, face_id: Optional[int] = None, name: Optional[str] = None):
+    def face(cls, face_id: Optional[int] = None, name: Optional[str] = None) -> Self:
         """Face 消息"""
         return cls(type="Face", faceId=face_id, name=name)
 
     @classmethod
-    def plain(cls, text: str):
+    def plain(cls, text: str) -> Self:
         """Plain 消息"""
         return cls(type="Plain", text=text)
 
@@ -144,7 +145,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         image_id: Optional[str] = None,
         url: Optional[str] = None,
         path: Optional[str] = None,
-    ):
+    ) -> Self:
         """Image 消息"""
         return cls(type="Image", imageId=image_id, url=url, path=path)
 
@@ -154,7 +155,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         image_id: Optional[str] = None,
         url: Optional[str] = None,
         path: Optional[str] = None,
-    ):
+    ) -> Self:
         """FlashImage 消息"""
         return cls(type="FlashImage", imageId=image_id, url=url, path=path)
 
@@ -164,32 +165,32 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         voice_id: Optional[str] = None,
         url: Optional[str] = None,
         path: Optional[str] = None,
-    ):
+    ) -> Self:
         """Voice 消息"""
         return cls(type="Voice", imageId=voice_id, url=url, path=path)
 
     @classmethod
-    def xml(cls, xml: str):
+    def xml(cls, xml: str) -> Self:
         """Xml 消息"""
         return cls(type="Xml", xml=xml)
 
     @classmethod
-    def json(cls, json_: str):
+    def json(cls, json_: str) -> Self:
         """Json 消息"""
         return cls(type="Json", json=json_)
 
     @classmethod
-    def app(cls, content: str):
+    def app(cls, content: str) -> Self:
         """App 消息"""
         return cls(type="App", content=content)
 
     @classmethod
-    def poke(cls, name: str):
+    def poke(cls, name: str) -> Self:
         """Poke 消息"""
         return cls(type="Poke", name=name)
 
     @classmethod
-    def dice(cls, value: int):
+    def dice(cls, value: int) -> Self:
         """Dice 消息"""
         return cls(type="Dice", value=value)
 
@@ -203,7 +204,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         picture_url: str,
         music_url: str,
         brief: str,
-    ):
+    ) -> Self:
         """MusicShare 消息"""
         return cls(
             type="MusicShare",

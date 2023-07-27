@@ -2,8 +2,8 @@
 
 实现依赖注入相关功能。
 """
-from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 import inspect
+from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 from typing import (
     Any,
     AsyncContextManager,
@@ -120,7 +120,7 @@ async def solve_dependencies(
         depend = cast(T, dependent.__new__(dependent))  # type: ignore
         for key, value in values.items():
             setattr(depend, key, value)
-        depend.__init__()
+        depend.__init__()  # type: ignore
 
         if isinstance(depend, AsyncContextManager):
             depend = cast(T, await stack.enter_async_context(depend))

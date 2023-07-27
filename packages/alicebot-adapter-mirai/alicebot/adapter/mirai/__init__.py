@@ -5,11 +5,11 @@
 协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
 """
 import asyncio
-from functools import partial
 import inspect
 import json
 import sys
 import time
+from functools import partial
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -72,7 +72,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         return partial(self.call_api, item)
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         self.adapter_type = self.config.adapter_type
         self.host = self.config.host
@@ -82,12 +82,12 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         self._api_response_cond = asyncio.Condition()
         await super().startup()
 
-    async def reverse_ws_connection_hook(self):
+    async def reverse_ws_connection_hook(self) -> None:
         """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info("WebSocket connected!")
         self._verify_identity_task = asyncio.create_task(self.verify_identity())
 
-    async def websocket_connect(self):
+    async def websocket_connect(self) -> None:
         """创建正向 WebSocket 连接。"""
         assert self.session is not None
         logger.info("Trying to verify identity and create connection...")
@@ -97,7 +97,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         ) as self.websocket:
             await self.handle_websocket()
 
-    async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
+    async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
         """处理 WebSocket 消息。"""
         assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -152,7 +152,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         return cls.event_models[event_type]
 
-    async def handle_mirai_event(self, msg: Dict[str, Any]):
+    async def handle_mirai_event(self, msg: Dict[str, Any]) -> None:
         """处理 Mirai 事件。
 
         Args:
@@ -171,7 +171,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         else:
             await self.handle_event(mirai_event)
 
-    async def verify_identity(self):
+    async def verify_identity(self) -> None:
         """验证身份，创建与 Mirai-api-http 的连接。"""
         while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.reconnect_interval)

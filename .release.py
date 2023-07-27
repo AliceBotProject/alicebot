@@ -1,8 +1,9 @@
 """用于发布新版本的脚本。"""
+# ruff: noqa: S603, S607
 import argparse
 import json
-from pathlib import Path
 import subprocess
+from pathlib import Path
 
 import tomlkit
 
@@ -21,7 +22,7 @@ args = parser.parse_args()
 version = args.version
 
 
-def write_version_json(file: Path, version: str):
+def write_version_json(file: Path, version: str) -> None:
     """写入 package.json。
 
     Args:
@@ -35,7 +36,7 @@ def write_version_json(file: Path, version: str):
         json.dump(json_file, f, indent=2)
 
 
-def write_version_toml(file: Path, version: str, *, is_package: bool = False):
+def write_version_toml(file: Path, version: str, *, is_package: bool = False) -> None:
     """写入 pyproject.toml。
 
     Args:
@@ -59,9 +60,9 @@ for package in Path("packages").iterdir():
         write_version_toml(package / "pyproject.toml", version, is_package=True)
 subprocess.run(["pdm", "update"])
 subprocess.run(["pnpm", "run", "changelog"])
-with open("docs/changelog.md", encoding="utf-8") as f:
+with Path("docs/changelog.md").open(encoding="utf-8") as f:
     changelog_file = f.read()
-with open("docs/changelog.md", "w", encoding="utf-8") as f:
+with Path("docs/changelog.md").open("w", encoding="utf-8") as f:
     f.write(
         CHANGELOG_PREFIX
         + (

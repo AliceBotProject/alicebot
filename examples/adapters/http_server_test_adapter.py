@@ -6,13 +6,12 @@ from aiohttp import web
 
 from alicebot.adapter.utils import HttpServerAdapter
 from alicebot.event import Event
-from alicebot.message import Message, MessageSegment
 
 
 class HttpServerTestEvent(Event["HttpServerTestAdapter"]):
     """HTTP 服务端示例适配器事件类。"""
 
-    message: Message  # type: ignore
+    message: str
 
 
 class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
@@ -28,9 +27,7 @@ class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
         event = HttpServerTestEvent(
             adapter=self,
             type="message",
-            message=Message(
-                MessageSegment(type="text", data={"text": await request.text()})
-            ),
+            message=await request.text(),
         )
         await self.handle_event(event)
         return web.Response()

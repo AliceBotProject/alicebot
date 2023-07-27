@@ -35,27 +35,27 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
 
     session: aiohttp.ClientSession
 
-    async def startup(self):
+    async def startup(self) -> None:
         """创建 aiohttp Application。"""
         self.app = web.Application()
         self.app.add_routes([web.post(self.config.url, self.handler)])
 
         self.session = aiohttp.ClientSession()
 
-    async def run(self):
+    async def run(self) -> None:
         """运行 aiohttp 服务器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.config.host, self.config.port)
         await self.site.start()
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """清理 aiohttp AppRunner。"""
         await self.session.close()
         await self.site.stop()
         await self.runner.cleanup()
 
-    async def handler(self, request: web.Request):
+    async def handler(self, request: web.Request) -> web.Response:
         """处理 aiohttp 服务器的接收。
 
         Args:
@@ -145,6 +145,7 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
             else:
                 raise TypeError(f"at must be Dict or DingTalkMessage, not {type(at)!r}")
 
+        data: Union[Dict[str, Any], DingTalkMessage]
         if conversation_type == "1":
             data = msg
         elif conversation_type == "2":

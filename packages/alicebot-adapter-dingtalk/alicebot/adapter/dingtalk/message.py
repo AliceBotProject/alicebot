@@ -19,7 +19,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
             消息字段类。
         """
 
-    def __str__(self):
+    def __str__(self) -> str:
         """返回消息的文本表示。
 
         Returns:
@@ -63,7 +63,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
     @classmethod
     def link(
         cls, text: str, title: str, message_url: str, pic_url: Optional[str] = None
-    ):
+    ) -> "DingTalkMessage":
         """DingTalk link 消息"""
         return cls(
             type="link",
@@ -76,7 +76,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         )
 
     @classmethod
-    def markdown(cls, title: str, text: str):
+    def markdown(cls, title: str, text: str) -> "DingTalkMessage":
         """DingTalk markdown 消息"""
         return cls(type="markdown", data={"title": title, "text": text})
 
@@ -88,7 +88,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         single_title: str,
         single_url: str,
         btn_orientation: str = "0",
-    ):
+    ) -> "DingTalkMessage":
         """DingTalk 整体跳转 actionCard 消息"""
         return cls(
             type="actionCard",
@@ -104,7 +104,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
     @classmethod
     def action_card_multi_btns(
         cls, title: str, text: str, btns: List[Any], btn_orientation: str = "0"
-    ):
+    ) -> "DingTalkMessage":
         """DingTalk 独立跳转 actionCard 消息"""
         return cls(
             type="actionCard",
@@ -117,7 +117,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         )
 
     @classmethod
-    def feed_card(cls, links: List[Any]):
+    def feed_card(cls, links: List[Any]) -> "DingTalkMessage":
         """DingTalk feedCard 消息"""
         return cls(type="feedCard", data={"links": links})
 
@@ -127,7 +127,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         at_mobiles: Optional[List[str]] = None,
         at_user_ids: Optional[List[str]] = None,
         is_at_all: bool = False,
-    ):
+    ) -> "DingTalkMessage":
         """DingTalk At 信息"""
         return cls(
             type="at",

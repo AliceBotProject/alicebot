@@ -2,8 +2,8 @@
 
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
-from abc import ABCMeta, abstractmethod
 import asyncio
+from abc import ABCMeta, abstractmethod
 from typing import Literal, Optional, Union
 
 import aiohttp
@@ -30,7 +30,7 @@ class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     create_task: bool = False
     _on_tick_task: Optional["asyncio.Task[None]"] = None
 
-    async def run(self):
+    async def run(self) -> None:
         """运行适配器。"""
         while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.delay)
@@ -40,7 +40,7 @@ class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
                 await self.on_tick()
 
     @abstractmethod
-    async def on_tick(self):
+    async def on_tick(self) -> None:
         """当轮询发生。"""
 
 
@@ -49,15 +49,15 @@ class HttpClientAdapter(PollingAdapter[T_Event, T_Config], metaclass=ABCMeta):
 
     session: aiohttp.ClientSession
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         self.session = aiohttp.ClientSession()
 
     @abstractmethod
-    async def on_tick(self):
+    async def on_tick(self) -> None:
         """当轮询发生。"""
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """关闭并清理连接。"""
         await self.session.close()
 
@@ -67,7 +67,7 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
 
     url: str
 
-    async def run(self):
+    async def run(self) -> None:
         """运行适配器。"""
         async with aiohttp.ClientSession() as session, session.ws_connect(
             self.url
@@ -81,7 +81,7 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
                 await self.handle_response(msg)
 
     @abstractmethod
-    async def handle_response(self, msg: aiohttp.WSMessage):
+    async def handle_response(self, msg: aiohttp.WSMessage) -> None:
         """处理响应。"""
 
 
@@ -96,7 +96,7 @@ class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     get_url: str
     post_url: str
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         self.app = web.Application()
         self.app.add_routes(
@@ -106,14 +106,14 @@ class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
             ]
         )
 
-    async def run(self):
+    async def run(self) -> None:
         """运行适配器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.host, self.port)
         await self.site.start()
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """关闭并清理连接。"""
         await self.runner.cleanup()
 
@@ -133,19 +133,19 @@ class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     port: int
     url: str
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         self.app = web.Application()
         self.app.add_routes([web.get(self.url, self.handle_response)])
 
-    async def run(self):
+    async def run(self) -> None:
         """运行适配器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.host, self.port)
         await self.site.start()
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """关闭并清理连接。"""
         await self.websocket.close()
         await self.site.stop()
@@ -167,7 +167,7 @@ class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         return ws
 
     @abstractmethod
-    async def handle_ws_response(self, msg: aiohttp.WSMessage):
+    async def handle_ws_response(self, msg: aiohttp.WSMessage) -> None:
         """处理 WebSocket 响应。"""
 
 
@@ -196,7 +196,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
     url: str
     reconnect_interval: int = 3
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         if self.adapter_type == "ws":
             self.session = aiohttp.ClientSession()
@@ -209,7 +209,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
                 + self.adapter_type
             )
 
-    async def run(self):
+    async def run(self) -> None:
         """运行适配器。"""
         if self.adapter_type == "ws":
             while True:
@@ -231,7 +231,7 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
             self.site = web.TCPSite(self.runner, self.host, self.port)
             await self.site.start()
 
-    async def shutdown(self):
+    async def shutdown(self) -> None:
         """关闭并清理连接。"""
         if self.websocket is not None:
             await self.websocket.close()
@@ -254,11 +254,11 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         await self.handle_websocket()
         return self.websocket
 
-    async def reverse_ws_connection_hook(self):
+    async def reverse_ws_connection_hook(self) -> None:
         """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info("WebSocket connected!")
 
-    async def websocket_connect(self):
+    async def websocket_connect(self) -> None:
         """创建正向 WebSocket 连接。"""
         assert self.session is not None
         logger.info("Tying to connect to WebSocket server...")
@@ -267,12 +267,11 @@ class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         ) as self.websocket:
             await self.handle_websocket()
 
-    async def handle_websocket(self):
+    async def handle_websocket(self) -> None:
         """处理 WebSocket。"""
         if self.websocket is None or self.websocket.closed:
             return
         async for msg in self.websocket:
-            msg: aiohttp.WSMessage
             await self.handle_websocket_msg(msg)
         if not self.bot.should_exit.is_set():
             logger.warning("WebSocket connection closed!")

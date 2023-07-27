@@ -56,7 +56,9 @@ class Status(BaseModel):
     bots: List[BotStatus]
 
 
-def _get_literal_field(field: FieldInfo) -> Optional[str]:
+def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
+    if field is None:
+        return None
     annotation = field.annotation
     if annotation is None or get_origin(annotation) is not Literal:
         return None
@@ -82,13 +84,11 @@ class OntBotEvent(Event["OneBotAdapter"]):
         Returns:
             事件类型。
         """
-        type_field = cls.model_fields.get("type", None)
-        type = type_field and _get_literal_field(type_field)
-        detail_type_field = cls.model_fields.get("detail_type", None)
-        detail_type = detail_type_field and _get_literal_field(detail_type_field)
-        sub_type_field = cls.model_fields.get("sub_type", None)
-        sub_type = sub_type_field and _get_literal_field(sub_type_field)
-        return (type, detail_type, sub_type)
+        return (
+            _get_literal_field(cls.model_fields.get("type", None)),
+            _get_literal_field(cls.model_fields.get("detail_type", None)),
+            _get_literal_field(cls.model_fields.get("sub_type", None)),
+        )
 
 
 class BotEvent(OntBotEvent):

@@ -8,8 +8,10 @@ from typing import (
     Any,
     Dict,
     Generic,
+    ItemsView,
     Iterable,
     Iterator,
+    KeysView,
     List,
     Mapping,
     Optional,
@@ -17,6 +19,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    ValuesView,
     overload,
 )
 from typing_extensions import Self
@@ -95,7 +98,9 @@ class Message(List[T_MessageSegment]):
                 core_schema.is_instance_schema(cls),
                 core_schema.no_info_after_validator_function(
                     cls,
-                    handler.generate_schema(List[cls.get_segment_class()]),
+                    handler.generate_schema(
+                        List[cls.get_segment_class()]  # type: ignore
+                    ),
                 ),
             ]
         )
@@ -130,7 +135,7 @@ class Message(List[T_MessageSegment]):
         Returns:
             消息的描述。
         """
-        return "Message:[{}]".format(",".join(map(repr, self)))
+        return f"Message:[{','.join(map(repr, self))}]"
 
     def __str__(self) -> str:
         """返回消息的文本表示。
@@ -310,8 +315,8 @@ class Message(List[T_MessageSegment]):
         Returns:
             替换后的消息对象。
         """  # noqa: D402
-        if type(old) is str:
-            if type(new) is not str:
+        if isinstance(old, str):
+            if not isinstance(new, str):
                 raise TypeError("when type of old is str, type of new must be str.")
             return self._replace_str(old, new, count)
         if isinstance(old, self.get_segment_class()):
@@ -320,16 +325,17 @@ class Message(List[T_MessageSegment]):
                     "when type of old is MessageSegment, "
                     "type of new must be MessageSegment or None."
                 )
-            temp_msg = self.deepcopy()
-            for index, item in enumerate(temp_msg):
+            new_msg = self.__class__()
+            for item in self:
                 if count == 0:
                     break
                 if item == old:
-                    temp_msg[index] = new  # type: ignore
                     count -= 1
-            if new is None:
-                temp_msg = self.__class__(filter(lambda x: x is not None, self))  # type: ignore
-            return temp_msg
+                    if new is not None:
+                        new_msg.append(new)
+                else:
+                    new_msg.append(item)
+            return new_msg
         raise TypeError("type of old must be str or MessageSegment")
 
     def _replace_str(self, old: str, new: str, count: int = -1) -> Self:
@@ -349,7 +355,6 @@ class Message(List[T_MessageSegment]):
         """
         temp_msg = self.deepcopy()
         for index, item in enumerate(temp_msg):
-            item: T_MessageSegment
             if count == 0:
                 break
             if item.is_text() and old in item.data["text"]:
@@ -415,7 +420,7 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[T_Message]):
         """
         return self.data[key]
 
-    def __setitem__(self, key: str, value: Any):
+    def __setitem__(self, key: str, value: Any) -> None:
         """设置指定索引的值。相当于对 `data` 属性进行此操作。
 
         Args:
@@ -424,7 +429,7 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[T_Message]):
         """
         self.data[key] = value
 
-    def __delitem__(self, key: str):
+    def __delitem__(self, key: str) -> None:
         """删除索引。相当于对 `data` 属性进行此操作。
 
         Args:
@@ -503,19 +508,19 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[T_Message]):
         """
         return self.get_message_class()(other) + self
 
-    def get(self, key: str, default: Any = None):
+    def get(self, key: str, default: Any = None) -> Any:
         """如果 `key` 存在于 `data` 字典中则返回 `key` 的值，否则返回 `default`。"""
         return self.data.get(key, default)
 
-    def keys(self):
+    def keys(self) -> KeysView[str]:
         """返回由 `data` 字典键组成的一个新视图。"""
         return self.data.keys()
 
-    def values(self):
+    def values(self) -> ValuesView[Any]:
         """返回由 `data` 字典值组成的一个新视图。"""
         return self.data.values()
 
-    def items(self):
+    def items(self) -> ItemsView[str, Any]:
         """返回由 `data` 字典项 (`(键, 值)` 对) 组成的一个新视图。"""
         return self.data.items()
 

@@ -4,11 +4,11 @@
 协议详情请参考: [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 。
 """
 import asyncio
-from functools import partial
 import inspect
 import json
 import sys
 import time
+from functools import partial
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -73,7 +73,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         """
         return partial(self.call_api, item)
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         adapter_type = self.config.adapter_type
         if adapter_type == "ws-reverse":
@@ -86,7 +86,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         self._api_response_cond = asyncio.Condition()
         await super().startup()
 
-    async def reverse_ws_connection_hook(self):
+    async def reverse_ws_connection_hook(self) -> None:
         """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info("WebSocket connected!")
         if self.config.access_token:
@@ -97,7 +97,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             ):
                 await self.websocket.close()
 
-    async def websocket_connect(self):
+    async def websocket_connect(self) -> None:
         """创建正向 WebSocket 连接。"""
         assert self.session is not None
         logger.info("Tying to connect to WebSocket server...")
@@ -109,7 +109,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         ) as self.websocket:
             await self.handle_websocket()
 
-    async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
+    async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
         """处理 WebSocket 消息。"""
         assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -166,14 +166,14 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         Returns:
             对应的事件类。
         """
-        return (
+        event_model = (
             cls.event_models.get((post_type, detail_type, sub_type), None)
             or cls.event_models.get((post_type, detail_type, None), None)
             or cls.event_models.get((post_type, None, None), None)
-            or cls.event_models[(None, None, None)]
         )
+        return event_model or cls.event_models[(None, None, None)]
 
-    async def handle_cqhttp_event(self, msg: Dict[str, Any]):
+    async def handle_cqhttp_event(self, msg: Dict[str, Any]) -> None:
         """处理 CQHTTP 事件。
 
         Args:

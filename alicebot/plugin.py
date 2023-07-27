@@ -6,12 +6,12 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
+    Any,
     ClassVar,
     Generic,
     NoReturn,
     Optional,
     Type,
-    cast,
     final,
 )
 
@@ -48,8 +48,6 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
             否则为定义插件在的 Python 模块的位置。
     """
 
-    event: T_Event = cast(T_Event, Depends(Event))
-
     priority: ClassVar[int] = 0
     block: ClassVar[bool] = False
 
@@ -60,10 +58,14 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     __plugin_file_path__: ClassVar[Optional[str]]
 
     if TYPE_CHECKING:
+        event: T_Event
 
         def __init_state__(self) -> T_State:
             """初始化插件状态。"""
             ...
+
+    else:
+        event: T_Event = Depends(Event)
 
     def __init_subclass__(
         cls,
@@ -81,7 +83,7 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         if not hasattr(cls, "Config") and config is not None:
             cls.Config = config
         if init_state is not None:
-            cls.__init_state__ = lambda self: init_state  # noqa: ARG005
+            cls.__init_state__ = lambda _: init_state  # type: ignore
 
     @final
     @property
@@ -99,14 +101,15 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     @property
     def config(self) -> T_Config:
         """插件配置。"""
+        default: Any = None
         config_class = getattr(self, "Config", None)
         if is_config_class(config_class):
             return getattr(
                 self.bot.config.plugin,
                 config_class.__config_name__,
-                None,
-            )  # type: ignore
-        return None  # type: ignore
+                default,
+            )
+        return default
 
     @final
     def stop(self) -> NoReturn:
@@ -118,15 +121,14 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         """跳过自身继续当前事件传播。"""
         raise SkipException
 
-    @final
     @property
     def state(self) -> T_State:
         """插件状态。"""
         return self.bot.plugin_state[self.name]
 
-    @final
     @state.setter
-    def state(self, value: T_State):
+    @final
+    def state(self, value: T_State) -> None:
         self.bot.plugin_state[self.name] = value
 
     @abstractmethod

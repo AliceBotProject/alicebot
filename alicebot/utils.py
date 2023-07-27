@@ -1,17 +1,18 @@
 """AliceBot 内部使用的实用工具。"""
-from abc import ABC
 import asyncio
-from contextlib import asynccontextmanager
-from functools import partial
 import importlib
-from importlib.abc import MetaPathFinder
-from importlib.machinery import PathFinder
 import inspect
 import json
 import os
 import os.path
 import sys
 import traceback
+from abc import ABC
+from contextlib import asynccontextmanager
+from functools import partial
+from importlib.abc import MetaPathFinder
+from importlib.machinery import ModuleSpec, PathFinder
+from os import PathLike
 from types import GetSetDescriptorType, ModuleType
 from typing import (
     Any,
@@ -30,7 +31,7 @@ from typing import (
     TypeVar,
     Union,
 )
-from typing_extensions import ParamSpec, TypeGuard
+from typing_extensions import ParamSpec, TypeAlias, TypeGuard
 
 from pydantic import BaseModel
 
@@ -53,6 +54,9 @@ __all__ = [
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
+_TypeT = TypeVar("_TypeT", bound=Type[Any])
+
+StrOrBytesPath: TypeAlias = Union[str, bytes, PathLike[str], PathLike[bytes]]
 
 
 class ModulePathFinder(MetaPathFinder):
@@ -65,7 +69,7 @@ class ModulePathFinder(MetaPathFinder):
         fullname: str,
         path: Optional[Sequence[str]] = None,
         target: Optional[ModuleType] = None,
-    ):
+    ) -> Union[ModuleSpec, None]:
         """用于查找指定模块的 `spec`。"""
         if path is None:
             path = []
@@ -90,9 +94,7 @@ def is_config_class(config_class: Any) -> TypeGuard[Type[ConfigModel]]:
     )
 
 
-def get_classes_from_module(
-    module: ModuleType, super_class: Type[_T]
-) -> List[Type[_T]]:
+def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_TypeT]:
     """从模块中查找指定类型的类。
 
     Args:
@@ -102,9 +104,8 @@ def get_classes_from_module(
     Returns:
         返回符合条件的类的列表。
     """
-    classes: List[Type[_T]] = []
+    classes: List[_TypeT] = []
     for _, module_attr in inspect.getmembers(module, inspect.isclass):
-        module_attr: type
         if (
             (inspect.getmodule(module_attr) or module) is module
             and issubclass(module_attr, super_class)
@@ -112,13 +113,13 @@ def get_classes_from_module(
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            classes.append(module_attr)
+            classes.append(module_attr)  # type: ignore
     return classes
 
 
 def get_classes_from_module_name(
-    name: str, super_class: Type[_T]
-) -> List[Tuple[Type[_T], ModuleType]]:
+    name: str, super_class: _TypeT
+) -> List[Tuple[_TypeT, ModuleType]]:
     """从指定名称的模块中查找指定类型的类。
 
     Args:
@@ -154,7 +155,7 @@ class PydanticEncoder(json.JSONEncoder):
         return super().default(o)
 
 
-def samefile(path1: str, path2: str) -> bool:
+def samefile(path1: StrOrBytesPath, path2: StrOrBytesPath) -> bool:
     """一个 `os.path.samefile` 的简单包装。
 
     Args:
@@ -165,7 +166,7 @@ def samefile(path1: str, path2: str) -> bool:
         如果两个路径是否指向相同的文件或目录。
     """
     try:
-        return path1 == path2 or os.path.samefile(path1, path2)
+        return path1 == path2 or os.path.samefile(path1, path2)  # noqa: PTH121
     except OSError:
         return False
 
@@ -184,14 +185,14 @@ def sync_func_wrapper(
     """
     if to_thread:
 
-        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs):
+        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
             loop = asyncio.get_running_loop()
             func_call = partial(func, *args, **kwargs)
             return await loop.run_in_executor(None, func_call)
 
     else:
 
-        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs):
+        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
             return func(*args, **kwargs)
 
     return _wrapper

@@ -46,9 +46,9 @@ class FriendInputStatusChangedEvent(FriendEvent):
 FriendNickChangedEvent = create_model(
     "FriendNickChangedEvent",
     **{
-        "type": (Literal["FriendNickChangedEvent"], None),
-        "from": (str, None),
-        "to": (str, None),
+        "type": (Literal["FriendNickChangedEvent"], ...),
+        "from": (str, ...),
+        "to": (str, ...),
     },  # type: ignore
     __base__=FriendEvent,
 )

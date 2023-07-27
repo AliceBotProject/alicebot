@@ -10,7 +10,7 @@ __all__ = ["logger", "error_or_exception"]
 logger = _logger
 
 
-def error_or_exception(message: str, exception: Exception, verbose: bool):
+def error_or_exception(message: str, exception: Exception, verbose: bool) -> None:
     """输出 error 或者 exception 日志。
 
     Args:

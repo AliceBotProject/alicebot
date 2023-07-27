@@ -38,6 +38,10 @@ jobs:
       - name: Install dependencies
         run: pdm install
 
+      - run: |
+          eval $(pdm venv activate)
+          echo PATH=$PATH >> $GITHUB_ENV
+
       - uses: jakebailey/pyright-action@v1
 
   mypy:
@@ -54,4 +58,6 @@ jobs:
       - name: Install dependencies
         run: pdm install
 
-      - run: mypy .
+      - run: |
+          eval $(pdm venv activate)
+          mypy .

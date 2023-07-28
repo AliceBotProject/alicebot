@@ -1,24 +1,25 @@
 """AliceBot 内部使用的实用工具。"""
-from abc import ABC
 import asyncio
-from contextlib import asynccontextmanager
-import dataclasses
-from functools import partial
 import importlib
-from importlib.abc import MetaPathFinder
-from importlib.machinery import PathFinder
 import inspect
 import json
 import os
 import os.path
 import sys
 import traceback
+from abc import ABC
+from contextlib import asynccontextmanager
+from functools import partial
+from importlib.abc import MetaPathFinder
+from importlib.machinery import ModuleSpec, PathFinder
+from os import PathLike
 from types import GetSetDescriptorType, ModuleType
 from typing import (
     Any,
     AsyncGenerator,
     Awaitable,
     Callable,
+    ClassVar,
     ContextManager,
     Coroutine,
     Dict,
@@ -30,7 +31,9 @@ from typing import (
     TypeVar,
     Union,
 )
-from typing_extensions import ParamSpec, TypeGuard
+from typing_extensions import ParamSpec, TypeAlias, TypeGuard
+
+from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
 from alicebot.typing import T_Event
@@ -40,28 +43,33 @@ __all__ = [
     "is_config_class",
     "get_classes_from_module",
     "get_classes_from_module_name",
-    "DataclassEncoder",
+    "PydanticEncoder",
     "samefile",
     "sync_func_wrapper",
+    "sync_ctx_manager_wrapper",
     "wrap_get_func",
+    "get_annotations",
 ]
 
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
+_TypeT = TypeVar("_TypeT", bound=Type[Any])
+
+StrOrBytesPath: TypeAlias = Union[str, bytes, PathLike[str], PathLike[bytes]]
 
 
 class ModulePathFinder(MetaPathFinder):
     """用于查找 AliceBot 组件的元路径查找器。"""
 
-    path: List[str] = []
+    path: ClassVar[List[str]] = []
 
     def find_spec(
         self,
         fullname: str,
         path: Optional[Sequence[str]] = None,
         target: Optional[ModuleType] = None,
-    ):
+    ) -> Union[ModuleSpec, None]:
         """用于查找指定模块的 `spec`。"""
         if path is None:
             path = []
@@ -86,9 +94,7 @@ def is_config_class(config_class: Any) -> TypeGuard[Type[ConfigModel]]:
     )
 
 
-def get_classes_from_module(
-    module: ModuleType, super_class: Type[_T]
-) -> List[Type[_T]]:
+def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_TypeT]:
     """从模块中查找指定类型的类。
 
     Args:
@@ -98,9 +104,8 @@ def get_classes_from_module(
     Returns:
         返回符合条件的类的列表。
     """
-    classes: List[Type[_T]] = []
+    classes: List[_TypeT] = []
     for _, module_attr in inspect.getmembers(module, inspect.isclass):
-        module_attr: type
         if (
             (inspect.getmodule(module_attr) or module) is module
             and issubclass(module_attr, super_class)
@@ -108,13 +113,13 @@ def get_classes_from_module(
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            classes.append(module_attr)
+            classes.append(module_attr)  # type: ignore
     return classes
 
 
 def get_classes_from_module_name(
-    name: str, super_class: Type[_T]
-) -> List[Tuple[Type[_T], ModuleType]]:
+    name: str, super_class: _TypeT
+) -> List[Tuple[_TypeT, ModuleType]]:
     """从指定名称的模块中查找指定类型的类。
 
     Args:
@@ -132,25 +137,25 @@ def get_classes_from_module_name(
         module = importlib.import_module(name)
         importlib.reload(module)
         return [(x, module) for x in get_classes_from_module(module, super_class)]
-    except BaseException as e:
+    except KeyboardInterrupt:
         # 不捕获 KeyboardInterrupt
         # 捕获 KeyboardInterrupt 会阻止用户关闭 Python 当正在导入的模块陷入死循环时
-        if isinstance(e, KeyboardInterrupt):
-            raise e
+        raise
+    except BaseException as e:
         raise ImportError(e, traceback.format_exc()) from e
 
 
-class DataclassEncoder(json.JSONEncoder):
-    """用于解析 `MessageSegment` 的 `JSONEncoder` 类。"""
+class PydanticEncoder(json.JSONEncoder):
+    """用于解析 `pydantic.BaseModel` 的 `JSONEncoder` 类。"""
 
-    def default(self, o: Any):
+    def default(self, o: Any) -> Any:
         """返回 `o` 的可序列化对象。"""
-        if dataclasses.is_dataclass(o):
-            return o.as_dict()
+        if isinstance(o, BaseModel):
+            return o.model_dump(mode="json")
         return super().default(o)
 
 
-def samefile(path1: str, path2: str) -> bool:
+def samefile(path1: StrOrBytesPath, path2: StrOrBytesPath) -> bool:
     """一个 `os.path.samefile` 的简单包装。
 
     Args:
@@ -161,7 +166,7 @@ def samefile(path1: str, path2: str) -> bool:
         如果两个路径是否指向相同的文件或目录。
     """
     try:
-        return path1 == path2 or os.path.samefile(path1, path2)
+        return path1 == path2 or os.path.samefile(path1, path2)  # noqa: PTH121
     except OSError:
         return False
 
@@ -180,14 +185,14 @@ def sync_func_wrapper(
     """
     if to_thread:
 
-        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs):
+        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
             loop = asyncio.get_running_loop()
             func_call = partial(func, *args, **kwargs)
             return await loop.run_in_executor(None, func_call)
 
     else:
 
-        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs):
+        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
             return func(*args, **kwargs)
 
     return _wrapper
@@ -212,7 +217,7 @@ async def sync_ctx_manager_wrapper(
         if not await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(
             type(e), e, e.__traceback__
         ):
-            raise e
+            raise
     else:
         await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(None, None, None)
 
@@ -275,7 +280,9 @@ else:
             return {}
 
         if not isinstance(ann, dict):
-            raise ValueError(f"{obj!r}.__annotations__ is neither a dict nor None")
+            raise ValueError(  # noqa: TRY004
+                f"{obj!r}.__annotations__ is neither a dict nor None"
+            )
 
         if not ann:
             return {}

@@ -2,8 +2,8 @@
 
 实现依赖注入相关功能。
 """
-from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 import inspect
+from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 from typing import (
     Any,
     AsyncContextManager,
@@ -99,7 +99,7 @@ async def solve_dependencies(
         return dependency_cache[dependent]
 
     if isinstance(dependent, type):
-        # Type[T]
+        # type of dependent is Type[T]
         values = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
@@ -120,7 +120,7 @@ async def solve_dependencies(
         depend = cast(T, dependent.__new__(dependent))  # type: ignore
         for key, value in values.items():
             setattr(depend, key, value)
-        depend.__init__()
+        depend.__init__()  # type: ignore
 
         if isinstance(depend, AsyncContextManager):
             depend = cast(T, await stack.enter_async_context(depend))
@@ -129,11 +129,11 @@ async def solve_dependencies(
                 T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))
             )
     elif inspect.isasyncgenfunction(dependent):
-        # Callable[[], AsyncGenerator[T, None]]
+        # type of dependent is Callable[[], AsyncGenerator[T, None]]
         cm = asynccontextmanager(dependent)()
         depend = cast(T, await stack.enter_async_context(cm))
     elif inspect.isgeneratorfunction(dependent):
-        # Callable[[], Generator[T, None, None]]
+        # type of dependent is Callable[[], Generator[T, None, None]]
         cm = sync_ctx_manager_wrapper(contextmanager(dependent)())
         depend = cast(T, await stack.enter_async_context(cm))
     else:

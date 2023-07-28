@@ -5,11 +5,11 @@
 协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
 """
 import asyncio
-from functools import partial
 import inspect
 import json
 import sys
 import time
+from functools import partial
 from typing import (
     TYPE_CHECKING,
     Any,
@@ -26,7 +26,7 @@ import aiohttp
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
-from alicebot.utils import DataclassEncoder
+from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
@@ -62,9 +62,17 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     _verify_identity_task: "asyncio.Task[None]"
 
     def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
+        """用于调用 API。可以直接通过访问适配器的属性访问对应名称的 API。
+
+        Args:
+            item: API 名称。
+
+        Returns:
+            用于调用 API 的函数。
+        """
         return partial(self.call_api, item)
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         self.adapter_type = self.config.adapter_type
         self.host = self.config.host
@@ -74,12 +82,12 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         self._api_response_cond = asyncio.Condition()
         await super().startup()
 
-    async def reverse_ws_connection_hook(self):
+    async def reverse_ws_connection_hook(self) -> None:
         """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info("WebSocket connected!")
         self._verify_identity_task = asyncio.create_task(self.verify_identity())
 
-    async def websocket_connect(self):
+    async def websocket_connect(self) -> None:
         """创建正向 WebSocket 连接。"""
         assert self.session is not None
         logger.info("Trying to verify identity and create connection...")
@@ -89,7 +97,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         ) as self.websocket:
             await self.handle_websocket()
 
-    async def handle_websocket_msg(self, msg: aiohttp.WSMessage):
+    async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
         """处理 WebSocket 消息。"""
         assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
@@ -144,7 +152,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         return cls.event_models[event_type]
 
-    async def handle_mirai_event(self, msg: Dict[str, Any]):
+    async def handle_mirai_event(self, msg: Dict[str, Any]) -> None:
         """处理 Mirai 事件。
 
         Args:
@@ -163,7 +171,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         else:
             await self.handle_event(mirai_event)
 
-    async def verify_identity(self):
+    async def verify_identity(self) -> None:
         """验证身份，创建与 Mirai-api-http 的连接。"""
         while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.reconnect_interval)
@@ -210,7 +218,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                         "subCommand": sub_command,
                         "content": content,
                     },
-                    cls=DataclassEncoder,
+                    cls=PydanticEncoder,
                 )
             )
         except Exception as e:
@@ -260,7 +268,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
             TypeError: message_type 非法。
             ...: 同 `call_api()` 方法。
         """
-        if message_type == "private" or message_type == "friend":
+        if message_type in {"private", "friend"}:
             return await self.sendFriendMessage(
                 target=target, messageChain=MiraiMessage(message_), quote=quote
             )

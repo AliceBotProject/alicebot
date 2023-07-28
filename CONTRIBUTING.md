@@ -8,12 +8,12 @@
 
 ### 安装依赖
 
-AliceBot 使用 [Poetry](https://python-poetry.org/) 管理项目的依赖，并使用 [pre-commit](https://pre-commit.com/) 在提交前执行代码审查。
+AliceBot 使用 [PDM](https://pdm.fming.dev/) 管理项目的依赖，并使用 [pre-commit](https://pre-commit.com/) 在提交前执行代码审查。
 
-因此，你需要先根据 [Poetry](https://python-poetry.org/docs/#installation) 的指引安装 Poetry，之后在项目目录中执行以下命令：
+因此，你需要先根据 [PDM](https://pdm.fming.dev/latest/#installation) 的指引安装 PDM，之后在项目目录中执行以下命令：
 
 ```shell
-poetry install
+pdm install
 pre-commit install
 ```
 

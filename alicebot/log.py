@@ -5,10 +5,12 @@ AliceBot 使用 [loguru](https://github.com/Delgan/loguru) 来记录日志信息
 """
 from loguru import logger as _logger
 
+__all__ = ["logger", "error_or_exception"]
+
 logger = _logger
 
 
-def error_or_exception(message: str, exception: Exception, verbose: bool):
+def error_or_exception(message: str, exception: Exception, verbose: bool) -> None:
     """输出 error 或者 exception 日志。
 
     Args:
@@ -19,4 +21,4 @@ def error_or_exception(message: str, exception: Exception, verbose: bool):
     if verbose:
         logger.exception(message)
     else:
-        logger.error(f"{message} {exception!r}")
+        logger.error(f"{message} {exception!r}")  # noqa: G004

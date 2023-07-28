@@ -3,6 +3,8 @@ from typing import Any
 
 from alicebot.exceptions import AdapterException
 
+__all__ = ["OneBotException", "NetworkError", "ActionFailed", "ApiTimeout"]
+
 
 class OneBotException(AdapterException):
     """OneBot 异常基类。"""

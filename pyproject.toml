@@ -1,48 +1,31 @@
-[tool.poetry]
+[project]
 name = "alicebot"
 version = "0.7.1"
 description = "A simply asynchronous python chatbot framework."
-license = "MIT"
-authors = ["st1020 <stone_1020@qq.com>"]
+authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
+license = { text = "MIT" }
 readme = "README.md"
-homepage = "https://docs.alicebot.dev/"
-repository = "https://github.com/AliceBotProject/alicebot"
-documentation = "https://docs.alicebot.dev/"
 keywords = ["bot", "chatbot", "qq", "qqbot", "cqhttp", "coolq"]
 classifiers = [
-  "Development Status :: 3 - Alpha",
-  "Framework :: AsyncIO",
-  "Framework :: Robot Framework",
-  "Framework :: Robot Framework :: Library",
-  "License :: OSI Approved :: MIT License",
-  "Operating System :: OS Independent",
-  "Programming Language :: Python :: 3",
-  "Topic :: Communications :: Chat",
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat",
+]
+requires-python = ">=3.8"
+dependencies = [
+    "tomli>=2.0.0,<3.0.0;python_version<'3.11'",
+    "pydantic>=2.0.3,<3.0.0",
+    "aiohttp>=3.8.0,<4.0.0",
+    "loguru>=0.7.0,<0.8.0",
+    "typing-extensions>=4.5.0",
 ]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-tomli = { version = "^2.0.0", python = "<3.11" }
-pydantic = "^1.10.0"
-aiohttp = "^3.8.0"
-loguru = "^0.7.0"
-typing-extensions = "^4.5.0"
-
-[tool.poetry.group.dev.dependencies]
-watchfiles = "^0.19.0"
-sophia-doc = "^0.1.0"
-alicebot-adapter-cqhttp = { path = "./packages/alicebot-adapter-cqhttp", develop = true }
-alicebot-adapter-onebot = { path = "./packages/alicebot-adapter-onebot", develop = true }
-alicebot-adapter-mirai = { path = "./packages/alicebot-adapter-mirai", develop = true }
-alicebot-adapter-dingtalk = { path = "./packages/alicebot-adapter-dingtalk", develop = true }
-alicebot-adapter-apscheduler = { path = "./packages/alicebot-adapter-apscheduler", develop = true }
-black = "^23.1.0"
-ruff = "^0.0.270"
-pre-commit = "^3.1.0"
-pre-commit-hooks = "^4.4.0"
-tomlkit = "^0.11.7"
-
-[tool.poetry.extras]
+[project.optional-dependencies]
 cqhttp = ["alicebot-adapter-cqhttp"]
 onebot = ["alicebot-adapter-onebot"]
 mirai = ["alicebot-adapter-mirai"]
@@ -50,96 +33,113 @@ dingtalk = ["alicebot-adapter-dingtalk"]
 apscheduler = ["alicebot-adapter-apscheduler"]
 hot_reload = ["watchfiles"]
 all = [
-  "alicebot-adapter-cqhttp",
-  "alicebot-adapter-mirai",
-  "alicebot-adapter-dingtalk",
-  "alicebot-adapter-apscheduler",
-  "watchfiles",
+    "alicebot-adapter-cqhttp",
+    "alicebot-adapter-onebot",
+    "alicebot-adapter-mirai",
+    "alicebot-adapter-dingtalk",
+    "alicebot-adapter-apscheduler",
+    "watchfiles",
 ]
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "-e alicebot-adapter-cqhttp @ {root:uri}/packages/alicebot-adapter-cqhttp",
+    "-e alicebot-adapter-onebot @ {root:uri}/packages/alicebot-adapter-onebot",
+    "-e alicebot-adapter-mirai @ {root:uri}/packages/alicebot-adapter-mirai",
+    "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
+    "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
+]
+lint = ["black", "ruff", "mypy"]
+docs = ["sophia-doc~=0.1.4", "tomlkit~=0.11.7"]
+
+[project.urls]
+Homepage = "https://docs.alicebot.dev/"
+Documentation = "https://docs.alicebot.dev/"
+Repository = "https://github.com/AliceBotProject/alicebot"
+Changelog = "https://docs.alicebot.dev/changelog.html"
 
 [tool.black]
 target-version = ["py38", "py39", "py310", "py311"]
 
 [tool.ruff]
 line-length = 88
-select = [
-  "F",     # Pyflakes
-  "E",     # pycodestyle errors
-  "W",     # pycodestyle warnings
-  "I",     # isort
-  "N",     # pep8-naming
-  "D",     # pydocstyle
-  "UP",    # pyupgrade
-  "ASYNC", # flake8-async
-  "S",     # flake8-bandit
-  "B",     # flake8-bugbear
-  "C4",    # flake8-comprehensions
-  "T10",   # flake8-debugger
-  "ISC",   # flake8-implicit-str-concat
-  "PIE",   # flake8-pie
-  "T20",   # flake8-print
-  "Q",     # flake8-quotes
-  "RSE",   # flake8-raise
-  "RET",   # flake8-return
-  "SLF",   # flake8-self
-  "SIM",   # flake8-simplify
-  "TCH",   # flake8-type-checking
-  "INT",   # flake8-gettext
-  "ARG",   # flake8-unused-arguments
-  "TD",    # flake8-todos
-  "PGH",   # pygrep-hooks
-  "PL",    # Pylint
-  "FLY",   # flynt
-  "RUF",   # Ruff-specific rules
-]
+select = ["ALL"]
 ignore = [
-  "E501",    # Line too long, handled by black
-  "D104",    # Missing docstring in public package
-  "D105",    # Missing docstring in magic method
-  "D106",    # Missing docstring in public nested class
-  "D400",    # First line should end with a period
-  "D415",    # First line should end with a period, question mark, or exclamation point
-  "S101",    # Use of assert detected
-  "PGH003",  # Use specific rule codes when ignoring type issues
-  "PLR0912", # Too many branches
-  "PLR0913", # Too many arguments to function call
-  "PLR2004", # Magic value used in comparison
-  "RUF001",  # String contains ambiguous unicode character string
-  "RUF002",  # Docstring contains ambiguous unicode character string
-  "RUF003",  # Comment contains ambiguous unicode character string
+    "C90",     # mccabe
+    "ANN",     # flake8-annotations
+    "BLE",     # flake8-blind-except
+    "FBT",     # flake8-boolean-trap
+    "COM",     # flake8-commas
+    "EM",      # flake8-errmsg
+    "INP",     # flake8-no-pep420
+    "TID",     # flake8-tidy-imports
+    "E501",    # Line too long, handled by black
+    "D415",    # First line should end with a period, question mark, or exclamation point
+    "S101",    # Use of assert detected
+    "PGH003",  # Use specific rule codes when ignoring type issues
+    "PLR0912", # Too many branches
+    "PLR0913", # Too many arguments to function call
+    "TRY003",  # Avoid specifying long messages outside the exception class
+    "PERF203", # try-except within a loop incurs performance overhead
+    "RUF001",  # String contains ambiguous unicode character string
+    "RUF002",  # Docstring contains ambiguous unicode character string
+    "RUF003",  # Comment contains ambiguous unicode character string
 ]
 target-version = "py38"
+
+[tool.ruff.flake8-builtins]
+builtins-ignorelist = ["id", "type"]
 
 [tool.ruff.isort]
 known-third-party = ["pydantic", "aiohttp", "loguru"]
 extra-standard-library = ["typing_extensions"]
-force-sort-within-sections = true
 
 [tool.ruff.pydocstyle]
 convention = "google"
 
+[tool.ruff.pyupgrade]
+keep-runtime-typing = true
+
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["F401", "F403"]
-".release.py" = ["S603", "S607"]
-"tests/*.py" = ["D", "T"]
+"packages/*/alicebot/__init__.py" = ["D104"]
+"packages/*/alicebot/adapter/__init__.py" = ["D104"]
+"examples/plugins/*.py" = ["D", "T"]
 
 [tool.pyright]
-exclude = ["tests"]
+ignore = ["examples/plugins"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
 reportIncompatibleMethodOverride = false
 reportMissingTypeStubs = false
 reportUnknownArgumentType = false
-reportUnknownLambdaType = false
 reportUnknownMemberType = false
 reportUnknownVariableType = false
 reportUnnecessaryIsInstance = false
+reportCallInDefaultInitializer = true
 reportPropertyTypeMismatch = true
+reportShadowedImports = true
+reportUninitializedInstanceVariable = true
 
-[tool.pydantic-pycharm-plugin]
-ignore-init-method-arguments = true
+[tool.mypy]
+python_version = "3.8"
+strict = true
+disable_error_code = ["override"]
+exclude = [
+    '^packages/.*/alicebot/__init__\.py$',
+    '^packages/.*/alicebot/adapter/__init__\.py$',
+    '^examples/.*\.py$',
+]
+warn_unused_ignores = false
+warn_return_any = false
+
+[[tool.mypy.overrides]]
+module = "apscheduler.*"
+ignore_missing_imports = true
+
+[tool.hatch.build.targets.sdist]
+include = ["/README.md", "/alicebot"]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

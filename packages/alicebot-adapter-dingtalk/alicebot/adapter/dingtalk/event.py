@@ -13,12 +13,14 @@ from .message import DingTalkMessage
 if TYPE_CHECKING:
     from . import DingTalkAdapter  # noqa: F401
 
+__all__ = ["UserInfo", "Text", "DingTalkEvent"]
+
 
 class UserInfo(BaseModel):
     """用户信息"""
 
     dingtalkId: str
-    staffId: Optional[str]
+    staffId: Optional[str] = None
 
 
 class Text(BaseModel):
@@ -27,7 +29,7 @@ class Text(BaseModel):
     content: str
 
 
-class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
+class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
     """DingTalk 事件基类"""
 
     type: Optional[str] = Field(alias="msgtype")
@@ -37,16 +39,16 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter", DingTalkMessage]):
     createAt: str
     conversationType: Literal["1", "2"]
     conversationId: str
-    conversationTitle: Optional[str]
+    conversationTitle: Optional[str] = None
     senderId: str
     senderNick: str
-    senderCorpId: Optional[str]
+    senderCorpId: Optional[str] = None
     sessionWebhook: str
     sessionWebhookExpiredTime: int
-    isAdmin: Optional[bool]
-    chatbotCorpId: Optional[str]
-    isInAtList: Optional[bool]
-    senderStaffId: Optional[str]
+    isAdmin: Optional[bool] = None
+    chatbotCorpId: Optional[str] = None
+    isInAtList: Optional[bool] = None
+    senderStaffId: Optional[str] = None
     chatbotUserId: str
     atUsers: List[UserInfo]
     text: Text

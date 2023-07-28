@@ -17,8 +17,13 @@ T_OBMSG = Union[
 class OneBotMessage(Message["OneBotMessageSegment"]):
     """OneBot 消息。"""
 
-    @property
-    def _message_segment_class(self) -> Type["OneBotMessageSegment"]:
+    @classmethod
+    def get_segment_class(cls) -> Type["OneBotMessageSegment"]:
+        """获取消息字段类。
+
+        Returns:
+            消息字段类。
+        """
         return OneBotMessageSegment
 
     def _str_to_message_segment(self, msg: str) -> "OneBotMessageSegment":
@@ -28,14 +33,24 @@ class OneBotMessage(Message["OneBotMessageSegment"]):
 class OneBotMessageSegment(MessageSegment["OneBotMessage"]):
     """OneBot 消息字段。"""
 
-    @property
-    def _message_class(self) -> Type["OneBotMessage"]:
+    @classmethod
+    def get_message_class(cls) -> Type["OneBotMessage"]:
+        """获取消息类。
+
+        Returns:
+            消息类。
+        """
         return OneBotMessage
 
     def __str__(self) -> str:
+        """返回消息的文本表示。
+
+        Returns:
+            消息的文本表示。
+        """
         if self.type == "text":
             return self.data.get("text", "")
-        return f"[{self.type}: {repr(self.data)}]"
+        return f"[{self.type}: {self.data!r}]"
 
     @classmethod
     def text(cls, text: str) -> "OneBotMessageSegment":

@@ -7,47 +7,74 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  update-api-doc:
     runs-on: ubuntu-latest
-
+    environment: release
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install poetry
-        run: pipx install poetry
-        shell: bash
-      - uses: actions/setup-python@v4
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
         with:
-          python-version: "3.9"
-          architecture: "x64"
-          cache: "poetry"
-      - run: poetry install
-        shell: bash
+          python-version: 3.9
+          architecture: x64
+          cache: true
+      - name: Install dependencies
+        run: pdm install
 
-      - run: poetry config pypi-token.pypi "$PYPI_TOKEN"
+      - name: Remove API Doc
+        run: rm -rf docs/api
+      - name: Build API Doc
+        run: pdm run sophia-doc alicebot -o docs/api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
         env:
-          PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+          ALICEBOT_DEV: "1"
+      - name: Commit API Doc
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git add .
+          git commit -m "docs: 更新 API 文档"
+          git push
 
-      - run: poetry publish --build
+  build:
+    runs-on: ubuntu-latest
+    environment: release
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          python-version: 3.9
+          architecture: x64
+          cache: true
+      - name: Install dependencies
+        run: pdm install
+
+      - run: pdm publish
         shell: bash
 
-      - run: poetry publish --build
+      - run: pdm publish
         shell: bash
         working-directory: ./packages/alicebot-adapter-apscheduler
 
-      - run: poetry publish --build
+      - run: pdm publish
         shell: bash
         working-directory: ./packages/alicebot-adapter-cqhttp
 
-      - run: poetry publish --build
+      - run: pdm publish
         shell: bash
         working-directory: ./packages/alicebot-adapter-onebot
 
-      - run: poetry publish --build
+      - run: pdm publish
         shell: bash
         working-directory: ./packages/alicebot-adapter-dingtalk
 
-      - run: poetry publish --build
+      - run: pdm publish
         shell: bash
         working-directory: ./packages/alicebot-adapter-mirai

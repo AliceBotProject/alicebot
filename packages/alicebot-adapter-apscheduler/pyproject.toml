@@ -1,13 +1,10 @@
-[tool.poetry]
+[project]
 name = "alicebot-adapter-apscheduler"
 version = "0.7.1"
 description = "APScheduler adapter for AliceBot."
-license = "MIT"
-authors = ["st1020 <stone_1020@qq.com>"]
+authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
+license = { text = "MIT" }
 readme = "README.md"
-homepage = "https://docs.alicebot.dev/"
-repository = "https://github.com/AliceBotProject/alicebot"
-documentation = "https://docs.alicebot.dev/"
 keywords = ["bot", "chatbot", "scheduling", "apscheduler"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -19,17 +16,18 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Communications :: Chat",
 ]
-packages = [{ include = "alicebot" }]
+requires-python = ">=3.8"
+dependencies = ["alicebot==0.7.1", "apscheduler>=3.7,<4.0"]
+
+[project.urls]
+Homepage = "https://docs.alicebot.dev/"
+Documentation = "https://docs.alicebot.dev/"
+Repository = "https://github.com/AliceBotProject/alicebot"
+Changelog = "https://docs.alicebot.dev/changelog.html"
+
+[tool.hatch.build]
 exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
-[tool.poetry.dependencies]
-python = "^3.8"
-alicebot = "0.7.1"
-apscheduler = "^3.7"
-
-[tool.poetry.dev-dependencies]
-alicebot = { path = "../../", develop = true }
-
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

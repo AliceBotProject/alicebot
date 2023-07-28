@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue';
 import Pagination from './Pagination.vue';
-const props = await (await fetch("https://raw.githubusercontent.com/MarleneJiang/alicebot-plugins/main/plugins.json")).json()
+const props = await (await fetch("https://raw.githubusercontent.com/MarleneJiang/issue-ops/master/plugins.json")).json()
 const pageSize = 10
 const type = ref('plugin')
 const pageTotal = ref(Math.ceil(props.data.length / pageSize))

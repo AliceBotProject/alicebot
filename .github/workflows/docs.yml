@@ -22,10 +22,9 @@ jobs:
         name: Setup PDM
         with:
           python-version: 3.9
-          architecture: x64
           cache: true
       - name: Install dependencies
-        run: pdm install
+        run: pdm install -G dev -G docs
 
       - name: Build API Doc
         run: pdm run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md

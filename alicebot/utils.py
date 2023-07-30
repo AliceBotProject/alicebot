@@ -36,7 +36,7 @@ from typing_extensions import ParamSpec, TypeAlias, TypeGuard
 from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
-from alicebot.typing import T_Event
+from alicebot.typing import EventT
 
 __all__ = [
     "ModulePathFinder",
@@ -223,8 +223,8 @@ async def sync_ctx_manager_wrapper(
 
 
 def wrap_get_func(
-    func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]]
-) -> Callable[[T_Event], Awaitable[bool]]:
+    func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]]
+) -> Callable[[EventT], Awaitable[bool]]:
     """将 `get()` 函数接受的参数包装为一个异步函数。
 
     Args:

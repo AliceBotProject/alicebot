@@ -5,7 +5,12 @@
 
 from typing import TYPE_CHECKING, Awaitable, Callable, Optional, TypeVar
 
-from alicebot.message import T_MS, T_Message, T_MessageSegment
+from alicebot.message import (
+    BuildMessageSegmentType,
+    BuildMessageType,
+    MessageSegmentT,
+    MessageT,
+)
 
 if TYPE_CHECKING:
     from typing import Any
@@ -17,25 +22,26 @@ if TYPE_CHECKING:
     from alicebot.plugin import Plugin
 
 __all__ = [
-    "T_State",
-    "T_Event",
-    "T_Plugin",
-    "T_Adapter",
-    "T_Config",
-    "T_Message",
-    "T_MessageSegment",
-    "T_MS",
-    "T_BotHook",
-    "T_AdapterHook",
-    "T_EventHook",
+    "StateT",
+    "EventT",
+    "PluginT",
+    "AdapterT",
+    "ConfigT",
+    "MessageT",
+    "MessageSegmentT",
+    "BuildMessageType",
+    "BuildMessageSegmentType",
+    "BotHook",
+    "AdapterHook",
+    "EventHook",
 ]
 
-T_State = TypeVar("T_State")
-T_Event = TypeVar("T_Event", bound="Event[Any]")
-T_Plugin = TypeVar("T_Plugin", bound="Plugin[Any, Any, Any]")
-T_Adapter = TypeVar("T_Adapter", bound="Adapter[Any, Any]")
-T_Config = TypeVar("T_Config", bound=Optional["ConfigModel"])
+StateT = TypeVar("StateT")
+EventT = TypeVar("EventT", bound="Event[Any]")
+PluginT = TypeVar("PluginT", bound="Plugin[Any, Any, Any]")
+AdapterT = TypeVar("AdapterT", bound="Adapter[Any, Any]")
+ConfigT = TypeVar("ConfigT", bound=Optional["ConfigModel"])
 
-T_BotHook = Callable[["Bot"], Awaitable[None]]
-T_AdapterHook = Callable[["Adapter[Any, Any]"], Awaitable[None]]
-T_EventHook = Callable[["Event[Any]"], Awaitable[None]]
+BotHook = Callable[["Bot"], Awaitable[None]]
+AdapterHook = Callable[["Adapter[Any, Any]"], Awaitable[None]]
+EventHook = Callable[["Event[Any]"], Awaitable[None]]

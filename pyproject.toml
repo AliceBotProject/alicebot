@@ -155,7 +155,7 @@ load-plugins = ["pylint_pydantic"]
 source-roots = ["."]
 
 [tool.pylint.basic]
-good-names = ["i", "j", "k", "ex", "Run", "_", "e", "f", "ws", "cm"]
+good-names = ["i", "j", "k", "ex", "Run", "_", "e", "f", "ws", "cm", "at"]
 
 [tool.pylint.variables]
 allowed-redefined-builtins = ["id", "type"]

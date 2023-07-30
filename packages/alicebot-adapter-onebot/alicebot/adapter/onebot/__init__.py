@@ -10,7 +10,6 @@ import sys
 import time
 from functools import partial
 from typing import (
-    TYPE_CHECKING,
     Any,
     Awaitable,
     Callable,
@@ -28,6 +27,7 @@ from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
+from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
 from . import event
@@ -41,19 +41,16 @@ from .event import (
     StatusUpdateMetaEvent,
 )
 from .exceptions import ActionFailed, ApiTimeout, NetworkError
-from .message import OneBotMessage
-
-if TYPE_CHECKING:
-    from .message import T_OBMSG
+from .message import OneBotMessage, OneBotMessageSegment
 
 __all__ = ["OneBotAdapter"]
 
 
-T_EventModels = Dict[
+EventModels = Dict[
     Tuple[Optional[str], Optional[str], Optional[str]], Type[OntBotEvent]
 ]
 
-DEFAULT_EVENT_MODELS: T_EventModels = {}
+DEFAULT_EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
     if issubclass(model, OntBotEvent):
         DEFAULT_EVENT_MODELS[model.get_event_type()] = model
@@ -65,7 +62,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
     name = "onebot"
     Config = Config
 
-    event_models: ClassVar[T_EventModels] = DEFAULT_EVENT_MODELS
+    event_models: ClassVar[EventModels] = DEFAULT_EVENT_MODELS
 
     _api_response: Dict[str, Any]
     _api_response_cond: asyncio.Condition
@@ -278,7 +275,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
     async def send(
         self,
-        message_: "T_OBMSG",
+        message_: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]],
         message_type: Union[Literal["private", "group"], str],
         id_: str,
     ) -> Any:

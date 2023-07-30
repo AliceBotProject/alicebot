@@ -1,6 +1,6 @@
 """Mirai 适配器消息。"""
 import json
-from typing import Any, Dict, Iterable, List, Mapping, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type
 from typing_extensions import Self
 
 from pydantic import model_serializer
@@ -8,15 +8,7 @@ from pydantic import model_serializer
 from alicebot.message import Message, MessageSegment
 from alicebot.utils import PydanticEncoder
 
-__all__ = ["T_MiraiMSG", "MiraiMessage", "MiraiMessageSegment"]
-
-T_MiraiMSG = Union[
-    str,
-    Mapping[str, Any],
-    Iterable[Mapping[str, Any]],
-    "MiraiMessageSegment",
-    "MiraiMessage",
-]
+__all__ = ["MiraiMessage", "MiraiMessageSegment"]
 
 
 class MiraiMessage(Message["MiraiMessageSegment"]):

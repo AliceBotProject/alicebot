@@ -10,7 +10,6 @@ import sys
 import time
 from functools import partial
 from typing import (
-    TYPE_CHECKING,
     Any,
     Awaitable,
     Callable,
@@ -20,6 +19,7 @@ from typing import (
     Optional,
     Tuple,
     Type,
+    Union,
 )
 
 import aiohttp
@@ -27,24 +27,22 @@ from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
+from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
 from .event import CQHTTPEvent, HeartbeatMetaEvent, LifecycleMetaEvent, MetaEvent
 from .exceptions import ActionFailed, ApiNotAvailable, ApiTimeout, NetworkError
-from .message import CQHTTPMessage
-
-if TYPE_CHECKING:
-    from .message import T_CQMSG
+from .message import CQHTTPMessage, CQHTTPMessageSegment
 
 __all__ = ["CQHTTPAdapter"]
 
-T_EventModels = Dict[
+EventModels = Dict[
     Tuple[Optional[str], Optional[str], Optional[str]], Type[CQHTTPEvent]
 ]
 
-DEFAULT_EVENT_MODELS: T_EventModels = {}
+DEFAULT_EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
     if issubclass(model, CQHTTPEvent):
         DEFAULT_EVENT_MODELS[model.get_event_type()] = model
@@ -56,7 +54,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     name = "cqhttp"
     Config = Config
 
-    event_models: ClassVar[T_EventModels] = DEFAULT_EVENT_MODELS
+    event_models: ClassVar[EventModels] = DEFAULT_EVENT_MODELS
 
     _api_response: Dict[str, Any]
     _api_response_cond: asyncio.Condition
@@ -264,7 +262,10 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         return None
 
     async def send(
-        self, message_: "T_CQMSG", message_type: Literal["private", "group"], id_: int
+        self,
+        message_: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]],
+        message_type: Literal["private", "group"],
+        id_: int,
     ) -> Any:
         """发送消息，调用 `send_private_msg` 或 `send_group_msg` API 发送消息。
 

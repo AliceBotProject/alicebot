@@ -1,17 +1,9 @@
 """CQHTTP 适配器消息。"""
-from typing import Any, Iterable, Literal, Mapping, Optional, Type, Union
+from typing import Literal, Optional, Type, Union
 
 from alicebot.message import Message, MessageSegment
 
-__all__ = ["T_CQMSG", "CQHTTPMessage", "CQHTTPMessageSegment", "escape"]
-
-T_CQMSG = Union[
-    str,
-    Mapping[str, Any],
-    Iterable[Mapping[str, Any]],
-    "CQHTTPMessageSegment",
-    "CQHTTPMessage",
-]
+__all__ = ["CQHTTPMessage", "CQHTTPMessageSegment", "escape"]
 
 
 class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
@@ -133,7 +125,9 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def at(cls, qq: Union[int, Literal["all"]]) -> "CQHTTPMessageSegment":
+    def at(
+        cls, qq: Union[int, Literal["all"]]  # pylint: disable=invalid-name
+    ) -> "CQHTTPMessageSegment":
         """@某人"""
         return cls(type="at", data={"qq": str(qq)})
 
@@ -265,17 +259,17 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         return cls(type="json", data={"data": data})
 
 
-def escape(s: str, *, escape_comma: bool = True) -> str:
+def escape(string: str, *, escape_comma: bool = True) -> str:
     """对 CQ 码中的特殊字符进行转义。
 
     Args:
-        s: 待转义的字符串。
+        string: 待转义的字符串。
         escape_comma: 是否转义 `,`。
 
     Returns:
         转义后的字符串。
     """
-    s = s.replace("&", "&amp;").replace("[", "&#91;").replace("]", "&#93;")
+    string = string.replace("&", "&amp;").replace("[", "&#91;").replace("]", "&#93;")
     if escape_comma:
-        s = s.replace(",", "&#44;")
-    return s
+        string = string.replace(",", "&#44;")
+    return string

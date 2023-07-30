@@ -1,17 +1,9 @@
 """OneBot 适配器消息。"""
-from typing import Any, Iterable, Mapping, Type, Union
+from typing import Type
 
 from alicebot.message import Message, MessageSegment
 
-__all__ = ["T_OBMSG", "OneBotMessage", "OneBotMessageSegment"]
-
-T_OBMSG = Union[
-    str,
-    Mapping[str, Any],
-    Iterable[Mapping[str, Any]],
-    "OneBotMessageSegment",
-    "OneBotMessage",
-]
+__all__ = ["OneBotMessage", "OneBotMessageSegment"]
 
 
 class OneBotMessage(Message["OneBotMessageSegment"]):

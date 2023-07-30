@@ -49,7 +49,7 @@ dev = [
     "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
     "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
 ]
-lint = ["black", "ruff", "mypy"]
+lint = ["black", "ruff", "mypy", "pylint", "pylint-pydantic"]
 docs = ["sophia-doc~=0.1.4", "tomlkit~=0.11.7"]
 
 [project.urls]
@@ -136,6 +136,29 @@ warn_return_any = false
 [[tool.mypy.overrides]]
 module = "apscheduler.*"
 ignore_missing_imports = true
+
+[tool.pylint.main]
+disable = [
+    "arguments-differ",
+    "broad-exception-caught",
+    "import-outside-toplevel",
+    "duplicate-code",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-boolean-expressions",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-nested-blocks",
+    "too-many-public-methods",
+]
+load-plugins = ["pylint_pydantic"]
+source-roots = ["."]
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "Run", "_", "e", "f", "ws", "cm"]
+
+[tool.pylint.variables]
+allowed-redefined-builtins = ["id", "type"]
 
 [tool.hatch.build.targets.sdist]
 include = ["/README.md", "/alicebot"]

@@ -19,7 +19,6 @@ jobs:
         name: Setup PDM
         with:
           python-version: 3.9
-          architecture: x64
           cache: true
       - name: Install dependencies
         run: pdm install
@@ -51,7 +50,6 @@ jobs:
         name: Setup PDM
         with:
           python-version: 3.9
-          architecture: x64
           cache: true
       - name: Install dependencies
         run: pdm install

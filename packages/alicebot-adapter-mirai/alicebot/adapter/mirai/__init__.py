@@ -11,7 +11,6 @@ import sys
 import time
 from functools import partial
 from typing import (
-    TYPE_CHECKING,
     Any,
     Awaitable,
     Callable,
@@ -20,22 +19,21 @@ from typing import (
     Literal,
     Optional,
     Type,
+    Union,
 )
 
 import aiohttp
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.log import error_or_exception, logger
+from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
 from .event import BotEvent, CommandExecutedEvent, MateEvent, MiraiEvent
 from .exceptions import ActionFailed, ApiTimeout, NetworkError
-from .message import MiraiMessage
-
-if TYPE_CHECKING:
-    from .message import T_MiraiMSG
+from .message import MiraiMessage, MiraiMessageSegment
 
 __all__ = ["MiraiAdapter"]
 
@@ -246,7 +244,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     async def send(
         self,
-        message_: "T_MiraiMSG",
+        message_: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
         message_type: Literal["private", "friend", "group"],
         target: int,
         quote: Optional[int] = None,

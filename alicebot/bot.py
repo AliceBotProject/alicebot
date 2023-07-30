@@ -41,7 +41,7 @@ from alicebot.exceptions import (
 )
 from alicebot.log import error_or_exception, logger
 from alicebot.plugin import Plugin, PluginLoadType
-from alicebot.typing import T_Adapter, T_AdapterHook, T_BotHook, T_Event, T_EventHook
+from alicebot.typing import AdapterHook, AdapterT, BotHook, EventHook, EventT
 from alicebot.utils import (
     ModulePathFinder,
     get_classes_from_module_name,
@@ -106,13 +106,13 @@ class Bot:
     _extend_adapters: List[
         Union[Type[Adapter[Any, Any]], str]
     ]  # 使用 load_adapter() 方法程序化加载的适配器列表
-    _bot_run_hooks: List[T_BotHook]
-    _bot_exit_hooks: List[T_BotHook]
-    _adapter_startup_hooks: List[T_AdapterHook]
-    _adapter_run_hooks: List[T_AdapterHook]
-    _adapter_shutdown_hooks: List[T_AdapterHook]
-    _event_preprocessor_hooks: List[T_EventHook]
-    _event_postprocessor_hooks: List[T_EventHook]
+    _bot_run_hooks: List[BotHook]
+    _bot_exit_hooks: List[BotHook]
+    _adapter_startup_hooks: List[AdapterHook]
+    _adapter_run_hooks: List[AdapterHook]
+    _adapter_shutdown_hooks: List[AdapterHook]
+    _event_preprocessor_hooks: List[EventHook]
+    _event_postprocessor_hooks: List[EventHook]
 
     def __init__(
         self,
@@ -546,25 +546,25 @@ class Bot:
     @overload
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
-        adapter_type: Type[Adapter[T_Event, Any]],
+        adapter_type: Type[Adapter[EventT, Any]],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> T_Event:
+    ) -> EventT:
         ...
 
     @overload
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Type[T_Event],
-        adapter_type: Optional[Type[T_Adapter]] = None,
+        event_type: Type[EventT],
+        adapter_type: Optional[Type[AdapterT]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> T_Event:
+    ) -> EventT:
         ...
 
     async def get(
@@ -858,12 +858,12 @@ class Bot:
         ...
 
     @overload
-    def get_adapter(self, adapter: Type[T_Adapter]) -> T_Adapter:
+    def get_adapter(self, adapter: Type[AdapterT]) -> AdapterT:
         ...
 
     def get_adapter(
-        self, adapter: Union[str, Type[T_Adapter]]
-    ) -> Union[Adapter[Any, Any], T_Adapter]:
+        self, adapter: Union[str, Type[AdapterT]]
+    ) -> Union[Adapter[Any, Any], AdapterT]:
         """按照名称或适配器类获取已经加载的适配器。
 
         Args:
@@ -900,7 +900,7 @@ class Bot:
                 return _plugin
         raise LookupError(f'Can not find plugin named "{name}"')
 
-    def bot_run_hook(self, func: T_BotHook) -> T_BotHook:
+    def bot_run_hook(self, func: BotHook) -> BotHook:
         """注册一个 Bot 启动时的函数。
 
         Args:
@@ -912,7 +912,7 @@ class Bot:
         self._bot_run_hooks.append(func)
         return func
 
-    def bot_exit_hook(self, func: T_BotHook) -> T_BotHook:
+    def bot_exit_hook(self, func: BotHook) -> BotHook:
         """注册一个 Bot 退出时的函数。
 
         Args:
@@ -924,7 +924,7 @@ class Bot:
         self._bot_exit_hooks.append(func)
         return func
 
-    def adapter_startup_hook(self, func: T_AdapterHook) -> T_AdapterHook:
+    def adapter_startup_hook(self, func: AdapterHook) -> AdapterHook:
         """注册一个适配器初始化时的函数。
 
         Args:
@@ -936,7 +936,7 @@ class Bot:
         self._adapter_startup_hooks.append(func)
         return func
 
-    def adapter_run_hook(self, func: T_AdapterHook) -> T_AdapterHook:
+    def adapter_run_hook(self, func: AdapterHook) -> AdapterHook:
         """注册一个适配器运行时的函数。
 
         Args:
@@ -948,7 +948,7 @@ class Bot:
         self._adapter_run_hooks.append(func)
         return func
 
-    def adapter_shutdown_hook(self, func: T_AdapterHook) -> T_AdapterHook:
+    def adapter_shutdown_hook(self, func: AdapterHook) -> AdapterHook:
         """注册一个适配器关闭时的函数。
 
         Args:
@@ -960,7 +960,7 @@ class Bot:
         self._adapter_shutdown_hooks.append(func)
         return func
 
-    def event_preprocessor_hook(self, func: T_EventHook) -> T_EventHook:
+    def event_preprocessor_hook(self, func: EventHook) -> EventHook:
         """注册一个事件预处理函数。
 
         Args:
@@ -972,7 +972,7 @@ class Bot:
         self._event_preprocessor_hooks.append(func)
         return func
 
-    def event_postprocessor_hook(self, func: T_EventHook) -> T_EventHook:
+    def event_postprocessor_hook(self, func: EventHook) -> EventHook:
         """注册一个事件后处理函数。
 
         Args:

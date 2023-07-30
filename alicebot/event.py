@@ -8,12 +8,12 @@ from typing_extensions import Self
 
 from pydantic import BaseModel, ConfigDict
 
-from alicebot.typing import T_Adapter
+from alicebot.typing import AdapterT
 
 __all__ = ["Event", "MessageEvent"]
 
 
-class Event(ABC, BaseModel, Generic[T_Adapter]):
+class Event(ABC, BaseModel, Generic[AdapterT]):
     """事件类的基类。
 
     Attributes:
@@ -25,7 +25,7 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
     model_config = ConfigDict(extra="allow")
 
     if TYPE_CHECKING:
-        adapter: T_Adapter
+        adapter: AdapterT
     else:
         adapter: Any
     type: Optional[str]
@@ -48,7 +48,7 @@ class Event(ABC, BaseModel, Generic[T_Adapter]):
         return self.__str__()
 
 
-class MessageEvent(Event[T_Adapter], Generic[T_Adapter]):
+class MessageEvent(Event[AdapterT], Generic[AdapterT]):
     """通用的消息事件类的基类。"""
 
     @abstractmethod
@@ -60,7 +60,7 @@ class MessageEvent(Event[T_Adapter], Generic[T_Adapter]):
         """
 
     @abstractmethod
-    async def reply(self, message: str, *args: Any, **kwargs: Any) -> Any:  # noqa: D417
+    async def reply(self, message: str) -> Any:
         """回复消息。
 
         Args:

@@ -18,7 +18,7 @@ from typing import (
 from alicebot.dependencies import Depends
 from alicebot.event import Event
 from alicebot.exceptions import SkipException, StopException
-from alicebot.typing import T_Config, T_Event, T_State
+from alicebot.typing import ConfigT, EventT, StateT
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
@@ -36,7 +36,7 @@ class PluginLoadType(Enum):
     CLASS = "class"
 
 
-class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
+class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
     """所有 AliceBot 插件的基类。
 
     Attributes:
@@ -52,26 +52,27 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     block: ClassVar[bool] = False
 
     # 不能使用 ClassVar 因为 PEP 526 不允许这样做
-    Config: Type[T_Config]
+    Config: Type[ConfigT]
 
     __plugin_load_type__: ClassVar[PluginLoadType]
     __plugin_file_path__: ClassVar[Optional[str]]
 
     if TYPE_CHECKING:
-        event: T_Event
+        event: EventT
 
-        def __init_state__(self) -> T_State:
+        def __init_state__(self) -> StateT:
             """初始化插件状态。"""
-            ...
+            ...  # pylint: disable=unnecessary-ellipsis
 
     else:
-        event: T_Event = Depends(Event)
+        event: EventT = Depends(Event)
 
     def __init_subclass__(
         cls,
-        /,
-        config: Optional[Type[T_Config]] = None,
-        init_state: Optional[T_State] = None,
+        *_args: Any,
+        config: Optional[Type[ConfigT]] = None,
+        init_state: Optional[StateT] = None,
+        **_kwargs: Any,
     ) -> None:
         """初始化子类。
 
@@ -95,11 +96,11 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
     @property
     def bot(self) -> "Bot":
         """机器人对象。"""
-        return self.event.adapter.bot
+        return self.event.adapter.bot  # pylint: disable=no-member
 
     @final
     @property
-    def config(self) -> T_Config:
+    def config(self) -> ConfigT:
         """插件配置。"""
         default: Any = None
         config_class = getattr(self, "Config", None)
@@ -122,13 +123,13 @@ class Plugin(ABC, Generic[T_Event, T_State, T_Config]):
         raise SkipException
 
     @property
-    def state(self) -> T_State:
+    def state(self) -> StateT:
         """插件状态。"""
         return self.bot.plugin_state[self.name]
 
     @state.setter
     @final
-    def state(self, value: T_State) -> None:
+    def state(self, value: StateT) -> None:
         self.bot.plugin_state[self.name] = value
 
     @abstractmethod

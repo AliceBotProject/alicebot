@@ -11,7 +11,7 @@ from aiohttp import web
 
 from alicebot.adapter import Adapter
 from alicebot.log import error_or_exception, logger
-from alicebot.typing import T_Config, T_Event
+from alicebot.typing import ConfigT, EventT
 
 __all__ = [
     "PollingAdapter",
@@ -23,7 +23,7 @@ __all__ = [
 ]
 
 
-class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
+class PollingAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """轮询式适配器示例。"""
 
     delay: float = 0.1
@@ -44,7 +44,7 @@ class PollingAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         """当轮询发生。"""
 
 
-class HttpClientAdapter(PollingAdapter[T_Event, T_Config], metaclass=ABCMeta):
+class HttpClientAdapter(PollingAdapter[EventT, ConfigT], metaclass=ABCMeta):
     """HTTP 客户端适配器示例。"""
 
     session: aiohttp.ClientSession
@@ -62,7 +62,7 @@ class HttpClientAdapter(PollingAdapter[T_Event, T_Config], metaclass=ABCMeta):
         await self.session.close()
 
 
-class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
+class WebSocketClientAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """WebSocket 客户端适配器示例。"""
 
     url: str
@@ -85,7 +85,7 @@ class WebSocketClientAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         """处理响应。"""
 
 
-class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
+class HttpServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """HTTP 服务端适配器示例。"""
 
     app: web.Application
@@ -122,7 +122,7 @@ class HttpServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         """处理响应。"""
 
 
-class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
+class WebSocketServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """WebSocket 服务端适配器示例。"""
 
     app: web.Application
@@ -171,7 +171,7 @@ class WebSocketServerAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
         """处理 WebSocket 响应。"""
 
 
-class WebSocketAdapter(Adapter[T_Event, T_Config], metaclass=ABCMeta):
+class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """WebSocket 适配器示例。
 
     同时支持 WebSocket 客户端和服务端。

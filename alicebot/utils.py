@@ -118,13 +118,14 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_Ty
 
 
 def get_classes_from_module_name(
-    name: str, super_class: _TypeT
+    name: str, super_class: _TypeT, *, reload: bool = False
 ) -> List[Tuple[_TypeT, ModuleType]]:
     """从指定名称的模块中查找指定类型的类。
 
     Args:
         name: 模块名称，格式和 Python `import` 语句相同。
         super_class: 要查找的类的超类。
+        reload: 是否重新加载模块。
 
     Returns:
         返回由符合条件的类和模块组成的元组的列表。
@@ -135,7 +136,8 @@ def get_classes_from_module_name(
     try:
         importlib.invalidate_caches()
         module = importlib.import_module(name)
-        importlib.reload(module)
+        if reload:
+            importlib.reload(module)
         return [(x, module) for x in get_classes_from_module(module, super_class)]
     except KeyboardInterrupt:
         # 不捕获 KeyboardInterrupt

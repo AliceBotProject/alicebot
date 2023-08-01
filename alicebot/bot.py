@@ -338,7 +338,9 @@ class Bot:
 
                 if change_type == Change.added:
                     logger.info(f"Hot reload: Added file: {file}")
-                    self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
+                    self._load_plugins(
+                        Path(file), plugin_load_type=PluginLoadType.DIR, reload=True
+                    )
                     self._update_config()
                     continue
                 if change_type == Change.deleted:
@@ -348,7 +350,9 @@ class Bot:
                 elif change_type == Change.modified:
                     logger.info(f"Hot reload: Modified file: {file}")
                     self._remove_plugin_by_path(file)
-                    self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
+                    self._load_plugins(
+                        Path(file), plugin_load_type=PluginLoadType.DIR, reload=True
+                    )
                     self._update_config()
 
     def _update_config(self) -> None:
@@ -665,11 +669,17 @@ class Bot:
             )
 
     def _load_plugins_from_module_name(
-        self, module_name: str, plugin_load_type: PluginLoadType
+        self,
+        module_name: str,
+        *,
+        plugin_load_type: PluginLoadType,
+        reload: bool = False,
     ) -> None:
         """从模块名称中插件模块。"""
         try:
-            plugin_classes = get_classes_from_module_name(module_name, Plugin)
+            plugin_classes = get_classes_from_module_name(
+                module_name, Plugin, reload=reload
+            )
         except ImportError as e:
             error_or_exception(
                 f'Import module "{module_name}" failed:',
@@ -688,6 +698,7 @@ class Bot:
         self,
         *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path],
         plugin_load_type: Optional[PluginLoadType] = None,
+        reload: bool = False,
     ) -> None:
         """加载插件。
 
@@ -699,6 +710,7 @@ class Bot:
                 如果为 `pathlib.Path` 类型时，将作为插件模块文件路径进行加载。
                     例如：`pathlib.Path("path/of/plugin")`。
             plugin_load_type: 插件加载类型，如果为 `None` 则自动判断，否则使用指定的类型。
+            reload: 是否重新加载模块。
         """
         for plugin_ in plugins:
             if isinstance(plugin_, type):
@@ -713,7 +725,9 @@ class Bot:
             elif isinstance(plugin_, str):
                 logger.info(f'Loading plugins from module "{plugin_}"')
                 self._load_plugins_from_module_name(
-                    plugin_, plugin_load_type or PluginLoadType.NAME
+                    plugin_,
+                    plugin_load_type=plugin_load_type or PluginLoadType.NAME,
+                    reload=reload,
                 )
             elif isinstance(plugin_, Path):
                 logger.info(f'Loading plugins from path "{plugin_}"')
@@ -744,7 +758,9 @@ class Bot:
                             )
 
                     self._load_plugins_from_module_name(
-                        plugin_module_name, plugin_load_type or PluginLoadType.FILE
+                        plugin_module_name,
+                        plugin_load_type=plugin_load_type or PluginLoadType.FILE,
+                        reload=reload,
                     )
                 else:
                     logger.error(f'The plugin path "{plugin_}" must be a file')
@@ -781,7 +797,7 @@ class Bot:
         for module_info in pkgutil.iter_modules(dir_list):
             if not module_info.name.startswith("_"):
                 self._load_plugins_from_module_name(
-                    module_info.name, PluginLoadType.DIR
+                    module_info.name, plugin_load_type=PluginLoadType.DIR
                 )
 
     def load_plugins_from_dirs(self, *dirs: Path) -> None:

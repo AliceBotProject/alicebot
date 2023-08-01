@@ -17,7 +17,7 @@ class NetworkError(OneBotException):
 class ActionFailed(OneBotException):
     """API 请求成功响应，但响应表示 API 操作失败。"""
 
-    def __init__(self, resp: Any):
+    def __init__(self, resp: Any) -> None:
         """初始化。
 
         Args:

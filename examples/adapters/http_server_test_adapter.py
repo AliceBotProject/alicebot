@@ -22,7 +22,7 @@ class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
     host: str = "127.0.0.1"
     port: int = 8080
 
-    async def handle_response(self, request: web.Request):
+    async def handle_response(self, request: web.Request) -> web.StreamResponse:
         """处理响应。"""
         event = HttpServerTestEvent(
             adapter=self,

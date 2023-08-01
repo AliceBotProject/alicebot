@@ -49,7 +49,7 @@ class InnerDepends:
 
     def __init__(
         self, dependency: Optional[Dependency[Any]] = None, *, use_cache: bool = True
-    ):
+    ) -> None:
         self.dependency = dependency
         self.use_cache = use_cache
 

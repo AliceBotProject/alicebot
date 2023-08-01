@@ -38,7 +38,7 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
 class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     """Mirai 消息段"""
 
-    def __init__(self, type: str, **data: Any):
+    def __init__(self, type: str, **data: Any) -> None:
         """初始化。
 
         Args:

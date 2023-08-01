@@ -144,6 +144,7 @@ disable = [
     "arguments-differ",
     "broad-exception-caught",
     "import-outside-toplevel",
+    "too-many-lines",
     "duplicate-code",
     "too-few-public-methods",
     "too-many-arguments",

@@ -60,7 +60,7 @@ class Message(List[MessageSegmentT]):
 
     def __init__(
         self, message: Optional[Union[Self, BuildMessageType[MessageSegmentT]]] = None
-    ):
+    ) -> None:
         """初始化。
 
         Args:

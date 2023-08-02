@@ -35,7 +35,7 @@ export default defineConfig({
       { text: "主页", link: "/" },
       { text: "指南", link: "/guide/" },
       { text: "API", link: "/api/" },
-      { text: "插件", link: "/plugin/" },
+      { text: "商店", link: "/marketplace/" },
       { text: "更新日志", link: "/changelog" },
     ],
 

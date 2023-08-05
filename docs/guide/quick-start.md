@@ -6,7 +6,7 @@
 AliceBot 仅支持 Python 3.8+ 版本。
 :::
 
-使用 Python 软件包安装程序（pip）进行安装：
+使用 Python 软件包安装程序 (pip) 进行安装：
 
 ```sh
 pip install alicebot
@@ -106,16 +106,16 @@ AliceBot 推荐的目录结构如下：
 
 ## 配置协议端
 
-上面的例子中使用了 `alicebot.adapter.cqhttp` 协议适配器，它是 OneBot v11 协议（原 CKYU 平台的 CQHTTP 协议）的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，以下是一些常用的支持 OneBot 协议的 QQ 协议端：
+上面的例子中使用了 `alicebot.adapter.cqhttp` 协议适配器，它是 OneBot v11 协议 (原 CKYU 平台的 CQHTTP 协议) 的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，以下是一些常用的支持 OneBot 协议的 QQ 协议端：
 
 - [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - [mirai](https://github.com/mamoe/mirai) + [onebot-kotlin](https://github.com/yyuueexxiinngg/onebot-kotlin)
 - [oicq](https://github.com/takayama-lily/oicq)
 
-更多信息详见 [CQHTTP 协议使用指南](/guide/adapters/cqhttp-adapter.md) 。
+更多信息详见 [CQHTTP 协议使用指南](/guide/adapters/cqhttp-adapter.md)。
 
 你也可以安装其他协议适配器或者尝试自己写一个协议适配器。
 
 ## 开发建议
 
-在使用 AliceBot 进行开发时，建议使用具有类型检查的 IDE，如 PyCharm 、 VSCode 等，这可以帮助你充分利用 AliceBot 的类型提示。
+在使用 AliceBot 进行开发时，建议使用具有类型检查的 IDE，如 PyCharm、VSCode 等，这可以帮助你充分利用 AliceBot 的类型提示。

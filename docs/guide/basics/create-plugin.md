@@ -40,23 +40,23 @@ class HalloAlice(Plugin):
 
 `priority` 属性表示插件的优先级，数字越小表示优先级越高。
 
-`block` 属性表示当前插件执行结束后是否阻止事件的传播，如果设置为 `True` ，则当前插件执行完毕后会停止当前事件传播，比当前插件优先级低的插件将不会被执行。
+`block` 属性表示当前插件执行结束后是否阻止事件的传播，如果设置为 `True`，则当前插件执行完毕后会停止当前事件传播，比当前插件优先级低的插件将不会被执行。
 
-以上两个属性都是可选的，默认为 `0` 和 `False` 。
+以上两个属性都是可选的，默认为 `0` 和 `False`。
 
-如 [它是如何工作的？](/guide/#它是如何工作的) 一节中所说，当协议适配器产生一个事件（比如机器人接收到了一条消息）后，会按照优先级分发事件给各个插件，AliceBot 会依次执行每个插件的 `rule()` 方法，根据返回值判断是否要执行 `handle()` 方法。
+如[它是如何工作的？](/guide/#它是如何工作的)一节中所说，当协议适配器产生一个事件 (比如机器人接收到了一条消息) 后，会按照优先级分发事件给各个插件，AliceBot 会依次执行每个插件的 `rule()` 方法，根据返回值判断是否要执行 `handle()` 方法。
 
 `Plugin` 类内置了一些属性和方法：
 
-- `self.event` ：当前正在被此插件处理的事件。
-- `self.name` ：插件类名称。
-- `self.bot` ：机器人对象。
-- `self.config` ：插件配置。
-- `self.state` ：插件状态。
-- `self.stop()` ：停止当前事件传播。
-- `self.skip()` ：跳过自身继续当前事件传播。
+- `self.event`：当前正在被此插件处理的事件。
+- `self.name`：插件类名称。
+- `self.bot`：机器人对象。
+- `self.config`：插件配置。
+- `self.state`：插件状态。
+- `self.stop()`：停止当前事件传播。
+- `self.skip()`：跳过自身继续当前事件传播。
 
-除了 `self.event`  之外的属性和方法将在进阶中详细介绍。
+除了 `self.event` 之外的属性和方法将在进阶中详细介绍。
 
 不同适配器产生的事件是不同的，下文以 CQHTTP 适配器为例编写一个 Hello 插件。
 
@@ -100,11 +100,11 @@ class HalloAlice(Plugin):
 
 由于不同的适配器产生的事件是不同的，所以应该先判断产生当前事件的适配器名称。
 
-然后应该判断当前事件的类型，CQHTTP 适配器产生的事件的类型有：`message` 、 `notice` 和 `request` ，只有 `message` 类型的适配器才有 `message` 属性，这个插件只对消息事件进行响应。
+然后应该判断当前事件的类型，CQHTTP 适配器产生的事件的类型有：`message`、`notice` 和 `request`，只有 `message` 类型的适配器才有 `message` 属性，这个插件只对消息事件进行响应。
 
-CQHTTP 适配器消息事件的 `message` 属性表示当前接收到的消息，类型是 `CQHTTPMessage` ，是 AliceBot 内置 `Message` 类的子类。
+CQHTTP 适配器消息事件的 `message` 属性表示当前接收到的消息，类型是 `CQHTTPMessage`，是 AliceBot 内置 `Message` 类的子类。
 
-AliceBot 内置的 `Message` 类实现了许多实用的方法，建议所有适配器开发者尽可能使用，CQHTTP 适配器就使用了内置的 `Message` 类。具体使用在 [插件进阶](/guide/basics/builtin-message.md) 中有提到。在这里可以直接使用 `str()` 函数将 `Message` 类型的 `self.event.message` 转换为字符串。
+AliceBot 内置的 `Message` 类实现了许多实用的方法，建议所有适配器开发者尽可能使用，CQHTTP 适配器就使用了内置的 `Message` 类。具体使用在[插件进阶](/guide/basics/builtin-message.md)中有提到。在这里可以直接使用 `str()` 函数将 `Message` 类型的 `self.event.message` 转换为字符串。
 
 除此之外，在 `rule()` 方法中常用的还有 `self.event.message.startswith('xxx')` 和 `self.event.message.endswith('xxx')`。相当于字符串的 `startswith()` 和 `endswith()` 方法。
 
@@ -127,9 +127,9 @@ class HalloAlice(Plugin):
 
 ```
 
-正如之前所说的，当 `rule()` 方法返回 `True` 时， `handle()` 方法将会被调用。这里我们使用了 CQHTTP 适配器 `message` 类型事件的一个方法，`reply()` 用于快捷回复当前消息，而不需要额外指定发送消息的接收者。
+正如之前所说的，当 `rule()` 方法返回 `True` 时，`handle()` 方法将会被调用。这里我们使用了 CQHTTP 适配器 `message` 类型事件的一个方法，`reply()` 用于快捷回复当前消息，而不需要额外指定发送消息的接收者。
 
-`reply()` 方法是一个异步方法，所以在调用它时必须加上 `await` ，表示等待它直到返回结果。
+`reply()` 方法是一个异步方法，所以在调用它时必须加上 `await`，表示等待它直到返回结果。
 
 现在我们的 Hello 插件就编写完成了。现在运行 `main.py` 启动 AliceBot，向机器人发送 `hello` 试一下吧。
 
@@ -179,9 +179,9 @@ class HalloAlice(Plugin):
 
 实际上，`ask()` 方法是一个简写，它是下面注释的代码的简写。而其中 `Event` 的 `get()` 方法又是下面注释的 `Bot` 的 `get()` 方法的一种简写形式。
 
-对于 `Bot` 的 `get()` 方法，它的使用方法可以参考 [API 文档](/api/bot.html#Bot.get) 。简而言之，它就是用于获取符合条件的事件的，同样的，它也是一个异步方法，请使用 `await` 等待。
+对于 `Bot` 的 `get()` 方法，它的使用方法可以参考 [API 文档](/api/bot.html#Bot.get)。简而言之，它就是用于获取符合条件的事件的，同样的，它也是一个异步方法，请使用 `await` 等待。
 
-需要注意的是， `get()` 和 `ask()` 方法都可以指定超时时间，以避免插件一直等待获取事件，当超时发生时，会引发 `alicebot.exception.GetEventTimeout` 异常，请留心对这种情况的处理。
+需要注意的是，`get()` 和 `ask()` 方法都可以指定超时时间，以避免插件一直等待获取事件，当超时发生时，会引发 `alicebot.exception.GetEventTimeout` 异常，请留心对这种情况的处理。
 
 `Bot`、`Adapter` 和 `Event` 类都有一个 `get()` 方法。
 
@@ -250,8 +250,8 @@ class Weather(Plugin):
 
 ```
 
-你可以通过向机器人发送 `天气 北京` 格式的消息来获取天气信息，同时，也可以只发送 `天气` ，这时机器人会向你询问城市，再次发送要查询的城市名称即可查询天气。
+你可以通过向机器人发送 `天气 北京` 格式的消息来获取天气信息，同时，也可以只发送 `天气`，这时机器人会向你询问城市，再次发送要查询的城市名称即可查询天气。
 
-此外，这里的 `get_weather()` 方法并没有接入真正的天气数据，你可以使用任意的天气 API 代替，但请注意，在进行网络请求时需要使用基于协程异步的网络库，如 aiohttp 或 httpx ，而不能使用如 requests 等同步的网络请求库，这会导致程序被阻塞。
+此外，这里的 `get_weather()` 方法并没有接入真正的天气数据，你可以使用任意的天气 API 代替，但请注意，在进行网络请求时需要使用基于协程异步的网络库，如 aiohttp 或 httpx，而不能使用如 requests 等同步的网络请求库，这会导致程序被阻塞。
 
 相信阅读到这里，你应该已经可以写出一个 AliceBot 插件了。接下来建议你继续按顺序阅读下面的教程和你将要使用的适配器的教程。

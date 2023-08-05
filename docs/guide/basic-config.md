@@ -6,7 +6,7 @@ AliceBot 的所有配置均储存在配置文件 `config.toml` 文件中。
 
 `config.toml` 文件为标准的 [TOML](https://toml.io/cn/) v1.0.0 文件。TOML 是一种“语义明显且易于阅读的最小化配置文件格式”。建议在开始之前先简单了解一下 TOML 语言的基础格式。
 
-AliceBot 的配置项将存储在不同的表（table）中，AliceBot 自身的配置位于 `bot` 表中，而所有适配器和插件的配置则分别位于 `adapter` 和 `plugin` 表中。
+AliceBot 的配置项将存储在不同的表 (table) 中，AliceBot 自身的配置位于 `bot` 表中，而所有适配器和插件的配置则分别位于 `adapter` 和 `plugin` 表中。
 
 AliceBot 自身拥有如下配置项：
 

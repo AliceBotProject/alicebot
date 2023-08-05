@@ -1,6 +1,6 @@
 # Mirai 协议适配器
 
-Mirai 协议适配器是 [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 协议的适配器，你需要先按照 mirai-api-http 文档的说明安装 mirai-api-http 。
+Mirai 协议适配器是 [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 协议的适配器，你需要先按照 mirai-api-http 文档的说明安装 mirai-api-http。
 
 值得注意的是，本适配器仅支持 mirai-api-http 2.3 以上版本。
 
@@ -14,7 +14,7 @@ pip install alicebot-adapter-mirai
 
 ## 配置协议端
 
-编辑 mirai-api-http 的配置文件 `setting.yml` 。
+编辑 mirai-api-http 的配置文件 `setting.yml`。
 
 ### Websocket Adapter 模式
 
@@ -51,9 +51,9 @@ adapterSettings:
 
 ## 配置 AliceBot
 
-编辑 AliceBot 的配置文件 `config.toml` 。
+编辑 AliceBot 的配置文件 `config.toml`。
 
-更多项目请参考 [Mirai 配置](/api/adapter/mirai/config.md) 。
+更多项目请参考 [Mirai 配置](/api/adapter/mirai/config.md)。
 
 ### Websocket Adapter 模式
 
@@ -103,7 +103,7 @@ class HalloAlice(Plugin):
 
 ```
 
-更多使用方法请参考 [mirai-api-http 消息段类型](https://docs.mirai.mamoe.net/mirai-api-http/api/MessageType.html) 和 [Mirai 消息](/api/adapter/mirai/message.md) 。
+更多使用方法请参考 [mirai-api-http 消息段类型](https://docs.mirai.mamoe.net/mirai-api-http/api/MessageType.html)和 [Mirai 消息](/api/adapter/mirai/message.md)。
 
 ## 调用 mirai-api-http API
 

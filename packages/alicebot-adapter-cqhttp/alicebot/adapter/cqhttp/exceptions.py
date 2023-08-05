@@ -33,7 +33,7 @@ class ActionFailed(CQHTTPException):
 
 
 class ApiNotAvailable(ActionFailed):
-    """API 请求返回 404 ，表示当前请求的 API 不可用或不存在。"""
+    """API 请求返回 404，表示当前请求的 API 不可用或不存在。"""
 
     ERROR_CODE: ClassVar[int] = 1404
 

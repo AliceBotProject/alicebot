@@ -121,7 +121,7 @@ class Bot:
         config_dict: Optional[Dict[str, Any]] = None,
         hot_reload: bool = False,
     ) -> None:
-        """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
+        """初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
 
         Args:
             config_file: 配置文件，如不指定则使用默认的 `config.toml`。
@@ -168,7 +168,7 @@ class Bot:
         return list(chain(*self.plugins_priority_dict.values()))
 
     def run(self) -> None:
-        """运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。"""
+        """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
         self._restart_flag = True
         while self._restart_flag:
             self._restart_flag = False
@@ -356,7 +356,7 @@ class Bot:
                     self._update_config()
 
     def _update_config(self) -> None:
-        """更新 config ，合并入来自 Plugin 和 Adapter 的 Config。"""
+        """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
             source: Union[List[Type[Plugin[Any, Any, Any]]], List[Adapter[Any, Any]]],

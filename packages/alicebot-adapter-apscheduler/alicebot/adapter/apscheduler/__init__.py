@@ -1,7 +1,7 @@
 """APScheduler 适配器。
 
 本适配器用于实现定时任务，适配器将使用 APScheduler 实现定时任务，在设定的时间产生一个事件供插件处理。
-APScheduler 使用方法请参考: [APScheduler](https://apscheduler.readthedocs.io/) 。
+APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedocs.io/)。
 """
 import inspect
 from functools import wraps

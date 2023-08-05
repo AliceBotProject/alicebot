@@ -1,7 +1,7 @@
 """CQHTTP 协议适配器。
 
 本适配器适配了 OneBot v11 协议。
-协议详情请参考: [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 。
+协议详情请参考：[OneBot](https://github.com/howmanybots/onebot/blob/master/README.md)。
 """
 import asyncio
 import inspect
@@ -211,7 +211,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             await self.handle_event(cqhttp_event)
 
     async def call_api(self, api: str, **params: Any) -> Any:
-        """调用 CQHTTP API ，协程会等待直到获得 API 响应。
+        """调用 CQHTTP API，协程会等待直到获得 API 响应。
 
         Args:
             api: API 名称。
@@ -222,8 +222,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         Raises:
             NetworkError: 网络错误。
-            ApiNotAvailable: API 请求响应 404 ， API 不可用。
-            ActionFailed: API 请求响应 failed ， API 操作失败。
+            ApiNotAvailable: API 请求响应 404， API 不可用。
+            ActionFailed: API 请求响应 failed， API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
         assert self.websocket is not None
@@ -274,7 +274,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                 `CQHTTPMessageSegment`, `CQHTTPMessage。`
                 将使用 `CQHTTPMessage` 进行封装。
             message_type: 消息类型。应该是 "private" 或者 "group"。
-            id_: 发送对象的 ID ， QQ 号码或者群号码。
+            id_: 发送对象的 ID， QQ 号码或者群号码。
 
         Returns:
             API 响应。

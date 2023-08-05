@@ -212,14 +212,14 @@ class MemberJoinEvent(GroupMemberEvent):
 
 
 class MemberLeaveEventKick(GroupMemberEvent):
-    """成员被踢出群（该成员不是Bot）"""
+    """成员被踢出群 (该成员不是Bot)"""
 
     type: Literal["MemberLeaveEventKick"]
     operator: Optional[GroupMemberInfo]
 
 
 class MemberLeaveEventQuit(GroupMemberEvent):
-    """成员主动离群（该成员不是Bot）"""
+    """成员主动离群 (该成员不是Bot)"""
 
     type: Literal["MemberLeaveEventQuit"]
 
@@ -233,7 +233,7 @@ class MemberCardChangeEvent(GroupMemberEvent):
 
 
 class MemberSpecialTitleChangeEvent(GroupMemberEvent):
-    """群头衔改动（只有群主有操作限权）"""
+    """群头衔改动 (只有群主有操作限权)"""
 
     type: Literal["MemberSpecialTitleChangeEvent"]
     origin: str
@@ -241,7 +241,7 @@ class MemberSpecialTitleChangeEvent(GroupMemberEvent):
 
 
 class MemberPermissionChangeEvent(GroupMemberEvent):
-    """成员权限改变的事件（该成员不是Bot）"""
+    """成员权限改变的事件 (该成员不是Bot)"""
 
     type: Literal["MemberPermissionChangeEvent"]
     origin: Permission
@@ -249,7 +249,7 @@ class MemberPermissionChangeEvent(GroupMemberEvent):
 
 
 class MemberMuteEvent(GroupMemberEvent):
-    """群成员被禁言事件（该成员不是Bot）"""
+    """群成员被禁言事件 (该成员不是Bot)"""
 
     type: Literal["MemberMuteEvent"]
     durationSeconds: int
@@ -257,7 +257,7 @@ class MemberMuteEvent(GroupMemberEvent):
 
 
 class MemberUnmuteEvent(GroupMemberEvent):
-    """群成员被取消禁言事件（该成员不是Bot）"""
+    """群成员被取消禁言事件 (该成员不是Bot)"""
 
     type: Literal["MemberUnmuteEvent"]
     operator: Optional[GroupMemberInfo] = None

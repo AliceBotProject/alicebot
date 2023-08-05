@@ -394,7 +394,7 @@ class FriendRequestEvent(RequestEvent):
 
 
 class GroupRequestEvent(RequestEvent):
-    """加群请求／邀请"""
+    """加群请求 / 邀请"""
 
     __event__ = "request.group"
     request_type: Literal["group"]

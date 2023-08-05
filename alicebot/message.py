@@ -65,7 +65,6 @@ class Message(List[MessageSegmentT]):
 
         Args:
             message: 可以被转化为消息的数据。
-            *args: 其他参数。
         """
         if message is None:
             return

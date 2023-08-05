@@ -8,7 +8,7 @@ pip install alicebot-adapter-cqhttp
 
 ## 配置协议端
 
-CQHTTP 协议适配器是 OneBot 协议（原 CKYU 平台的 CQHTTP 协议）的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，以下是一些常用的支持 OneBot 协议的 QQ 协议端：
+CQHTTP 协议适配器是 OneBot 协议 (原 CKYU 平台的 CQHTTP 协议) 的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，以下是一些常用的支持 OneBot 协议的 QQ 协议端：
 
 - [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
 - [mirai](https://github.com/mamoe/mirai) + [onebot-kotlin](https://github.com/yyuueexxiinngg/onebot-kotlin)
@@ -57,11 +57,11 @@ servers:
 
 如果你安装上面配置 go-cqhttp 的话并且使用了反向 WebSocket 连接方式，将不需要对 AliceBot 进行配置。
 
-如果你有其他特别的需求的话可以编辑 `config.toml` 来配置，参考 [基本配置](/guide/basic-config.md) 和 [CQHTTP 配置](/api/adapter/cqhttp/config.md) 。
+如果你有其他特别的需求的话可以编辑 `config.toml` 来配置，参考[基本配置](/guide/basic-config.md)和 [CQHTTP 配置](/api/adapter/cqhttp/config.md)。
 
 ## 运行测试
 
-如果你正确配置了协议端和 AliceBot ，运行 AliceBot 后控制台将出现以下日志内容：
+如果你正确配置了协议端和 AliceBot，运行 AliceBot 后控制台将出现以下日志内容：
 
 ```txt
 2021-09-01 18:05:29.740 | INFO     | alicebot.adapter.cqhttp:handle_cqhttp_event:138 - WebSocket connection from CQHTTP Bot xxxxxx accepted!
@@ -69,7 +69,7 @@ servers:
 
 ## 发送富文本消息
 
-在编写插件时，除了发送普通的文本消息外，也可以轻松地构造并发送富文本消息，请确保查看本节时你已经阅读了 [内置消息](/guide/basics/builtin-message.md) 。
+在编写插件时，除了发送普通的文本消息外，也可以轻松地构造并发送富文本消息，请确保查看本节时你已经阅读了[内置消息](/guide/basics/builtin-message.md)。
 
 ```python
 from alicebot import Plugin
@@ -91,7 +91,7 @@ class HalloAlice(Plugin):
 
 ```
 
-更多使用方法请参考 [OneBot 消息段类型](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md) 和 [CQHTTP 消息](/api/adapter/cqhttp/message.md) 。
+更多使用方法请参考 [OneBot 消息段类型](https://github.com/botuniverse/onebot-11/blob/master/message/segment.md)和 [CQHTTP 消息](/api/adapter/cqhttp/message.md)。
 
 ## 调用 OneBot API
 
@@ -111,4 +111,4 @@ class TestPlugin(Plugin):
 
 ```
 
-更多使用方法请参考 [OneBot 公开 API](https://github.com/botuniverse/onebot-11/blob/master/api/public.md) 。
+更多使用方法请参考 [OneBot 公开 API](https://github.com/botuniverse/onebot-11/blob/master/api/public.md)。

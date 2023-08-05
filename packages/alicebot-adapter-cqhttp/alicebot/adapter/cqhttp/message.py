@@ -143,7 +143,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
 
     @classmethod
     def shake(cls) -> "CQHTTPMessageSegment":
-        """窗口抖动（戳一戳）"""
+        """窗口抖动 (戳一戳)"""
         return cls(type="shake", data={})
 
     @classmethod

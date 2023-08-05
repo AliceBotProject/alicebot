@@ -2,7 +2,7 @@
 
 本适配器适配了 mirai-api-http 协议，仅支持 mirai-api-http 2.3.0 及以上版本。
 本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
-协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
+协议详情请参考：[mirai-api-http](https://github.com/project-mirai/mirai-api-http)。
 """
 import asyncio
 import inspect
@@ -41,7 +41,7 @@ __all__ = ["MiraiAdapter"]
 class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     """Mirai 协议适配器。
 
-    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API ，
+    在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，
     和调用 `call_api()` 方法相同。
     """
 
@@ -190,7 +190,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     async def call_api(
         self, command: str, sub_command: Optional[str] = None, **content: Any
     ) -> Any:
-        """调用 Mirai API ，协程会等待直到获得 API 响应。
+        """调用 Mirai API，协程会等待直到获得 API 响应。
 
         Args:
             command: 命令字。
@@ -256,7 +256,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 `MiraiMessageSegment`, `MiraiMessage`。
                 将使用 `MiraiMessage` 进行封装。
             message_type: 消息类型。应该是 "private", "friend" 或者 "group"。其中 "private" 和 "friend" 相同。
-            target: 发送对象的 ID ， QQ 号码或者群号码。
+            target: 发送对象的 ID， QQ 号码或者群号码。
             quote: 引用的消息的 `messageId`。默认为 `None`，不引用任何消息。
 
         Returns:

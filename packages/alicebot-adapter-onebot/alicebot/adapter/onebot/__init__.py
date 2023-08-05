@@ -1,7 +1,7 @@
 """OneBot 协议适配器。
 
 本适配器适配了 OneBot v12 协议。
-协议详情请参考: [OneBot](https://12.onebot.dev/) 。
+协议详情请参考：[OneBot](https://12.onebot.dev/)。
 """
 import asyncio
 import inspect
@@ -216,7 +216,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             await self.handle_event(onebot_event)
 
     async def call_api(self, api: str, bot_self: BotSelf, **params: Any) -> Any:
-        """调用 OneBot API ，协程会等待直到获得 API 响应。
+        """调用 OneBot API，协程会等待直到获得 API 响应。
 
         Args:
             api: API 名称。
@@ -228,8 +228,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
         Raises:
             NetworkError: 网络错误。
-            ApiNotAvailable: API 请求响应 404 ， API 不可用。
-            ActionFailed: API 请求响应 failed ， API 操作失败。
+            ApiNotAvailable: API 请求响应 404， API 不可用。
+            ActionFailed: API 请求响应 failed， API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
         assert self.websocket is not None
@@ -287,7 +287,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
                 将使用 `OneBotMessage` 进行封装。
             message_type: 消息类型。
                 可以为 "private", "group" 或扩展的类型，和消息事件的 `detail_type` 字段对应。
-            id_: 发送对象的 ID ， QQ 号码或者群号码。
+            id_: 发送对象的 ID， QQ 号码或者群号码。
 
         Returns:
             API 响应。

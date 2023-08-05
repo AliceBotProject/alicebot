@@ -33,7 +33,7 @@ class Restart(Plugin):
 
 此功能需要 `watchfiles` 库的支持，请手动安装此 Python 库。
 
-当配置文件发生更新时，会重新加载配置文件，如果 `bot`  表发生变化时，则会调用 `restart()` 方法重新启动 AliceBot。
+当配置文件发生更新时，会重新加载配置文件，如果 `bot` 表发生变化时，则会调用 `restart()` 方法重新启动 AliceBot。
 
 当 `plugin_dirs` 设置的的目录中的插件文件发生新增、修改、删除时，会自动尝试导入、重新加载、删除对应的插件。
 

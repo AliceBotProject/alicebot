@@ -40,7 +40,7 @@
 
 AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种协议适配，可以轻松地编写易于学习和使用的插件来拓展其功能。
 
-本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，您可以在 [对比](#对比) 小节中查看这两个项目的异同，以便您选择更适合自己的机器人框架。
+本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2/) 项目的启发，您可以在[对比](#对比)小节中查看这两个项目的异同，以便您选择更适合自己的机器人框架。
 
 ## 特点
 
@@ -50,9 +50,9 @@ AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种
 
 目前 AliceBot 官方维护了以下协议适配：
 
-- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) （支持 QQ 等）[ws](https://github.com/botuniverse/onebot-11/blob/master/communication/ws.md) 和 [ws-reverse](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 连接方式
+- [OneBot (CQHTTP) 协议](https://github.com/botuniverse/onebot) (支持 QQ 等) [ws](https://github.com/botuniverse/onebot-11/blob/master/communication/ws.md) 和 [ws-reverse](https://github.com/botuniverse/onebot-11/blob/master/communication/ws-reverse.md) 连接方式
 - [mirai-api-http 协议](https://github.com/project-mirai/mirai-api-http) 2.0+ [ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/WebsocketAdapter.md) 和 [reverse-ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/ReverseWebsocketAdapter.md) 连接方式
-- [钉钉](https://developers.dingtalk.com/document/robots/robot-overview) 企业机器人的 outgoing （回调）连接方式
+- [钉钉](https://developers.dingtalk.com/document/robots/robot-overview)企业机器人的 outgoing (回调) 连接方式
 
 更多协议正在适配中 ...
 
@@ -105,7 +105,7 @@ AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种
 
 - 两者都是使用 Python 编写的，使用了协程异步的高性能机器人框架。
 - 两者都支持多种协议。
-- 两者都会对机器人收到的事件进行解析和处理，并按优先级分发给插件（事件响应器）来完成具体的功能。
+- 两者都会对机器人收到的事件进行解析和处理，并按优先级分发给插件 (事件响应器) 来完成具体的功能。
 - 两者都基于 MIT 协议开源，这意味着您可以在遵循协议的前提下任意使用本项目。
 
 不同点：
@@ -121,4 +121,4 @@ AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种
 
 AliceBot 采用 MIT 许可证开放源代码。
 
-本项目的图标由 迷糊小梦神 绘制，作为本项目的一部分，使用与本项目相同的许可证开放使用。
+本项目的图标由**迷糊小梦神**绘制，作为本项目的一部分，使用与本项目相同的许可证开放使用。

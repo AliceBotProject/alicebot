@@ -10,25 +10,31 @@
   "author": "st1020 <stone_1020@qq.com>",
   "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
+  "dependencies": {
+    "vitepress": "1.0.0-beta.7"
+  },
   "devDependencies": {
-    "@types/node": "^20.4.5",
+    "@types/node": "^20.4.8",
     "conventional-changelog-cli": "^3.0.0",
-    "markdownlint-cli": "^0.35.0",
-    "prettier": "^3.0.0",
-    "pyright": "^1.1.319",
-    "vitepress": "1.0.0-beta.6"
+    "markdownlint-cli2": "^0.8.1",
+    "prettier": "^3.0.1",
+    "pyright": "^1.1.320",
+    "zhlint": "^0.7.1"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:serve": "vitepress serve docs",
     "changelog": "conventional-changelog -p angular -i docs/changelog.md -s -r 0",
+    "markdownlint": "markdownlint-cli2 '{*.md,docs/guide/**/*.md,packages/**/*.md}'",
+    "zhlint": "zhlint '{docs/guide/**/*.md,packages/**/*.md}'",
     "pyright": "pyright"
   },
   "pnpm": {
     "peerDependencyRules": {
       "ignoreMissing": [
-        "@algolia/client-search"
+        "@algolia/client-search",
+        "search-insights"
       ]
     }
   }

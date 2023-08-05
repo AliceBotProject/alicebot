@@ -2,7 +2,7 @@
 
 之前我们编写的插件都是针对于某一个协议的，而 AliceBot 提供了一种方法用于编写简单的通用插件。
 
-AliceBot 提供了一个通用的 `MessageEvent` ，所有适配器的消息事件都是它的子类，并尽可能实现了它的特性，你可以编写一个适用于通用的 `MessageEvent` 的插件用于处理所有适配器的消息事件。
+AliceBot 提供了一个通用的 `MessageEvent`，所有适配器的消息事件都是它的子类，并尽可能实现了它的特性，你可以编写一个适用于通用的 `MessageEvent` 的插件用于处理所有适配器的消息事件。
 
 ```python
 from alicebot import Plugin

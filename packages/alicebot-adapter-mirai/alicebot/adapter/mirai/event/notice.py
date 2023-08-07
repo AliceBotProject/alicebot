@@ -32,21 +32,21 @@ class NudgeEvent(NoticeEvent):
 class FriendEvent(NoticeEvent):
     """好友事件"""
 
-    friend: FriendInfo
-
 
 class FriendInputStatusChangedEvent(FriendEvent):
     """好友输入状态改变"""
 
     type: Literal["FriendInputStatusChangedEvent"]
+    friend: FriendInfo
     inputting: bool
 
 
 # 因为 from 是 python 关键字，所以不能直接定义
 FriendNickChangedEvent = create_model(
     "FriendNickChangedEvent",
+    type=(Literal["FriendNickChangedEvent"], ...),
+    friend=(FriendInfo, ...),
     **{
-        "type": (Literal["FriendNickChangedEvent"], ...),
         "from": (str, ...),
         "to": (str, ...),
     },  # type: ignore

@@ -101,11 +101,11 @@ function getSidebarChildrenItems(dir: string): DefaultTheme.SidebarItem[] {
   }
 }
 
-function sidebarGuide() {
+function sidebarGuide(): DefaultTheme.SidebarItem[] {
   return [
     {
       text: "开始",
-      collapsible: false,
+      collapsed: false,
       items: [
         "/guide/index.md",
         "/guide/quick-start.md",
@@ -114,7 +114,7 @@ function sidebarGuide() {
     },
     {
       text: "基础",
-      collapsible: false,
+      collapsed: false,
       items: [
         "/guide/basics/basic-concepts.md",
         "/guide/basics/load-plugin.md",
@@ -124,7 +124,7 @@ function sidebarGuide() {
     },
     {
       text: "进阶",
-      collapsible: false,
+      collapsed: false,
       items: [
         "/guide/advanced/event-propagation.md",
         "/guide/advanced/state-storage.md",
@@ -139,7 +139,7 @@ function sidebarGuide() {
     },
     {
       text: "协议适配器",
-      collapsible: false,
+      collapsed: false,
       items: [
         "/guide/adapters/cqhttp-adapter.md",
         "/guide/adapters/mirai-adapter.md",
@@ -149,7 +149,7 @@ function sidebarGuide() {
   ];
 }
 
-function sidebarApi(base: string) {
+function sidebarApi(base: string): DefaultTheme.SidebarItem[] {
   return [
     {
       text: "AliceBot Api Reference",
@@ -163,26 +163,39 @@ function sidebarApi(base: string) {
         {
           text: "alicebot.adapter.cqhttp",
           link: base + "adapter/cqhttp/index.md",
+          collapsed: true,
           items: getSidebarChildrenItems(base + "adapter/cqhttp/"),
         },
         {
           text: "alicebot.adapter.onebot",
           link: base + "adapter/onebot/index.md",
+          collapsed: true,
           items: getSidebarChildrenItems(base + "adapter/onebot/"),
         },
         {
           text: "alicebot.adapter.mirai",
           link: base + "adapter/mirai/index.md",
-          items: getSidebarChildrenItems(base + "adapter/mirai/"),
+          collapsed: true,
+          items: [
+            ...getSidebarChildrenItems(base + "adapter/mirai/"),
+            {
+              text: "alicebot.adapter.mirai.event",
+              link: base + "adapter/mirai/event/index.md",
+              collapsed: true,
+              items: getSidebarChildrenItems(base + "adapter/mirai/event/"),
+            },
+          ],
         },
         {
           text: "alicebot.adapter.dingtalk",
           link: base + "adapter/dingtalk/index.md",
+          collapsed: true,
           items: getSidebarChildrenItems(base + "adapter/dingtalk/"),
         },
         {
           text: "alicebot.adapter.apscheduler",
           link: base + "adapter/apscheduler/index.md",
+          collapsed: true,
           items: getSidebarChildrenItems(base + "adapter/apscheduler/"),
         },
       ],

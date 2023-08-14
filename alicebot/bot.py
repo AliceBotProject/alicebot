@@ -50,10 +50,10 @@ from alicebot.utils import (
     wrap_get_func,
 )
 
-try:
-    import tomllib  # type: ignore
-except ModuleNotFoundError:
-    import tomli as tomllib  # type: ignore
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 __all__ = ["Bot"]

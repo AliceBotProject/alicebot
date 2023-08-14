@@ -167,7 +167,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return cls(type="Xml", xml=xml)
 
     @classmethod
-    def json(cls, json_: str) -> Self:
+    def json(cls, json_: str) -> Self:  # type: ignore
         """Json 消息"""
         return cls(type="Json", json=json_)
 

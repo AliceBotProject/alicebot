@@ -100,7 +100,7 @@ async def solve_dependencies(
 
     if isinstance(dependent, type):
         # type of dependent is Type[T]
-        values = {}
+        values: Dict[str, Any] = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
             dependent, lambda x: isinstance(x, InnerDepends)
@@ -123,10 +123,10 @@ async def solve_dependencies(
         depend.__init__()  # type: ignore # pylint: disable=unnecessary-dunder-call
 
         if isinstance(depend, AsyncContextManager):
-            depend = cast(_T, await stack.enter_async_context(depend))
+            depend = cast(_T, await stack.enter_async_context(depend))  # type: ignore
         elif isinstance(depend, ContextManager):
             depend = cast(
-                _T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))
+                _T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))  # type: ignore
             )
     elif inspect.isasyncgenfunction(dependent):
         # type of dependent is Callable[[], AsyncGenerator[T, None]]

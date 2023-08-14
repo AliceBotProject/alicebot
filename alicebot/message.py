@@ -73,7 +73,7 @@ class Message(List[MessageSegmentT]):
         elif isinstance(message, self.get_segment_class()):
             self.append(message)
         elif isinstance(message, Mapping):
-            self.append(self._mapping_to_message_segment(message))
+            self.append(self._mapping_to_message_segment(message))  # type: ignore
         elif isinstance(message, str):
             self.append(self._str_to_message_segment(message))
         elif isinstance(message, Iterable):
@@ -152,7 +152,7 @@ class Message(List[MessageSegmentT]):
         """
         return "".join(map(str, self))
 
-    def __contains__(self, item: Union[str, MessageSegmentT]) -> bool:
+    def __contains__(self, item: object) -> bool:
         """判断消息中是否包含指定文本或消息字段。
 
         Args:
@@ -165,7 +165,7 @@ class Message(List[MessageSegmentT]):
             return item in str(self)
         return super().__contains__(item)
 
-    def __add__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:
+    def __add__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:  # type: ignore
         """自定义消息与其他对象相加的方法。
 
         Args:
@@ -176,7 +176,7 @@ class Message(List[MessageSegmentT]):
         """
         return self.__class__(self).__iadd__(other)
 
-    def __radd__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:
+    def __radd__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:  # type: ignore
         """自定义消息与其他对象相加的方法。
 
         Args:
@@ -187,7 +187,7 @@ class Message(List[MessageSegmentT]):
         """
         return self.__class__(other).__iadd__(self)
 
-    def __iadd__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:
+    def __iadd__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:  # type: ignore
         """自定义消息与其他对象相加的方法。
 
         Args:
@@ -444,7 +444,7 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         return len(self.data)
 
-    def __iter__(self) -> Iterator[str]:
+    def __iter__(self) -> Iterator[str]:  # type: ignore
         """迭代。相当于对 `data` 属性进行此操作。
 
         Returns:
@@ -463,7 +463,7 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         return key in self.data
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: object) -> bool:
         """判断是否相等。
 
         Args:
@@ -472,9 +472,13 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[MessageT]):
         Returns:
             是否相等。
         """
-        return self.type == other.type and self.data == other.data
+        return (
+            type(other) is self.__class__
+            and self.type == other.type
+            and self.data == other.data
+        )
 
-    def __ne__(self, other: Self) -> bool:
+    def __ne__(self, other: object) -> bool:
         """判断是否不相等。
 
         Args:

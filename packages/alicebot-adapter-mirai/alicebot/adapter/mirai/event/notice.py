@@ -49,8 +49,12 @@ FriendNickChangedEvent = create_model(
     **{
         "from": (str, ...),
         "to": (str, ...),
-    },  # type: ignore
+    },
+    __config__=None,
     __base__=FriendEvent,
+    __module__=__name__,
+    __validators__=None,
+    __cls_kwargs__=None,
 )
 """好友昵称改变"""
 

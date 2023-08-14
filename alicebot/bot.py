@@ -86,7 +86,7 @@ class Bot:
     global_state: Dict[Any, Any]
 
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
-    _current_event: Event[Any]  # 当前待处理的 Event # type: ignore
+    _current_event: Optional[Event[Any]]  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
@@ -139,6 +139,7 @@ class Bot:
 
         self.adapters = []
         self._condition = asyncio.Condition()
+        self._current_event = None
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._raw_config_dict = {}
@@ -281,11 +282,10 @@ class Bot:
     async def _run_hot_reload(self) -> None:
         """热重载。"""
         try:
-            from watchfiles import Change, awatch
+            from watchfiles import Change, awatch  # type: ignore
         except ImportError:
             logger.warning(
-                'Hot reload needs to install "watchfiles", '
-                'try "pip install watchfiles"'
+                'Hot reload needs to install "watchfiles", try "pip install watchfiles"'
             )
             return
 
@@ -478,6 +478,7 @@ class Bot:
         if current_event is None:
             async with self._condition:
                 await self._condition.wait()
+                assert self._current_event is not None
                 current_event = self._current_event
             if current_event.__handled__:
                 return
@@ -620,7 +621,8 @@ class Bot:
                         break
 
                 if (
-                    not self._current_event.__handled__
+                    self._current_event is not None
+                    and not self._current_event.__handled__
                     and (
                         event_type is None
                         or isinstance(self._current_event, event_type)
@@ -820,6 +822,7 @@ class Bot:
                     例如：`path.of.adapter`。
         """
         for adapter_ in adapters:
+            adapter_object: Adapter[Any, Any]
             try:
                 if isinstance(adapter_, type):
                     if issubclass(adapter_, Adapter):

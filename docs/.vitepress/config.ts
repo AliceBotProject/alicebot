@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { defineConfig, DefaultTheme } from "vitepress";
+import { defineConfig, type DefaultTheme } from "vitepress";
 
 const baseDir: string = "docs";
 

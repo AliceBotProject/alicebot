@@ -50,7 +50,7 @@ dev = [
     "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
 ]
 lint = ["black", "ruff", "mypy", "pylint", "pylint-pydantic"]
-docs = ["sophia-doc~=0.1.4", "tomlkit~=0.11.7"]
+docs = ["sophia-doc~=0.1.4", "tomlkit"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"
@@ -112,11 +112,8 @@ ignore = ["examples/plugins"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
-reportIncompatibleMethodOverride = false
 reportMissingTypeStubs = false
-reportUnknownArgumentType = false
 reportUnknownMemberType = false
-reportUnknownVariableType = false
 reportUnnecessaryIsInstance = false
 reportCallInDefaultInitializer = true
 reportPropertyTypeMismatch = true
@@ -126,7 +123,6 @@ reportUninitializedInstanceVariable = true
 [tool.mypy]
 python_version = "3.8"
 strict = true
-disable_error_code = ["override"]
 exclude = [
     '^packages/.*/alicebot/__init__\.py$',
     '^packages/.*/alicebot/adapter/__init__\.py$',
@@ -144,6 +140,7 @@ disable = [
     "arguments-differ",
     "broad-exception-caught",
     "import-outside-toplevel",
+    "line-too-long",
     "too-many-lines",
     "duplicate-code",
     "too-few-public-methods",

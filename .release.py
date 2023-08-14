@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 
 import tomlkit
+from tomlkit.items import Array, Table
 
 CHANGELOG_PREFIX = """---
 sidebar: auto
@@ -46,9 +47,13 @@ def write_version_toml(file: Path, version: str, *, is_package: bool = False) ->
     """
     with file.open(encoding="utf-8") as f:
         toml_file = tomlkit.load(f)
-    toml_file["project"]["version"] = version  # type: ignore
+    project_table = toml_file["project"]
+    assert isinstance(project_table, Table)
+    project_table["version"] = version
     if is_package:
-        toml_file["project"]["dependencies"][0] = f"alicebot=={version}"  # type: ignore
+        dependencies_array = project_table["dependencies"]
+        assert isinstance(dependencies_array, Array)
+        dependencies_array[0] = f"alicebot=={version}"
     with file.open("w", encoding="utf-8") as f:
         tomlkit.dump(toml_file, f)
 

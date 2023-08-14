@@ -105,10 +105,6 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         当强制退出时此方法可能未被执行。
         """
 
-    async def send(self, *args: Any, **kwargs: Any) -> Any:
-        """发送消息，需要适配器开发者实现。"""
-        raise NotImplementedError
-
     @overload
     async def get(
         self,

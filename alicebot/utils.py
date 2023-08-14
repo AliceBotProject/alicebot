@@ -30,6 +30,7 @@ from typing import (
     Type,
     TypeVar,
     Union,
+    cast,
 )
 from typing_extensions import ParamSpec, TypeAlias, TypeGuard
 
@@ -113,7 +114,7 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_Ty
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            classes.append(module_attr)  # type: ignore
+            classes.append(cast(_TypeT, module_attr))
     return classes
 
 
@@ -261,6 +262,8 @@ else:
         Returns:
             对象的标注字典。
         """
+        ann: Union[Dict[str, Any], None]
+
         if isinstance(obj, type):
             # class
             obj_dict = getattr(obj, "__dict__", None)

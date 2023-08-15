@@ -26,7 +26,7 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
@@ -122,10 +122,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             try:
                 msg_dict = msg.json()
             except json.JSONDecodeError as e:
-                error_or_exception(
-                    "WebSocket message parsing error, not json:",
-                    e,
-                    self.bot.config.bot.log.verbose_exception,
+                self.bot.error_or_exception(
+                    "WebSocket message parsing error, not json:", e
                 )
                 return
 

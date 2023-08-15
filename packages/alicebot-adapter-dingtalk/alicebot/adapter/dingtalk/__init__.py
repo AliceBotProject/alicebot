@@ -13,7 +13,7 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.adapter import Adapter
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 
 from .config import Config
 from .event import DingTalkEvent
@@ -75,11 +75,7 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
             try:
                 dingtalk_event = DingTalkEvent(adapter=self, **(await request.json()))
             except Exception as e:
-                error_or_exception(
-                    "Request parsing error:",
-                    e,
-                    self.bot.config.bot.log.verbose_exception,
-                )
+                self.bot.error_or_exception("Request parsing error:", e)
                 return web.Response()
             await self.handle_event(dingtalk_event)
         return web.Response()

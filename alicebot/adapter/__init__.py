@@ -19,7 +19,6 @@ from typing import (
 )
 
 from alicebot.event import Event
-from alicebot.log import error_or_exception
 from alicebot.typing import ConfigT, EventT
 from alicebot.utils import is_config_class
 
@@ -78,10 +77,8 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         try:
             await self.run()
         except Exception as e:
-            error_or_exception(
-                f"Run adapter {self.__class__.__name__} failed:",
-                e,
-                self.bot.config.bot.log.verbose_exception,
+            self.bot.error_or_exception(
+                f"Run adapter {self.__class__.__name__} failed:", e
             )
 
     @abstractmethod

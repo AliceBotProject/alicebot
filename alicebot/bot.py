@@ -39,7 +39,7 @@ from alicebot.exceptions import (
     SkipException,
     StopException,
 )
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.typing import AdapterHook, AdapterT, BotHook, EventHook, EventT
 from alicebot.utils import (
@@ -225,11 +225,7 @@ class Bot:
                 try:
                     await _adapter.startup()
                 except Exception as e:
-                    error_or_exception(
-                        f"Startup adapter {_adapter!r} failed:",
-                        e,
-                        self.config.bot.log.verbose_exception,
-                    )
+                    self.error_or_exception(f"Startup adapter {_adapter!r} failed:", e)
 
             for _adapter in self.adapters:
                 for adapter_run_hook_func in self._adapter_run_hooks:
@@ -403,23 +399,15 @@ class Bot:
                     else:
                         logger.error("Unable to determine config file type")
             except OSError as e:
-                error_or_exception(
-                    "Can not open config file:",
-                    e,
-                    self.config.bot.log.verbose_exception,
-                )
+                self.error_or_exception("Can not open config file:", e)
             except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
-                error_or_exception(
-                    "Read config file failed:", e, self.config.bot.log.verbose_exception
-                )
+                self.error_or_exception("Read config file failed:", e)
 
         try:
             self.config = MainConfig(**self._raw_config_dict)
         except ValidationError as e:
             self.config = MainConfig()
-            error_or_exception(
-                "Config dict parse error:", e, self.config.bot.log.verbose_exception
-            )
+            self.error_or_exception("Config dict parse error:", e)
         self._update_config()
 
     def reload_plugins(self) -> None:
@@ -523,11 +511,7 @@ class Bot:
                     # 插件要求停止当前事件传播
                     stop = True
                 except Exception as e:
-                    error_or_exception(
-                        f'Exception in plugin "{plugin}":',
-                        e,
-                        self.config.bot.log.verbose_exception,
-                    )
+                    self.error_or_exception(f'Exception in plugin "{plugin}":', e)
             if stop:
                 break
 
@@ -662,12 +646,11 @@ class Bot:
                 f'from class "{plugin_class!r}"'
             )
         else:
-            error_or_exception(
+            self.error_or_exception(
                 f'Load plugin from class "{plugin_class!r}" failed:',
                 LoadModuleError(
                     f'Plugin priority incorrect in the class "{plugin_class!r}"'
                 ),
-                self.config.bot.log.verbose_exception,
             )
 
     def _load_plugins_from_module_name(
@@ -683,11 +666,7 @@ class Bot:
                 module_name, Plugin, reload=reload
             )
         except ImportError as e:
-            error_or_exception(
-                f'Import module "{module_name}" failed:',
-                e,
-                self.config.bot.log.verbose_exception,
-            )
+            self.error_or_exception(f'Import module "{module_name}" failed:', e)
         else:
             for plugin_class, module in plugin_classes:
                 self._load_plugin_class(
@@ -848,11 +827,7 @@ class Bot:
                         f"Type error: {adapter_} can not be loaded as adapter"
                     )
             except Exception as e:
-                error_or_exception(
-                    f'Load adapter "{adapter_}" failed:',
-                    e,
-                    self.config.bot.log.verbose_exception,
-                )
+                self.error_or_exception(f'Load adapter "{adapter_}" failed:', e)
             else:
                 self.adapters.append(adapter_object)
                 logger.info(
@@ -918,6 +893,18 @@ class Bot:
             if _plugin.__name__ == name:
                 return _plugin
         raise LookupError(f'Can not find plugin named "{name}"')
+
+    def error_or_exception(self, message: str, exception: Exception) -> None:
+        """根据当前 Bot 的配置输出 error 或者 exception 日志。
+
+        Args:
+            message: 消息。
+            exception: 异常。
+        """
+        if self.config.bot.log.verbose_exception:
+            logger.exception(message)
+        else:
+            logger.error(f"{message} {exception!r}")
 
     def bot_run_hook(self, func: BotHook) -> BotHook:
         """注册一个 Bot 启动时的函数。

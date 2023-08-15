@@ -10,7 +10,7 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.adapter import Adapter
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 from alicebot.typing import ConfigT, EventT
 
 __all__ = [
@@ -216,11 +216,7 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
                 try:
                     await self.websocket_connect()
                 except aiohttp.ClientError as e:
-                    error_or_exception(
-                        "WebSocket connection error:",
-                        e,
-                        self.bot.config.bot.log.verbose_exception,
-                    )
+                    self.bot.error_or_exception("WebSocket connection error:", e)
                 if self.bot.should_exit.is_set():
                     break
                 await asyncio.sleep(self.reconnect_interval)

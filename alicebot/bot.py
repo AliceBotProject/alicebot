@@ -187,6 +187,9 @@ class Bot:
 
     async def _run(self) -> None:
         """运行 AliceBot。"""
+        self.should_exit = asyncio.Event()
+        self._condition = asyncio.Condition()
+
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。

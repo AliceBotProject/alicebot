@@ -372,7 +372,8 @@ class Bot:
                         config_class,
                         default_value,
                     )
-            return create_model(name, **config_update_dict, __base__=base), base()
+            config_model = create_model(name, **config_update_dict, __base__=base)
+            return config_model, config_model()
 
         self.config = create_model(
             "Config",

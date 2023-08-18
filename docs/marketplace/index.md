@@ -6,7 +6,7 @@ editLink: false
 footer: false
 ---
 
-# 插件商店
+# 商店
 
 <script setup>
 import { ref } from "vue";

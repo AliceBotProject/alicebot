@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import { computed } from "vue";
 const props = defineProps(["modelValue", "pageTotal"]);
 const emit = defineEmits(["update:modelValue"]);
@@ -77,31 +77,16 @@ const pageArraySm = computed(() => {
   <div>
     <div class="container" v-if="props.pageTotal > 1">
       <div class="paper-item" @click="onPrev" style="display: flex">&lt;</div>
-      <div
-        v-for="(item, index) in pageArrayLg"
-        :key="index"
-        @click="setPageNum(item)"
-        class="paper-item paper-lg"
-        :class="{ active: item == props.modelValue }"
-      >
+      <div v-for="(item, index) in pageArrayLg" :key="index" @click="setPageNum(item)" class="paper-item paper-lg"
+        :class="{ active: item == props.modelValue }">
         {{ item }}
       </div>
-      <div
-        v-for="(item, index) in pageArrayMd"
-        :key="index"
-        @click="setPageNum(item)"
-        class="paper-item paper-md"
-        :class="{ active: item == props.modelValue }"
-      >
+      <div v-for="(item, index) in pageArrayMd" :key="index" @click="setPageNum(item)" class="paper-item paper-md"
+        :class="{ active: item == props.modelValue }">
         {{ item }}
       </div>
-      <div
-        v-for="(item, index) in pageArraySm"
-        :key="index"
-        @click="setPageNum(item)"
-        class="paper-item paper-sm"
-        :class="{ active: item == props.modelValue }"
-      >
+      <div v-for="(item, index) in pageArraySm" :key="index" @click="setPageNum(item)" class="paper-item paper-sm"
+        :class="{ active: item == props.modelValue }">
         {{ item }}
       </div>
       <div class="paper-item" @click="onNext" style="display: flex">></div>
@@ -118,6 +103,7 @@ const pageArraySm = computed(() => {
 }
 
 @media screen and (min-width: 780px) {
+
   .paper-lg,
   .paper-sm {
     display: none;
@@ -129,6 +115,7 @@ const pageArraySm = computed(() => {
 }
 
 @media screen and (min-width: 1024px) {
+
   .paper-md,
   .paper-sm {
     display: none;
@@ -140,6 +127,7 @@ const pageArraySm = computed(() => {
 }
 
 @media screen and (max-width: 780px) {
+
   .paper-lg,
   .paper-md {
     display: none;

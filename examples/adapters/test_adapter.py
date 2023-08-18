@@ -25,11 +25,11 @@ class TestAdapter(Adapter[TestAdapterEvent, None]):
     _msg: str = ""
     _cond: Condition
 
-    async def startup(self):
+    async def startup(self) -> None:
         """初始化适配器。"""
         self._cond = Condition()
 
-    async def run(self):
+    async def run(self) -> None:
         """运行适配器。"""
         while not self.bot.should_exit.is_set():
             async with self._cond:
@@ -38,7 +38,7 @@ class TestAdapter(Adapter[TestAdapterEvent, None]):
                     TestAdapterEvent(adapter=self, type="message", message=self._msg)
                 )
 
-    async def send(self, msg: str):
+    async def send(self, msg: str) -> None:
         """此方法发送的消息会直接使此适配器产生一个事件。"""
         async with self._cond:
             self._msg = msg

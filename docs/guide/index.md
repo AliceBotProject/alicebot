@@ -14,20 +14,20 @@ AliceBot 在设计时非常注重易于入门、灵活性和“可以被逐步�
 
 ## 完全异步
 
-AliceBot 基于 Python 的异步 I/O（[asyncio](https://docs.python.org/zh-cn/3/library/asyncio.html)），具有优秀的性能表现，可以轻松处理大量请求。
+AliceBot 基于 Python 的异步 I/O ([asyncio](https://docs.python.org/zh-cn/3/library/asyncio.html))，具有优秀的性能表现，可以轻松处理大量请求。
 
 不过不用担心，即使你之前不了解 Python 的异步语法也没什么关系，相信只要基本了解 `async def` 和 `await` 语法，你就可以跟上本指南。
 
 ## 完整类型注解
 
-AliceBot 具有完整的类型注解（Type Hint）支持，可以基本通过 Pyright（VSCode Pylance 的后端）严格模式检查。可以充分利用编辑器 / IDE 的类型检查功能和自动提示，有效提高使用体验，减少错误。
+AliceBot 具有完整的类型注解 (Type Hint) 支持，可以基本通过 Pyright (VSCode Pylance 的后端) 严格模式检查。可以充分利用编辑器 / IDE 的类型检查功能和自动提示，有效提高使用体验，减少错误。
 
 ## 它是如何工作的？
 
 AliceBot 在使用时，首先需要你实例化一个 `Bot` 对象，`Bot` 对象负责加载配置文件，维护一个插件列表和一个适配器列表并提供了一个供适配器使用的通用的事件分发方法。
 
-协议适配器（`Adapter`）负责和协议后端进行通讯，当协议后端发送一个新的事件（`Event`）给适配器后，适配器会按插件优先级分发事件给各个插件进行处理。
+协议适配器 (`Adapter`) 负责和协议后端进行通讯，当协议后端发送一个新的事件 (`Event`) 给适配器后，适配器会按插件优先级分发事件给各个插件进行处理。
 
-插件（`Plugin`）是由你编写的用于处理事件的类，它必须具有两个方法，`rule()` 和 `handle()` ，`rule()` 方法要求返回一个 bool 值，表示当前事件是否要交由此插件处理，当 `rule()` 方法返回 True 时，`handle()` 方法会被调用以进行事件处理。
+插件 (`Plugin`) 是由你编写的用于处理事件的类，它必须具有两个方法，`rule()` 和 `handle()`，`rule()` 方法要求返回一个 bool 值，表示当前事件是否要交由此插件处理，当 `rule()` 方法返回 True 时，`handle()` 方法会被调用以进行事件处理。
 
 ![how-it-works](./how-it-works.png)

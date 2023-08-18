@@ -24,6 +24,23 @@ jobs:
       - uses: actions/checkout@v3
       - uses: chartboost/ruff-action@v1
 
+  pylint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          python-version: 3.9
+          cache: true
+      - name: Install dependencies
+        run: pdm install -G dev -G lint
+
+      - run: |
+          eval $(pdm venv activate)
+          pylint alicebot packages/*
+
   pyright:
     runs-on: ubuntu-latest
     steps:
@@ -33,10 +50,9 @@ jobs:
         name: Setup PDM
         with:
           python-version: 3.9
-          architecture: x64
           cache: true
       - name: Install dependencies
-        run: pdm install
+        run: pdm install -G dev -G lint
 
       - uses: pnpm/action-setup@v2
         with:
@@ -61,10 +77,9 @@ jobs:
         name: Setup PDM
         with:
           python-version: 3.9
-          architecture: x64
           cache: true
       - name: Install dependencies
-        run: pdm install
+        run: pdm install -G dev -G lint
 
       - run: |
           eval $(pdm venv activate)

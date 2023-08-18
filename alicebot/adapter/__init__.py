@@ -19,8 +19,7 @@ from typing import (
 )
 
 from alicebot.event import Event
-from alicebot.log import error_or_exception
-from alicebot.typing import T_Config, T_Event
+from alicebot.typing import ConfigT, EventT
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
@@ -33,10 +32,10 @@ if os.getenv("ALICEBOT_DEV") == "1":
     __import__("pkg_resources").declare_namespace(__name__)
 
 
-_T_Event = TypeVar("_T_Event", bound="Event[Any]")
+_EventT = TypeVar("_EventT", bound="Event[Any]")
 
 
-class Adapter(Generic[T_Event, T_Config], ABC):
+class Adapter(Generic[EventT, ConfigT], ABC):
     """协议适配器基类。
 
     Attributes:
@@ -46,7 +45,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
 
     name: str
     bot: "Bot"
-    Config: Type[T_Config]
+    Config: Type[ConfigT]
 
     def __init__(self, bot: "Bot") -> None:
         """初始化。
@@ -60,7 +59,7 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         self.handle_event = self.bot.handle_event
 
     @property
-    def config(self) -> T_Config:
+    def config(self) -> ConfigT:
         """适配器配置。"""
         default: Any = None
         config_class = getattr(self, "Config", None)
@@ -78,10 +77,8 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         try:
             await self.run()
         except Exception as e:
-            error_or_exception(
-                f"Run adapter {self.__class__.__name__} failed:",
-                e,
-                self.bot.config.bot.log.verbose_exception,
+            self.bot.error_or_exception(
+                f"Run adapter {self.__class__.__name__} failed:", e
             )
 
     @abstractmethod
@@ -105,30 +102,26 @@ class Adapter(Generic[T_Event, T_Config], ABC):
         当强制退出时此方法可能未被执行。
         """
 
-    async def send(self, *args: Any, **kwargs: Any) -> Any:
-        """发送消息，需要适配器开发者实现。"""
-        raise NotImplementedError
-
     @overload
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> T_Event:
+    ) -> EventT:
         ...
 
     @overload
     async def get(
         self,
-        func: Optional[Callable[[_T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[_EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Type[_T_Event],
+        event_type: Type[_EventT],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> _T_Event:
+    ) -> _EventT:
         ...
 
     @final

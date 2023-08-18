@@ -39,9 +39,9 @@ from alicebot.exceptions import (
     SkipException,
     StopException,
 )
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 from alicebot.plugin import Plugin, PluginLoadType
-from alicebot.typing import T_Adapter, T_AdapterHook, T_BotHook, T_Event, T_EventHook
+from alicebot.typing import AdapterHook, AdapterT, BotHook, EventHook, EventT
 from alicebot.utils import (
     ModulePathFinder,
     get_classes_from_module_name,
@@ -50,10 +50,10 @@ from alicebot.utils import (
     wrap_get_func,
 )
 
-try:
-    import tomllib  # type: ignore
-except ModuleNotFoundError:
-    import tomli as tomllib  # type: ignore
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    import tomli as tomllib
 
 
 __all__ = ["Bot"]
@@ -86,7 +86,7 @@ class Bot:
     global_state: Dict[Any, Any]
 
     _condition: asyncio.Condition  # 用于处理 get 的 Condition
-    _current_event: Event[Any]  # 当前待处理的 Event # type: ignore
+    _current_event: Optional[Event[Any]]  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
@@ -106,13 +106,13 @@ class Bot:
     _extend_adapters: List[
         Union[Type[Adapter[Any, Any]], str]
     ]  # 使用 load_adapter() 方法程序化加载的适配器列表
-    _bot_run_hooks: List[T_BotHook]
-    _bot_exit_hooks: List[T_BotHook]
-    _adapter_startup_hooks: List[T_AdapterHook]
-    _adapter_run_hooks: List[T_AdapterHook]
-    _adapter_shutdown_hooks: List[T_AdapterHook]
-    _event_preprocessor_hooks: List[T_EventHook]
-    _event_postprocessor_hooks: List[T_EventHook]
+    _bot_run_hooks: List[BotHook]
+    _bot_exit_hooks: List[BotHook]
+    _adapter_startup_hooks: List[AdapterHook]
+    _adapter_run_hooks: List[AdapterHook]
+    _adapter_shutdown_hooks: List[AdapterHook]
+    _event_preprocessor_hooks: List[EventHook]
+    _event_postprocessor_hooks: List[EventHook]
 
     def __init__(
         self,
@@ -121,7 +121,7 @@ class Bot:
         config_dict: Optional[Dict[str, Any]] = None,
         hot_reload: bool = False,
     ) -> None:
-        """初始化 AliceBot ，读取配置文件，创建配置，加载适配器和插件。
+        """初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
 
         Args:
             config_file: 配置文件，如不指定则使用默认的 `config.toml`。
@@ -139,6 +139,7 @@ class Bot:
 
         self.adapters = []
         self._condition = asyncio.Condition()
+        self._current_event = None
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()
         self._raw_config_dict = {}
@@ -168,7 +169,7 @@ class Bot:
         return list(chain(*self.plugins_priority_dict.values()))
 
     def run(self) -> None:
-        """运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。"""
+        """运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。"""
         self._restart_flag = True
         while self._restart_flag:
             self._restart_flag = False
@@ -186,6 +187,9 @@ class Bot:
 
     async def _run(self) -> None:
         """运行 AliceBot。"""
+        self.should_exit = asyncio.Event()
+        self._condition = asyncio.Condition()
+
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
         if threading.current_thread() is threading.main_thread():
             # Signal 仅能在主线程中被处理。
@@ -224,11 +228,7 @@ class Bot:
                 try:
                     await _adapter.startup()
                 except Exception as e:
-                    error_or_exception(
-                        f"Startup adapter {_adapter!r} failed:",
-                        e,
-                        self.config.bot.log.verbose_exception,
-                    )
+                    self.error_or_exception(f"Startup adapter {_adapter!r} failed:", e)
 
             for _adapter in self.adapters:
                 for adapter_run_hook_func in self._adapter_run_hooks:
@@ -281,11 +281,10 @@ class Bot:
     async def _run_hot_reload(self) -> None:
         """热重载。"""
         try:
-            from watchfiles import Change, awatch
+            from watchfiles import Change, awatch  # type: ignore
         except ImportError:
             logger.warning(
-                'Hot reload needs to install "watchfiles", '
-                'try "pip install watchfiles"'
+                'Hot reload needs to install "watchfiles", try "pip install watchfiles"'
             )
             return
 
@@ -338,7 +337,9 @@ class Bot:
 
                 if change_type == Change.added:
                     logger.info(f"Hot reload: Added file: {file}")
-                    self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
+                    self._load_plugins(
+                        Path(file), plugin_load_type=PluginLoadType.DIR, reload=True
+                    )
                     self._update_config()
                     continue
                 if change_type == Change.deleted:
@@ -348,11 +349,13 @@ class Bot:
                 elif change_type == Change.modified:
                     logger.info(f"Hot reload: Modified file: {file}")
                     self._remove_plugin_by_path(file)
-                    self._load_plugins(Path(file), plugin_load_type=PluginLoadType.DIR)
+                    self._load_plugins(
+                        Path(file), plugin_load_type=PluginLoadType.DIR, reload=True
+                    )
                     self._update_config()
 
     def _update_config(self) -> None:
-        """更新 config ，合并入来自 Plugin 和 Adapter 的 Config。"""
+        """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
             source: Union[List[Type[Plugin[Any, Any, Any]]], List[Adapter[Any, Any]]],
@@ -372,7 +375,8 @@ class Bot:
                         config_class,
                         default_value,
                     )
-            return create_model(name, **config_update_dict, __base__=base), base()
+            config_model = create_model(name, **config_update_dict, __base__=base)
+            return config_model, config_model()
 
         self.config = create_model(
             "Config",
@@ -399,23 +403,15 @@ class Bot:
                     else:
                         logger.error("Unable to determine config file type")
             except OSError as e:
-                error_or_exception(
-                    "Can not open config file:",
-                    e,
-                    self.config.bot.log.verbose_exception,
-                )
+                self.error_or_exception("Can not open config file:", e)
             except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
-                error_or_exception(
-                    "Read config file failed:", e, self.config.bot.log.verbose_exception
-                )
+                self.error_or_exception("Read config file failed:", e)
 
         try:
             self.config = MainConfig(**self._raw_config_dict)
         except ValidationError as e:
             self.config = MainConfig()
-            error_or_exception(
-                "Config dict parse error:", e, self.config.bot.log.verbose_exception
-            )
+            self.error_or_exception("Config dict parse error:", e)
         self._update_config()
 
     def reload_plugins(self) -> None:
@@ -474,6 +470,7 @@ class Bot:
         if current_event is None:
             async with self._condition:
                 await self._condition.wait()
+                assert self._current_event is not None
                 current_event = self._current_event
             if current_event.__handled__:
                 return
@@ -518,11 +515,7 @@ class Bot:
                     # 插件要求停止当前事件传播
                     stop = True
                 except Exception as e:
-                    error_or_exception(
-                        f'Exception in plugin "{plugin}":',
-                        e,
-                        self.config.bot.log.verbose_exception,
-                    )
+                    self.error_or_exception(f'Exception in plugin "{plugin}":', e)
             if stop:
                 break
 
@@ -546,25 +539,25 @@ class Bot:
     @overload
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
-        adapter_type: Type[Adapter[T_Event, Any]],
+        adapter_type: Type[Adapter[EventT, Any]],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> T_Event:
+    ) -> EventT:
         ...
 
     @overload
     async def get(
         self,
-        func: Optional[Callable[[T_Event], Union[bool, Awaitable[bool]]]] = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Type[T_Event],
-        adapter_type: Optional[Type[T_Adapter]] = None,
+        event_type: Type[EventT],
+        adapter_type: Optional[Type[AdapterT]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> T_Event:
+    ) -> EventT:
         ...
 
     async def get(
@@ -616,7 +609,8 @@ class Bot:
                         break
 
                 if (
-                    not self._current_event.__handled__
+                    self._current_event is not None
+                    and not self._current_event.__handled__
                     and (
                         event_type is None
                         or isinstance(self._current_event, event_type)
@@ -656,26 +650,27 @@ class Bot:
                 f'from class "{plugin_class!r}"'
             )
         else:
-            error_or_exception(
+            self.error_or_exception(
                 f'Load plugin from class "{plugin_class!r}" failed:',
                 LoadModuleError(
                     f'Plugin priority incorrect in the class "{plugin_class!r}"'
                 ),
-                self.config.bot.log.verbose_exception,
             )
 
     def _load_plugins_from_module_name(
-        self, module_name: str, plugin_load_type: PluginLoadType
+        self,
+        module_name: str,
+        *,
+        plugin_load_type: PluginLoadType,
+        reload: bool = False,
     ) -> None:
         """从模块名称中插件模块。"""
         try:
-            plugin_classes = get_classes_from_module_name(module_name, Plugin)
-        except ImportError as e:
-            error_or_exception(
-                f'Import module "{module_name}" failed:',
-                e,
-                self.config.bot.log.verbose_exception,
+            plugin_classes = get_classes_from_module_name(
+                module_name, Plugin, reload=reload
             )
+        except ImportError as e:
+            self.error_or_exception(f'Import module "{module_name}" failed:', e)
         else:
             for plugin_class, module in plugin_classes:
                 self._load_plugin_class(
@@ -688,6 +683,7 @@ class Bot:
         self,
         *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path],
         plugin_load_type: Optional[PluginLoadType] = None,
+        reload: bool = False,
     ) -> None:
         """加载插件。
 
@@ -699,6 +695,7 @@ class Bot:
                 如果为 `pathlib.Path` 类型时，将作为插件模块文件路径进行加载。
                     例如：`pathlib.Path("path/of/plugin")`。
             plugin_load_type: 插件加载类型，如果为 `None` 则自动判断，否则使用指定的类型。
+            reload: 是否重新加载模块。
         """
         for plugin_ in plugins:
             if isinstance(plugin_, type):
@@ -713,7 +710,9 @@ class Bot:
             elif isinstance(plugin_, str):
                 logger.info(f'Loading plugins from module "{plugin_}"')
                 self._load_plugins_from_module_name(
-                    plugin_, plugin_load_type or PluginLoadType.NAME
+                    plugin_,
+                    plugin_load_type=plugin_load_type or PluginLoadType.NAME,
+                    reload=reload,
                 )
             elif isinstance(plugin_, Path):
                 logger.info(f'Loading plugins from path "{plugin_}"')
@@ -744,7 +743,9 @@ class Bot:
                             )
 
                     self._load_plugins_from_module_name(
-                        plugin_module_name, plugin_load_type or PluginLoadType.FILE
+                        plugin_module_name,
+                        plugin_load_type=plugin_load_type or PluginLoadType.FILE,
+                        reload=reload,
                     )
                 else:
                     logger.error(f'The plugin path "{plugin_}" must be a file')
@@ -781,7 +782,7 @@ class Bot:
         for module_info in pkgutil.iter_modules(dir_list):
             if not module_info.name.startswith("_"):
                 self._load_plugins_from_module_name(
-                    module_info.name, PluginLoadType.DIR
+                    module_info.name, plugin_load_type=PluginLoadType.DIR
                 )
 
     def load_plugins_from_dirs(self, *dirs: Path) -> None:
@@ -804,6 +805,7 @@ class Bot:
                     例如：`path.of.adapter`。
         """
         for adapter_ in adapters:
+            adapter_object: Adapter[Any, Any]
             try:
                 if isinstance(adapter_, type):
                     if issubclass(adapter_, Adapter):
@@ -829,11 +831,7 @@ class Bot:
                         f"Type error: {adapter_} can not be loaded as adapter"
                     )
             except Exception as e:
-                error_or_exception(
-                    f'Load adapter "{adapter_}" failed:',
-                    e,
-                    self.config.bot.log.verbose_exception,
-                )
+                self.error_or_exception(f'Load adapter "{adapter_}" failed:', e)
             else:
                 self.adapters.append(adapter_object)
                 logger.info(
@@ -858,12 +856,12 @@ class Bot:
         ...
 
     @overload
-    def get_adapter(self, adapter: Type[T_Adapter]) -> T_Adapter:
+    def get_adapter(self, adapter: Type[AdapterT]) -> AdapterT:
         ...
 
     def get_adapter(
-        self, adapter: Union[str, Type[T_Adapter]]
-    ) -> Union[Adapter[Any, Any], T_Adapter]:
+        self, adapter: Union[str, Type[AdapterT]]
+    ) -> Union[Adapter[Any, Any], AdapterT]:
         """按照名称或适配器类获取已经加载的适配器。
 
         Args:
@@ -900,7 +898,19 @@ class Bot:
                 return _plugin
         raise LookupError(f'Can not find plugin named "{name}"')
 
-    def bot_run_hook(self, func: T_BotHook) -> T_BotHook:
+    def error_or_exception(self, message: str, exception: Exception) -> None:
+        """根据当前 Bot 的配置输出 error 或者 exception 日志。
+
+        Args:
+            message: 消息。
+            exception: 异常。
+        """
+        if self.config.bot.log.verbose_exception:
+            logger.exception(message)
+        else:
+            logger.error(f"{message} {exception!r}")
+
+    def bot_run_hook(self, func: BotHook) -> BotHook:
         """注册一个 Bot 启动时的函数。
 
         Args:
@@ -912,7 +922,7 @@ class Bot:
         self._bot_run_hooks.append(func)
         return func
 
-    def bot_exit_hook(self, func: T_BotHook) -> T_BotHook:
+    def bot_exit_hook(self, func: BotHook) -> BotHook:
         """注册一个 Bot 退出时的函数。
 
         Args:
@@ -924,7 +934,7 @@ class Bot:
         self._bot_exit_hooks.append(func)
         return func
 
-    def adapter_startup_hook(self, func: T_AdapterHook) -> T_AdapterHook:
+    def adapter_startup_hook(self, func: AdapterHook) -> AdapterHook:
         """注册一个适配器初始化时的函数。
 
         Args:
@@ -936,7 +946,7 @@ class Bot:
         self._adapter_startup_hooks.append(func)
         return func
 
-    def adapter_run_hook(self, func: T_AdapterHook) -> T_AdapterHook:
+    def adapter_run_hook(self, func: AdapterHook) -> AdapterHook:
         """注册一个适配器运行时的函数。
 
         Args:
@@ -948,7 +958,7 @@ class Bot:
         self._adapter_run_hooks.append(func)
         return func
 
-    def adapter_shutdown_hook(self, func: T_AdapterHook) -> T_AdapterHook:
+    def adapter_shutdown_hook(self, func: AdapterHook) -> AdapterHook:
         """注册一个适配器关闭时的函数。
 
         Args:
@@ -960,7 +970,7 @@ class Bot:
         self._adapter_shutdown_hooks.append(func)
         return func
 
-    def event_preprocessor_hook(self, func: T_EventHook) -> T_EventHook:
+    def event_preprocessor_hook(self, func: EventHook) -> EventHook:
         """注册一个事件预处理函数。
 
         Args:
@@ -972,7 +982,7 @@ class Bot:
         self._event_preprocessor_hooks.append(func)
         return func
 
-    def event_postprocessor_hook(self, func: T_EventHook) -> T_EventHook:
+    def event_postprocessor_hook(self, func: EventHook) -> EventHook:
         """注册一个事件后处理函数。
 
         Args:

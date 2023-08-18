@@ -32,25 +32,29 @@ class NudgeEvent(NoticeEvent):
 class FriendEvent(NoticeEvent):
     """好友事件"""
 
-    friend: FriendInfo
-
 
 class FriendInputStatusChangedEvent(FriendEvent):
     """好友输入状态改变"""
 
     type: Literal["FriendInputStatusChangedEvent"]
+    friend: FriendInfo
     inputting: bool
 
 
 # 因为 from 是 python 关键字，所以不能直接定义
 FriendNickChangedEvent = create_model(
     "FriendNickChangedEvent",
+    type=(Literal["FriendNickChangedEvent"], ...),
+    friend=(FriendInfo, ...),
     **{
-        "type": (Literal["FriendNickChangedEvent"], ...),
         "from": (str, ...),
         "to": (str, ...),
-    },  # type: ignore
+    },
+    __config__=None,
     __base__=FriendEvent,
+    __module__=__name__,
+    __validators__=None,
+    __cls_kwargs__=None,
 )
 """好友昵称改变"""
 
@@ -212,14 +216,14 @@ class MemberJoinEvent(GroupMemberEvent):
 
 
 class MemberLeaveEventKick(GroupMemberEvent):
-    """成员被踢出群（该成员不是Bot）"""
+    """成员被踢出群 (该成员不是Bot)"""
 
     type: Literal["MemberLeaveEventKick"]
     operator: Optional[GroupMemberInfo]
 
 
 class MemberLeaveEventQuit(GroupMemberEvent):
-    """成员主动离群（该成员不是Bot）"""
+    """成员主动离群 (该成员不是Bot)"""
 
     type: Literal["MemberLeaveEventQuit"]
 
@@ -233,7 +237,7 @@ class MemberCardChangeEvent(GroupMemberEvent):
 
 
 class MemberSpecialTitleChangeEvent(GroupMemberEvent):
-    """群头衔改动（只有群主有操作限权）"""
+    """群头衔改动 (只有群主有操作限权)"""
 
     type: Literal["MemberSpecialTitleChangeEvent"]
     origin: str
@@ -241,7 +245,7 @@ class MemberSpecialTitleChangeEvent(GroupMemberEvent):
 
 
 class MemberPermissionChangeEvent(GroupMemberEvent):
-    """成员权限改变的事件（该成员不是Bot）"""
+    """成员权限改变的事件 (该成员不是Bot)"""
 
     type: Literal["MemberPermissionChangeEvent"]
     origin: Permission
@@ -249,7 +253,7 @@ class MemberPermissionChangeEvent(GroupMemberEvent):
 
 
 class MemberMuteEvent(GroupMemberEvent):
-    """群成员被禁言事件（该成员不是Bot）"""
+    """群成员被禁言事件 (该成员不是Bot)"""
 
     type: Literal["MemberMuteEvent"]
     durationSeconds: int
@@ -257,7 +261,7 @@ class MemberMuteEvent(GroupMemberEvent):
 
 
 class MemberUnmuteEvent(GroupMemberEvent):
-    """群成员被取消禁言事件（该成员不是Bot）"""
+    """群成员被取消禁言事件 (该成员不是Bot)"""
 
     type: Literal["MemberUnmuteEvent"]
     operator: Optional[GroupMemberInfo] = None

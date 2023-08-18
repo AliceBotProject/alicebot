@@ -21,13 +21,13 @@ from typing import (
 
 from alicebot.utils import get_annotations, sync_ctx_manager_wrapper
 
-T = TypeVar("T")
-T_Dependency = Union[
+_T = TypeVar("_T")
+Dependency = Union[
     # Class
-    Type[Union[T, AsyncContextManager[T], ContextManager[T]]],
+    Type[Union[_T, AsyncContextManager[_T], ContextManager[_T]]],
     # GeneratorContextManager
-    Callable[[], AsyncGenerator[T, None]],
-    Callable[[], Generator[T, None, None]],
+    Callable[[], AsyncGenerator[_T, None]],
+    Callable[[], Generator[_T, None, None]],
 ]
 
 
@@ -44,12 +44,12 @@ class InnerDepends:
         use_cache: 是否使用缓存。默认为 `True`。
     """
 
-    dependency: Optional[T_Dependency[Any]]
+    dependency: Optional[Dependency[Any]]
     use_cache: bool
 
     def __init__(
-        self, dependency: Optional[T_Dependency[Any]] = None, *, use_cache: bool = True
-    ):
+        self, dependency: Optional[Dependency[Any]] = None, *, use_cache: bool = True
+    ) -> None:
         self.dependency = dependency
         self.use_cache = use_cache
 
@@ -59,9 +59,9 @@ class InnerDepends:
         return f"InnerDepends({attr}{cache})"
 
 
-def Depends(  # noqa: N802
-    dependency: Optional[T_Dependency[T]] = None, *, use_cache: bool = True
-) -> T:
+def Depends(  # noqa: N802 # pylint: disable=invalid-name
+    dependency: Optional[Dependency[_T]] = None, *, use_cache: bool = True
+) -> _T:
     """子依赖装饰器。
 
     Args:
@@ -75,12 +75,12 @@ def Depends(  # noqa: N802
 
 
 async def solve_dependencies(
-    dependent: T_Dependency[T],
+    dependent: Dependency[_T],
     *,
     use_cache: bool,
     stack: AsyncExitStack,
-    dependency_cache: Dict[T_Dependency[Any], Any],
-) -> T:
+    dependency_cache: Dict[Dependency[Any], Any],
+) -> _T:
     """解析子依赖。
 
     Args:
@@ -100,7 +100,7 @@ async def solve_dependencies(
 
     if isinstance(dependent, type):
         # type of dependent is Type[T]
-        values = {}
+        values: Dict[str, Any] = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
             dependent, lambda x: isinstance(x, InnerDepends)
@@ -117,25 +117,25 @@ async def solve_dependencies(
                 stack=stack,
                 dependency_cache=dependency_cache,
             )
-        depend = cast(T, dependent.__new__(dependent))  # type: ignore
+        depend = cast(_T, dependent.__new__(dependent))  # type: ignore
         for key, value in values.items():
             setattr(depend, key, value)
-        depend.__init__()  # type: ignore
+        depend.__init__()  # type: ignore # pylint: disable=unnecessary-dunder-call
 
         if isinstance(depend, AsyncContextManager):
-            depend = cast(T, await stack.enter_async_context(depend))
+            depend = cast(_T, await stack.enter_async_context(depend))  # type: ignore
         elif isinstance(depend, ContextManager):
             depend = cast(
-                T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))
+                _T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))  # type: ignore
             )
     elif inspect.isasyncgenfunction(dependent):
         # type of dependent is Callable[[], AsyncGenerator[T, None]]
         cm = asynccontextmanager(dependent)()
-        depend = cast(T, await stack.enter_async_context(cm))
+        depend = cast(_T, await stack.enter_async_context(cm))
     elif inspect.isgeneratorfunction(dependent):
         # type of dependent is Callable[[], Generator[T, None, None]]
         cm = sync_ctx_manager_wrapper(contextmanager(dependent)())
-        depend = cast(T, await stack.enter_async_context(cm))
+        depend = cast(_T, await stack.enter_async_context(cm))
     else:
         raise TypeError("dependent is not a class or generator function")
 

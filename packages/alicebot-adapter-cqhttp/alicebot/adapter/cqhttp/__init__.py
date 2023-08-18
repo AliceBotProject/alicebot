@@ -1,7 +1,7 @@
 """CQHTTP 协议适配器。
 
 本适配器适配了 OneBot v11 协议。
-协议详情请参考: [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md) 。
+协议详情请参考：[OneBot](https://github.com/howmanybots/onebot/blob/master/README.md)。
 """
 import asyncio
 import inspect
@@ -10,7 +10,6 @@ import sys
 import time
 from functools import partial
 from typing import (
-    TYPE_CHECKING,
     Any,
     Awaitable,
     Callable,
@@ -20,31 +19,30 @@ from typing import (
     Optional,
     Tuple,
     Type,
+    Union,
 )
 
 import aiohttp
 from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
+from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
 from .event import CQHTTPEvent, HeartbeatMetaEvent, LifecycleMetaEvent, MetaEvent
 from .exceptions import ActionFailed, ApiNotAvailable, ApiTimeout, NetworkError
-from .message import CQHTTPMessage
-
-if TYPE_CHECKING:
-    from .message import T_CQMSG
+from .message import CQHTTPMessage, CQHTTPMessageSegment
 
 __all__ = ["CQHTTPAdapter"]
 
-T_EventModels = Dict[
+EventModels = Dict[
     Tuple[Optional[str], Optional[str], Optional[str]], Type[CQHTTPEvent]
 ]
 
-DEFAULT_EVENT_MODELS: T_EventModels = {}
+DEFAULT_EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
     if issubclass(model, CQHTTPEvent):
         DEFAULT_EVENT_MODELS[model.get_event_type()] = model
@@ -56,7 +54,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     name = "cqhttp"
     Config = Config
 
-    event_models: ClassVar[T_EventModels] = DEFAULT_EVENT_MODELS
+    event_models: ClassVar[EventModels] = DEFAULT_EVENT_MODELS
 
     _api_response: Dict[str, Any]
     _api_response_cond: asyncio.Condition
@@ -116,10 +114,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             try:
                 msg_dict = msg.json()
             except json.JSONDecodeError as e:
-                error_or_exception(
-                    "WebSocket message parsing error, not json:",
-                    e,
-                    self.bot.config.bot.log.verbose_exception,
+                self.bot.error_or_exception(
+                    "WebSocket message parsing error, not json:", e
                 )
                 return
 
@@ -213,7 +209,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
             await self.handle_event(cqhttp_event)
 
     async def call_api(self, api: str, **params: Any) -> Any:
-        """调用 CQHTTP API ，协程会等待直到获得 API 响应。
+        """调用 CQHTTP API，协程会等待直到获得 API 响应。
 
         Args:
             api: API 名称。
@@ -224,8 +220,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         Raises:
             NetworkError: 网络错误。
-            ApiNotAvailable: API 请求响应 404 ， API 不可用。
-            ActionFailed: API 请求响应 failed ， API 操作失败。
+            ApiNotAvailable: API 请求响应 404， API 不可用。
+            ActionFailed: API 请求响应 failed， API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
         assert self.websocket is not None
@@ -264,7 +260,10 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         return None
 
     async def send(
-        self, message_: "T_CQMSG", message_type: Literal["private", "group"], id_: int
+        self,
+        message_: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]],
+        message_type: Literal["private", "group"],
+        id_: int,
     ) -> Any:
         """发送消息，调用 `send_private_msg` 或 `send_group_msg` API 发送消息。
 
@@ -273,7 +272,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                 `CQHTTPMessageSegment`, `CQHTTPMessage。`
                 将使用 `CQHTTPMessage` 进行封装。
             message_type: 消息类型。应该是 "private" 或者 "group"。
-            id_: 发送对象的 ID ， QQ 号码或者群号码。
+            id_: 发送对象的 ID， QQ 号码或者群号码。
 
         Returns:
             API 响应。

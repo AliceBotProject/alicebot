@@ -1,7 +1,7 @@
 """DingTalk 协议适配器。
 
 本适配器适配了钉钉企业自建机器人协议。
-协议详情请参考: [钉钉开放平台](https://open.dingtalk.com/document/robots/robot-overview)。
+协议详情请参考：[钉钉开放平台](https://open.dingtalk.com/document/robots/robot-overview)。
 """
 import base64
 import hashlib
@@ -13,7 +13,7 @@ import aiohttp
 from aiohttp import web
 
 from alicebot.adapter import Adapter
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 
 from .config import Config
 from .event import DingTalkEvent
@@ -75,11 +75,7 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
             try:
                 dingtalk_event = DingTalkEvent(adapter=self, **(await request.json()))
             except Exception as e:
-                error_or_exception(
-                    "Request parsing error:",
-                    e,
-                    self.bot.config.bot.log.verbose_exception,
-                )
+                self.bot.error_or_exception("Request parsing error:", e)
                 return web.Response()
             await self.handle_event(dingtalk_event)
         return web.Response()

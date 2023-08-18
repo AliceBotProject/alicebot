@@ -1,7 +1,7 @@
 """APScheduler 适配器。
 
 本适配器用于实现定时任务，适配器将使用 APScheduler 实现定时任务，在设定的时间产生一个事件供插件处理。
-APScheduler 使用方法请参考: [APScheduler](https://apscheduler.readthedocs.io/) 。
+APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedocs.io/)。
 """
 import inspect
 from functools import wraps
@@ -11,9 +11,9 @@ from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.adapter import Adapter
-from alicebot.log import error_or_exception, logger
+from alicebot.log import logger
 from alicebot.plugin import Plugin
-from alicebot.typing import T_Plugin
+from alicebot.typing import PluginT
 
 from .config import Config
 from .event import APSchedulerEvent
@@ -65,11 +65,10 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                     self.create_event, args=(plugin,), trigger=trigger, **trigger_args
                 )
             except Exception as e:
-                error_or_exception(
+                self.bot.error_or_exception(
                     f"Plugin {plugin.__name__} add_job filed, "
                     "please check trigger and trigger_args:",
                     e,
-                    self.bot.config.bot.log.verbose_exception,
                 )
             else:
                 logger.info(f"Plugin {plugin.__name__} has been scheduled to run")
@@ -100,7 +99,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
 
 def scheduler_decorator(
     trigger: str, trigger_args: Dict[str, Any], override_rule: bool = False
-) -> Callable[[Type[T_Plugin]], Type[T_Plugin]]:
+) -> Callable[[Type[PluginT]], Type[PluginT]]:
     """用于为插件类添加计划任务功能的装饰器。
 
     Args:
@@ -110,7 +109,7 @@ def scheduler_decorator(
             若为 `True`，则会在 `rule()` 方法中添加处理本插件定义的计划任务事件的逻辑。
     """
 
-    def _decorator(cls: Type[T_Plugin]) -> Type[T_Plugin]:
+    def _decorator(cls: Type[PluginT]) -> Type[PluginT]:
         if not inspect.isclass(cls):
             raise TypeError("can only decorate class")
         if not issubclass(cls, Plugin):
@@ -120,12 +119,13 @@ def scheduler_decorator(
         setattr(cls, "trigger_args", trigger_args)  # noqa: B010
         if override_rule:
 
-            def _rule_decorator(func: Callable[[T_Plugin], Awaitable[bool]]) -> Any:
+            def _rule_decorator(func: Callable[[PluginT], Awaitable[bool]]) -> Any:
                 @wraps(func)
-                async def _wrapper(self: T_Plugin) -> bool:
+                async def _wrapper(self: PluginT) -> bool:
                     if (
                         self.event.type == "apscheduler"
-                        and type(self) == self.event.plugin_class
+                        # pylint: disable-next=unidiomatic-typecheck
+                        and type(self) is self.event.plugin_class
                     ):
                         return True
                     return await func(self)

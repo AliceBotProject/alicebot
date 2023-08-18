@@ -6,6 +6,7 @@ from typing import (
     Literal,
     Optional,
     Tuple,
+    Union,
     get_args,
     get_origin,
 )
@@ -16,12 +17,12 @@ from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
+from alicebot.message import BuildMessageType
 
-from .message import CQHTTPMessage
+from .message import CQHTTPMessage, CQHTTPMessageSegment
 
 if TYPE_CHECKING:
     from . import CQHTTPAdapter  # noqa: F401
-    from .message import T_CQMSG
 
 
 class Sender(BaseModel):
@@ -137,7 +138,9 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -167,7 +170,9 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal["private"]
     sub_type: Literal["friend", "group", "other"]
 
-    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -190,7 +195,9 @@ class GroupMessageEvent(MessageEvent):
     group_id: int
     anonymous: Optional[Anonymous] = None
 
-    async def reply(self, message: "T_CQMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -387,7 +394,7 @@ class FriendRequestEvent(RequestEvent):
 
 
 class GroupRequestEvent(RequestEvent):
-    """加群请求／邀请"""
+    """加群请求 / 邀请"""
 
     __event__ = "request.group"
     request_type: Literal["group"]

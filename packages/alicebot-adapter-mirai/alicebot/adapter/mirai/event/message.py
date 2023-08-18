@@ -3,13 +3,13 @@ from typing import TYPE_CHECKING, Any, Dict, Literal, Union
 from typing_extensions import Self
 
 from alicebot.event import MessageEvent as BaseMessageEvent
+from alicebot.message import BuildMessageType
 
-from ..message import MiraiMessage
+from ..message import MiraiMessage, MiraiMessageSegment
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent, OtherClientSender
 
 if TYPE_CHECKING:
     from .. import MiraiAdapter  # noqa: F401
-    from ..message import T_MiraiMSG
 
 
 class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
@@ -39,7 +39,11 @@ class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
         """
         return self.messageChain.get_plain_text()
 
-    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
+    async def reply(
+        self,
+        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -69,7 +73,11 @@ class FriendMessage(MessageEvent):
     type: Literal["FriendMessage"]
     sender: FriendInfo
 
-    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
+    async def reply(
+        self,
+        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -97,7 +105,11 @@ class GroupMessage(MessageEvent):
     type: Literal["GroupMessage"]
     sender: GroupMemberInfo
 
-    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
+    async def reply(
+        self,
+        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -125,7 +137,11 @@ class TempMessage(MessageEvent):
     type: Literal["TempMessage"]
     sender: GroupMemberInfo
 
-    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
+    async def reply(
+        self,
+        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -153,7 +169,11 @@ class StrangerMessage(MessageEvent):
     type: Literal["StrangerMessage"]
     sender: FriendInfo
 
-    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
+    async def reply(
+        self,
+        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -181,7 +201,11 @@ class OtherClientMessage(MessageEvent):
     type: Literal["OtherClientMessage"]
     sender: OtherClientSender
 
-    async def reply(self, message: "T_MiraiMSG", quote: bool = False) -> Dict[str, Any]:
+    async def reply(
+        self,
+        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:

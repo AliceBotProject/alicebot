@@ -7,6 +7,7 @@ from typing import (
     Literal,
     Optional,
     Tuple,
+    Union,
     get_args,
     get_origin,
 )
@@ -17,12 +18,12 @@ from pydantic.fields import FieldInfo
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
+from alicebot.message import BuildMessageType
 
-from .message import OneBotMessage
+from .message import OneBotMessage, OneBotMessageSegment
 
 if TYPE_CHECKING:
     from . import OneBotAdapter  # noqa: F401
-    from .message import T_OBMSG
 
 
 class BotSelf(BaseModel):
@@ -154,7 +155,9 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
         """
         return self.message.get_plain_text()
 
-    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -182,7 +185,9 @@ class PrivateMessageEvent(MessageEvent):
 
     detail_type: Literal["private"]
 
-    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -204,7 +209,9 @@ class GroupMessageEvent(MessageEvent):
     detail_type: Literal["group"]
     group_id: str
 
-    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:
@@ -227,7 +234,9 @@ class ChannelMessageEvent(MessageEvent):
     guild_id: str
     channel_id: str
 
-    async def reply(self, message: "T_OBMSG") -> Dict[str, Any]:
+    async def reply(
+        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+    ) -> Dict[str, Any]:
         """回复消息。
 
         Args:

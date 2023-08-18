@@ -49,8 +49,8 @@ dev = [
     "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
     "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
 ]
-lint = ["black", "ruff", "mypy"]
-docs = ["sophia-doc~=0.1.4", "tomlkit~=0.11.7"]
+lint = ["black", "ruff", "mypy", "pylint", "pylint-pydantic"]
+docs = ["sophia-doc~=0.1.4", "tomlkit"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"
@@ -66,7 +66,6 @@ line-length = 88
 select = ["ALL"]
 ignore = [
     "C90",     # mccabe
-    "ANN",     # flake8-annotations
     "BLE",     # flake8-blind-except
     "FBT",     # flake8-boolean-trap
     "COM",     # flake8-commas
@@ -75,6 +74,9 @@ ignore = [
     "TID",     # flake8-tidy-imports
     "E501",    # Line too long, handled by black
     "D415",    # First line should end with a period, question mark, or exclamation point
+    "ANN101",  # Missing type annotation for self
+    "ANN102",  # Missing type annotation for cls
+    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
     "S101",    # Use of assert detected
     "PGH003",  # Use specific rule codes when ignoring type issues
     "PLR0912", # Too many branches
@@ -103,18 +105,15 @@ keep-runtime-typing = true
 [tool.ruff.per-file-ignores]
 "packages/*/alicebot/__init__.py" = ["D104"]
 "packages/*/alicebot/adapter/__init__.py" = ["D104"]
-"examples/plugins/*.py" = ["D", "T"]
+"examples/plugins/*.py" = ["D", "T", "ANN"]
 
 [tool.pyright]
 ignore = ["examples/plugins"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
-reportIncompatibleMethodOverride = false
 reportMissingTypeStubs = false
-reportUnknownArgumentType = false
 reportUnknownMemberType = false
-reportUnknownVariableType = false
 reportUnnecessaryIsInstance = false
 reportCallInDefaultInitializer = true
 reportPropertyTypeMismatch = true
@@ -124,7 +123,6 @@ reportUninitializedInstanceVariable = true
 [tool.mypy]
 python_version = "3.8"
 strict = true
-disable_error_code = ["override"]
 exclude = [
     '^packages/.*/alicebot/__init__\.py$',
     '^packages/.*/alicebot/adapter/__init__\.py$',
@@ -136,6 +134,31 @@ warn_return_any = false
 [[tool.mypy.overrides]]
 module = "apscheduler.*"
 ignore_missing_imports = true
+
+[tool.pylint.main]
+disable = [
+    "arguments-differ",
+    "broad-exception-caught",
+    "import-outside-toplevel",
+    "line-too-long",
+    "too-many-lines",
+    "duplicate-code",
+    "too-few-public-methods",
+    "too-many-arguments",
+    "too-many-boolean-expressions",
+    "too-many-branches",
+    "too-many-instance-attributes",
+    "too-many-nested-blocks",
+    "too-many-public-methods",
+]
+load-plugins = ["pylint_pydantic"]
+source-roots = ["."]
+
+[tool.pylint.basic]
+good-names = ["i", "j", "k", "ex", "Run", "_", "e", "f", "ws", "cm", "at"]
+
+[tool.pylint.variables]
+allowed-redefined-builtins = ["id", "type"]
 
 [tool.hatch.build.targets.sdist]
 include = ["/README.md", "/alicebot"]

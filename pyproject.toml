@@ -49,6 +49,10 @@ dev = [
     "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
     "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
 ]
+typing = [ # used only in type check
+    "watchfiles",
+    "trio>=0.22.2", # watchfiles used this lib
+]
 lint = ["black", "ruff", "mypy", "pylint", "pylint-pydantic"]
 docs = ["sophia-doc~=0.1.4", "tomlkit"]
 

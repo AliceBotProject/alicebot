@@ -52,7 +52,7 @@ jobs:
           python-version: 3.9
           cache: true
       - name: Install dependencies
-        run: pdm install -G dev -G lint
+        run: pdm install -G dev -G lint -G typing
 
       - uses: pnpm/action-setup@v2
         with:
@@ -79,7 +79,7 @@ jobs:
           python-version: 3.9
           cache: true
       - name: Install dependencies
-        run: pdm install -G dev -G lint
+        run: pdm install -G dev -G lint -G typing
 
       - run: |
           eval $(pdm venv activate)

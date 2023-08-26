@@ -41,7 +41,7 @@ class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
 
     async def reply(
         self,
-        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> Dict[str, Any]:
         """回复消息。
@@ -75,7 +75,7 @@ class FriendMessage(MessageEvent):
 
     async def reply(
         self,
-        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> Dict[str, Any]:
         """回复消息。
@@ -107,7 +107,7 @@ class GroupMessage(MessageEvent):
 
     async def reply(
         self,
-        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> Dict[str, Any]:
         """回复消息。
@@ -139,7 +139,7 @@ class TempMessage(MessageEvent):
 
     async def reply(
         self,
-        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> Dict[str, Any]:
         """回复消息。
@@ -171,7 +171,7 @@ class StrangerMessage(MessageEvent):
 
     async def reply(
         self,
-        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> Dict[str, Any]:
         """回复消息。
@@ -203,7 +203,7 @@ class OtherClientMessage(MessageEvent):
 
     async def reply(
         self,
-        message: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> Dict[str, Any]:
         """回复消息。

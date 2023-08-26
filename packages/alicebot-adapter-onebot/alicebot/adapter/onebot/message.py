@@ -1,5 +1,6 @@
 """OneBot 适配器消息。"""
 from typing import Type
+from typing_extensions import Self
 
 from alicebot.message import Message, MessageSegment
 
@@ -18,9 +19,6 @@ class OneBotMessage(Message["OneBotMessageSegment"]):
         """
         return OneBotMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> "OneBotMessageSegment":
-        return OneBotMessageSegment.text(msg)
-
 
 class OneBotMessageSegment(MessageSegment["OneBotMessage"]):
     """OneBot 消息字段。"""
@@ -33,6 +31,18 @@ class OneBotMessageSegment(MessageSegment["OneBotMessage"]):
             消息类。
         """
         return OneBotMessage
+
+    @classmethod
+    def from_str(cls, msg: str) -> Self:
+        """用于将 `str` 转换为消息字段。
+
+        Args:
+            msg: 要解析为消息字段的数据。
+
+        Returns:
+            由 `str` 转换的消息字段。
+        """
+        return cls.text(msg)
 
     def __str__(self) -> str:
         """返回消息的文本表示。

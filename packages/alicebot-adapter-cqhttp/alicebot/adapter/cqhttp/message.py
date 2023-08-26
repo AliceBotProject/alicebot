@@ -1,5 +1,6 @@
 """CQHTTP 适配器消息。"""
 from typing import Literal, Optional, Type, Union
+from typing_extensions import Self
 
 from alicebot.message import Message, MessageSegment
 
@@ -18,9 +19,6 @@ class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
         """
         return CQHTTPMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> "CQHTTPMessageSegment":
-        return CQHTTPMessageSegment.text(msg)
-
 
 class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     """CQHTTP 消息字段。"""
@@ -33,6 +31,18 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
             消息类。
         """
         return CQHTTPMessage
+
+    @classmethod
+    def from_str(cls, msg: str) -> Self:
+        """用于将 `str` 转换为消息字段。
+
+        Args:
+            msg: 要解析为消息字段的数据。
+
+        Returns:
+            由 `str` 转换的消息字段。
+        """
+        return cls.text(msg)
 
     def __str__(self) -> str:
         """返回消息字段的文本表示。

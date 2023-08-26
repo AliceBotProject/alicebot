@@ -7,7 +7,6 @@ from typing import (
     Literal,
     Optional,
     Tuple,
-    Union,
     get_args,
     get_origin,
 )
@@ -156,7 +155,7 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
         return self.message.get_plain_text()
 
     async def reply(
-        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+        self, message: BuildMessageType[OneBotMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 
@@ -186,7 +185,7 @@ class PrivateMessageEvent(MessageEvent):
     detail_type: Literal["private"]
 
     async def reply(
-        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+        self, message: BuildMessageType[OneBotMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 
@@ -210,7 +209,7 @@ class GroupMessageEvent(MessageEvent):
     group_id: str
 
     async def reply(
-        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+        self, message: BuildMessageType[OneBotMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 
@@ -235,7 +234,7 @@ class ChannelMessageEvent(MessageEvent):
     channel_id: str
 
     async def reply(
-        self, message: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]]
+        self, message: BuildMessageType[OneBotMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 

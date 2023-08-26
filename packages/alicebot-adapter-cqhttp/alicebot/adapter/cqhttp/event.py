@@ -6,7 +6,6 @@ from typing import (
     Literal,
     Optional,
     Tuple,
-    Union,
     get_args,
     get_origin,
 )
@@ -139,7 +138,7 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
         return self.message.get_plain_text()
 
     async def reply(
-        self, message: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]]
+        self, message: BuildMessageType[CQHTTPMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 
@@ -171,7 +170,7 @@ class PrivateMessageEvent(MessageEvent):
     sub_type: Literal["friend", "group", "other"]
 
     async def reply(
-        self, message: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]]
+        self, message: BuildMessageType[CQHTTPMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 
@@ -196,7 +195,7 @@ class GroupMessageEvent(MessageEvent):
     anonymous: Optional[Anonymous] = None
 
     async def reply(
-        self, message: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]]
+        self, message: BuildMessageType[CQHTTPMessageSegment]
     ) -> Dict[str, Any]:
         """回复消息。
 

@@ -273,7 +273,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
     async def send(
         self,
-        message_: Union[OneBotMessage, BuildMessageType[OneBotMessageSegment]],
+        message_: BuildMessageType[OneBotMessageSegment],
         message_type: Union[Literal["private", "group"], str],  # noqa: PYI051
         id_: str,
     ) -> Any:

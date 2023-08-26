@@ -5,12 +5,7 @@
 # ruff: noqa: TCH001
 from typing import TYPE_CHECKING, Awaitable, Callable, Optional, TypeVar
 
-from alicebot.message import (
-    BuildMessageSegmentType,
-    BuildMessageType,
-    MessageSegmentT,
-    MessageT,
-)
+from alicebot.message import BuildMessageType, MessageSegmentT, MessageT
 
 if TYPE_CHECKING:
     from typing import Any
@@ -30,7 +25,6 @@ __all__ = [
     "MessageT",
     "MessageSegmentT",
     "BuildMessageType",
-    "BuildMessageSegmentType",
     "BotHook",
     "AdapterHook",
     "EventHook",

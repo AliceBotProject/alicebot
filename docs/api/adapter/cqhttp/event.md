@@ -2,742 +2,1064 @@
 
 CQHTTP 适配器事件。
 
-## *class* `Sender`(__pydantic_self__, **data) {#Sender}
+## _class_ `Sender` {#Sender}
 
 Bases: `pydantic.main.BaseModel`
 
 发送人信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **user_id** (*Optional[int]*)
+  - **user\_id** (_Optional\[int\]_)
 
-  - **nickname** (*Optional[str]*)
+  - **nickname** (_Optional\[str\]_)
 
-  - **card** (*Optional[str]*)
+  - **card** (_Optional\[str\]_)
 
-  - **sex** (*Optional[Literal['male', 'female', 'unknown']]*)
+  - **sex** (_Optional\[Literal\['male', 'female', 'unknown'\]\]_)
 
-  - **age** (*Optional[int]*)
+  - **age** (_Optional\[int\]_)
 
-  - **area** (*Optional[str]*)
+  - **area** (_Optional\[str\]_)
 
-  - **level** (*Optional[str]*)
+  - **level** (_Optional\[str\]_)
 
-  - **role** (*Optional[str]*)
+  - **role** (_Optional\[str\]_)
 
-  - **title** (*Optional[str]*)
+  - **title** (_Optional\[str\]_)
 
-## *class* `Anonymous`(__pydantic_self__, **data) {#Anonymous}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `Anonymous` {#Anonymous}
 
 Bases: `pydantic.main.BaseModel`
 
 匿名信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*int*)
+  - **id** (_int_)
 
-  - **name** (*str*)
+  - **name** (_str_)
 
-  - **flag** (*str*)
+  - **flag** (_str_)
 
-## *class* `File`(__pydantic_self__, **data) {#File}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `File` {#File}
 
 Bases: `pydantic.main.BaseModel`
 
 文件信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*str*)
+  - **id** (_str_)
 
-  - **name** (*str*)
+  - **name** (_str_)
 
-  - **size** (*int*)
+  - **size** (_int_)
 
-  - **busid** (*int*)
+  - **busid** (_int_)
 
-## *class* `Status`(__pydantic_self__, **data) {#Status}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `Status` {#Status}
 
 Bases: `pydantic.main.BaseModel`
 
 状态信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **online** (*bool*)
+  - **online** (_bool_)
 
-  - **good** (*bool*)
+  - **good** (_bool_)
 
-### *class* `Config`(self, /, *args, **kwargs) {#Status.Config}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `object`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
 
 - **Arguments**
 
-  - **args**
+  - **data** (_Any_)
 
-  - **kwargs**
+- **Returns**
 
-## *class* `CQHTTPEvent`(self, adapter, **data) {#CQHTTPEvent}
+  Type: _None_
 
-Bases: `alicebot.event.Event`
+## _class_ `CQHTTPEvent` {#CQHTTPEvent}
+
+Bases: `alicebot.event.Event[CQHTTPAdapter]`
 
 CQHTTP 事件基类
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Optional[str]*)
+  - **type** (_Optional\[str\]_)
 
-  - **time** (*int*)
+  - **time** (_int_)
 
-  - **self_id** (*int*)
+  - **self\_id** (_int_)
 
-  - **post_type** (*str*)
+  - **post\_type** (_str_)
 
-### *class method* `get_event_type(cls)` {#CQHTTPEvent.get_event_type}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `get_event_type()` {#CQHTTPEvent.get\_event\_type}
 
 获取事件类型。
 
 - **Returns**
 
-  Type: *Tuple[Optional[str], Optional[str], Optional[str]]*
+  Type: _Tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\]_
 
   事件类型。
 
-### *readonly property* `to_me` {#CQHTTPEvent.to_me}
+### _readonly property_ `to_me` {#CQHTTPEvent.to\_me}
 
-Type: *bool*
+Type: _bool_
 
 当前事件的 `user_id` 是否等于 `self_id`。
 
-## *class* `MessageEvent`(self, adapter, **data) {#MessageEvent}
+## _class_ `MessageEvent` {#MessageEvent}
 
-Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`, `alicebot.event.MessageEvent`
+Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`, `alicebot.event.MessageEvent[CQHTTPAdapter]`
 
 消息事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **post_type** (*Literal['message']*)
+  - **post\_type** (_Literal\['message'\]_)
 
-  - **message_type** (*Literal['private', 'group']*)
+  - **message\_type** (_Literal\['private', 'group'\]_)
 
-  - **sub_type** (*str*)
+  - **sub\_type** (_str_)
 
-  - **message_id** (*int*)
+  - **message\_id** (_int_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **message** (*alicebot.adapter.cqhttp.message.CQHTTPMessage*)
+  - **message** (_alicebot.adapter.cqhttp.message.CQHTTPMessage_)
 
-  - **raw_message** (*str*)
+  - **raw\_message** (_str_)
 
-  - **font** (*int*)
+  - **font** (_int_)
 
-  - **sender** (*alicebot.adapter.cqhttp.event.Sender*)
+  - **sender** (_Sender_)
 
-### *method* `get_plain_text(self)` {#MessageEvent.get_plain_text}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
 
 获取消息的纯文本内容。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   消息的纯文本内容。
 
-### *async method* `is_same_sender(self, other)` {#MessageEvent.is_same_sender}
+### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
 
 判断自身和另一个事件是否是同一个发送者。
 
 - **Arguments**
 
-  - **other** (*Self*) - 另一个事件。
+  - **other** (_typing\_extensions.Self_) - 另一个事件。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   是否是同一个发送者。
 
-### *async method* `reply(self, message)` {#MessageEvent.reply}
+### _async method_ `reply(self, message)` {#MessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_CQMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `PrivateMessageEvent`(self, adapter, **data) {#PrivateMessageEvent}
+## _class_ `PrivateMessageEvent` {#PrivateMessageEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
 私聊消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **message_type** (*Literal['private']*)
+  - **message\_type** (_Literal\['private'\]_)
 
-  - **sub_type** (*Literal['friend', 'group', 'other']*)
+  - **sub\_type** (_Literal\['friend', 'group', 'other'\]_)
 
-### *async method* `reply(self, message)` {#PrivateMessageEvent.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message)` {#PrivateMessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_CQMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `GroupMessageEvent`(self, adapter, **data) {#GroupMessageEvent}
+## _class_ `GroupMessageEvent` {#GroupMessageEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
 群消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **message_type** (*Literal['group']*)
+  - **message\_type** (_Literal\['group'\]_)
 
-  - **sub_type** (*Literal['normal', 'anonymous', 'notice']*)
+  - **sub\_type** (_Literal\['normal', 'anonymous', 'notice'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **anonymous** (*Optional[alicebot.adapter.cqhttp.event.Anonymous]*)
+  - **anonymous** (_Optional\[alicebot.adapter.cqhttp.event.Anonymous\]_)
 
-### *async method* `reply(self, message)` {#GroupMessageEvent.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message)` {#GroupMessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_CQMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `NoticeEvent`(self, adapter, **data) {#NoticeEvent}
+## _class_ `NoticeEvent` {#NoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
 通知事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **post_type** (*Literal['notice']*)
+  - **post\_type** (_Literal\['notice'\]_)
 
-  - **notice_type** (*str*)
+  - **notice\_type** (_str_)
 
-## *class* `GroupUploadNoticeEvent`(self, adapter, **data) {#GroupUploadNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupUploadNoticeEvent` {#GroupUploadNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 群文件上传
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['group_upload']*)
+  - **notice\_type** (_Literal\['group\_upload'\]_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **file** (*alicebot.adapter.cqhttp.event.File*)
+  - **file** (_File_)
 
-## *class* `GroupAdminNoticeEvent`(self, adapter, **data) {#GroupAdminNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupAdminNoticeEvent` {#GroupAdminNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 群管理员变动
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['group_admin']*)
+  - **notice\_type** (_Literal\['group\_admin'\]_)
 
-  - **sub_type** (*Literal['set', 'unset']*)
+  - **sub\_type** (_Literal\['set', 'unset'\]_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-## *class* `GroupDecreaseNoticeEvent`(self, adapter, **data) {#GroupDecreaseNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupDecreaseNoticeEvent` {#GroupDecreaseNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 群成员减少
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['group_decrease']*)
+  - **notice\_type** (_Literal\['group\_decrease'\]_)
 
-  - **sub_type** (*Literal['leave', 'kick', 'kick_me']*)
+  - **sub\_type** (_Literal\['leave', 'kick', 'kick\_me'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **operator_id** (*int*)
+  - **operator\_id** (_int_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-## *class* `GroupIncreaseNoticeEvent`(self, adapter, **data) {#GroupIncreaseNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupIncreaseNoticeEvent` {#GroupIncreaseNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 群成员增加
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['group_increase']*)
+  - **notice\_type** (_Literal\['group\_increase'\]_)
 
-  - **sub_type** (*Literal['approve', 'invite']*)
+  - **sub\_type** (_Literal\['approve', 'invite'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **operator_id** (*int*)
+  - **operator\_id** (_int_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-## *class* `GroupBanNoticeEvent`(self, adapter, **data) {#GroupBanNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupBanNoticeEvent` {#GroupBanNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 群禁言
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['group_ban']*)
+  - **notice\_type** (_Literal\['group\_ban'\]_)
 
-  - **sub_type** (*Literal['ban', 'lift_ban']*)
+  - **sub\_type** (_Literal\['ban', 'lift\_ban'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **operator_id** (*int*)
+  - **operator\_id** (_int_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **duration** (*int*)
+  - **duration** (_int_)
 
-## *class* `FriendAddNoticeEvent`(self, adapter, **data) {#FriendAddNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendAddNoticeEvent` {#FriendAddNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 好友添加
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['friend_add']*)
+  - **notice\_type** (_Literal\['friend\_add'\]_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-## *class* `GroupRecallNoticeEvent`(self, adapter, **data) {#GroupRecallNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupRecallNoticeEvent` {#GroupRecallNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 群消息撤回
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['group_recall']*)
+  - **notice\_type** (_Literal\['group\_recall'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **operator_id** (*int*)
+  - **operator\_id** (_int_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **message_id** (*int*)
+  - **message\_id** (_int_)
 
-## *class* `FriendRecallNoticeEvent`(self, adapter, **data) {#FriendRecallNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendRecallNoticeEvent` {#FriendRecallNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 好友消息撤回
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['friend_recall']*)
+  - **notice\_type** (_Literal\['friend\_recall'\]_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **message_id** (*int*)
+  - **message\_id** (_int_)
 
-## *class* `NotifyEvent`(self, adapter, **data) {#NotifyEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `NotifyEvent` {#NotifyEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
 提醒事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **notice_type** (*Literal['notify']*)
+  - **notice\_type** (_Literal\['notify'\]_)
 
-  - **sub_type** (*str*)
+  - **sub\_type** (_str_)
 
-  - **group_id** (*Optional[int]*)
+  - **group\_id** (_Optional\[int\]_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-## *class* `PokeNotifyEvent`(self, adapter, **data) {#PokeNotifyEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `PokeNotifyEvent` {#PokeNotifyEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
 戳一戳
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **sub_type** (*Literal['poke']*)
+  - **sub\_type** (_Literal\['poke'\]_)
 
-  - **target_id** (*int*)
+  - **target\_id** (_int_)
 
-  - **group_id** (*Optional[int]*)
+  - **group\_id** (_Optional\[int\]_)
 
-## *class* `GroupLuckyKingNotifyEvent`(self, adapter, **data) {#GroupLuckyKingNotifyEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupLuckyKingNotifyEvent` {#GroupLuckyKingNotifyEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
 群红包运气王
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **sub_type** (*Literal['lucky_king']*)
+  - **sub\_type** (_Literal\['lucky\_king'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **target_id** (*int*)
+  - **target\_id** (_int_)
 
-## *class* `GroupHonorNotifyEvent`(self, adapter, **data) {#GroupHonorNotifyEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupHonorNotifyEvent` {#GroupHonorNotifyEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
 群成员荣誉变更
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **sub_type** (*Literal['honor']*)
+  - **sub\_type** (_Literal\['honor'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **honor_type** (*Literal['talkative', 'performer', 'emotion']*)
+  - **honor\_type** (_Literal\['talkative', 'performer', 'emotion'\]_)
 
-## *class* `RequestEvent`(self, adapter, **data) {#RequestEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `RequestEvent` {#RequestEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
 请求事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **post_type** (*Literal['request']*)
+  - **post\_type** (_Literal\['request'\]_)
 
-  - **request_type** (*str*)
+  - **request\_type** (_str_)
 
-### *async method* `approve(self)` {#RequestEvent.approve}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `approve(self)` {#RequestEvent.approve}
 
 同意请求。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self)` {#RequestEvent.refuse}
+### _async method_ `refuse(self)` {#RequestEvent.refuse}
 
 拒绝请求。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `FriendRequestEvent`(self, adapter, **data) {#FriendRequestEvent}
+## _class_ `FriendRequestEvent` {#FriendRequestEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
 加好友请求
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **request_type** (*Literal['friend']*)
+  - **request\_type** (_Literal\['friend'\]_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **comment** (*str*)
+  - **comment** (_str_)
 
-  - **flag** (*str*)
+  - **flag** (_str_)
 
-### *async method* `approve(self, remark = '')` {#FriendRequestEvent.approve}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `approve(self, remark = '')` {#FriendRequestEvent.approve}
 
 同意请求。
 
 - **Arguments**
 
-  - **remark** (*str*) - 好友备注。
+  - **remark** (_str_) - 好友备注。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self)` {#FriendRequestEvent.refuse}
+### _async method_ `refuse(self)` {#FriendRequestEvent.refuse}
 
 拒绝请求。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `GroupRequestEvent`(self, adapter, **data) {#GroupRequestEvent}
+## _class_ `GroupRequestEvent` {#GroupRequestEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
-加群请求／邀请
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+加群请求 / 邀请
 
 - **Attributes**
 
-  - **request_type** (*Literal['group']*)
+  - **request\_type** (_Literal\['group'\]_)
 
-  - **sub_type** (*Literal['add', 'invite']*)
+  - **sub\_type** (_Literal\['add', 'invite'\]_)
 
-  - **group_id** (*int*)
+  - **group\_id** (_int_)
 
-  - **user_id** (*int*)
+  - **user\_id** (_int_)
 
-  - **comment** (*str*)
+  - **comment** (_str_)
 
-  - **flag** (*str*)
+  - **flag** (_str_)
 
-### *async method* `approve(self)` {#GroupRequestEvent.approve}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `approve(self)` {#GroupRequestEvent.approve}
 
 同意请求。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self, reason = '')` {#GroupRequestEvent.refuse}
+### _async method_ `refuse(self, reason = '')` {#GroupRequestEvent.refuse}
 
 拒绝请求。
 
 - **Arguments**
 
-  - **reason** (*str*) - 拒绝原因。
+  - **reason** (_str_) - 拒绝原因。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `MetaEvent`(self, adapter, **data) {#MetaEvent}
+## _class_ `MetaEvent` {#MetaEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
 元事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **post_type** (*Literal['meta_event']*)
+  - **post\_type** (_Literal\['meta\_event'\]_)
 
-  - **meta_event_type** (*str*)
+  - **meta\_event\_type** (_str_)
 
-## *class* `LifecycleMetaEvent`(self, adapter, **data) {#LifecycleMetaEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `LifecycleMetaEvent` {#LifecycleMetaEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
 
 生命周期
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **meta_event_type** (*Literal['lifecycle']*)
+  - **meta\_event\_type** (_Literal\['lifecycle'\]_)
 
-  - **sub_type** (*Literal['enable', 'disable', 'connect']*)
+  - **sub\_type** (_Literal\['enable', 'disable', 'connect'\]_)
 
-## *class* `HeartbeatMetaEvent`(self, adapter, **data) {#HeartbeatMetaEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `HeartbeatMetaEvent` {#HeartbeatMetaEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
 
 心跳
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **meta_event_type** (*Literal['heartbeat']*)
+  - **meta\_event\_type** (_Literal\['heartbeat'\]_)
 
-  - **status** (*alicebot.adapter.cqhttp.event.Status*)
+  - **status** (_Status_)
 
-  - **interval** (*int*)
+  - **interval** (_int_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_

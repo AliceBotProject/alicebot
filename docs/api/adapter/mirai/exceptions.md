@@ -2,47 +2,67 @@
 
 Mirai 适配器异常。
 
-## *class* `MiraiException`(self, /, *args, **kwargs) {#MiraiException}
+## _class_ `MiraiException` {#MiraiException}
 
 Bases: `alicebot.exceptions.AdapterException`
 
 Mirai 异常基类。
 
+### _method_ `__init__(self, /, *args, **kwargs)` {#Exception.\_\_init\_\_}
+
+Initialize self.  See help(type(self)) for accurate signature.
+
 - **Arguments**
 
   - **args**
 
   - **kwargs**
 
-## *class* `NetworkError`(self, /, *args, **kwargs) {#NetworkError}
+## _class_ `NetworkError` {#NetworkError}
 
 Bases: `alicebot.adapter.mirai.exceptions.MiraiException`
 
 网络异常。
 
+### _method_ `__init__(self, /, *args, **kwargs)` {#Exception.\_\_init\_\_}
+
+Initialize self.  See help(type(self)) for accurate signature.
+
 - **Arguments**
 
   - **args**
 
   - **kwargs**
 
-## *class* `ActionFailed`(self, code, resp) {#ActionFailed}
+## _class_ `ActionFailed` {#ActionFailed}
 
 Bases: `alicebot.adapter.mirai.exceptions.MiraiException`
 
 API 请求成功响应，但响应表示 API 操作失败。
 
+### _method_ `__init__(self, code, resp)` {#ActionFailed.\_\_init\_\_}
+
+初始化。
+
 - **Arguments**
 
-  - **code** (*int*) - 错误代码。
+  - **code** (_int_) - 错误代码。
 
-  - **resp** (*Dict[str, Any]*) - 返回的响应。
+  - **resp** (_Dict\[str, Any\]_) - 返回的响应。
 
-## *class* `ApiTimeout`(self, /, *args, **kwargs) {#ApiTimeout}
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ApiTimeout` {#ApiTimeout}
 
 Bases: `alicebot.adapter.mirai.exceptions.MiraiException`
 
 API 请求响应超时。
+
+### _method_ `__init__(self, /, *args, **kwargs)` {#Exception.\_\_init\_\_}
+
+Initialize self.  See help(type(self)) for accurate signature.
 
 - **Arguments**
 

@@ -2,670 +2,1026 @@
 
 OntBot 适配器事件。
 
-## *class* `BotSelf`(__pydantic_self__, **data) {#BotSelf}
+## _class_ `BotSelf` {#BotSelf}
 
 Bases: `pydantic.main.BaseModel`
 
 机器人自身标识
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **platform** (*str*)
+  - **platform** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-## *class* `ImplVersion`(__pydantic_self__, **data) {#ImplVersion}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ImplVersion` {#ImplVersion}
 
 Bases: `pydantic.main.BaseModel`
 
 实现版本
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **impl** (*str*)
+  - **impl** (_str_)
 
-  - **version** (*str*)
+  - **version** (_str_)
 
-  - **onebot_version** (*str*)
+  - **onebot\_version** (_str_)
 
-## *class* `BotStatus`(__pydantic_self__, **data) {#BotStatus}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotStatus` {#BotStatus}
 
 Bases: `pydantic.main.BaseModel`
 
 机器人状态
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **self** (*alicebot.adapter.onebot.event.BotSelf*)
+  - **self** (_BotSelf_)
 
-  - **online** (*bool*)
+  - **online** (_bool_)
 
-## *class* `Status`(__pydantic_self__, **data) {#Status}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `Status` {#Status}
 
 Bases: `pydantic.main.BaseModel`
 
 运行状态
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **good** (*bool*)
+  - **good** (_bool_)
 
-  - **bots** (*List[alicebot.adapter.onebot.event.BotStatus]*)
+  - **bots** (_List\[alicebot.adapter.onebot.event.BotStatus\]_)
 
-## *class* `OntBotEvent`(self, adapter, **data) {#OntBotEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `alicebot.event.Event`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `OntBotEvent` {#OntBotEvent}
+
+Bases: `alicebot.event.Event[OneBotAdapter]`
 
 CQHTTP 事件基类
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **id** (*str*)
+  - **id** (_str_)
 
-  - **time** (*float*)
+  - **time** (_float_)
 
-  - **type** (*Literal['meta', 'message', 'notice', 'request']*)
+  - **type** (_Literal\['meta', 'message', 'notice', 'request'\]_)
 
-  - **detail_type** (*str*)
+  - **detail\_type** (_str_)
 
-  - **sub_type** (*str*)
+  - **sub\_type** (_str_)
 
-### *class method* `get_event_type(cls)` {#OntBotEvent.get_event_type}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `get_event_type()` {#OntBotEvent.get\_event\_type}
 
 获取事件类型。
 
 - **Returns**
 
-  Type: *Tuple[Optional[str], Optional[str], Optional[str]]*
+  Type: _Tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\]_
 
   事件类型。
 
-## *class* `BotEvent`(self, adapter, **data) {#BotEvent}
+## _class_ `BotEvent` {#BotEvent}
 
 Bases: `alicebot.adapter.onebot.event.OntBotEvent`
 
 包含 self 字段的机器人事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **self** (*alicebot.adapter.onebot.event.BotSelf*)
+  - **self** (_BotSelf_)
 
-### *readonly property* `to_me` {#BotEvent.to_me}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Type: *bool*
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _readonly property_ `to_me` {#BotEvent.to\_me}
+
+Type: _bool_
 
 是否是发给自己的。
 
-## *class* `MetaEvent`(self, adapter, **data) {#MetaEvent}
+## _class_ `MetaEvent` {#MetaEvent}
 
 Bases: `alicebot.adapter.onebot.event.OntBotEvent`
 
 元事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['meta']*)
+  - **type** (_Literal\['meta'\]_)
 
-## *class* `ConnectMetaEvent`(self, adapter, **data) {#ConnectMetaEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ConnectMetaEvent` {#ConnectMetaEvent}
 
 Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
 连接事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['connect']*)
+  - **detail\_type** (_Literal\['connect'\]_)
 
-  - **version** (*alicebot.adapter.onebot.event.ImplVersion*)
+  - **version** (_ImplVersion_)
 
-## *class* `HeartbeatMetaEvent`(self, adapter, **data) {#HeartbeatMetaEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `HeartbeatMetaEvent` {#HeartbeatMetaEvent}
 
 Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
 心跳事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['heartbeat']*)
+  - **detail\_type** (_Literal\['heartbeat'\]_)
 
-  - **interval** (*int*)
+  - **interval** (_int_)
 
-## *class* `StatusUpdateMetaEvent`(self, adapter, **data) {#StatusUpdateMetaEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `StatusUpdateMetaEvent` {#StatusUpdateMetaEvent}
 
 Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
 状态更新事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['status_update']*)
+  - **detail\_type** (_Literal\['status\_update'\]_)
 
-  - **status** (*alicebot.adapter.onebot.event.Status*)
+  - **status** (_Status_)
 
-## *class* `MessageEvent`(self, adapter, **data) {#MessageEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `alicebot.adapter.onebot.event.BotEvent`, `alicebot.event.MessageEvent`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MessageEvent` {#MessageEvent}
+
+Bases: `alicebot.adapter.onebot.event.BotEvent`, `alicebot.event.MessageEvent[OneBotAdapter]`
 
 消息事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['message']*)
+  - **type** (_Literal\['message'\]_)
 
-  - **message_id** (*str*)
+  - **message\_id** (_str_)
 
-  - **message** (*alicebot.adapter.onebot.message.OneBotMessage*)
+  - **message** (_alicebot.adapter.onebot.message.OneBotMessage_)
 
-  - **alt_message** (*str*)
+  - **alt\_message** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-### *method* `get_plain_text(self)` {#MessageEvent.get_plain_text}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
 
 获取消息的纯文本内容。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   消息的纯文本内容。
 
-### *async method* `is_same_sender(self, other)` {#MessageEvent.is_same_sender}
+### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
 
 判断自身和另一个事件是否是同一个发送者。
 
 - **Arguments**
 
-  - **other** (*Self*) - 另一个事件。
+  - **other** (_typing\_extensions.Self_) - 另一个事件。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   是否是同一个发送者。
 
-### *async method* `reply(self, message)` {#MessageEvent.reply}
+### _async method_ `reply(self, message)` {#MessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_OBMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `PrivateMessageEvent`(self, adapter, **data) {#PrivateMessageEvent}
+## _class_ `PrivateMessageEvent` {#PrivateMessageEvent}
 
 Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
 私聊消息事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['private']*)
+  - **detail\_type** (_Literal\['private'\]_)
 
-### *async method* `reply(self, message)` {#PrivateMessageEvent.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message)` {#PrivateMessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_OBMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `GroupMessageEvent`(self, adapter, **data) {#GroupMessageEvent}
+## _class_ `GroupMessageEvent` {#GroupMessageEvent}
 
 Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
 群消息事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['group']*)
+  - **detail\_type** (_Literal\['group'\]_)
 
-  - **group_id** (*str*)
+  - **group\_id** (_str_)
 
-### *async method* `reply(self, message)` {#GroupMessageEvent.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message)` {#GroupMessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_OBMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `ChannelMessageEvent`(self, adapter, **data) {#ChannelMessageEvent}
+## _class_ `ChannelMessageEvent` {#ChannelMessageEvent}
 
 Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
 频道消息事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['channel']*)
+  - **detail\_type** (_Literal\['channel'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **channel_id** (*str*)
+  - **channel\_id** (_str_)
 
-### *async method* `reply(self, message)` {#ChannelMessageEvent.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message)` {#ChannelMessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_OBMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `NoticeEvent`(self, adapter, **data) {#NoticeEvent}
+## _class_ `NoticeEvent` {#NoticeEvent}
 
 Bases: `alicebot.adapter.onebot.event.BotEvent`
 
 通知事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['notice']*)
+  - **type** (_Literal\['notice'\]_)
 
-## *class* `FriendIncreaseEvent`(self, adapter, **data) {#FriendIncreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendIncreaseEvent` {#FriendIncreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 好友增加事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['friend_increase']*)
+  - **detail\_type** (_Literal\['friend\_increase'\]_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-## *class* `FriendDecreaseEvent`(self, adapter, **data) {#FriendDecreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendDecreaseEvent` {#FriendDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 好友减少事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['friend_decrease']*)
+  - **detail\_type** (_Literal\['friend\_decrease'\]_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-## *class* `PrivateMessageDeleteEvent`(self, adapter, **data) {#PrivateMessageDeleteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `PrivateMessageDeleteEvent` {#PrivateMessageDeleteEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 私聊消息删除
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['private_message_delete']*)
+  - **detail\_type** (_Literal\['private\_message\_delete'\]_)
 
-  - **message_id** (*str*)
+  - **message\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-## *class* `GroupMemberIncreaseEvent`(self, adapter, **data) {#GroupMemberIncreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupMemberIncreaseEvent` {#GroupMemberIncreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 群成员增加事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['group_member_increase']*)
+  - **detail\_type** (_Literal\['group\_member\_increase'\]_)
 
-  - **group_id** (*str*)
+  - **group\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `GroupMemberDecreaseEvent`(self, adapter, **data) {#GroupMemberDecreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupMemberDecreaseEvent` {#GroupMemberDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 群成员减少事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['group_member_decrease']*)
+  - **detail\_type** (_Literal\['group\_member\_decrease'\]_)
 
-  - **group_id** (*str*)
+  - **group\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `GroupMessageDeleteEvent`(self, adapter, **data) {#GroupMessageDeleteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupMessageDeleteEvent` {#GroupMessageDeleteEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 群消息删除事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['group_message_delete']*)
+  - **detail\_type** (_Literal\['group\_message\_delete'\]_)
 
-  - **group_id** (*str*)
+  - **group\_id** (_str_)
 
-  - **message_id** (*str*)
+  - **message\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `GuildMemberIncreaseEvent`(self, adapter, **data) {#GuildMemberIncreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GuildMemberIncreaseEvent` {#GuildMemberIncreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 群组成员增加事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['guild_member_increase']*)
+  - **detail\_type** (_Literal\['guild\_member\_increase'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `GuildMemberDecreaseEvent`(self, adapter, **data) {#GuildMemberDecreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GuildMemberDecreaseEvent` {#GuildMemberDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 群组成员减少事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['guild_member_decrease']*)
+  - **detail\_type** (_Literal\['guild\_member\_decrease'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `ChannelMemberIncreaseEvent`(self, adapter, **data) {#ChannelMemberIncreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ChannelMemberIncreaseEvent` {#ChannelMemberIncreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 频道成员增加事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['channel_member_increase']*)
+  - **detail\_type** (_Literal\['channel\_member\_increase'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **channel_id** (*str*)
+  - **channel\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `ChannelMemberDecreaseEvent`(self, adapter, **data) {#ChannelMemberDecreaseEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ChannelMemberDecreaseEvent` {#ChannelMemberDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 频道成员减少事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['channel_member_decrease']*)
+  - **detail\_type** (_Literal\['channel\_member\_decrease'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **channel_id** (*str*)
+  - **channel\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `ChannelMessageDeleteEvent`(self, adapter, **data) {#ChannelMessageDeleteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ChannelMessageDeleteEvent` {#ChannelMessageDeleteEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 频道消息删除事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['channel_message_delete']*)
+  - **detail\_type** (_Literal\['channel\_message\_delete'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **channel_id** (*str*)
+  - **channel\_id** (_str_)
 
-  - **message_id** (*str*)
+  - **message\_id** (_str_)
 
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `ChannelCreateEvent`(self, adapter, **data) {#ChannelCreateEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ChannelCreateEvent` {#ChannelCreateEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 频道新建事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['channel_create']*)
+  - **detail\_type** (_Literal\['channel\_create'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **channel_id** (*str*)
+  - **channel\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `ChannelDeleteEvent`(self, adapter, **data) {#ChannelDeleteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `ChannelDeleteEvent` {#ChannelDeleteEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
 频道删除事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **detail_type** (*Literal['channel_delete']*)
+  - **detail\_type** (_Literal\['channel\_delete'\]_)
 
-  - **guild_id** (*str*)
+  - **guild\_id** (_str_)
 
-  - **channel_id** (*str*)
+  - **channel\_id** (_str_)
 
-  - **operator_id** (*str*)
+  - **operator\_id** (_str_)
 
-## *class* `RequestEvent`(self, adapter, **data) {#RequestEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `RequestEvent` {#RequestEvent}
 
 Bases: `alicebot.adapter.onebot.event.BotEvent`
 
 请求事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['request']*)
+  - **type** (_Literal\['request'\]_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_

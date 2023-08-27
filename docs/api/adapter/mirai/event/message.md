@@ -2,236 +2,308 @@
 
 消息事件。
 
-## *class* `MessageEvent`(self, adapter, **data) {#MessageEvent}
+## _class_ `MessageEvent` {#MessageEvent}
 
-Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`, `alicebot.event.MessageEvent`
+Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`, `alicebot.event.MessageEvent[MiraiAdapter]`
 
 消息事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **sender** (*Union[alicebot.adapter.mirai.event.base.FriendInfo, alicebot.adapter.mirai.event.base.GroupMemberInfo, alicebot.adapter.mirai.event.base.OtherClientSender]*)
+  - **sender** (_Union\[alicebot.adapter.mirai.event.base.FriendInfo, alicebot.adapter.mirai.event.base.GroupMemberInfo, alicebot.adapter.mirai.event.base.OtherClientSender\]_)
 
-  - **messageChain** (*alicebot.adapter.mirai.message.MiraiMessage*)
+  - **messageChain** (_alicebot.adapter.mirai.message.MiraiMessage_)
 
-### *method* `get_plain_text(self)` {#MessageEvent.get_plain_text}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
 
 获取消息的纯文本内容。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   消息的纯文本内容。
 
-### *async method* `is_same_sender(self, other)` {#MessageEvent.is_same_sender}
+### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
 
 判断自身和另一个事件是否是同一个发送者。
 
 - **Arguments**
 
-  - **other** (*Self*) - 另一个事件。
+  - **other** (_typing\_extensions.Self_) - 另一个事件。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   是否是同一个发送者。
 
-### *readonly property* `message` {#MessageEvent.message}
+### _readonly property_ `message` {#MessageEvent.message}
 
-Type: *alicebot.adapter.mirai.message.MiraiMessage*
+Type: _alicebot.adapter.mirai.message.MiraiMessage_
 
 与 messageChain 相同。
 
-### *async method* `reply(self, message, quote = False)` {#MessageEvent.reply}
+### _async method_ `reply(self, message, quote = False)` {#MessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_MiraiMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
-  - **quote** (*bool*) - 引用消息，默认为 `False`。
+  - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `FriendMessage`(self, adapter, **data) {#FriendMessage}
+## _class_ `FriendMessage` {#FriendMessage}
 
 Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 好友消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['FriendMessage']*)
+  - **type** (_Literal\['FriendMessage'\]_)
 
-  - **sender** (*alicebot.adapter.mirai.event.base.FriendInfo*)
+  - **sender** (_alicebot.adapter.mirai.event.base.FriendInfo_)
 
-### *async method* `reply(self, message, quote = False)` {#FriendMessage.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message, quote = False)` {#FriendMessage.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_MiraiMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
-  - **quote** (*bool*) - 引用消息，默认为 `False`。
+  - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `GroupMessage`(self, adapter, **data) {#GroupMessage}
+## _class_ `GroupMessage` {#GroupMessage}
 
 Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 群消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupMessage']*)
+  - **type** (_Literal\['GroupMessage'\]_)
 
-  - **sender** (*alicebot.adapter.mirai.event.base.GroupMemberInfo*)
+  - **sender** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-### *async method* `reply(self, message, quote = False)` {#GroupMessage.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message, quote = False)` {#GroupMessage.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_MiraiMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
-  - **quote** (*bool*) - 引用消息，默认为 `False`。
+  - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `TempMessage`(self, adapter, **data) {#TempMessage}
+## _class_ `TempMessage` {#TempMessage}
 
 Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 群临时消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['TempMessage']*)
+  - **type** (_Literal\['TempMessage'\]_)
 
-  - **sender** (*alicebot.adapter.mirai.event.base.GroupMemberInfo*)
+  - **sender** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-### *async method* `reply(self, message, quote = False)` {#TempMessage.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message, quote = False)` {#TempMessage.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_MiraiMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
-  - **quote** (*bool*) - 引用消息，默认为 `False`。
+  - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `StrangerMessage`(self, adapter, **data) {#StrangerMessage}
+## _class_ `StrangerMessage` {#StrangerMessage}
 
 Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 陌生人消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['StrangerMessage']*)
+  - **type** (_Literal\['StrangerMessage'\]_)
 
-  - **sender** (*alicebot.adapter.mirai.event.base.FriendInfo*)
+  - **sender** (_alicebot.adapter.mirai.event.base.FriendInfo_)
 
-### *async method* `reply(self, message, quote = False)` {#StrangerMessage.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message, quote = False)` {#StrangerMessage.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_MiraiMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
-  - **quote** (*bool*) - 引用消息，默认为 `False`。
+  - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `OtherClientMessage`(self, adapter, **data) {#OtherClientMessage}
+## _class_ `OtherClientMessage` {#OtherClientMessage}
 
 Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 其他客户端消息
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['OtherClientMessage']*)
+  - **type** (_Literal\['OtherClientMessage'\]_)
 
-  - **sender** (*alicebot.adapter.mirai.event.base.OtherClientSender*)
+  - **sender** (_alicebot.adapter.mirai.event.base.OtherClientSender_)
 
-### *async method* `reply(self, message, quote = False)` {#OtherClientMessage.reply}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reply(self, message, quote = False)` {#OtherClientMessage.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*T_MiraiMSG*) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
-  - **quote** (*bool*) - 引用消息，默认为 `False`。
+  - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。

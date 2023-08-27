@@ -2,228 +2,276 @@
 
 申请事件。
 
-## *class* `RequestEvent`(self, adapter, **data) {#RequestEvent}
+## _class_ `RequestEvent` {#RequestEvent}
 
 Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 申请事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-### *async method* `approve(self, message = '')` {#RequestEvent.approve}
+  Type: _None_
+
+### _async method_ `approve(self, message = '')` {#RequestEvent.approve}
 
 同意请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self, message = '')` {#RequestEvent.refuse}
+### _async method_ `refuse(self, message = '')` {#RequestEvent.refuse}
 
 拒绝请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `NewFriendRequestEvent`(self, adapter, **data) {#NewFriendRequestEvent}
+## _class_ `NewFriendRequestEvent` {#NewFriendRequestEvent}
 
 Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 添加好友申请
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['NewFriendRequestEvent']*)
+  - **type** (_Literal\['NewFriendRequestEvent'\]_)
 
-  - **eventId** (*int*)
+  - **eventId** (_int_)
 
-  - **fromId** (*int*)
+  - **fromId** (_int_)
 
-  - **groupId** (*int*)
+  - **groupId** (_int_)
 
-  - **nick** (*str*)
+  - **nick** (_str_)
 
-  - **message** (*str*)
+  - **message** (_str_)
 
-### *async method* `approve(self, message = '')` {#NewFriendRequestEvent.approve}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `approve(self, message = '')` {#NewFriendRequestEvent.approve}
 
 同意请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self, message = '', black_list = False)` {#NewFriendRequestEvent.refuse}
+### _async method_ `refuse(self, message = '', black_list = False)` {#NewFriendRequestEvent.refuse}
 
 拒绝请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
-  - **black_list** (*bool*) - 是否加入黑名单，默认为 `False`。
+  - **black\_list** (_bool_) - 是否加入黑名单，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `MemberJoinRequestEvent`(self, adapter, **data) {#MemberJoinRequestEvent}
+## _class_ `MemberJoinRequestEvent` {#MemberJoinRequestEvent}
 
 Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
-用户入群申请（Bot需要有管理员权限）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+用户入群申请 (Bot需要有管理员权限)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberJoinRequestEvent']*)
+  - **type** (_Literal\['MemberJoinRequestEvent'\]_)
 
-  - **eventId** (*int*)
+  - **eventId** (_int_)
 
-  - **fromId** (*int*)
+  - **fromId** (_int_)
 
-  - **groupId** (*int*)
+  - **groupId** (_int_)
 
-  - **groupName** (*str*)
+  - **groupName** (_str_)
 
-  - **nick** (*str*)
+  - **nick** (_str_)
 
-  - **message** (*str*)
+  - **message** (_str_)
 
-### *async method* `approve(self, message = '')` {#MemberJoinRequestEvent.approve}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `approve(self, message = '')` {#MemberJoinRequestEvent.approve}
 
 同意请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `ignore(self, message = '', black_list = False)` {#MemberJoinRequestEvent.ignore}
+### _async method_ `ignore(self, message = '', black_list = False)` {#MemberJoinRequestEvent.ignore}
 
 忽略请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
-  - **black_list** (*bool*) - 是否加入黑名单，默认为 `False`。
+  - **black\_list** (_bool_) - 是否加入黑名单，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self, message = '', black_list = False)` {#MemberJoinRequestEvent.refuse}
+### _async method_ `refuse(self, message = '', black_list = False)` {#MemberJoinRequestEvent.refuse}
 
 拒绝请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
-  - **black_list** (*bool*) - 是否加入黑名单，默认为 `False`。
+  - **black\_list** (_bool_) - 是否加入黑名单，默认为 `False`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-## *class* `BotInvitedJoinGroupRequestEvent`(self, adapter, **data) {#BotInvitedJoinGroupRequestEvent}
+## _class_ `BotInvitedJoinGroupRequestEvent` {#BotInvitedJoinGroupRequestEvent}
 
 Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 Bot 被邀请入群申请
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotInvitedJoinGroupRequestEvent']*)
+  - **type** (_Literal\['BotInvitedJoinGroupRequestEvent'\]_)
 
-  - **eventId** (*int*)
+  - **eventId** (_int_)
 
-  - **fromId** (*int*)
+  - **fromId** (_int_)
 
-  - **groupId** (*int*)
+  - **groupId** (_int_)
 
-  - **groupName** (*str*)
+  - **groupName** (_str_)
 
-  - **nick** (*str*)
+  - **nick** (_str_)
 
-  - **message** (*str*)
+  - **message** (_str_)
 
-### *async method* `approve(self, message = '')` {#BotInvitedJoinGroupRequestEvent.approve}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `approve(self, message = '')` {#BotInvitedJoinGroupRequestEvent.approve}
 
 同意请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。
 
-### *async method* `refuse(self, message = '')` {#BotInvitedJoinGroupRequestEvent.refuse}
+### _async method_ `refuse(self, message = '')` {#BotInvitedJoinGroupRequestEvent.refuse}
 
 拒绝请求。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复的信息，默认为空。
+  - **message** (_str_) - 回复的信息，默认为空。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   API 请求响应。

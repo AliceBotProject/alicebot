@@ -48,7 +48,7 @@ Initialize self.  See help(type(self)) for accurate signature.
 
 - **Returns**
 
-  Type: _TypeGuard\[Type\[alicebot.config.ConfigModel\]\]_
+  Type: _typing\_extensions.TypeGuard\[typing.Type\[alicebot.config.ConfigModel\]\]_
 
   返回是否是配置类。
 
@@ -188,13 +188,13 @@ version of the object or raise a ``TypeError``.
 
 - **Arguments**
 
-  - **func** (_Callable\[~\_P, ~\_R\]_) - 待包装的同步函数。
+  - **func** (_Callable\[\[~\_P\], ~\_R\]_) - 待包装的同步函数。
 
   - **to\_thread** (_bool_) - 是否在独立的线程中运行同步函数。默认为 `False`。
 
 - **Returns**
 
-  Type: _Callable\[~\_P, Coroutine\[NoneType, NoneType, ~\_R\]\]_
+  Type: _Callable\[\[~\_P\], Coroutine\[NoneType, NoneType, ~\_R\]\]_
 
   异步函数。
 
@@ -227,3 +227,23 @@ version of the object or raise a ``TypeError``.
   Type: _Callable\[\[~EventT\], Awaitable\[bool\]\]_
 
   异步函数。
+
+## _function_ `get_annotations(obj)` {#get\_annotations}
+
+计算一个对象的标注字典。
+
+- **Arguments**
+
+  - **obj** (_Union\[Callable\[..., object\], Type\[Any\], module\]_) - 一个可调用对象、类或模块。
+
+- **Returns**
+
+  Type: _Dict\[str, Any\]_
+
+  对象的标注字典。
+
+- **Raises**
+
+  - **TypeError** - `obj` 不是一个可调用对象、类或模块。
+
+  - **ValueError** - 对象的 `__annotations__` 不是一个字典或 `None`。

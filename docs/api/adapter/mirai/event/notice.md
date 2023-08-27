@@ -2,666 +2,1118 @@
 
 通知事件。
 
-## *class* `NoticeEvent`(self, adapter, **data) {#NoticeEvent}
+## _class_ `NoticeEvent` {#NoticeEvent}
 
 Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 通知事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-## *class* `NudgeEvent`(self, adapter, **data) {#NudgeEvent}
+  Type: _None_
+
+## _class_ `NudgeEvent` {#NudgeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
 戳一戳事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['NudgeEvent']*)
+  - **type** (_Literal\['NudgeEvent'\]_)
 
-  - **fromId** (*int*)
+  - **fromId** (_int_)
 
-  - **subject** (*alicebot.adapter.mirai.event.base.Subject*)
+  - **subject** (_alicebot.adapter.mirai.event.base.Subject_)
 
-  - **action** (*str*)
+  - **action** (_str_)
 
-  - **suffix** (*str*)
+  - **suffix** (_str_)
 
-  - **target** (*int*)
+  - **target** (_int_)
 
-## *class* `FriendEvent`(self, adapter, **data) {#FriendEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendEvent` {#FriendEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
 好友事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-- **Attributes**
+  Type: _None_
 
-  - **friend** (*alicebot.adapter.mirai.event.base.FriendInfo*)
-
-## *class* `FriendInputStatusChangedEvent`(self, adapter, **data) {#FriendInputStatusChangedEvent}
+## _class_ `FriendInputStatusChangedEvent` {#FriendInputStatusChangedEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.FriendEvent`
 
 好友输入状态改变
 
+- **Attributes**
+
+  - **type** (_Literal\['FriendInputStatusChangedEvent'\]_)
+
+  - **friend** (_alicebot.adapter.mirai.event.base.FriendInfo_)
+
+  - **inputting** (_bool_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendNickChangedEvent` {#FriendNickChangedEvent}
+
+Bases: `alicebot.adapter.mirai.event.notice.FriendEvent`
+
+好友事件
 
 - **Attributes**
 
-  - **type** (*Literal['FriendInputStatusChangedEvent']*)
+  - **type** (_Literal\['FriendNickChangedEvent'\]_)
 
-  - **inputting** (*bool*)
+  - **friend** (_alicebot.adapter.mirai.event.base.FriendInfo_)
 
-## *class* `FriendRecallEvent`(self, adapter, **data) {#FriendRecallEvent}
+  - **from** (_str_)
+
+  - **to** (_str_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendRecallEvent` {#FriendRecallEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.FriendEvent`
 
 好友消息撤回
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['FriendRecallEvent']*)
+  - **type** (_Literal\['FriendRecallEvent'\]_)
 
-  - **authorId** (*int*)
+  - **authorId** (_int_)
 
-  - **messageId** (*int*)
+  - **messageId** (_int_)
 
-  - **time** (*int*)
+  - **time** (_int_)
 
-  - **operator** (*int*)
+  - **operator** (_int_)
 
-## *class* `GroupEvent`(self, adapter, **data) {#GroupEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupEvent` {#GroupEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
 群事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-## *class* `GroupBotEvent`(self, adapter, **data) {#GroupBotEvent}
+  Type: _None_
+
+## _class_ `GroupBotEvent` {#GroupBotEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
 与 Bot 相关的群事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-## *class* `BotGroupPermissionChangeEvent`(self, adapter, **data) {#BotGroupPermissionChangeEvent}
+  Type: _None_
+
+## _class_ `BotGroupPermissionChangeEvent` {#BotGroupPermissionChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot 在群里的权限被改变. 操作人一定是群主
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotGroupPermissionChangeEvent']*)
+  - **type** (_Literal\['BotGroupPermissionChangeEvent'\]_)
 
-  - **origin** (*Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']*)
+  - **origin** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-  - **current** (*Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']*)
+  - **current** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-## *class* `BotMuteEvent`(self, adapter, **data) {#BotMuteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotMuteEvent` {#BotMuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot 被禁言
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotMuteEvent']*)
+  - **type** (_Literal\['BotMuteEvent'\]_)
 
-  - **operator** (*alicebot.adapter.mirai.event.base.GroupMemberInfo*)
+  - **operator** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-## *class* `BotUnmuteEvent`(self, adapter, **data) {#BotUnmuteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotUnmuteEvent` {#BotUnmuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot 被取消禁言
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotUnmuteEvent']*)
+  - **type** (_Literal\['BotUnmuteEvent'\]_)
 
-  - **operator** (*alicebot.adapter.mirai.event.base.GroupMemberInfo*)
+  - **operator** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-## *class* `BotJoinGroupEvent`(self, adapter, **data) {#BotJoinGroupEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotJoinGroupEvent` {#BotJoinGroupEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot加入了一个新群
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotJoinGroupEvent']*)
+  - **type** (_Literal\['BotJoinGroupEvent'\]_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-## *class* `BotLeaveEventActive`(self, adapter, **data) {#BotLeaveEventActive}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotLeaveEventActive` {#BotLeaveEventActive}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot 主动退出一个群
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotLeaveEventActive']*)
+  - **type** (_Literal\['BotLeaveEventActive'\]_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-## *class* `BotLeaveEventKick`(self, adapter, **data) {#BotLeaveEventKick}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotLeaveEventKick` {#BotLeaveEventKick}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot 被踢出一个群
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotLeaveEventKick']*)
+  - **type** (_Literal\['BotLeaveEventKick'\]_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-## *class* `BotLeaveEventDisband`(self, adapter, **data) {#BotLeaveEventDisband}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotLeaveEventDisband` {#BotLeaveEventDisband}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
 Bot 所在的群被解散
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotLeaveEventDisband']*)
+  - **type** (_Literal\['BotLeaveEventDisband'\]_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-## *class* `GroupNoticeEvent`(self, adapter, **data) {#GroupNoticeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupNoticeEvent` {#GroupNoticeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
 其他群事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-## *class* `GroupRecallEvent`(self, adapter, **data) {#GroupRecallEvent}
+  Type: _None_
+
+## _class_ `GroupRecallEvent` {#GroupRecallEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 群消息撤回
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupRecallEvent']*)
+  - **type** (_Literal\['GroupRecallEvent'\]_)
 
-  - **authorId** (*int*)
+  - **authorId** (_int_)
 
-  - **messageId** (*int*)
+  - **messageId** (_int_)
 
-  - **time** (*int*)
+  - **time** (_int_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `GroupNameChangeEvent`(self, adapter, **data) {#GroupNameChangeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupNameChangeEvent` {#GroupNameChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 某个群名改变
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupNameChangeEvent']*)
+  - **type** (_Literal\['GroupNameChangeEvent'\]_)
 
-  - **origin** (*str*)
+  - **origin** (_str_)
 
-  - **current** (*str*)
+  - **current** (_str_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `GroupEntranceAnnouncementChangeEvent`(self, adapter, **data) {#GroupEntranceAnnouncementChangeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupEntranceAnnouncementChangeEvent` {#GroupEntranceAnnouncementChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 某群入群公告改变
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupEntranceAnnouncementChangeEvent']*)
+  - **type** (_Literal\['GroupEntranceAnnouncementChangeEvent'\]_)
 
-  - **origin** (*str*)
+  - **origin** (_str_)
 
-  - **current** (*str*)
+  - **current** (_str_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `GroupMuteAllEvent`(self, adapter, **data) {#GroupMuteAllEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupMuteAllEvent` {#GroupMuteAllEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 全员禁言
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupMuteAllEvent']*)
+  - **type** (_Literal\['GroupMuteAllEvent'\]_)
 
-  - **origin** (*bool*)
+  - **origin** (_bool_)
 
-  - **current** (*bool*)
+  - **current** (_bool_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `GroupAllowAnonymousChatEvent`(self, adapter, **data) {#GroupAllowAnonymousChatEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupAllowAnonymousChatEvent` {#GroupAllowAnonymousChatEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 匿名聊天
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupAllowAnonymousChatEvent']*)
+  - **type** (_Literal\['GroupAllowAnonymousChatEvent'\]_)
 
-  - **origin** (*bool*)
+  - **origin** (_bool_)
 
-  - **current** (*bool*)
+  - **current** (_bool_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `GroupAllowConfessTalkEvent`(self, adapter, **data) {#GroupAllowConfessTalkEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupAllowConfessTalkEvent` {#GroupAllowConfessTalkEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 坦白说
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupAllowAnonymousChatEvent']*)
+  - **type** (_Literal\['GroupAllowAnonymousChatEvent'\]_)
 
-  - **origin** (*bool*)
+  - **origin** (_bool_)
 
-  - **current** (*bool*)
+  - **current** (_bool_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **isByBot** (*bool*)
+  - **isByBot** (_bool_)
 
-## *class* `GroupAllowMemberInviteEvent`(self, adapter, **data) {#GroupAllowMemberInviteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupAllowMemberInviteEvent` {#GroupAllowMemberInviteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
 允许群员邀请好友加群
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['GroupAllowMemberInviteEvent']*)
+  - **type** (_Literal\['GroupAllowMemberInviteEvent'\]_)
 
-  - **origin** (*bool*)
+  - **origin** (_bool_)
 
-  - **current** (*bool*)
+  - **current** (_bool_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `GroupMemberEvent`(self, adapter, **data) {#GroupMemberEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupMemberEvent` {#GroupMemberEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
 群成员相关事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **member** (*alicebot.adapter.mirai.event.base.GroupMemberInfo*)
+  - **member** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-## *class* `MemberJoinEvent`(self, adapter, **data) {#MemberJoinEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberJoinEvent` {#MemberJoinEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 新人入群的事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['MemberJoinEvent']*)
+  - **type** (_Literal\['MemberJoinEvent'\]_)
 
-## *class* `MemberLeaveEventKick`(self, adapter, **data) {#MemberLeaveEventKick}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberLeaveEventKick` {#MemberLeaveEventKick}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-成员被踢出群（该成员不是Bot）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+成员被踢出群 (该成员不是Bot)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberLeaveEventKick']*)
+  - **type** (_Literal\['MemberLeaveEventKick'\]_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `MemberLeaveEventQuit`(self, adapter, **data) {#MemberLeaveEventQuit}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberLeaveEventQuit` {#MemberLeaveEventQuit}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-成员主动离群（该成员不是Bot）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+成员主动离群 (该成员不是Bot)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberLeaveEventQuit']*)
+  - **type** (_Literal\['MemberLeaveEventQuit'\]_)
 
-## *class* `MemberCardChangeEvent`(self, adapter, **data) {#MemberCardChangeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberCardChangeEvent` {#MemberCardChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 群名片改动
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['MemberCardChangeEvent']*)
+  - **type** (_Literal\['MemberCardChangeEvent'\]_)
 
-  - **origin** (*str*)
+  - **origin** (_str_)
 
-  - **current** (*str*)
+  - **current** (_str_)
 
-## *class* `MemberSpecialTitleChangeEvent`(self, adapter, **data) {#MemberSpecialTitleChangeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberSpecialTitleChangeEvent` {#MemberSpecialTitleChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-群头衔改动（只有群主有操作限权）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+群头衔改动 (只有群主有操作限权)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberSpecialTitleChangeEvent']*)
+  - **type** (_Literal\['MemberSpecialTitleChangeEvent'\]_)
 
-  - **origin** (*str*)
+  - **origin** (_str_)
 
-  - **current** (*str*)
+  - **current** (_str_)
 
-## *class* `MemberPermissionChangeEvent`(self, adapter, **data) {#MemberPermissionChangeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberPermissionChangeEvent` {#MemberPermissionChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-成员权限改变的事件（该成员不是Bot）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+成员权限改变的事件 (该成员不是Bot)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberPermissionChangeEvent']*)
+  - **type** (_Literal\['MemberPermissionChangeEvent'\]_)
 
-  - **origin** (*Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']*)
+  - **origin** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-  - **current** (*Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']*)
+  - **current** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-## *class* `MemberMuteEvent`(self, adapter, **data) {#MemberMuteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberMuteEvent` {#MemberMuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-群成员被禁言事件（该成员不是Bot）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+群成员被禁言事件 (该成员不是Bot)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberMuteEvent']*)
+  - **type** (_Literal\['MemberMuteEvent'\]_)
 
-  - **durationSeconds** (*int*)
+  - **durationSeconds** (_int_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `MemberUnmuteEvent`(self, adapter, **data) {#MemberUnmuteEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberUnmuteEvent` {#MemberUnmuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-群成员被取消禁言事件（该成员不是Bot）
-
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
+群成员被取消禁言事件 (该成员不是Bot)
 
 - **Attributes**
 
-  - **type** (*Literal['MemberUnmuteEvent']*)
+  - **type** (_Literal\['MemberUnmuteEvent'\]_)
 
-  - **operator** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-## *class* `MemberHonorChangeEvent`(self, adapter, **data) {#MemberHonorChangeEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MemberHonorChangeEvent` {#MemberHonorChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 群员称号改变
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['MemberHonorChangeEvent']*)
+  - **type** (_Literal\['MemberHonorChangeEvent'\]_)
 
-  - **action** (*Literal['achieve', 'lose']*)
+  - **action** (_Literal\['achieve', 'lose'\]_)
 
-## *class* `OtherClientEvent`(self, adapter, **data) {#OtherClientEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `OtherClientEvent` {#OtherClientEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
 其他客户端事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **client** (*alicebot.adapter.mirai.event.base.OtherClientSender*)
+  - **client** (_alicebot.adapter.mirai.event.base.OtherClientSender_)
 
-## *class* `OtherClientOnlineEvent`(self, adapter, **data) {#OtherClientOnlineEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `OtherClientOnlineEvent` {#OtherClientOnlineEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.OtherClientEvent`
 
 其他客户端上线
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['OtherClientOnlineEvent']*)
+  - **type** (_Literal\['OtherClientOnlineEvent'\]_)
 
-  - **kind** (*Optional[int]*)
+  - **kind** (_Optional\[int\]_)
 
-## *class* `OtherClientOfflineEvent`(self, adapter, **data) {#OtherClientOfflineEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `OtherClientOfflineEvent` {#OtherClientOfflineEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.OtherClientEvent`
 
 其他客户端下线
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['OtherClientOfflineEvent']*)
+  - **type** (_Literal\['OtherClientOfflineEvent'\]_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_

@@ -77,7 +77,7 @@ allow `self` as a field name.
 
 - **Returns**
 
-  Type: _Self_
+  Type: _typing\_extensions.Self_
 
   用户回复的消息事件。
 
@@ -95,7 +95,7 @@ allow `self` as a field name.
 
 - **Returns**
 
-  Type: _Self_
+  Type: _typing\_extensions.Self_
 
   用户回复的消息事件。
 
@@ -119,7 +119,7 @@ allow `self` as a field name.
 
 - **Arguments**
 
-  - **other** (_Self_) - 另一个事件。
+  - **other** (_typing\_extensions.Self_) - 另一个事件。
 
 - **Returns**
 

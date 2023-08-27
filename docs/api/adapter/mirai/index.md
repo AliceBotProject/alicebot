@@ -4,70 +4,92 @@ Mirai 协议适配器。
 
 本适配器适配了 mirai-api-http 协议，仅支持 mirai-api-http 2.3.0 及以上版本。
 本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
-协议详情请参考: [mirai-api-http](https://github.com/project-mirai/mirai-api-http) 。
+协议详情请参考：[mirai-api-http](https://github.com/project-mirai/mirai-api-http)。
 
-## *class* `MiraiAdapter`(self, bot) {#MiraiAdapter}
+## _class_ `MiraiAdapter` {#MiraiAdapter}
 
 Bases: `alicebot.adapter.utils.WebSocketAdapter`
 
 Mirai 协议适配器。
 
-在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API ，
+在插件中可以直接使用 `self.adapter.xxx_api(**params)` 调用名称为 `xxx_api` 的 API，
 和调用 `call_api()` 方法相同。
-
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
 
 - **Attributes**
 
-  - **name** (*str*)
+  - **name** (_str_)
 
-  - **event_models** (*ClassVar[Dict[str, Type[alicebot.adapter.mirai.event.base.MiraiEvent]]]*)
+  - **event\_models** (_ClassVar\[Dict\[str, Type\[alicebot.adapter.mirai.event.base.MiraiEvent\]\]\]_)
 
-### *class* `Config`(__pydantic_self__, **data) {#Config}
+### _class_ `Config` {#Config}
 
 Bases: `alicebot.config.ConfigModel`
 
 Mirai 配置类，将在适配器被加载时被混入到机器人主配置中。
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **adapter_type** (*Literal['ws', 'reverse-ws']*) - 适配器类型，需要和协议端配置相同。
+  - **adapter\_type** (_Literal\['ws', 'reverse-ws'\]_) - 适配器类型，需要和协议端配置相同。
 
-  - **host** (*str*) - 本机域名。
+  - **host** (_str_) - 本机域名。
 
-  - **port** (*int*) - 监听的端口。
+  - **port** (_int_) - 监听的端口。
 
-  - **url** (*str*) - WebSocket 路径，需要和协议端配置相同。
+  - **url** (_str_) - WebSocket 路径，需要和协议端配置相同。
 
-  - **reconnect_interval** (*int*) - 重连等待时间。
+  - **reconnect\_interval** (_int_) - 重连等待时间。
 
-  - **api_timeout** (*int*) - 进行 API 调用时等待返回响应的超时时间。
+  - **api\_timeout** (_int_) - 进行 API 调用时等待返回响应的超时时间。
 
-  - **verify_key** (*str*) - 建立连接时的认证密钥，需要和 mirai-api-http 配置中的 `verifyKey` 相同，如果关闭验证则留空。
+  - **verify\_key** (_str_) - 建立连接时的认证密钥，需要和 mirai-api-http 配置中的 `verifyKey` 相同，如果关闭验证则留空。
 
-  - **qq** (*int*) - 机器人的 QQ 号码，必须指定。
+  - **qq** (_int_) - 机器人的 QQ 号码，必须指定。
 
-### *async method* `call_api(self, command, sub_command = None, **content)` {#MiraiAdapter.call_api}
+#### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-调用 Mirai API ，协程会等待直到获得 API 响应。
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
 
 - **Arguments**
 
-  - **command** (*str*) - 命令字。
-
-  - **sub_command** (*Optional[str]*) - 子命令字。
-
-  - ****content** (*Any*) - 请求内容。
+  - **data** (_Any_)
 
 - **Returns**
 
-  Type: *Any*
+  Type: _None_
+
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `call_api(self, command, sub_command = None, **content)` {#MiraiAdapter.call\_api}
+
+调用 Mirai API，协程会等待直到获得 API 响应。
+
+- **Arguments**
+
+  - **command** (_str_) - 命令字。
+
+  - **sub\_command** (_Optional\[str\]_) - 子命令字。
+
+  - **\*\*content** (_Any_) - 请求内容。
+
+- **Returns**
+
+  Type: _Any_
 
   API 响应中的 data 字段，即 Mirai-api-http API 通用接口中的内容。
 
@@ -79,59 +101,67 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **ApiTimeout** - API 请求响应超时。
 
-### *class method* `get_event_model(cls, event_type)` {#MiraiAdapter.get_event_model}
+### _method_ `get_event_model(event_type)` {#MiraiAdapter.get\_event\_model}
 
 根据接收到的消息类型返回对应的事件类。
 
-- **Arguments**
-
-  - **event_type** (*str*) - 事件类型。
-
 - **Returns**
 
-  Type: *Type[alicebot.adapter.mirai.event.base.MiraiEvent]*
+  Type: _Type\[alicebot.adapter.mirai.event.base.MiraiEvent\]_
 
   对应的事件类。
 
-### *async method* `handle_mirai_event(self, msg)` {#MiraiAdapter.handle_mirai_event}
+### _async method_ `handle_mirai_event(self, msg)` {#MiraiAdapter.handle\_mirai\_event}
 
 处理 Mirai 事件。
 
 - **Arguments**
 
-  - **msg** (*Dict[str, Any]*) - 接收到的信息。
+  - **msg** (_Dict\[str, Any\]_) - 接收到的信息。
 
-### *async method* `handle_websocket_msg(self, msg)` {#MiraiAdapter.handle_websocket_msg}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_websocket_msg(self, msg)` {#MiraiAdapter.handle\_websocket\_msg}
 
 处理 WebSocket 消息。
 
 - **Arguments**
 
-  - **msg** (*aiohttp.http_websocket.WSMessage*)
+  - **msg** (_aiohttp.http\_websocket.WSMessage_)
 
-### *async method* `reverse_ws_connection_hook(self)` {#MiraiAdapter.reverse_ws_connection_hook}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `reverse_ws_connection_hook(self)` {#MiraiAdapter.reverse\_ws\_connection\_hook}
 
 反向 WebSocket 连接建立时的钩子函数。
 
-### *async method* `send(self, message_, message_type, target, quote = None)` {#MiraiAdapter.send}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `send(self, message_, message_type, target, quote = None)` {#MiraiAdapter.send}
 
 调用 Mirai API 发送消息。
 
 - **Arguments**
 
-  - **message_** (*T_MiraiMSG*) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
+  - **message\_** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
   `MiraiMessageSegment`, `MiraiMessage`。
   将使用 `MiraiMessage` 进行封装。
 
-  - **message_type** (*Literal['private', 'friend', 'group']*) - 消息类型。应该是 "private", "friend" 或者 "group"。其中 "private" 和 "friend" 相同。
+  - **message\_type** (_Literal\['private', 'friend', 'group'\]_) - 消息类型。应该是 "private", "friend" 或者 "group"。其中 "private" 和 "friend" 相同。
 
-  - **target** (*int*) - 发送对象的 ID ， QQ 号码或者群号码。
+  - **target** (_int_) - 发送对象的 ID， QQ 号码或者群号码。
 
-  - **quote** (*Optional[int]*) - 引用的消息的 `messageId`。默认为 `None`，不引用任何消息。
+  - **quote** (_Optional\[int\]_) - 引用的消息的 `messageId`。默认为 `None`，不引用任何消息。
 
 - **Returns**
 
-  Type: *Any*
+  Type: _Any_
 
   API 响应。
 
@@ -141,14 +171,26 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **...** - 同 `call_api()` 方法。
 
-### *async method* `startup(self)` {#MiraiAdapter.startup}
+### _async method_ `startup(self)` {#MiraiAdapter.startup}
 
 初始化适配器。
 
-### *async method* `verify_identity(self)` {#MiraiAdapter.verify_identity}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `verify_identity(self)` {#MiraiAdapter.verify\_identity}
 
 验证身份，创建与 Mirai-api-http 的连接。
 
-### *async method* `websocket_connect(self)` {#MiraiAdapter.websocket_connect}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `websocket_connect(self)` {#MiraiAdapter.websocket\_connect}
 
 创建正向 WebSocket 连接。
+
+- **Returns**
+
+  Type: _None_

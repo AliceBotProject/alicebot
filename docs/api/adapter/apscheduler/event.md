@@ -2,36 +2,50 @@
 
 APScheduler 适配器事件。
 
-## *class* `APSchedulerEvent`(self, adapter, **data) {#APSchedulerEvent}
+## _class_ `APSchedulerEvent` {#APSchedulerEvent}
 
-Bases: `alicebot.event.Event`
+Bases: `alicebot.event.Event[APSchedulerAdapter]`
 
 APSchedulerEvent 事件基类。
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **plugin_class** (*Type[alicebot.plugin.Plugin[Any, Any, Any]]*)
+  - **type** (_str_)
 
-### *readonly property* `job` {#APSchedulerEvent.job}
+  - **plugin\_class** (_Type\[alicebot.plugin.Plugin\]_)
 
-Type: *Job*
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _readonly property_ `job` {#APSchedulerEvent.job}
+
+Type: _apscheduler.job.Job_
 
 产生当前事件的 APScheduler `Job` 对象。
 
-### *readonly property* `trigger` {#APSchedulerEvent.trigger}
+### _readonly property_ `trigger` {#APSchedulerEvent.trigger}
 
-Type: *Union[str, BaseTrigger]*
+Type: _Union\[str, apscheduler.triggers.base.BaseTrigger\]_
 
 当前事件对应的 Plugin 的 `trigger`。
 
-### *readonly property* `trigger_args` {#APSchedulerEvent.trigger_args}
+### _readonly property_ `trigger_args` {#APSchedulerEvent.trigger\_args}
 
-Type: *Dict[str, Any]*
+Type: _Dict\[str, Any\]_
 
 当前事件对应的 Plugin 的 `trigger_args`。

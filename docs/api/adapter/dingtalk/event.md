@@ -2,135 +2,175 @@
 
 DingTalk 适配器事件。
 
-## *class* `UserInfo`(__pydantic_self__, **data) {#UserInfo}
+## _class_ `UserInfo` {#UserInfo}
 
 Bases: `pydantic.main.BaseModel`
 
 用户信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **dingtalkId** (*str*)
+  - **dingtalkId** (_str_)
 
-  - **staffId** (*Optional[str]*)
+  - **staffId** (_Optional\[str\]_)
 
-## *class* `Text`(__pydantic_self__, **data) {#Text}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `Text` {#Text}
 
 Bases: `pydantic.main.BaseModel`
 
 文本消息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **content** (*str*)
+  - **content** (_str_)
 
-## *class* `DingTalkEvent`(self, adapter, **data) {#DingTalkEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `alicebot.event.MessageEvent`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `DingTalkEvent` {#DingTalkEvent}
+
+Bases: `alicebot.event.MessageEvent[DingTalkAdapter]`
 
 DingTalk 事件基类
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Optional[str]*)
+  - **type** (_Optional\[str\]_)
 
-  - **msgtype** (*str*)
+  - **msgtype** (_str_)
 
-  - **msgId** (*str*)
+  - **msgId** (_str_)
 
-  - **createAt** (*str*)
+  - **createAt** (_str_)
 
-  - **conversationType** (*Literal['1', '2']*)
+  - **conversationType** (_Literal\['1', '2'\]_)
 
-  - **conversationId** (*str*)
+  - **conversationId** (_str_)
 
-  - **conversationTitle** (*Optional[str]*)
+  - **conversationTitle** (_Optional\[str\]_)
 
-  - **senderId** (*str*)
+  - **senderId** (_str_)
 
-  - **senderNick** (*str*)
+  - **senderNick** (_str_)
 
-  - **senderCorpId** (*Optional[str]*)
+  - **senderCorpId** (_Optional\[str\]_)
 
-  - **sessionWebhook** (*str*)
+  - **sessionWebhook** (_str_)
 
-  - **sessionWebhookExpiredTime** (*int*)
+  - **sessionWebhookExpiredTime** (_int_)
 
-  - **isAdmin** (*Optional[bool]*)
+  - **isAdmin** (_Optional\[bool\]_)
 
-  - **chatbotCorpId** (*Optional[str]*)
+  - **chatbotCorpId** (_Optional\[str\]_)
 
-  - **isInAtList** (*Optional[bool]*)
+  - **isInAtList** (_Optional\[bool\]_)
 
-  - **senderStaffId** (*Optional[str]*)
+  - **senderStaffId** (_Optional\[str\]_)
 
-  - **chatbotUserId** (*str*)
+  - **chatbotUserId** (_str_)
 
-  - **atUsers** (*List[alicebot.adapter.dingtalk.event.UserInfo]*)
+  - **atUsers** (_List\[alicebot.adapter.dingtalk.event.UserInfo\]_)
 
-  - **text** (*alicebot.adapter.dingtalk.event.Text*)
+  - **text** (_Text_)
 
-  - **response_msg** (*Union[NoneType, str, Dict[str, Any], alicebot.adapter.dingtalk.message.DingTalkMessage]*)
+  - **response\_msg** (_Union\[NoneType, str, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
-  - **response_at** (*Union[NoneType, Dict[str, Any], alicebot.adapter.dingtalk.message.DingTalkMessage]*)
+  - **response\_at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
-### *method* `get_plain_text(self)` {#DingTalkEvent.get_plain_text}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `get_plain_text(self)` {#DingTalkEvent.get\_plain\_text}
 
 获取消息的纯文本内容。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   消息的纯文本内容。
 
-### *async method* `is_same_sender(self, other)` {#DingTalkEvent.is_same_sender}
+### _async method_ `is_same_sender(self, other)` {#DingTalkEvent.is\_same\_sender}
 
 判断自身和另一个事件是否是同一个发送者。
 
 - **Arguments**
 
-  - **other** (*Self*) - 另一个事件。
+  - **other** (_typing\_extensions.Self_) - 另一个事件。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   是否是同一个发送者。
 
-### *readonly property* `message` {#DingTalkEvent.message}
+### _readonly property_ `message` {#DingTalkEvent.message}
 
-Type: *alicebot.adapter.dingtalk.message.DingTalkMessage*
+Type: _alicebot.adapter.dingtalk.message.DingTalkMessage_
 
 返回 message 字段。
 
-### *async method* `reply(self, message, at = None)` {#DingTalkEvent.reply}
+### _async method_ `reply(self, message, at = None)` {#DingTalkEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*Union[str, Dict[str, Any], alicebot.adapter.dingtalk.message.DingTalkMessage]*) - 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
+  - **message** (_Union\[str, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
 
-  - **at** (*Union[NoneType, Dict[str, Any], alicebot.adapter.dingtalk.message.DingTalkMessage]*) - 回复消息时 At 的对象，必须时 at 类型的 `DingTalkMessage`，或者符合标准的 `Dict`。
+  - **at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 回复消息时 At 的对象，必须时 at 类型的 `DingTalkMessage`，或者符合标准的 `Dict`。
 
 - **Returns**
 
-  Type: *Dict[str, Any]*
+  Type: _Dict\[str, Any\]_
 
   调用 Webhook 地址后钉钉服务器的响应。
 

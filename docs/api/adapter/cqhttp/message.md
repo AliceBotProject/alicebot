@@ -2,368 +2,356 @@
 
 CQHTTP 适配器消息。
 
-## *class* `CQHTTPMessage`(self, message = None) {#CQHTTPMessage}
+## _class_ `CQHTTPMessage` {#CQHTTPMessage}
 
 Bases: `alicebot.message.Message`
 
 CQHTTP 消息。
 
+### _method_ `__init__(self, *messages)` {#Message.\_\_init\_\_}
+
+初始化。
+
 - **Arguments**
 
-  - **message** (*Union[Self, ~T_MessageSegment, str, Mapping[str, Any], Iterable[Union[~T_MessageSegment, str, Mapping[str, Any]]], NoneType]*) - 可以被转化为消息的数据。
+  - **\*messages** (_Union\[List\[~MessageSegmentT\], ~MessageSegmentT, str, Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
 
-  - ***args** - 其他参数。
+- **Returns**
 
-## *class* `CQHTTPMessageSegment`(self, type, data = \<factory\>) {#CQHTTPMessageSegment}
+  Type: _None_
 
-Bases: `alicebot.message.MessageSegment`
+### _method_ `get_segment_class()` {#CQHTTPMessage.get\_segment\_class}
+
+获取消息字段类。
+
+- **Returns**
+
+  Type: _Type\[CQHTTPMessageSegment\]_
+
+  消息字段类。
+
+## _class_ `CQHTTPMessageSegment` {#CQHTTPMessageSegment}
+
+Bases: `alicebot.message.MessageSegment[CQHTTPMessage]`
 
 CQHTTP 消息字段。
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **type** (*str*)
+  - **data** (_Any_)
 
-  - **data** (*Dict[str, Any]*)
+- **Returns**
 
-### *class method* `anonymous(cls, ignore = None)` {#CQHTTPMessageSegment.anonymous}
+  Type: _None_
+
+### _method_ `anonymous(ignore = None)` {#CQHTTPMessageSegment.anonymous}
 
 匿名发消息
 
-- **Arguments**
-
-  - **ignore** (*Optional[bool]*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `at(cls, qq)` {#CQHTTPMessageSegment.at}
+### _method_ `at(qq)` {#CQHTTPMessageSegment.at}
 
 @某人
 
-- **Arguments**
-
-  - **qq** (*Union[int, Literal['all']]*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `contact(cls, type_, id_)` {#CQHTTPMessageSegment.contact}
+### _method_ `contact(type_, id_)` {#CQHTTPMessageSegment.contact}
 
 推荐好友/推荐群
 
 - **Arguments**
 
-  - **type_** (*Literal['qq', 'group']*)
-
-  - **id_** (*int*)
+  - **id\_** (_int_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `contact_friend(cls, id_)` {#CQHTTPMessageSegment.contact_friend}
+### _method_ `contact_friend(id_)` {#CQHTTPMessageSegment.contact\_friend}
 
 推荐好友
 
-- **Arguments**
-
-  - **id_** (*int*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `contact_group(cls, id_)` {#CQHTTPMessageSegment.contact_group}
+### _method_ `contact_group(id_)` {#CQHTTPMessageSegment.contact\_group}
 
 推荐好友
 
-- **Arguments**
-
-  - **id_** (*int*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `dice(cls)` {#CQHTTPMessageSegment.dice}
+### _method_ `dice()` {#CQHTTPMessageSegment.dice}
 
 掷骰子魔法表情
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `face(cls, id_)` {#CQHTTPMessageSegment.face}
+### _method_ `face(id_)` {#CQHTTPMessageSegment.face}
 
 QQ 表情
 
-- **Arguments**
+- **Returns**
 
-  - **id_** (*int*)
+  Type: _typing\_extensions.Self_
+
+### _method_ `from_str(msg)` {#CQHTTPMessageSegment.from\_str}
+
+用于将 `str` 转换为消息字段。
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *method* `get_cqcode(self)` {#CQHTTPMessageSegment.get_cqcode}
+  由 `str` 转换的消息字段。
+
+### _method_ `get_cqcode(self)` {#CQHTTPMessageSegment.get\_cqcode}
 
 获取此消息字段的 CQ 码形式。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   此消息字段的 CQ 码形式。
 
-### *class method* `image(cls, file, type_ = None, cache = True, proxy = True, timeout = None)` {#CQHTTPMessageSegment.image}
+### _method_ `get_message_class()` {#CQHTTPMessageSegment.get\_message\_class}
+
+获取消息类。
+
+- **Returns**
+
+  Type: _Type\[alicebot.adapter.cqhttp.message.CQHTTPMessage\]_
+
+  消息类。
+
+### _method_ `image(file, type_ = None, cache = True, proxy = True, timeout = None)` {#CQHTTPMessageSegment.image}
 
 图片
 
 - **Arguments**
 
-  - **file** (*str*)
+  - **type\_** (_Optional\[Literal\['flash'\]\]_)
 
-  - **type_** (*Optional[Literal['flash']]*)
+  - **cache** (_bool_)
 
-  - **cache** (*bool*)
+  - **proxy** (_bool_)
 
-  - **proxy** (*bool*)
-
-  - **timeout** (*Optional[int]*)
+  - **timeout** (_Optional\[int\]_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `json_message(cls, data)` {#CQHTTPMessageSegment.json_message}
+### _method_ `json_message(data)` {#CQHTTPMessageSegment.json\_message}
 
 JSON 消息
 
-- **Arguments**
-
-  - **data** (*str*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `location(cls, lat, lon, title, content = None)` {#CQHTTPMessageSegment.location}
+### _method_ `location(lat, lon, title, content = None)` {#CQHTTPMessageSegment.location}
 
 位置
 
 - **Arguments**
 
-  - **lat** (*float*)
+  - **lon** (_float_)
 
-  - **lon** (*float*)
+  - **title** (_Optional\[str\]_)
 
-  - **title** (*Optional[str]*)
-
-  - **content** (*Optional[str]*)
+  - **content** (_Optional\[str\]_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `music(cls, type_, id_)` {#CQHTTPMessageSegment.music}
+### _method_ `music(type_, id_)` {#CQHTTPMessageSegment.music}
 
 音乐分享
 
 - **Arguments**
 
-  - **type_** (*Literal['qq', '163', 'xm']*)
-
-  - **id_** (*int*)
+  - **id\_** (_int_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `music_custom(cls, url, audio, title, content = None, image = None)` {#CQHTTPMessageSegment.music_custom}
+### _method_ `music_custom(url, audio, title, content = None, image = None)` {#CQHTTPMessageSegment.music\_custom}
 
 音乐自定义分享
 
 - **Arguments**
 
-  - **url** (*str*)
+  - **audio** (_str_)
 
-  - **audio** (*str*)
+  - **title** (_str_)
 
-  - **title** (*str*)
+  - **content** (_Optional\[str\]_)
 
-  - **content** (*Optional[str]*)
-
-  - **image** (*Optional[str]*)
+  - **image** (_Optional\[str\]_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `node(cls, id_)` {#CQHTTPMessageSegment.node}
+### _method_ `node(id_)` {#CQHTTPMessageSegment.node}
 
 合并转发节点
 
-- **Arguments**
-
-  - **id_** (*int*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `node_custom(cls, user_id, nickname, content)` {#CQHTTPMessageSegment.node_custom}
+### _method_ `node_custom(user_id, nickname, content)` {#CQHTTPMessageSegment.node\_custom}
 
 合并转发自定义节点
 
 - **Arguments**
 
-  - **user_id** (*int*)
+  - **nickname** (_str_)
 
-  - **nickname** (*str*)
-
-  - **content** (*CQHTTPMessage*)
+  - **content** (_CQHTTPMessage_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `poke(cls, type_, id_)` {#CQHTTPMessageSegment.poke}
+### _method_ `poke(type_, id_)` {#CQHTTPMessageSegment.poke}
 
 戳一戳
 
 - **Arguments**
 
-  - **type_** (*str*)
-
-  - **id_** (*int*)
+  - **id\_** (_int_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `record(cls, file, magic = False, cache = True, proxy = True, timeout = None)` {#CQHTTPMessageSegment.record}
+### _method_ `record(file, magic = False, cache = True, proxy = True, timeout = None)` {#CQHTTPMessageSegment.record}
 
 语音
 
 - **Arguments**
 
-  - **file** (*str*)
+  - **magic** (_bool_)
 
-  - **magic** (*bool*)
+  - **cache** (_bool_)
 
-  - **cache** (*bool*)
+  - **proxy** (_bool_)
 
-  - **proxy** (*bool*)
-
-  - **timeout** (*Optional[int]*)
+  - **timeout** (_Optional\[int\]_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `reply(cls, id_)` {#CQHTTPMessageSegment.reply}
+### _method_ `reply(id_)` {#CQHTTPMessageSegment.reply}
 
 回复
 
-- **Arguments**
-
-  - **id_** (*int*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `rps(cls)` {#CQHTTPMessageSegment.rps}
+### _method_ `rps()` {#CQHTTPMessageSegment.rps}
 
 猜拳魔法表情
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `shake(cls)` {#CQHTTPMessageSegment.shake}
+### _method_ `shake()` {#CQHTTPMessageSegment.shake}
 
-窗口抖动（戳一戳）
+窗口抖动 (戳一戳)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `share(cls, url, title, content = None, image = None)` {#CQHTTPMessageSegment.share}
+### _method_ `share(url, title, content = None, image = None)` {#CQHTTPMessageSegment.share}
 
 链接分享
 
 - **Arguments**
 
-  - **url** (*str*)
+  - **title** (_str_)
 
-  - **title** (*str*)
+  - **content** (_Optional\[str\]_)
 
-  - **content** (*Optional[str]*)
-
-  - **image** (*Optional[str]*)
+  - **image** (_Optional\[str\]_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `text(cls, text)` {#CQHTTPMessageSegment.text}
+### _method_ `text(text)` {#CQHTTPMessageSegment.text}
 
 纯文本
 
-- **Arguments**
-
-  - **text** (*str*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `video(cls, file, cache = True, proxy = True, timeout = None)` {#CQHTTPMessageSegment.video}
+### _method_ `video(file, cache = True, proxy = True, timeout = None)` {#CQHTTPMessageSegment.video}
 
 短视频
 
 - **Arguments**
 
-  - **file** (*str*)
+  - **cache** (_bool_)
 
-  - **cache** (*bool*)
+  - **proxy** (_bool_)
 
-  - **proxy** (*bool*)
-
-  - **timeout** (*Optional[int]*)
+  - **timeout** (_Optional\[int\]_)
 
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `xml_message(cls, data)` {#CQHTTPMessageSegment.xml_message}
+### _method_ `xml_message(data)` {#CQHTTPMessageSegment.xml\_message}
 
 XML 消息
 
-- **Arguments**
-
-  - **data** (*str*)
-
 - **Returns**
 
-  Type: *CQHTTPMessageSegment*
+  Type: _typing\_extensions.Self_
 
-## *function* `escape(s, *, escape_comma = True)` {#escape}
+## _function_ `escape(string, *, escape_comma = True)` {#escape}
 
 对 CQ 码中的特殊字符进行转义。
 
 - **Arguments**
 
-  - **s** (*str*) - 待转义的字符串。
+  - **string** (_str_) - 待转义的字符串。
 
-  - **escape_comma** (*bool*) - 是否转义 `,`。
+  - **escape\_comma** (_bool_) - 是否转义 `,`。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   转义后的字符串。

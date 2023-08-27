@@ -34,7 +34,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
 - **Returns**
 
-  Type: _Self_
+  Type: _typing\_extensions.Self_
 
   自身的浅复制。
 
@@ -106,7 +106,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
 - **Returns**
 
-  Type: _Self_
+  Type: _typing\_extensions.Self_
 
   替换后的消息对象。
 
@@ -174,7 +174,7 @@ allow `self` as a field name.
 
 - **Returns**
 
-  Type: _Self_
+  Type: _typing\_extensions.Self_
 
   由 Mapping 转换的消息字段。
 
@@ -184,7 +184,7 @@ allow `self` as a field name.
 
 - **Returns**
 
-  Type: _Self_
+  Type: _typing\_extensions.Self_
 
   由 `str` 转换的消息字段。
 

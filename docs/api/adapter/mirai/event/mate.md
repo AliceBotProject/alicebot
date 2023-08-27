@@ -2,134 +2,230 @@
 
 默认不会被传播的特殊事件。
 
-## *class* `MateEvent`(self, adapter, **data) {#MateEvent}
+## _class_ `MateEvent` {#MateEvent}
 
 Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 默认不会被传播的特殊事件
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-## *class* `BotEvent`(self, adapter, **data) {#BotEvent}
+  Type: _None_
+
+## _class_ `BotEvent` {#BotEvent}
 
 Bases: `alicebot.adapter.mirai.event.mate.MateEvent`
 
 Bot 自身事件
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **qq** (*int*)
+  - **qq** (_int_)
 
-## *class* `BotOnlineEvent`(self, adapter, **data) {#BotOnlineEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotOnlineEvent` {#BotOnlineEvent}
 
 Bases: `alicebot.adapter.mirai.event.mate.BotEvent`
 
 Bot 登录成功
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotOnlineEvent']*)
+  - **type** (_Literal\['BotOnlineEvent'\]_)
 
-## *class* `BotOfflineEventActive`(self, adapter, **data) {#BotOfflineEventActive}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotOfflineEventActive` {#BotOfflineEventActive}
 
 Bases: `alicebot.adapter.mirai.event.mate.BotEvent`
 
 Bot 主动离线
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotOfflineEventActive']*)
+  - **type** (_Literal\['BotOfflineEventActive'\]_)
 
-## *class* `BotOfflineEventForce`(self, adapter, **data) {#BotOfflineEventForce}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotOfflineEventForce` {#BotOfflineEventForce}
 
 Bases: `alicebot.adapter.mirai.event.mate.BotEvent`
 
 Bot 被挤下线
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotOfflineEventForce']*)
+  - **type** (_Literal\['BotOfflineEventForce'\]_)
 
-## *class* `BotOfflineEventDropped`(self, adapter, **data) {#BotOfflineEventDropped}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotOfflineEventDropped` {#BotOfflineEventDropped}
 
 Bases: `alicebot.adapter.mirai.event.mate.BotEvent`
 
 Bot 被服务器断开或因网络问题而掉线
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotOfflineEventDropped']*)
+  - **type** (_Literal\['BotOfflineEventDropped'\]_)
 
-## *class* `BotReloginEvent`(self, adapter, **data) {#BotReloginEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotReloginEvent` {#BotReloginEvent}
 
 Bases: `alicebot.adapter.mirai.event.mate.BotEvent`
 
 Bot 主动重新登录
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['BotReloginEvent']*)
+  - **type** (_Literal\['BotReloginEvent'\]_)
 
-## *class* `CommandExecutedEvent`(self, adapter, **data) {#CommandExecutedEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `CommandExecutedEvent` {#CommandExecutedEvent}
 
 Bases: `alicebot.adapter.mirai.event.mate.MateEvent`
 
 命令被执行
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*Literal['CommandExecutedEvent']*)
+  - **type** (_Literal\['CommandExecutedEvent'\]_)
 
-  - **name** (*str*)
+  - **name** (_str_)
 
-  - **friend** (*Optional[alicebot.adapter.mirai.event.base.FriendInfo]*)
+  - **friend** (_Optional\[alicebot.adapter.mirai.event.base.FriendInfo\]_)
 
-  - **member** (*Optional[alicebot.adapter.mirai.event.base.GroupMemberInfo]*)
+  - **member** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-  - **args** (*List[Any]*)
+  - **args** (_List\[Any\]_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_

@@ -3,83 +3,125 @@
 APScheduler 适配器。
 
 本适配器用于实现定时任务，适配器将使用 APScheduler 实现定时任务，在设定的时间产生一个事件供插件处理。
-APScheduler 使用方法请参考: [APScheduler](https://apscheduler.readthedocs.io/) 。
+APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedocs.io/)。
 
-## *class* `APSchedulerAdapter`(self, bot) {#APSchedulerAdapter}
+## _class_ `APSchedulerAdapter` {#APSchedulerAdapter}
 
 Bases: `alicebot.adapter.Adapter`
 
 APScheduler 适配器。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **name** (*str*)
+  - **name** (_str_)
 
-  - **scheduler** (*apscheduler.schedulers.asyncio.AsyncIOScheduler*)
+  - **scheduler** (_apscheduler.schedulers.asyncio.AsyncIOScheduler_)
 
-  - **plugin_class_to_job** (*Dict[Type[alicebot.plugin.Plugin[Any, Any, Any]], apscheduler.job.Job]*)
+  - **plugin\_class\_to\_job** (_Dict\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\], apscheduler.job.Job\]_)
 
-### *class* `Config`(__pydantic_self__, **data) {#Config}
+### _class_ `Config` {#Config}
 
 Bases: `alicebot.config.ConfigModel`
 
 APScheduler 配置类，将在适配器被加载时被混入到机器人主配置中。
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **scheduler_config** (*Dict[str, Any]*) - 调度器配置。
+  - **scheduler\_config** (_Dict\[str, Any\]_) - 调度器配置。
 
-### *async method* `create_event(self, plugin_class)` {#APSchedulerAdapter.create_event}
+#### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `create_event(self, plugin_class)` {#APSchedulerAdapter.create\_event}
 
 创建 `APSchedulerEvent` 事件。
 
 - **Arguments**
 
-  - **plugin_class** (*Type[alicebot.plugin.Plugin[Any, Any, Any]]*) - `Plugin` 类。
+  - **plugin\_class** (_Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]_) - `Plugin` 类。
 
-### *async method* `run(self)` {#APSchedulerAdapter.run}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `run(self)` {#APSchedulerAdapter.run}
 
 启动调度器。
 
-### *async method* `send(self, *args, **kwargs)` {#APSchedulerAdapter.send}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `send(self, *args, **kwargs)` {#APSchedulerAdapter.send}
 
 APScheduler 适配器不适用发送消息。
 
 - **Arguments**
 
-  - **args** (*Any*)
+  - **args** (_Any_)
 
-  - **kwargs** (*Any*)
+  - **kwargs** (_Any_)
 
 - **Returns**
 
-  Type: *Any*
+  Type: _Any_
 
-### *async method* `shutdown(self)` {#APSchedulerAdapter.shutdown}
+### _async method_ `shutdown(self)` {#APSchedulerAdapter.shutdown}
 
 关闭调度器。
 
-### *async method* `startup(self)` {#APSchedulerAdapter.startup}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `startup(self)` {#APSchedulerAdapter.startup}
 
 创建 `AsyncIOScheduler` 对象。
 
-## *function* `scheduler_decorator(trigger, trigger_args, override_rule = False)` {#scheduler_decorator}
+- **Returns**
+
+  Type: _None_
+
+## _function_ `scheduler_decorator(trigger, trigger_args, override_rule = False)` {#scheduler\_decorator}
 
 用于为插件类添加计划任务功能的装饰器。
 
 - **Arguments**
 
-  - **trigger** (*str*) - APScheduler 触发器。
+  - **trigger** (_str_) - APScheduler 触发器。
 
-  - **trigger_args** (*Dict[str, Any]*) - APScheduler 触发器参数。
+  - **trigger\_args** (_Dict\[str, Any\]_) - APScheduler 触发器参数。
 
-  - **override_rule** (*bool*) - 是否重写 `rule()` 方法。
+  - **override\_rule** (_bool_) - 是否重写 `rule()` 方法。
   若为 `True`，则会在 `rule()` 方法中添加处理本插件定义的计划任务事件的逻辑。
+
+- **Returns**
+
+  Type: _Callable\[\[Type\[~PluginT\]\], Type\[~PluginT\]\]_

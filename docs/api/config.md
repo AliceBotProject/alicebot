@@ -4,100 +4,174 @@ AliceBot 配置。
 
 AliceBot 使用 [pydantic](https://pydantic-docs.helpmanual.io/) 来读取配置。
 
-## *class* `ConfigModel`(__pydantic_self__, **data) {#ConfigModel}
+## _class_ `ConfigModel` {#ConfigModel}
 
 Bases: `pydantic.main.BaseModel`
 
 AliceBot 配置模型。
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **__config_name__** - 配置名称。
+  - **\_\_config\_name\_\_** - 配置名称。
 
-### *class* `Config`(self, /, *args, **kwargs) {#ConfigModel.Config}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `object`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
 
 - **Arguments**
 
-  - **args**
+  - **data** (_Any_)
 
-  - **kwargs**
+- **Returns**
 
-## *class* `LogConfig`(__pydantic_self__, **data) {#LogConfig}
+  Type: _None_
+
+## _class_ `LogConfig` {#LogConfig}
 
 Bases: `alicebot.config.ConfigModel`
 
 AliceBot 日志相关设置。
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **level** (*Union[str, int]*) - 日志级别。
+  - **level** (_Union\[str, int\]_) - 日志级别。
 
-  - **verbose_exception** (*bool*) - 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
+  - **verbose\_exception** (_bool_) - 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
 
-## *class* `BotConfig`(__pydantic_self__, **data) {#BotConfig}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `BotConfig` {#BotConfig}
 
 Bases: `alicebot.config.ConfigModel`
 
 Bot 配置。
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **plugins** (*Set[str]*) - 将被加载的插件列表，将被 `Bot` 类的 `load_plugins()` 方法加载。
+  - **plugins** (_Set\[str\]_) - 将被加载的插件列表，将被 `Bot` 类的 `load_plugins()` 方法加载。
 
-  - **plugin_dirs** (*Set[pydantic.types.DirectoryPath]*) - 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dirs()` 方法加载。
+  - **plugin\_dirs** (_Set\[Annotated\[pathlib.Path, PathType\(path\_type='dir'\)\]\]_) - 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dirs()` 方法加载。
 
-  - **adapters** (*Set[str]*) - 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
+  - **adapters** (_Set\[str\]_) - 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
 
-  - **log** (*alicebot.config.LogConfig*) - AliceBot 日志相关设置。
+  - **log** (_LogConfig_) - AliceBot 日志相关设置。
 
-## *class* `PluginConfig`(__pydantic_self__, **data) {#PluginConfig}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `PluginConfig` {#PluginConfig}
 
 Bases: `alicebot.config.ConfigModel`
 
 插件配置。
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **data** (*Any*)
+  - **data** (_Any_)
 
-## *class* `AdapterConfig`(__pydantic_self__, **data) {#AdapterConfig}
+- **Returns**
+
+  Type: _None_
+
+## _class_ `AdapterConfig` {#AdapterConfig}
 
 Bases: `alicebot.config.ConfigModel`
 
 适配器配置。
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **data** (*Any*)
+  - **data** (_Any_)
 
-## *class* `MainConfig`(__pydantic_self__, **data) {#MainConfig}
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MainConfig` {#MainConfig}
 
 Bases: `alicebot.config.ConfigModel`
 
 AliceBot 配置。
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **bot** (*alicebot.config.BotConfig*) - AliceBot 的主要配置。
+  - **bot** (_BotConfig_) - AliceBot 的主要配置。
 
-  - **plugin** (*alicebot.config.PluginConfig*)
+  - **plugin** (_PluginConfig_)
 
-  - **adapter** (*alicebot.config.AdapterConfig*)
+  - **adapter** (_AdapterConfig_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_

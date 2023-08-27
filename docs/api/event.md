@@ -4,55 +4,63 @@ AliceBot 事件。
 
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 
-## *class* `Event`(self, adapter, **data) {#Event}
+## _class_ `Event` {#Event}
 
 Bases: `abc.ABC`, `pydantic.main.BaseModel`, `typing.Generic`
 
 事件类的基类。
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **adapter** (*~T_Adapter*) - 产生当前事件的适配器对象。
+  - **adapter** (_Any_) - 产生当前事件的适配器对象。
 
-  - **type** (*Optional[str]*) - 事件类型。
+  - **type** (_Optional\[str\]_) - 事件类型。
 
-  - **__handled__** - 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
+  - **\_\_handled\_\_** - 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
 
-### *class* `Config`(self, /, *args, **kwargs) {#Event.Config}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `object`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
 
 - **Arguments**
 
-  - **args**
+  - **data** (_Any_)
 
-  - **kwargs**
+- **Returns**
 
-### *readonly property* `adapter` {#Event.adapter}
+  Type: _None_
 
-Type: *~T_Adapter*
+## _abstract class_ `MessageEvent` {#MessageEvent}
 
-产生当前事件的适配器对象。
-
-## *abstract class* `MessageEvent`(self, adapter, **data) {#MessageEvent}
-
-Bases: `alicebot.event.Event`
+Bases: `alicebot.event.Event`, `typing.Generic`
 
 通用的消息事件类的基类。
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
+  - **data** (_Any_)
 
-  - ****data** (*Any*) - 事件数据。
+- **Returns**
 
-### *async method* `ask(self, message, max_try_times = None, timeout = None)` {#MessageEvent.ask}
+  Type: _None_
+
+### _async method_ `ask(self, message, max_try_times = None, timeout = None)` {#MessageEvent.ask}
 
 询问消息。
 
@@ -61,19 +69,19 @@ Bases: `alicebot.event.Event`
 
 - **Arguments**
 
-  - **message** (*str*) - 回复消息的内容。
+  - **message** (_str_) - 回复消息的内容。
 
-  - **max_try_times** (*Optional[int]*) - 最大事件数。
+  - **max\_try\_times** (_Optional\[int\]_) - 最大事件数。
 
-  - **timeout** (*Union[int, float, NoneType]*) - 超时时间。
+  - **timeout** (_Union\[int, float, NoneType\]_) - 超时时间。
 
 - **Returns**
 
-  Type: *Self*
+  Type: _Self_
 
   用户回复的消息事件。
 
-### *async method* `get(self, *, max_try_times = None, timeout = None)` {#MessageEvent.get}
+### _async method_ `get(self, *, max_try_times = None, timeout = None)` {#MessageEvent.get}
 
 获取用户回复消息。
 
@@ -81,13 +89,13 @@ Bases: `alicebot.event.Event`
 
 - **Arguments**
 
-  - **max_try_times** (*Optional[int]*) - 最大事件数。
+  - **max\_try\_times** (_Optional\[int\]_) - 最大事件数。
 
-  - **timeout** (*Union[int, float, NoneType]*) - 超时时间。
+  - **timeout** (_Union\[int, float, NoneType\]_) - 超时时间。
 
 - **Returns**
 
-  Type: *Self*
+  Type: _Self_
 
   用户回复的消息事件。
 
@@ -95,44 +103,40 @@ Bases: `alicebot.event.Event`
 
   - **GetEventTimeout** - 超过最大事件数或超时。
 
-### *method* `get_plain_text(self)` {#MessageEvent.get_plain_text}
+### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
 
 获取消息的纯文本内容。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   消息的纯文本内容。
 
-### *async method* `is_same_sender(self, other)` {#MessageEvent.is_same_sender}
+### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
 
 判断自身和另一个事件是否是同一个发送者。
 
 - **Arguments**
 
-  - **other** (*Self*) - 另一个事件。
+  - **other** (_Self_) - 另一个事件。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   是否是同一个发送者。
 
-### *async method* `reply(self, message, *args, **kwargs)` {#MessageEvent.reply}
+### _async method_ `reply(self, message)` {#MessageEvent.reply}
 
 回复消息。
 
 - **Arguments**
 
-  - **message** (*str*) - 回复消息的内容。
-
-  - **args** (*Any*)
-
-  - **kwargs** (*Any*)
+  - **message** (_str_) - 回复消息的内容。
 
 - **Returns**
 
-  Type: *Any*
+  Type: _Any_
 
   回复消息动作的响应。

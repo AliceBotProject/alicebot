@@ -4,7 +4,7 @@ AliceBot 机器人对象。
 
 AliceBot 的基础模块，每一个 AliceBot 机器人即是一个 `Bot` 实例。
 
-## *class* `Bot`(self, *, config_file = 'config.toml', config_dict = None, hot_reload = False) {#Bot}
+## _class_ `Bot` {#Bot}
 
 Bases: `object`
 
@@ -12,150 +12,172 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 读取并储存配置 `Config`，加载适配器 `Adapter` 和插件 `Plugin`，并进行事件分发。
 
-- **Arguments**
-
-  - **config_file** (*Optional[str]*) - 配置文件，如不指定则使用默认的 `config.toml`。
-  若指定为 `None`，则不加载配置文件。
-
-  - **config_dict** (*Optional[Dict[str, Any]]*) - 配置字典，默认为 `None。`
-  若指定字典，则会忽略 `config_file` 配置，不再读取配置文件。
-
-  - **hot_reload** (*bool*) - 热重载。
-  启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
-
 - **Attributes**
 
-  - **config** (*alicebot.config.MainConfig*) - 机器人配置。
+  - **config** (_alicebot.config.MainConfig_) - 机器人配置。
 
-  - **should_exit** (*asyncio.locks.Event*) - 机器人是否应该进入准备退出状态。
+  - **should\_exit** (_asyncio.locks.Event_) - 机器人是否应该进入准备退出状态。
 
-  - **adapters** (*List[alicebot.adapter.Adapter[Any, Any]]*) - 当前已经加载的适配器的列表。
+  - **adapters** (_List\[alicebot.adapter.Adapter\[Any, Any\]\]_) - 当前已经加载的适配器的列表。
 
-  - **plugins_priority_dict** (*Dict[int, List[Type[alicebot.plugin.Plugin[Any, Any, Any]]]]*) - 插件优先级字典。
+  - **plugins\_priority\_dict** (_Dict\[int, List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]\]_) - 插件优先级字典。
 
-  - **plugin_state** (*Dict[str, Any]*) - 插件状态。
+  - **plugin\_state** (_Dict\[str, Any\]_) - 插件状态。
 
-  - **global_state** (*Dict[Any, Any]*) - 全局状态。
+  - **global\_state** (_Dict\[Any, Any\]_) - 全局状态。
 
-### *method* `adapter_run_hook(self, func)` {#Bot.adapter_run_hook}
+### _method_ `__init__(self, *, config_file = 'config.toml', config_dict = None, hot_reload = False)` {#Bot.\_\_init\_\_}
+
+初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
+
+- **Arguments**
+
+  - **config\_file** (_Optional\[str\]_) - 配置文件，如不指定则使用默认的 `config.toml`。
+  若指定为 `None`，则不加载配置文件。
+
+  - **config\_dict** (_Optional\[Dict\[str, Any\]\]_) - 配置字典，默认为 `None。`
+  若指定字典，则会忽略 `config_file` 配置，不再读取配置文件。
+
+  - **hot\_reload** (_bool_) - 热重载。
+  启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `adapter_run_hook(self, func)` {#Bot.adapter\_run\_hook}
 
 注册一个适配器运行时的函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Adapter[Any, Any]], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Adapter[Any, Any]], Awaitable[NoneType]]*
+  Type: _Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *method* `adapter_shutdown_hook(self, func)` {#Bot.adapter_shutdown_hook}
+### _method_ `adapter_shutdown_hook(self, func)` {#Bot.adapter\_shutdown\_hook}
 
 注册一个适配器关闭时的函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Adapter[Any, Any]], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Adapter[Any, Any]], Awaitable[NoneType]]*
+  Type: _Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *method* `adapter_startup_hook(self, func)` {#Bot.adapter_startup_hook}
+### _method_ `adapter_startup_hook(self, func)` {#Bot.adapter\_startup\_hook}
 
 注册一个适配器初始化时的函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Adapter[Any, Any]], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Adapter[Any, Any]], Awaitable[NoneType]]*
+  Type: _Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *method* `bot_exit_hook(self, func)` {#Bot.bot_exit_hook}
+### _method_ `bot_exit_hook(self, func)` {#Bot.bot\_exit\_hook}
 
 注册一个 Bot 退出时的函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Bot], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Bot\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Bot], Awaitable[NoneType]]*
+  Type: _Callable\[\[Bot\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *method* `bot_run_hook(self, func)` {#Bot.bot_run_hook}
+### _method_ `bot_run_hook(self, func)` {#Bot.bot\_run\_hook}
 
 注册一个 Bot 启动时的函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Bot], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Bot\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Bot], Awaitable[NoneType]]*
+  Type: _Callable\[\[Bot\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *method* `event_postprocessor_hook(self, func)` {#Bot.event_postprocessor_hook}
+### _method_ `error_or_exception(self, message, exception)` {#Bot.error\_or\_exception}
+
+根据当前 Bot 的配置输出 error 或者 exception 日志。
+
+- **Arguments**
+
+  - **message** (_str_) - 消息。
+
+  - **exception** (_Exception_) - 异常。
+
+- **Returns**
+
+  Type: _None_
+
+### _method_ `event_postprocessor_hook(self, func)` {#Bot.event\_postprocessor\_hook}
 
 注册一个事件后处理函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Event[Any]], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Event[Any]], Awaitable[NoneType]]*
+  Type: _Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *method* `event_preprocessor_hook(self, func)` {#Bot.event_preprocessor_hook}
+### _method_ `event_preprocessor_hook(self, func)` {#Bot.event\_preprocessor\_hook}
 
 注册一个事件预处理函数。
 
 - **Arguments**
 
-  - **func** (*Callable[[Event[Any]], Awaitable[NoneType]]*) - 被注册的函数。
+  - **func** (_Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: *Callable[[Event[Any]], Awaitable[NoneType]]*
+  Type: _Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_
 
   被注册的函数。
 
-### *async method* `get(self, func = None, *, event_type = None, adapter_type = None, max_try_times = None, timeout = None)` {#Bot.get}
+### _async method_ `get(self, func = None, *, event_type = None, adapter_type = None, max_try_times = None, timeout = None)` {#Bot.get}
 
 获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
 - **Arguments**
 
-  - **func** (*Optional[Callable[[alicebot.event.Event[Any]], Union[bool, Awaitable[bool]]]]*) - 协程或者函数，函数会被自动包装为协程执行。
+  - **func** (_Optional\[Callable\[\[Any\], Union\[bool, Awaitable\[bool\]\]\]\]_) - 协程或者函数，函数会被自动包装为协程执行。
   要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
   当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
 
-  - **event_type** (*Optional[Type[alicebot.event.Event[Any]]]*) - 当指定时，只接受指定类型的事件，先于 func 条件生效。默认为 `None`。
+  - **event\_type** (_Optional\[Type\[alicebot.event.Event\[Any\]\]\]_) - 当指定时，只接受指定类型的事件，先于 func 条件生效。默认为 `None`。
 
-  - **adapter_type** (*Optional[Type[alicebot.adapter.Adapter[Any, Any]]]*) - 当指定时，只接受指定适配器产生的事件，先于 func 条件生效。默认为 `None`。
+  - **adapter\_type** (_Optional\[Type\[alicebot.adapter.Adapter\[Any, Any\]\]\]_) - 当指定时，只接受指定适配器产生的事件，先于 func 条件生效。默认为 `None`。
 
-  - **max_try_times** (*Optional[int]*) - 最大事件数。
+  - **max\_try\_times** (_Optional\[int\]_) - 最大事件数。
 
-  - **timeout** (*Union[int, float, NoneType]*) - 超时时间。
+  - **timeout** (_Union\[int, float, NoneType\]_) - 超时时间。
 
 - **Returns**
 
-  Type: *alicebot.event.Event[typing.Any]*
+  Type: _alicebot.event.Event\[Any\]_
 
   返回满足 `func` 条件的事件。
 
@@ -163,17 +185,17 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **GetEventTimeout** - 超过最大事件数或超时。
 
-### *method* `get_adapter(self, adapter)` {#Bot.get_adapter}
+### _method_ `get_adapter(self, adapter)` {#Bot.get\_adapter}
 
 按照名称或适配器类获取已经加载的适配器。
 
 - **Arguments**
 
-  - **adapter** (*Union[str, Type[~T_Adapter]]*) - 适配器名称或适配器类。
+  - **adapter** (_Union\[str, Type\[~AdapterT\]\]_) - 适配器名称或适配器类。
 
 - **Returns**
 
-  Type: *Union[alicebot.adapter.Adapter[Any, Any], ~T_Adapter]*
+  Type: _Union\[alicebot.adapter.Adapter\[Any, Any\], ~AdapterT\]_
 
   获取到的适配器对象。
 
@@ -181,17 +203,17 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **LookupError** - 找不到此名称的适配器对象。
 
-### *method* `get_plugin(self, name)` {#Bot.get_plugin}
+### _method_ `get_plugin(self, name)` {#Bot.get\_plugin}
 
 按照名称获取已经加载的插件类。
 
 - **Arguments**
 
-  - **name** (*str*) - 插件名称
+  - **name** (_str_) - 插件名称
 
 - **Returns**
 
-  Type: *Type[alicebot.plugin.Plugin[Any, Any, Any]]*
+  Type: _Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]_
 
   获取到的插件类。
 
@@ -199,7 +221,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **LookupError** - 找不到此名称的插件类。
 
-### *async method* `handle_event(self, current_event, *, handle_get = True, show_log = True)` {#Bot.handle_event}
+### _async method_ `handle_event(self, current_event, *, handle_get = True, show_log = True)` {#Bot.handle\_event}
 
 被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
@@ -207,30 +229,38 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **current_event** (*alicebot.event.Event[typing.Any]*) - 当前待处理的 `Event`。
+  - **current\_event** (_alicebot.event.Event\[Any\]_) - 当前待处理的 `Event`。
 
-  - **handle_get** (*bool*) - 当前事件是否可以被 get 方法捕获，默认为 `True`。
+  - **handle\_get** (_bool_) - 当前事件是否可以被 get 方法捕获，默认为 `True`。
 
-  - **show_log** (*bool*) - 是否在日志中显示，默认为 `True`。
+  - **show\_log** (_bool_) - 是否在日志中显示，默认为 `True`。
 
-### *method* `load_adapters(self, *adapters)` {#Bot.load_adapters}
+- **Returns**
+
+  Type: _None_
+
+### _method_ `load_adapters(self, *adapters)` {#Bot.load\_adapters}
 
 加载适配器。
 
 - **Arguments**
 
-  - ***adapters** (*Union[Type[alicebot.adapter.Adapter[Any, Any]], str]*) - 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
+  - **\*adapters** (_Union\[Type\[alicebot.adapter.Adapter\[Any, Any\]\], str\]_) - 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
   如果为 `Type[Adapter]` 类型时，将作为适配器类进行加载。
   如果为 `str` 类型时，将作为适配器模块名称进行加载，格式和 Python `import` 语句相同。
       例如：`path.of.adapter`。
 
-### *method* `load_plugins(self, *plugins)` {#Bot.load_plugins}
+- **Returns**
+
+  Type: _None_
+
+### _method_ `load_plugins(self, *plugins)` {#Bot.load\_plugins}
 
 加载插件。
 
 - **Arguments**
 
-  - ***plugins** (*Union[Type[alicebot.plugin.Plugin[Any, Any, Any]], str, pathlib.Path]*) - 插件类、插件模块名称或者插件模块文件路径。
+  - **\*plugins** (_Union\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\], str, pathlib.Path\]_) - 插件类、插件模块名称或者插件模块文件路径。
   类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
   如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
   如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
@@ -238,29 +268,49 @@ AliceBot 机器人对象，定义了机器人的基本方法。
   如果为 `pathlib.Path` 类型时，将作为插件模块文件路径进行加载。
       例如：`pathlib.Path("path/of/plugin")`。
 
-### *method* `load_plugins_from_dirs(self, *dirs)` {#Bot.load_plugins_from_dirs}
+- **Returns**
+
+  Type: _None_
+
+### _method_ `load_plugins_from_dirs(self, *dirs)` {#Bot.load\_plugins\_from\_dirs}
 
 从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
 
 - **Arguments**
 
-  - ***dirs** (*pathlib.Path*) - 储存包含插件的模块的模块路径。
+  - **\*dirs** (_pathlib.Path_) - 储存包含插件的模块的模块路径。
   例如：`pathlib.Path("path/of/plugins/")` 。
 
-### *readonly property* `plugins` {#Bot.plugins}
+- **Returns**
 
-Type: *List[Type[alicebot.plugin.Plugin[Any, Any, Any]]]*
+  Type: _None_
+
+### _readonly property_ `plugins` {#Bot.plugins}
+
+Type: _List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]_
 
 当前已经加载的插件的列表。
 
-### *method* `reload_plugins(self)` {#Bot.reload_plugins}
+### _method_ `reload_plugins(self)` {#Bot.reload\_plugins}
 
 手动重新加载所有插件。
 
-### *method* `restart(self)` {#Bot.restart}
+- **Returns**
+
+  Type: _None_
+
+### _method_ `restart(self)` {#Bot.restart}
 
 退出并重新运行 AliceBot。
 
-### *method* `run(self)` {#Bot.run}
+- **Returns**
 
-运行 AliceBot ，监听并拦截系统退出信号，更新机器人配置。
+  Type: _None_
+
+### _method_ `run(self)` {#Bot.run}
+
+运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。
+
+- **Returns**
+
+  Type: _None_

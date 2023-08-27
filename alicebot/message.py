@@ -54,7 +54,7 @@ class Message(ABC, List[MessageSegmentT]):
         """初始化。
 
         Args:
-            messages: 可以被转化为消息的数据。
+            *messages: 可以被转化为消息的数据。
         """
         segment_class = self.get_segment_class()
         for message in messages:

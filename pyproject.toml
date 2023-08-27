@@ -1,6 +1,6 @@
 [project]
 name = "alicebot"
-version = "0.8.0"
+version = "0.8.1"
 description = "A simply asynchronous python chatbot framework."
 authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
 license = { text = "MIT" }

@@ -4,6 +4,12 @@ sidebar: auto
 
 # 更新日志
 
+## [0.8.1](https://github.com/AliceBotProject/alicebot/compare/v0.8.0...v0.8.1) (2023-08-27)
+
+### Bug Fixes
+
+- **message:** 修复 Message 类的 replace() 方法的错误 ([#82](https://github.com/AliceBotProject/alicebot/issues/82)) ([411c187](https://github.com/AliceBotProject/alicebot/commit/411c1875a71ddcc24dc1e724a2abbbe4c9d2cbce))
+
 ## [0.8.0](https://github.com/AliceBotProject/alicebot/compare/v0.7.1...v0.8.0) (2023-08-27)
 
 ### Bug Fixes

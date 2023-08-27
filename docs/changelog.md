@@ -4,6 +4,40 @@ sidebar: auto
 
 # 更新日志
 
+## [0.8.0](https://github.com/AliceBotProject/alicebot/compare/v0.7.1...v0.8.0) (2023-08-27)
+
+### Bug Fixes
+
+- 修复部分类型注解错误 ([#71](https://github.com/AliceBotProject/alicebot/issues/71)) ([e22bea5](https://github.com/AliceBotProject/alicebot/commit/e22bea5a306c13e66d8eb2d82d208af833814a0a))
+- **bot:** 配置加载错误 ([#73](https://github.com/AliceBotProject/alicebot/issues/73)) ([633c072](https://github.com/AliceBotProject/alicebot/commit/633c072fd13073c81602a67d00b88f93125a6b97))
+- **bot:** 热重载错误 ([#74](https://github.com/AliceBotProject/alicebot/issues/74)) ([5ff9db4](https://github.com/AliceBotProject/alicebot/commit/5ff9db4f28c2fa74884a8a7e62f1b90fe1065f13))
+- **bot:** 修复加载插件时会自动重新加载插件所在模块的问题 ([#65](https://github.com/AliceBotProject/alicebot/issues/65)) ([a71a42d](https://github.com/AliceBotProject/alicebot/commit/a71a42d3b6aa09878f5eccf2e61a380f1f78d1b5))
+- **mirai:** 修复 Mirai 事件模型错误 ([#69](https://github.com/AliceBotProject/alicebot/issues/69)) ([0923159](https://github.com/AliceBotProject/alicebot/commit/09231596c0c6ef4be5a7ebd9a47137e9725781e9))
+- **mirai:** 修复拼写错误 ([8efae5a](https://github.com/AliceBotProject/alicebot/commit/8efae5a266e5597becfe2246f6e5ec51bd517a7b))
+
+### Features
+
+- 更新到 Pydantic v2 ([#42](https://github.com/AliceBotProject/alicebot/issues/42)) ([6f7243b](https://github.com/AliceBotProject/alicebot/commit/6f7243b66d4711dd6e09a1593e52768a62b1c2dc))
+- 添加 MessageEvent 的快捷导入 ([#75](https://github.com/AliceBotProject/alicebot/issues/75)) ([b11b6d5](https://github.com/AliceBotProject/alicebot/commit/b11b6d5f76aefdad306415940dc722a4902c8d7c))
+- 添加 Pylint 并修复 Pylint 错误 ([#61](https://github.com/AliceBotProject/alicebot/issues/61)) ([bdde3b9](https://github.com/AliceBotProject/alicebot/commit/bdde3b982ad1204413a597d18e336fc45d01ccb6))
+- 添加并完善模块的 \_\_all\_\_ 列表 ([#36](https://github.com/AliceBotProject/alicebot/issues/36)) ([babb09a](https://github.com/AliceBotProject/alicebot/commit/babb09a363f43ca64c9695ac9df200df322ede51))
+- 修改 MessageEvent 的泛型定义 ([#38](https://github.com/AliceBotProject/alicebot/issues/38)) ([ef23cf0](https://github.com/AliceBotProject/alicebot/commit/ef23cf0bf196e80da812ad45df0362e6f491d172))
+- 移动之前的 tests 目录到 examples 目录 ([#39](https://github.com/AliceBotProject/alicebot/issues/39)) ([2883454](https://github.com/AliceBotProject/alicebot/commit/2883454d568363da810ce4e0ce5c702a89b6ec46))
+- **log:** 将 error_or_exception() 函数更改为 Bot 类的一个方法 ([#72](https://github.com/AliceBotProject/alicebot/issues/72)) ([c1addba](https://github.com/AliceBotProject/alicebot/commit/c1addba7fc744c05dc1ceeb1c5e86bf61c9e96d8))
+- **message:** 删除 Message 和 MessageSegment 类的 deepcopy() 方法 ([#62](https://github.com/AliceBotProject/alicebot/issues/62)) ([276215b](https://github.com/AliceBotProject/alicebot/commit/276215b9d531735994dfbe525e54cbada10e6d44))
+- **message:** 修改消息和消息字段类 ([#77](https://github.com/AliceBotProject/alicebot/issues/77)) ([e5247c9](https://github.com/AliceBotProject/alicebot/commit/e5247c980a7a44c1beffb32544247bb3d4162464))
+
+### Reverts
+
+- Revert "refactor: 使用新的 annotations 特性 (#45)" (#47) ([1f2d793](https://github.com/AliceBotProject/alicebot/commit/1f2d79331716e0deb3d6e104a8f26c787a2b0767)), closes [#45](https://github.com/AliceBotProject/alicebot/issues/45) [#47](https://github.com/AliceBotProject/alicebot/issues/47)
+
+### BREAKING CHANGES
+
+- **message:** 改变 Message 类实例化时可接受的参数
+- **log:** 删除了 log 模块的 error_or_exception() 函数，请使用 Bot 类的同名函数替代
+- **message:** 删除 Message 和 MessageSegment 类的 deepcopy() 方法
+- 修改部分 TypeVar 和 TypeAlias 的名称
+
 ## [0.7.1](https://github.com/AliceBotProject/alicebot/compare/v0.7.0...v0.7.1) (2023-05-27)
 
 ### Bug Fixes

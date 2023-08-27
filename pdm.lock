@@ -101,58 +101,58 @@ files = [
 
 [[package]]
 name = "alicebot-adapter-apscheduler"
-version = "0.7.1"
+version = "0.8.0"
 requires_python = ">=3.8"
 editable = true
 path = "./packages/alicebot-adapter-apscheduler"
 summary = "APScheduler adapter for AliceBot."
 dependencies = [
-    "alicebot==0.7.1",
+    "alicebot==0.8.0",
     "apscheduler<4.0,>=3.7",
 ]
 
 [[package]]
 name = "alicebot-adapter-cqhttp"
-version = "0.7.1"
+version = "0.8.0"
 requires_python = ">=3.8"
 editable = true
 path = "./packages/alicebot-adapter-cqhttp"
 summary = "OneBot(CQHTTP) adapter for AliceBot."
 dependencies = [
-    "alicebot==0.7.1",
+    "alicebot==0.8.0",
 ]
 
 [[package]]
 name = "alicebot-adapter-dingtalk"
-version = "0.7.1"
+version = "0.8.0"
 requires_python = ">=3.8"
 editable = true
 path = "./packages/alicebot-adapter-dingtalk"
 summary = "DingTalk adapter for AliceBot."
 dependencies = [
-    "alicebot==0.7.1",
+    "alicebot==0.8.0",
 ]
 
 [[package]]
 name = "alicebot-adapter-mirai"
-version = "0.7.1"
+version = "0.8.0"
 requires_python = ">=3.8"
 editable = true
 path = "./packages/alicebot-adapter-mirai"
 summary = "Mirai adapter for AliceBot."
 dependencies = [
-    "alicebot==0.7.1",
+    "alicebot==0.8.0",
 ]
 
 [[package]]
 name = "alicebot-adapter-onebot"
-version = "0.7.1"
+version = "0.8.0"
 requires_python = ">=3.8"
 editable = true
 path = "./packages/alicebot-adapter-onebot"
 summary = "OneBot v12 adapter for AliceBot."
 dependencies = [
-    "alicebot==0.7.1",
+    "alicebot==0.8.0",
 ]
 
 [[package]]

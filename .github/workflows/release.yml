@@ -1,9 +1,6 @@
 name: Release
 
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 jobs:
@@ -12,6 +9,7 @@ jobs:
     environment: release
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
 
@@ -30,13 +28,15 @@ jobs:
         shell: bash
         env:
           ALICEBOT_DEV: "1"
-      - name: Commit API Doc
-        run: |
-          git config user.name "${{ github.actor }}"
-          git config user.email "${{ github.actor }}@users.noreply.github.com"
-          git add .
-          git commit -m "docs: 更新 API 文档"
-          git push
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "docs: 更新 API 文档"
+          title: "docs: 更新 API 文档"
+          body: "自动更新 API 文档"
+          branch: docs/update-api-docs
+          base: master
 
   build:
     runs-on: ubuntu-latest

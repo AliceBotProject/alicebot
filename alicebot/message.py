@@ -288,9 +288,7 @@ class Message(ABC, List[MessageSegmentT]):
                 )
             new_msg = self.__class__()
             for item in self:
-                if count == 0:
-                    break
-                if item == old:
+                if count != 0 and item == old:
                     count -= 1
                     if new is not None:
                         new_msg.append(new)
@@ -314,7 +312,7 @@ class Message(ABC, List[MessageSegmentT]):
         Returns:
             替换后的消息对象。
         """
-        temp_msg = self.__class__(*(x.model_copy() for x in self))
+        temp_msg = self.__class__(*(x.model_copy(deep=True) for x in self))
         for index, item in enumerate(temp_msg):
             if count == 0:
                 break

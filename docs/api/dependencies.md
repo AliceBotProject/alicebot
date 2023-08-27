@@ -4,18 +4,18 @@ AliceBot 依赖注入。
 
 实现依赖注入相关功能。
 
-## *function* `Depends(dependency = None, *, use_cache = True)` {#Depends}
+## _function_ `Depends(dependency = None, *, use_cache = True)` {#Depends}
 
 子依赖装饰器。
 
 - **Arguments**
 
-  - **dependency** (*Union[Type[Union[~T, AsyncContextManager[~T], ContextManager[~T]]], Callable[[], AsyncGenerator[~T, NoneType]], Callable[[], Generator[~T, NoneType, NoneType]], NoneType]*) - 依赖类。如果不指定则根据字段的类型注释自动判断。
+  - **dependency** (_Union\[Type\[Union\[~\_T, AsyncContextManager\[~\_T\], ContextManager\[~\_T\]\]\], Callable\[\[\], AsyncGenerator\[~\_T, NoneType\]\], Callable\[\[\], Generator\[~\_T, NoneType, NoneType\]\], NoneType\]_) - 依赖类。如果不指定则根据字段的类型注释自动判断。
 
-  - **use_cache** (*bool*) - 是否使用缓存。默认为 `True`。
+  - **use\_cache** (_bool_) - 是否使用缓存。默认为 `True`。
 
 - **Returns**
 
-  Type: *~T*
+  Type: _~\_T_
 
   返回内部子依赖对象。

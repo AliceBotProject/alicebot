@@ -2,114 +2,196 @@
 
 事件基类。
 
-## *class* `Subject`(__pydantic_self__, **data) {#Subject}
+## _class_ `Subject` {#Subject}
 
 Bases: `pydantic.main.BaseModel`
 
 来源
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*int*)
+  - **id** (_int_)
 
-  - **kind** (*Literal['Friend', 'Group']*)
+  - **kind** (_Literal\['Friend', 'Group'\]_)
 
-## *class* `FriendInfo`(__pydantic_self__, **data) {#FriendInfo}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `FriendInfo` {#FriendInfo}
 
 Bases: `pydantic.main.BaseModel`
 
 好友信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*int*)
+  - **id** (_int_)
 
-  - **nickname** (*str*)
+  - **nickname** (_str_)
 
-  - **remark** (*str*)
+  - **remark** (_str_)
 
-## *class* `GroupInfo`(__pydantic_self__, **data) {#GroupInfo}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupInfo` {#GroupInfo}
 
 Bases: `pydantic.main.BaseModel`
 
 群聊信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*int*)
+  - **id** (_int_)
 
-  - **name** (*str*)
+  - **name** (_str_)
 
-  - **permission** (*Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']*)
+  - **permission** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-## *class* `GroupMemberInfo`(__pydantic_self__, **data) {#GroupMemberInfo}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `GroupMemberInfo` {#GroupMemberInfo}
 
 Bases: `pydantic.main.BaseModel`
 
 群成员信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*int*)
+  - **id** (_int_)
 
-  - **memberName** (*str*)
+  - **memberName** (_str_)
 
-  - **permission** (*Literal['OWNER', 'ADMINISTRATOR', 'MEMBER']*)
+  - **permission** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-  - **specialTitle** (*str*)
+  - **specialTitle** (_str_)
 
-  - **joinTimestamp** (*int*)
+  - **joinTimestamp** (_int_)
 
-  - **lastSpeakTimestamp** (*int*)
+  - **lastSpeakTimestamp** (_int_)
 
-  - **muteTimeRemaining** (*int*)
+  - **muteTimeRemaining** (_int_)
 
-  - **group** (*alicebot.adapter.mirai.event.base.GroupInfo*)
+  - **group** (_GroupInfo_)
 
-## *class* `OtherClientSender`(__pydantic_self__, **data) {#OtherClientSender}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `OtherClientSender` {#OtherClientSender}
 
 Bases: `pydantic.main.BaseModel`
 
 其他客户端信息
 
-- **Arguments**
-
-  - **data** (*Any*)
-
 - **Attributes**
 
-  - **id** (*int*)
+  - **id** (_int_)
 
-  - **platform** (*str*)
+  - **platform** (_str_)
 
-## *class* `MiraiEvent`(self, adapter, **data) {#MiraiEvent}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-Bases: `alicebot.event.Event`
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_
+
+## _class_ `MiraiEvent` {#MiraiEvent}
+
+Bases: `alicebot.event.Event[MiraiAdapter]`
 
 Mirai 事件基类
 
-- **Arguments**
-
-  - **adapter** (*~T_Adapter*) - 产生此事件的适配器对象。
-
-  - ****data** (*Any*) - 事件数据。
-
 - **Attributes**
 
-  - **type** (*str*)
+  - **type** (_str_)
+
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
+- **Arguments**
+
+  - **data** (_Any_)
+
+- **Returns**
+
+  Type: _None_

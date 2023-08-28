@@ -1,6 +1,6 @@
 [project]
 name = "alicebot-adapter-onebot"
-version = "0.7.1"
+version = "0.8.1"
 description = "OneBot v12 adapter for AliceBot."
 authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
 license = { text = "MIT" }
@@ -17,7 +17,7 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 requires-python = ">=3.8"
-dependencies = ["alicebot==0.7.1"]
+dependencies = ["alicebot==0.8.1"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"

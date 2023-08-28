@@ -19,7 +19,6 @@ from typing import (
     Literal,
     Optional,
     Type,
-    Union,
 )
 
 import aiohttp
@@ -242,7 +241,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     async def send(
         self,
-        message_: Union[MiraiMessage, BuildMessageType[MiraiMessageSegment]],
+        message_: BuildMessageType[MiraiMessageSegment],
         message_type: Literal["private", "friend", "group"],
         target: int,
         quote: Optional[int] = None,

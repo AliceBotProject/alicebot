@@ -4,191 +4,287 @@
 
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 
-## *abstract class* `PollingAdapter`(self, bot) {#PollingAdapter}
+## _abstract class_ `PollingAdapter` {#PollingAdapter}
 
 Bases: `alicebot.adapter.Adapter`
 
 轮询式适配器示例。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **delay** (*float*)
+  - **delay** (_float_)
 
-  - **create_task** (*bool*)
+  - **create\_task** (_bool_)
 
-### *async method* `on_tick(self)` {#PollingAdapter.on_tick}
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `on_tick(self)` {#PollingAdapter.on\_tick}
 
 当轮询发生。
 
-### *async method* `run(self)` {#PollingAdapter.run}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `run(self)` {#PollingAdapter.run}
 
 运行适配器。
 
-## *abstract class* `HttpClientAdapter`(self, bot) {#HttpClientAdapter}
+- **Returns**
+
+  Type: _None_
+
+## _abstract class_ `HttpClientAdapter` {#HttpClientAdapter}
 
 Bases: `alicebot.adapter.utils.PollingAdapter`
 
 HTTP 客户端适配器示例。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **session** (*aiohttp.client.ClientSession*)
+  - **session** (_aiohttp.client.ClientSession_)
 
-### *async method* `on_tick(self)` {#HttpClientAdapter.on_tick}
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `on_tick(self)` {#HttpClientAdapter.on\_tick}
 
 当轮询发生。
 
-### *async method* `shutdown(self)` {#HttpClientAdapter.shutdown}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `shutdown(self)` {#HttpClientAdapter.shutdown}
 
 关闭并清理连接。
 
-### *async method* `startup(self)` {#HttpClientAdapter.startup}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `startup(self)` {#HttpClientAdapter.startup}
 
 初始化适配器。
 
-## *abstract class* `WebSocketClientAdapter`(self, bot) {#WebSocketClientAdapter}
+- **Returns**
+
+  Type: _None_
+
+## _abstract class_ `WebSocketClientAdapter` {#WebSocketClientAdapter}
 
 Bases: `alicebot.adapter.Adapter`
 
 WebSocket 客户端适配器示例。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **url** (*str*)
+  - **url** (_str_)
 
-### *async method* `handle_response(self, msg)` {#WebSocketClientAdapter.handle_response}
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_response(self, msg)` {#WebSocketClientAdapter.handle\_response}
 
 处理响应。
 
 - **Arguments**
 
-  - **msg** (*aiohttp.http_websocket.WSMessage*)
+  - **msg** (_aiohttp.http\_websocket.WSMessage_)
 
-### *async method* `run(self)` {#WebSocketClientAdapter.run}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `run(self)` {#WebSocketClientAdapter.run}
 
 运行适配器。
 
-## *abstract class* `HttpServerAdapter`(self, bot) {#HttpServerAdapter}
+- **Returns**
+
+  Type: _None_
+
+## _abstract class_ `HttpServerAdapter` {#HttpServerAdapter}
 
 Bases: `alicebot.adapter.Adapter`
 
 HTTP 服务端适配器示例。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **app** (*aiohttp.web_app.Application*)
+  - **app** (_aiohttp.web\_app.Application_)
 
-  - **runner** (*aiohttp.web_runner.AppRunner*)
+  - **runner** (_aiohttp.web\_runner.AppRunner_)
 
-  - **site** (*aiohttp.web_runner.TCPSite*)
+  - **site** (_aiohttp.web\_runner.TCPSite_)
 
-  - **host** (*str*)
+  - **host** (_str_)
 
-  - **port** (*int*)
+  - **port** (_int_)
 
-  - **get_url** (*str*)
+  - **get\_url** (_str_)
 
-  - **post_url** (*str*)
+  - **post\_url** (_str_)
 
-### *async method* `handle_response(self, request)` {#HttpServerAdapter.handle_response}
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_response(self, request)` {#HttpServerAdapter.handle\_response}
 
 处理响应。
 
 - **Arguments**
 
-  - **request** (*aiohttp.web_request.Request*)
+  - **request** (_aiohttp.web\_request.Request_)
 
 - **Returns**
 
-  Type: *aiohttp.web_response.StreamResponse*
+  Type: _aiohttp.web\_response.StreamResponse_
 
-### *async method* `run(self)` {#HttpServerAdapter.run}
+### _async method_ `run(self)` {#HttpServerAdapter.run}
 
 运行适配器。
 
-### *async method* `shutdown(self)` {#HttpServerAdapter.shutdown}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `shutdown(self)` {#HttpServerAdapter.shutdown}
 
 关闭并清理连接。
 
-### *async method* `startup(self)` {#HttpServerAdapter.startup}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `startup(self)` {#HttpServerAdapter.startup}
 
 初始化适配器。
 
-## *abstract class* `WebSocketServerAdapter`(self, bot) {#WebSocketServerAdapter}
+- **Returns**
+
+  Type: _None_
+
+## _abstract class_ `WebSocketServerAdapter` {#WebSocketServerAdapter}
 
 Bases: `alicebot.adapter.Adapter`
 
 WebSocket 服务端适配器示例。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **app** (*aiohttp.web_app.Application*)
+  - **app** (_aiohttp.web\_app.Application_)
 
-  - **runner** (*aiohttp.web_runner.AppRunner*)
+  - **runner** (_aiohttp.web\_runner.AppRunner_)
 
-  - **site** (*aiohttp.web_runner.TCPSite*)
+  - **site** (_aiohttp.web\_runner.TCPSite_)
 
-  - **websocket** (*aiohttp.web_ws.WebSocketResponse*)
+  - **websocket** (_aiohttp.web\_ws.WebSocketResponse_)
 
-  - **host** (*str*)
+  - **host** (_str_)
 
-  - **port** (*int*)
+  - **port** (_int_)
 
-  - **url** (*str*)
+  - **url** (_str_)
 
-### *async method* `handle_response(self, request)` {#WebSocketServerAdapter.handle_response}
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_response(self, request)` {#WebSocketServerAdapter.handle\_response}
 
 处理 WebSocket。
 
 - **Arguments**
 
-  - **request** (*aiohttp.web_request.Request*)
+  - **request** (_aiohttp.web\_request.Request_)
 
 - **Returns**
 
-  Type: *aiohttp.web_ws.WebSocketResponse*
+  Type: _aiohttp.web\_ws.WebSocketResponse_
 
-### *async method* `handle_ws_response(self, msg)` {#WebSocketServerAdapter.handle_ws_response}
+### _async method_ `handle_ws_response(self, msg)` {#WebSocketServerAdapter.handle\_ws\_response}
 
 处理 WebSocket 响应。
 
 - **Arguments**
 
-  - **msg** (*aiohttp.http_websocket.WSMessage*)
+  - **msg** (_aiohttp.http\_websocket.WSMessage_)
 
-### *async method* `run(self)` {#WebSocketServerAdapter.run}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `run(self)` {#WebSocketServerAdapter.run}
 
 运行适配器。
 
-### *async method* `shutdown(self)` {#WebSocketServerAdapter.shutdown}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `shutdown(self)` {#WebSocketServerAdapter.shutdown}
 
 关闭并清理连接。
 
-### *async method* `startup(self)` {#WebSocketServerAdapter.startup}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `startup(self)` {#WebSocketServerAdapter.startup}
 
 初始化适配器。
 
-## *abstract class* `WebSocketAdapter`(self, bot) {#WebSocketAdapter}
+- **Returns**
+
+  Type: _None_
+
+## _abstract class_ `WebSocketAdapter` {#WebSocketAdapter}
 
 Bases: `alicebot.adapter.Adapter`
 
@@ -196,76 +292,108 @@ WebSocket 适配器示例。
 
 同时支持 WebSocket 客户端和服务端。
 
-- **Arguments**
-
-  - **bot** (*Bot*) - 当前机器人对象。
-
 - **Attributes**
 
-  - **websocket** (*Union[aiohttp.web_ws.WebSocketResponse, aiohttp.client_ws.ClientWebSocketResponse, NoneType]*)
+  - **websocket** (_Union\[aiohttp.web\_ws.WebSocketResponse, aiohttp.client\_ws.ClientWebSocketResponse, NoneType\]_)
 
-  - **session** (*Optional[aiohttp.client.ClientSession]*)
+  - **session** (_Optional\[aiohttp.client.ClientSession\]_)
 
-  - **app** (*Optional[aiohttp.web_app.Application]*)
+  - **app** (_Optional\[aiohttp.web\_app.Application\]_)
 
-  - **runner** (*Optional[aiohttp.web_runner.AppRunner]*)
+  - **runner** (_Optional\[aiohttp.web\_runner.AppRunner\]_)
 
-  - **site** (*Optional[aiohttp.web_runner.TCPSite]*)
+  - **site** (_Optional\[aiohttp.web\_runner.TCPSite\]_)
 
-  - **adapter_type** (*Literal['ws', 'reverse-ws']*)
+  - **adapter\_type** (_Literal\['ws', 'reverse-ws'\]_)
 
-  - **host** (*str*)
+  - **host** (_str_)
 
-  - **port** (*int*)
+  - **port** (_int_)
 
-  - **url** (*str*)
+  - **url** (_str_)
 
-  - **reconnect_interval** (*int*)
+  - **reconnect\_interval** (_int_)
 
-### *async method* `handle_reverse_ws_response(self, request)` {#WebSocketAdapter.handle_reverse_ws_response}
+### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+
+初始化。
+
+- **Arguments**
+
+  - **bot** (_Bot_) - 当前机器人对象。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_reverse_ws_response(self, request)` {#WebSocketAdapter.handle\_reverse\_ws\_response}
 
 处理 aiohttp WebSocket 服务器的接收。
 
 - **Arguments**
 
-  - **request** (*aiohttp.web_request.Request*)
+  - **request** (_aiohttp.web\_request.Request_)
 
 - **Returns**
 
-  Type: *aiohttp.web_ws.WebSocketResponse*
+  Type: _aiohttp.web\_ws.WebSocketResponse_
 
-### *async method* `handle_websocket(self)` {#WebSocketAdapter.handle_websocket}
+### _async method_ `handle_websocket(self)` {#WebSocketAdapter.handle\_websocket}
 
 处理 WebSocket。
 
-### *async method* `handle_websocket_msg(self, msg)` {#WebSocketAdapter.handle_websocket_msg}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_websocket_msg(self, msg)` {#WebSocketAdapter.handle\_websocket\_msg}
 
 处理 WebSocket 消息。
 
 - **Arguments**
 
-  - **msg** (*aiohttp.http_websocket.WSMessage*)
+  - **msg** (_aiohttp.http\_websocket.WSMessage_)
 
 - **Returns**
 
-  Type: *None*
+  Type: _None_
 
-### *async method* `reverse_ws_connection_hook(self)` {#WebSocketAdapter.reverse_ws_connection_hook}
+### _async method_ `reverse_ws_connection_hook(self)` {#WebSocketAdapter.reverse\_ws\_connection\_hook}
 
 反向 WebSocket 连接建立时的钩子函数。
 
-### *async method* `run(self)` {#WebSocketAdapter.run}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `run(self)` {#WebSocketAdapter.run}
 
 运行适配器。
 
-### *async method* `shutdown(self)` {#WebSocketAdapter.shutdown}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `shutdown(self)` {#WebSocketAdapter.shutdown}
 
 关闭并清理连接。
 
-### *async method* `startup(self)` {#WebSocketAdapter.startup}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `startup(self)` {#WebSocketAdapter.startup}
 
 初始化适配器。
 
-### *async method* `websocket_connect(self)` {#WebSocketAdapter.websocket_connect}
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `websocket_connect(self)` {#WebSocketAdapter.websocket\_connect}
 
 创建正向 WebSocket 连接。
+
+- **Returns**
+
+  Type: _None_

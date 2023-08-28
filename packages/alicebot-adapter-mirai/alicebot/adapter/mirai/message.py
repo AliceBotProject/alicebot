@@ -23,9 +23,6 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
         """
         return MiraiMessageSegment
 
-    def _str_to_message_segment(self, msg: str) -> "MiraiMessageSegment":
-        return self.get_segment_class().plain(msg)
-
     def as_message_chain(self) -> List[Dict[str, Any]]:
         """返回符合 Mirai-api-http 标准的 messageChain 数组。
 
@@ -57,6 +54,18 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
             消息类。
         """
         return MiraiMessage
+
+    @classmethod
+    def from_str(cls, msg: str) -> Self:
+        """用于将 `str` 转换为消息字段。
+
+        Args:
+            msg: 要解析为消息字段的数据。
+
+        Returns:
+            由 `str` 转换的消息字段。
+        """
+        return cls.plain(msg)
 
     def __str__(self) -> str:
         """返回消息字段的文本表示。

@@ -19,7 +19,6 @@ from typing import (
     Optional,
     Tuple,
     Type,
-    Union,
 )
 
 import aiohttp
@@ -261,7 +260,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     async def send(
         self,
-        message_: Union[CQHTTPMessage, BuildMessageType[CQHTTPMessageSegment]],
+        message_: BuildMessageType[CQHTTPMessageSegment],
         message_type: Literal["private", "group"],
         id_: int,
     ) -> Any:

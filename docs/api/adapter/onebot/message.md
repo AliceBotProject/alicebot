@@ -2,150 +2,166 @@
 
 OneBot 适配器消息。
 
-## *class* `OneBotMessage`(self, message = None) {#OneBotMessage}
+## _class_ `OneBotMessage` {#OneBotMessage}
 
 Bases: `alicebot.message.Message`
 
 OneBot 消息。
 
+### _method_ `__init__(self, *messages)` {#Message.\_\_init\_\_}
+
+初始化。
+
 - **Arguments**
 
-  - **message** (*Union[Self, ~T_MessageSegment, str, Mapping[str, Any], Iterable[Union[~T_MessageSegment, str, Mapping[str, Any]]], NoneType]*) - 可以被转化为消息的数据。
+  - **\*messages** (_Union\[List\[~MessageSegmentT\], ~MessageSegmentT, str, Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
 
-  - ***args** - 其他参数。
+- **Returns**
 
-## *class* `OneBotMessageSegment`(self, type, data = \<factory\>) {#OneBotMessageSegment}
+  Type: _None_
 
-Bases: `alicebot.message.MessageSegment`
+### _method_ `get_segment_class()` {#OneBotMessage.get\_segment\_class}
+
+获取消息字段类。
+
+- **Returns**
+
+  Type: _Type\[OneBotMessageSegment\]_
+
+  消息字段类。
+
+## _class_ `OneBotMessageSegment` {#OneBotMessageSegment}
+
+Bases: `alicebot.message.MessageSegment[OneBotMessage]`
 
 OneBot 消息字段。
 
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+
+Create a new model by parsing and validating input data from keyword arguments.
+
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
+
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
+
 - **Arguments**
 
-  - **type** (*str*)
+  - **data** (_Any_)
 
-  - **data** (*Dict[str, Any]*)
+- **Returns**
 
-### *class method* `audio(cls, file_id)` {#OneBotMessageSegment.audio}
+  Type: _None_
+
+### _method_ `audio(file_id)` {#OneBotMessageSegment.audio}
 
 音频
 
-- **Arguments**
-
-  - **file_id** (*str*)
-
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `file(cls, file_id)` {#OneBotMessageSegment.file}
+### _method_ `file(file_id)` {#OneBotMessageSegment.file}
 
 文件
 
-- **Arguments**
+- **Returns**
 
-  - **file_id** (*str*)
+  Type: _typing\_extensions.Self_
+
+### _method_ `from_str(msg)` {#OneBotMessageSegment.from\_str}
+
+用于将 `str` 转换为消息字段。
 
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `image(cls, file_id)` {#OneBotMessageSegment.image}
+  由 `str` 转换的消息字段。
+
+### _method_ `get_message_class()` {#OneBotMessageSegment.get\_message\_class}
+
+获取消息类。
+
+- **Returns**
+
+  Type: _Type\[OneBotMessage\]_
+
+  消息类。
+
+### _method_ `image(file_id)` {#OneBotMessageSegment.image}
 
 图片
 
-- **Arguments**
-
-  - **file_id** (*str*)
-
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `location(cls, latitude, longitude, title, content)` {#OneBotMessageSegment.location}
+### _method_ `location(latitude, longitude, title, content)` {#OneBotMessageSegment.location}
 
 位置
 
 - **Arguments**
 
-  - **latitude** (*float*)
+  - **longitude** (_float_)
 
-  - **longitude** (*float*)
+  - **title** (_str_)
 
-  - **title** (*str*)
-
-  - **content** (*str*)
+  - **content** (_str_)
 
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `mention(cls, user_id)` {#OneBotMessageSegment.mention}
+### _method_ `mention(user_id)` {#OneBotMessageSegment.mention}
 
 提及
 
-- **Arguments**
-
-  - **user_id** (*str*)
-
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `mention_all(cls)` {#OneBotMessageSegment.mention_all}
+### _method_ `mention_all()` {#OneBotMessageSegment.mention\_all}
 
 提及所有人
 
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `reply(cls, message_id, user_id)` {#OneBotMessageSegment.reply}
+### _method_ `reply(message_id, user_id)` {#OneBotMessageSegment.reply}
 
 回复
 
 - **Arguments**
 
-  - **message_id** (*str*)
-
-  - **user_id** (*str*)
+  - **user\_id** (_str_)
 
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `text(cls, text)` {#OneBotMessageSegment.text}
+### _method_ `text(text)` {#OneBotMessageSegment.text}
 
 纯文本
 
-- **Arguments**
-
-  - **text** (*str*)
-
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `video(cls, file_id)` {#OneBotMessageSegment.video}
+### _method_ `video(file_id)` {#OneBotMessageSegment.video}
 
 视频
 
-- **Arguments**
-
-  - **file_id** (*str*)
-
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_
 
-### *class method* `voice(cls, file_id)` {#OneBotMessageSegment.voice}
+### _method_ `voice(file_id)` {#OneBotMessageSegment.voice}
 
 语音
 
-- **Arguments**
-
-  - **file_id** (*str*)
-
 - **Returns**
 
-  Type: *OneBotMessageSegment*
+  Type: _typing\_extensions.Self_

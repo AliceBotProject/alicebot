@@ -5,46 +5,40 @@ AliceBot 消息。
 实现了常用的基本消息 `Message` 和消息字段 `MessageSegment` 模型供适配器使用。
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 
-## *class* `Message`(self, message = None) {#Message}
+## _abstract class_ `Message` {#Message}
 
-Bases: `list`, `typing.Generic`
+Bases: `abc.ABC`, `list`, `typing.Generic`
 
 消息。
 
 本类是 `List` 的子类，并重写了 `__init__()` 方法，
-可以直接处理 `str`, `Mapping`, `Iterable[Mapping]`, `MessageSegment`, `Message`。
-其中 `str` 的支持需要适配器开发者重写 `_str_to_message_segment()` 方法实现。
-本类重写了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算。
-若开发者实现了 `MessageSegment` 的子类则需要重写 `_message_segment_class()` 方法，
-并在 `MessageSegment` 的子类中重写 `_message_class()` 方法。
+可以直接处理 `str`, `Mapping`, `MessageSegment`, `List[MessageSegment]`。
+本类重载了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算。
+适配器开发者需要继承本类并重写 `get_segment_class()` 方法。
+
+### _method_ `__init__(self, *messages)` {#Message.\_\_init\_\_}
+
+初始化。
 
 - **Arguments**
 
-  - **message** (*Union[Self, ~T_MessageSegment, str, Mapping[str, Any], Iterable[Union[~T_MessageSegment, str, Mapping[str, Any]]], NoneType]*) - 可以被转化为消息的数据。
+  - **\*messages** (_Union\[List\[~MessageSegmentT\], ~MessageSegmentT, str, Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
 
-  - ***args** - 其他参数。
+- **Returns**
 
-### *method* `copy(self)` {#Message.copy}
+  Type: _None_
+
+### _method_ `copy(self)` {#Message.copy}
 
 返回自身的浅复制。
 
 - **Returns**
 
-  Type: *Self*
+  Type: _typing\_extensions.Self_
 
   自身的浅复制。
 
-### *method* `deepcopy(self)` {#Message.deepcopy}
-
-返回自身的深复制。
-
-- **Returns**
-
-  Type: *Self*
-
-  自身的深复制。
-
-### *method* `endswith(self, suffix, start = None, end = None)` {#Message.endswith}
+### _method_ `endswith(self, suffix, start = None, end = None)` {#Message.endswith}
 
 实现类似字符串的 `endswith()` 方法。
 
@@ -54,37 +48,47 @@ Bases: `list`, `typing.Generic`
 
 - **Arguments**
 
-  - **suffix** (*Union[str, ~T_MessageSegment]*) - 后缀。
+  - **suffix** (_Union\[str, ~MessageSegmentT\]_) - 后缀。
 
-  - **start** (*Optional[SupportsIndex]*) - 开始检查位置。
+  - **start** (_Optional\[SupportsIndex\]_) - 开始检查位置。
 
-  - **end** (*Optional[SupportsIndex]*) - 停止检查位置。
+  - **end** (_Optional\[SupportsIndex\]_) - 停止检查位置。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   检查结果。
 
-### *method* `get_plain_text(self)` {#Message.get_plain_text}
+### _method_ `get_plain_text(self)` {#Message.get\_plain\_text}
 
 获取消息中的纯文本部分。
 
 - **Returns**
 
-  Type: *str*
+  Type: _str_
 
   消息中的纯文本部分。
 
-### *method* `is_text(self)` {#Message.is_text}
+### _method_ `get_segment_class()` {#Message.get\_segment\_class}
+
+获取消息字段类。
+
+- **Returns**
+
+  Type: _Type\[~MessageSegmentT\]_
+
+  消息字段类。
+
+### _method_ `is_text(self)` {#Message.is\_text}
 
 是否是纯文本消息。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
-### *method* `replace(self, old, new, count = -1)` {#Message.replace}
+### _method_ `replace(self, old, new, count = -1)` {#Message.replace}
 
 实现类似字符串的 `replace()` 方法。
 
@@ -94,19 +98,19 @@ Bases: `list`, `typing.Generic`
 
 - **Arguments**
 
-  - **old** (*Union[str, ~T_MessageSegment]*) - 被匹配的字符串或消息字段。
+  - **old** (_Union\[str, ~MessageSegmentT\]_) - 被匹配的字符串或消息字段。
 
-  - **new** (*Union[str, ~T_MessageSegment, NoneType]*) - 被替换为的字符串或消息字段。
+  - **new** (_Union\[str, ~MessageSegmentT, NoneType\]_) - 被替换为的字符串或消息字段。
 
-  - **count** (*int*) - 替换的次数。
+  - **count** (_int_) - 替换的次数。
 
 - **Returns**
 
-  Type: *Self*
+  Type: _typing\_extensions.Self_
 
   替换后的消息对象。
 
-### *method* `startswith(self, prefix, start = None, end = None)` {#Message.startswith}
+### _method_ `startswith(self, prefix, start = None, end = None)` {#Message.startswith}
 
 实现类似字符串的 `startswith()` 方法。
 
@@ -116,98 +120,128 @@ Bases: `list`, `typing.Generic`
 
 - **Arguments**
 
-  - **prefix** (*Union[str, ~T_MessageSegment]*) - 前缀。
+  - **prefix** (_Union\[str, ~MessageSegmentT\]_) - 前缀。
 
-  - **start** (*Optional[SupportsIndex]*) - 开始检查位置。
+  - **start** (_Optional\[SupportsIndex\]_) - 开始检查位置。
 
-  - **end** (*Optional[SupportsIndex]*) - 停止检查位置。
+  - **end** (_Optional\[SupportsIndex\]_) - 停止检查位置。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   检查结果。
 
-## *class* `MessageSegment`(self, type, data = \<factory\>) {#MessageSegment}
+## _abstract class_ `MessageSegment` {#MessageSegment}
 
-Bases: `collections.abc.Mapping`, `typing.Generic`
+Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.Generic`
 
 消息字段。
 
-本类实现了所有映射类型的方法，这些方法全部是对 `data` 属性的操作。
+本类实现了所有 `Mapping` 类型的方法，这些方法全部是对 `data` 属性的操作。
 本类重写了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算，返回 `Message` 对象。
-若开发者实现了 `Message` 和 `MessageSegment` 的子类则需要重写 `_message_class()` 方法。
-
-- **Arguments**
-
-  - **type** (*str*)
-
-  - **data** (*Dict[str, Any]*)
+适配器开发者需要继承本类并重写 `get_message_class()` 方法。
 
 - **Attributes**
 
-  - **type** (*str*) - 消息字段类型。
+  - **type** (_str_) - 消息字段类型。
 
-  - **data** (*Dict[str, Any]*) - 消息字段内容。
+  - **data** (_Dict\[str, Any\]_) - 消息字段内容。
 
-### *method* `as_dict(self)` {#MessageSegment.as_dict}
+### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
 
-将当前对象解析为 `dict` 对象，开发者可重写本方法以适配特殊的解析方式。
+Create a new model by parsing and validating input data from keyword arguments.
 
-- **Returns**
+Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
+validated to form a valid model.
 
-  Type: *Dict[str, Any]*
+`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
+allow `self` as a field name.
 
-  `dict` 对象。
+- **Arguments**
 
-### *method* `copy(self)` {#MessageSegment.copy}
-
-返回自身的浅复制。
-
-- **Returns**
-
-  Type: *Self*
-
-  自身的浅复制。
-
-### *method* `deepcopy(self)` {#MessageSegment.deepcopy}
-
-返回自身的深复制。
+  - **data** (_Any_)
 
 - **Returns**
 
-  Type: *Self*
+  Type: _None_
 
-  自身的深复制。
+### _method_ `from_mapping(msg)` {#MessageSegment.from\_mapping}
 
-### *method* `get(self, key, default = None)` {#MessageSegment.get}
+用于将 `Mapping` 转换为消息字段。
+
+如有需要，子类可重写此方法以更改对 `Mapping` 的默认行为。
+
+- **Returns**
+
+  Type: _typing\_extensions.Self_
+
+  由 Mapping 转换的消息字段。
+
+### _method_ `from_str(msg)` {#MessageSegment.from\_str}
+
+用于将 `str` 转换为消息字段，子类应重写此方法。
+
+- **Returns**
+
+  Type: _typing\_extensions.Self_
+
+  由 `str` 转换的消息字段。
+
+### _method_ `get(self, key, default = None)` {#MessageSegment.get}
 
 如果 `key` 存在于 `data` 字典中则返回 `key` 的值，否则返回 `default`。
 
 - **Arguments**
 
-  - **key** (*str*)
+  - **key** (_str_)
 
-  - **default** (*Any*)
+  - **default** (_Any_)
 
-### *method* `is_text(self)` {#MessageSegment.is_text}
+- **Returns**
+
+  Type: _Any_
+
+### _method_ `get_message_class()` {#MessageSegment.get\_message\_class}
+
+获取消息类。
+
+- **Returns**
+
+  Type: _Type\[~MessageT\]_
+
+  消息类。
+
+### _method_ `is_text(self)` {#MessageSegment.is\_text}
 
 是否是纯文本消息字段。
 
 - **Returns**
 
-  Type: *bool*
+  Type: _bool_
 
   是否是纯文本消息字段。
 
-### *method* `items(self)` {#MessageSegment.items}
+### _method_ `items(self)` {#MessageSegment.items}
 
 返回由 `data` 字典项 (`(键, 值)` 对) 组成的一个新视图。
 
-### *method* `keys(self)` {#MessageSegment.keys}
+- **Returns**
+
+  Type: _ItemsView\[str, Any\]_
+
+### _method_ `keys(self)` {#MessageSegment.keys}
 
 返回由 `data` 字典键组成的一个新视图。
 
-### *method* `values(self)` {#MessageSegment.values}
+- **Returns**
+
+  Type: _KeysView\[str\]_
+
+### _method_ `values(self)` {#MessageSegment.values}
 
 返回由 `data` 字典值组成的一个新视图。
+
+- **Returns**
+
+  Type: _ValuesView\[Any\]_

@@ -3,12 +3,12 @@
 实现了常用的基本消息 `Message` 和消息字段 `MessageSegment` 模型供适配器使用。
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 """
+from abc import ABC, abstractmethod
 from typing import (
     Any,
     Dict,
     Generic,
     ItemsView,
-    Iterable,
     Iterator,
     KeysView,
     List,
@@ -29,7 +29,7 @@ from pydantic_core import core_schema
 __all__ = [
     "MessageT",
     "MessageSegmentT",
-    "BuildMessageSegmentType",
+    "BuildMessageType",
     "Message",
     "MessageSegment",
 ]
@@ -37,63 +37,49 @@ __all__ = [
 MessageT = TypeVar("MessageT", bound="Message[Any]")
 MessageSegmentT = TypeVar("MessageSegmentT", bound="MessageSegment[Any]")
 
-# 可以转化为 MessageSegment 的类型
-BuildMessageSegmentType = Union[MessageSegmentT, str, Mapping[str, Any]]
-
-# 可以被 Message 类型的构造器处理的类型
-BuildMessageType = Union[
-    BuildMessageSegmentType[MessageSegmentT],
-    Iterable[BuildMessageSegmentType[MessageSegmentT]],
-]
+# 可以转化为 Message 的类型
+BuildMessageType = Union[List[MessageSegmentT], MessageSegmentT, str, Mapping[str, Any]]
 
 
-class Message(List[MessageSegmentT]):
+class Message(ABC, List[MessageSegmentT]):
     """消息。
 
     本类是 `List` 的子类，并重写了 `__init__()` 方法，
-    可以直接处理 `str`, `Mapping`, `Iterable[Mapping]`, `MessageSegment`, `Message`。
-    其中 `str` 的支持需要适配器开发者重写 `_str_to_message_segment()` 方法实现。
-    本类重写了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算。
-    若开发者实现了 `MessageSegment` 的子类则需要重写 `get_segment_class()` 方法，
-    并在 `MessageSegment` 的子类中重写 `get_message_class()` 方法。
+    可以直接处理 `str`, `Mapping`, `MessageSegment`, `List[MessageSegment]`。
+    本类重载了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算。
+    适配器开发者需要继承本类并重写 `get_segment_class()` 方法。
     """
 
-    def __init__(
-        self, message: Optional[Union[Self, BuildMessageType[MessageSegmentT]]] = None
-    ) -> None:
+    def __init__(self, *messages: BuildMessageType[MessageSegmentT]) -> None:
         """初始化。
 
         Args:
-            message: 可以被转化为消息的数据。
+            *messages: 可以被转化为消息的数据。
         """
-        if message is None:
-            return
-        if isinstance(message, self.__class__):
-            self.extend(message)  # type: ignore
-        elif isinstance(message, self.get_segment_class()):
-            self.append(message)
-        elif isinstance(message, Mapping):
-            self.append(self._mapping_to_message_segment(message))  # type: ignore
-        elif isinstance(message, str):
-            self.append(self._str_to_message_segment(message))
-        elif isinstance(message, Iterable):
-            for seg in message:
-                self.extend(self.__class__(seg))
-        else:
-            raise TypeError(
-                f"message type error, expect {self.__class__}, "
-                f"{self.get_segment_class()}, Mapping, str or Iterable of its, "
-                "get {type(message)}"
-            )
+        segment_class = self.get_segment_class()
+        for message in messages:
+            if isinstance(message, list):
+                self.extend(message)
+            elif isinstance(message, segment_class):
+                self.append(message)
+            elif isinstance(message, str):
+                self.append(segment_class.from_str(message))
+            elif isinstance(message, Mapping):
+                self.append(segment_class.from_mapping(message))
+            else:
+                raise TypeError(
+                    f"message type error, expect List[{segment_class}], "
+                    f"{segment_class}, str or Mapping, get {type(message)}"
+                )
 
     @classmethod
+    @abstractmethod
     def get_segment_class(cls) -> Type[MessageSegmentT]:
         """获取消息字段类。
 
         Returns:
             消息字段类。
         """
-        return MessageSegment  # type: ignore
 
     @classmethod
     def __get_pydantic_core_schema__(
@@ -111,30 +97,6 @@ class Message(List[MessageSegmentT]):
                 ),
             ]
         )
-
-    def _mapping_to_message_segment(self, msg: Mapping[Any, Any]) -> MessageSegmentT:
-        """用于将 `Mapping` 转换为 `MessageSegment`。
-
-        如有需要，子类可重写此方法以更改对 `Mapping` 的默认行为。
-
-        Args:
-            msg: 要解析为 `MessageSegment` 的数据。
-
-        Returns:
-            由 Mapping 转换的 `MessageSegment`。
-        """
-        return self.get_segment_class()(**msg)
-
-    def _str_to_message_segment(self, msg: str) -> MessageSegmentT:
-        """用于将 `str` 转换为 `MessageSegment`，子类应重写此方法以支持 `str` 及支持新的消息字段类。
-
-        Args:
-            msg: 要解析为 `MessageSegment` 的数据。
-
-        Returns:
-            由 `str` 转换的 `MessageSegment`。
-        """
-        raise NotImplementedError
 
     def __repr__(self) -> str:
         """返回消息的描述。
@@ -165,7 +127,7 @@ class Message(List[MessageSegmentT]):
             return item in str(self)
         return super().__contains__(item)
 
-    def __add__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:  # type: ignore
+    def __add__(self, other: BuildMessageType[MessageSegmentT]) -> Self:  # type: ignore
         """自定义消息与其他对象相加的方法。
 
         Args:
@@ -176,7 +138,7 @@ class Message(List[MessageSegmentT]):
         """
         return self.__class__(self).__iadd__(other)
 
-    def __radd__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:  # type: ignore
+    def __radd__(self, other: BuildMessageType[MessageSegmentT]) -> Self:  # type: ignore
         """自定义消息与其他对象相加的方法。
 
         Args:
@@ -187,7 +149,7 @@ class Message(List[MessageSegmentT]):
         """
         return self.__class__(other).__iadd__(self)
 
-    def __iadd__(self, other: Union[Self, BuildMessageType[MessageSegmentT]]) -> Self:  # type: ignore
+    def __iadd__(self, other: BuildMessageType[MessageSegmentT]) -> Self:  # type: ignore
         """自定义消息与其他对象相加的方法。
 
         Args:
@@ -326,9 +288,7 @@ class Message(List[MessageSegmentT]):
                 )
             new_msg = self.__class__()
             for item in self:
-                if count == 0:
-                    break
-                if item == old:
+                if count != 0 and item == old:
                     count -= 1
                     if new is not None:
                         new_msg.append(new)
@@ -352,7 +312,7 @@ class Message(List[MessageSegmentT]):
         Returns:
             替换后的消息对象。
         """
-        temp_msg = self.__class__(x.model_copy() for x in self)
+        temp_msg = self.__class__(*(x.model_copy(deep=True) for x in self))
         for index, item in enumerate(temp_msg):
             if count == 0:
                 break
@@ -368,12 +328,12 @@ class Message(List[MessageSegmentT]):
         return temp_msg
 
 
-class MessageSegment(BaseModel, Mapping[str, Any], Generic[MessageT]):
+class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
     """消息字段。
 
-    本类实现了所有映射类型的方法，这些方法全部是对 `data` 属性的操作。
+    本类实现了所有 `Mapping` 类型的方法，这些方法全部是对 `data` 属性的操作。
     本类重写了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算，返回 `Message` 对象。
-    若开发者实现了 `Message` 和 `MessageSegment` 的子类则需要重写 `get_message_class()` 方法。
+    适配器开发者需要继承本类并重写 `get_message_class()` 方法。
 
     Attributes:
         type: 消息字段类型。
@@ -384,13 +344,39 @@ class MessageSegment(BaseModel, Mapping[str, Any], Generic[MessageT]):
     data: Dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
+    @abstractmethod
     def get_message_class(cls) -> Type[MessageT]:
         """获取消息类。
 
         Returns:
             消息类。
         """
-        return Message  # type: ignore
+
+    @classmethod
+    @abstractmethod
+    def from_str(cls, msg: str) -> Self:
+        """用于将 `str` 转换为消息字段，子类应重写此方法。
+
+        Args:
+            msg: 要解析为消息字段的数据。
+
+        Returns:
+            由 `str` 转换的消息字段。
+        """
+
+    @classmethod
+    def from_mapping(cls, msg: Mapping[Any, Any]) -> Self:
+        """用于将 `Mapping` 转换为消息字段。
+
+        如有需要，子类可重写此方法以更改对 `Mapping` 的默认行为。
+
+        Args:
+            msg: 要解析为消息字段的数据。
+
+        Returns:
+            由 Mapping 转换的消息字段。
+        """
+        return cls(**msg)
 
     def __str__(self) -> str:
         """返回消息字段的文本表示。

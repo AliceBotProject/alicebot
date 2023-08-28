@@ -6,6 +6,7 @@ import subprocess
 from pathlib import Path
 
 import tomlkit
+from tomlkit.container import OutOfOrderTableProxy
 from tomlkit.items import Array, Table
 
 CHANGELOG_PREFIX = """---
@@ -48,7 +49,7 @@ def write_version_toml(file: Path, version: str, *, is_package: bool = False) ->
     with file.open(encoding="utf-8") as f:
         toml_file = tomlkit.load(f)
     project_table = toml_file["project"]
-    assert isinstance(project_table, Table)
+    assert isinstance(project_table, (OutOfOrderTableProxy, Table))
     project_table["version"] = version
     if is_package:
         dependencies_array = project_table["dependencies"]
@@ -63,8 +64,8 @@ write_version_toml(Path("pyproject.toml"), version)
 for package in Path("packages").iterdir():
     if package.is_dir():
         write_version_toml(package / "pyproject.toml", version, is_package=True)
-subprocess.run(["pdm", "update"])
-subprocess.run(["pnpm", "run", "changelog"])
+subprocess.run(["pdm", "update"], check=True)
+subprocess.run(["pnpm", "run", "changelog"], check=True)
 with Path("docs/changelog.md").open(encoding="utf-8") as f:
     changelog_file = f.read()
 with Path("docs/changelog.md").open("w", encoding="utf-8") as f:
@@ -77,8 +78,6 @@ with Path("docs/changelog.md").open("w", encoding="utf-8") as f:
             )
         ).replace("_", "\\_")
     )
-subprocess.run(["pnpm", "exec", "prettier", "--write", "docs/changelog.md"])
-subprocess.run(["git", "tag", "-d", "v" + version])
-subprocess.run(["git", "add", "."])
-subprocess.run(["git", "commit", "-m", "chore: 发布 " + version])
-subprocess.run(["git", "tag", "v" + version])
+subprocess.run(["pnpm", "exec", "prettier", "--write", "docs/changelog.md"], check=True)
+subprocess.run(["git", "add", "."], check=True)
+subprocess.run(["git", "commit", "-m", "chore: 发布 " + version], check=True)

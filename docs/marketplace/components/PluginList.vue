@@ -15,13 +15,17 @@ interface dataSchema {
 }
 const URL = "https://marlenejiang.github.io/issue-ops/";
 const type = ref("plugins");
-const initData = ref([]);
+const initData = ref();
 const searchText = ref("");
 const searchedData = computed(() => {
   let _ = initData.value;
+  if (!_) return [];
   if (!!searchText.value) {
-    _ = _.filter((item) => item.name.indexOf(searchText.value) > -1);
+    _ = _.filter((item: { name: string | string[]; }) => item.name.indexOf(searchText.value) > -1);
   }
+  _ = _.sort((a: { time: string; }, b: { time: string; }) => {
+    return new Date(b.time).getTime() - new Date(a.time).getTime();
+  });
   return _;
 });
 const onPagedData = computed(() => {

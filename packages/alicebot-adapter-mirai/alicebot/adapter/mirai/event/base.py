@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from alicebot.event import Event
 
 if TYPE_CHECKING:
-    from .. import MiraiAdapter  # noqa: F401
+    from .. import MiraiAdapter
 
 Permission = Literal["OWNER", "ADMINISTRATOR", "MEMBER"]
 

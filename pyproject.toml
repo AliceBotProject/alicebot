@@ -103,6 +103,16 @@ extra-standard-library = ["typing_extensions"]
 [tool.ruff.pydocstyle]
 convention = "google"
 
+[tool.ruff.pyflakes]
+extend-generics = [
+    "alicebot.plugin.Plugin",
+    "alicebot.adapter.Adapter",
+    "alicebot.event.Event",
+    "alicebot.event.MessageEvent",
+    "alicebot.message.Message",
+    "alicebot.message.MessageSegment",
+]
+
 [tool.ruff.pyupgrade]
 keep-runtime-typing = true
 

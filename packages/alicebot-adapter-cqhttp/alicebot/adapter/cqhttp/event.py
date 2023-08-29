@@ -21,7 +21,7 @@ from alicebot.message import BuildMessageType
 from .message import CQHTTPMessage, CQHTTPMessageSegment
 
 if TYPE_CHECKING:
-    from . import CQHTTPAdapter  # noqa: F401
+    from . import CQHTTPAdapter
 
 
 class Sender(BaseModel):

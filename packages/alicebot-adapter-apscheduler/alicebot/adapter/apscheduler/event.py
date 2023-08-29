@@ -8,7 +8,7 @@ from alicebot.event import Event
 from alicebot.plugin import Plugin
 
 if TYPE_CHECKING:
-    from . import APSchedulerAdapter  # noqa: F401
+    from . import APSchedulerAdapter
 
 
 __all__ = ["APSchedulerEvent"]

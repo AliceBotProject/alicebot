@@ -391,6 +391,7 @@ class Bot:
     def _reload_config_dict(self) -> None:
         """重新加载配置文件。"""
         self._raw_config_dict = {}
+
         if self._config_dict is not None:
             self._raw_config_dict = self._config_dict
         elif self._config_file is not None:
@@ -401,7 +402,10 @@ class Bot:
                     elif self._config_file.endswith(".toml"):
                         self._raw_config_dict = tomllib.load(f)
                     else:
-                        logger.error("Unable to determine config file type")
+                        self.error_or_exception(
+                            "Read config file failed:",
+                            OSError("Unable to determine config file type"),
+                        )
             except OSError as e:
                 self.error_or_exception("Can not open config file:", e)
             except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
@@ -698,28 +702,29 @@ class Bot:
             reload: 是否重新加载模块。
         """
         for plugin_ in plugins:
-            if isinstance(plugin_, type):
-                if issubclass(plugin_, Plugin):
+            try:
+                if isinstance(plugin_, type) and issubclass(plugin_, Plugin):
                     self._load_plugin_class(
                         plugin_, plugin_load_type or PluginLoadType.CLASS, None
                     )
-                else:
-                    logger.error(
-                        f'The plugin class "{plugin_!r}" must be a subclass of Plugin'
+                elif isinstance(plugin_, str):
+                    logger.info(f'Loading plugins from module "{plugin_}"')
+                    self._load_plugins_from_module_name(
+                        plugin_,
+                        plugin_load_type=plugin_load_type or PluginLoadType.NAME,
+                        reload=reload,
                     )
-            elif isinstance(plugin_, str):
-                logger.info(f'Loading plugins from module "{plugin_}"')
-                self._load_plugins_from_module_name(
-                    plugin_,
-                    plugin_load_type=plugin_load_type or PluginLoadType.NAME,
-                    reload=reload,
-                )
-            elif isinstance(plugin_, Path):
-                logger.info(f'Loading plugins from path "{plugin_}"')
-                if plugin_.is_file():
+                elif isinstance(plugin_, Path):
+                    logger.info(f'Loading plugins from path "{plugin_}"')
+                    if not plugin_.is_file():
+                        raise LoadModuleError(  # noqa: TRY301
+                            f'The plugin path "{plugin_}" must be a file'
+                        )
+
                     if plugin_.suffix != ".py":
-                        logger.error(f'The path "{plugin_}" must endswith ".py"')
-                        return
+                        raise LoadModuleError(  # noqa: TRY301
+                            f'The path "{plugin_}" must endswith ".py"'
+                        )
 
                     plugin_module_name = None
                     for path in self._module_path_finder.path:
@@ -748,9 +753,11 @@ class Bot:
                         reload=reload,
                     )
                 else:
-                    logger.error(f'The plugin path "{plugin_}" must be a file')
-            else:
-                logger.error(f"Type error: {plugin_} can not be loaded as plugin")
+                    raise TypeError(  # noqa: TRY301
+                        f"{plugin_} can not be loaded as plugin"
+                    )
+            except Exception as e:
+                self.error_or_exception(f'Load plugin "{plugin_}" failed:', e)
 
     def load_plugins(
         self, *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path]
@@ -807,14 +814,8 @@ class Bot:
         for adapter_ in adapters:
             adapter_object: Adapter[Any, Any]
             try:
-                if isinstance(adapter_, type):
-                    if issubclass(adapter_, Adapter):
-                        adapter_object = adapter_(self)
-                    else:
-                        raise LoadModuleError(  # noqa: TRY301
-                            f'The Adapter class "{adapter_!r}" '
-                            "must be a subclass of Adapter"
-                        )
+                if isinstance(adapter_, type) and issubclass(adapter_, Adapter):
+                    adapter_object = adapter_(self)
                 elif isinstance(adapter_, str):
                     adapter_classes = get_classes_from_module_name(adapter_, Adapter)
                     if not adapter_classes:
@@ -827,8 +828,8 @@ class Bot:
                         )
                     adapter_object = adapter_classes[0][0](self)  # type: ignore
                 else:
-                    raise LoadModuleError(  # noqa: TRY301
-                        f"Type error: {adapter_} can not be loaded as adapter"
+                    raise TypeError(  # noqa: TRY301
+                        f"{adapter_} can not be loaded as adapter"
                     )
             except Exception as e:
                 self.error_or_exception(f'Load adapter "{adapter_}" failed:', e)

@@ -10,14 +10,14 @@ const onNext = () => {
   if (props.modelValue >= props.pageTotal) return; // 限制下一页翻页按钮的边界
   emit("update:modelValue", props.modelValue + 1);
 };
-const setPageNum = (pageNum) => {
+const setPageNum = (pageNum: number | string) => {
   if (typeof pageNum !== "number") return; //如果pageNum不是数值类型则返回
   if (pageNum < 1) return; // 限制上一页翻页按钮的边界
   if (pageNum > props.pageTotal) return; // 限制下一页翻页按钮的边界
   emit("update:modelValue", pageNum);
 };
-const genPageArray = (current, total, size) => {
-  let arr = [];
+const genPageArray = (current: number, total: number, size: number) => {
+  let arr: Array<string | number> = [];
   if (total < size + 2) {
     arr = Array.from({ length: total }, (v, k) => k + 1);
   } else if (current < size - 2) {
@@ -77,16 +77,31 @@ const pageArraySm = computed(() => {
   <div>
     <div class="container" v-if="props.pageTotal > 1">
       <div class="paper-item" @click="onPrev" style="display: flex">&lt;</div>
-      <div v-for="(item, index) in pageArrayLg" :key="index" @click="setPageNum(item)" class="paper-item paper-lg"
-        :class="{ active: item == props.modelValue }">
+      <div
+        v-for="(item, index) in pageArrayLg"
+        :key="index"
+        @click="setPageNum(item)"
+        class="paper-item paper-lg"
+        :class="{ active: item == props.modelValue }"
+      >
         {{ item }}
       </div>
-      <div v-for="(item, index) in pageArrayMd" :key="index" @click="setPageNum(item)" class="paper-item paper-md"
-        :class="{ active: item == props.modelValue }">
+      <div
+        v-for="(item, index) in pageArrayMd"
+        :key="index"
+        @click="setPageNum(item)"
+        class="paper-item paper-md"
+        :class="{ active: item == props.modelValue }"
+      >
         {{ item }}
       </div>
-      <div v-for="(item, index) in pageArraySm" :key="index" @click="setPageNum(item)" class="paper-item paper-sm"
-        :class="{ active: item == props.modelValue }">
+      <div
+        v-for="(item, index) in pageArraySm"
+        :key="index"
+        @click="setPageNum(item)"
+        class="paper-item paper-sm"
+        :class="{ active: item == props.modelValue }"
+      >
         {{ item }}
       </div>
       <div class="paper-item" @click="onNext" style="display: flex">></div>
@@ -103,7 +118,6 @@ const pageArraySm = computed(() => {
 }
 
 @media screen and (min-width: 780px) {
-
   .paper-lg,
   .paper-sm {
     display: none;
@@ -115,7 +129,6 @@ const pageArraySm = computed(() => {
 }
 
 @media screen and (min-width: 1024px) {
-
   .paper-md,
   .paper-sm {
     display: none;
@@ -127,7 +140,6 @@ const pageArraySm = computed(() => {
 }
 
 @media screen and (max-width: 780px) {
-
   .paper-lg,
   .paper-md {
     display: none;

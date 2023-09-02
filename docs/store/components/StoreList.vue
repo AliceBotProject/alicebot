@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
 import Pagination from "./Pagination.vue";
-import Card from "./Card.vue"
+import Card from "./Card.vue";
 interface dataSchema {
   module_name: string; //导入时的模块名称
   pypi_name: string; // 在 PyPi 上的名称
@@ -21,34 +21,45 @@ const searchedData = computed(() => {
   let _ = initData.value;
   if (!_) return [];
   if (!!searchText.value) {
-    _ = _.filter((item: { name: string | string[]; }) => item.name.indexOf(searchText.value) > -1);
+    _ = _.filter(
+      (item: { name: string | string[] }) =>
+        item.name.indexOf(searchText.value) > -1
+    );
   }
-  _ = _.sort((a: { time: string; }, b: { time: string; }) => {
+  _ = _.sort((a: { time: string }, b: { time: string }) => {
     return new Date(b.time).getTime() - new Date(a.time).getTime();
   });
   return _;
 });
 const onPagedData = computed(() => {
   if (searchedData.value.length === 0) return [];
-  return searchedData.value.slice((pageNum.value - 1) * pageSize, pageNum.value * pageSize);
-})
+  return searchedData.value.slice(
+    (pageNum.value - 1) * pageSize,
+    pageNum.value * pageSize
+  );
+});
 const pageSize = 10; // 每页显示的数量
 const pageNum = ref(1); // 当前页码
-const pageTotal = computed(() => {  // 总页数
+const pageTotal = computed(() => {
+  // 总页数
   pageNum.value = 1;
-  return Math.ceil((searchedData.value).length / pageSize);
-})
+  return Math.ceil(searchedData.value.length / pageSize);
+});
 const setType = async (type_: string) => {
   type.value = type_;
-  const _: dataSchema = (await (await fetch(URL + type.value + ".json")).json())[type.value];
+  const _: dataSchema = (
+    await (await fetch(URL + type.value + ".json")).json()
+  )[type.value];
   initData.value = _;
   searchText.value = "";
 };
 
 onMounted(async () => {
-  const _: dataSchema = (await (await fetch(URL + type.value + ".json")).json())[type.value];
+  const _: dataSchema = (
+    await (await fetch(URL + type.value + ".json")).json()
+  )[type.value];
   initData.value = _;
-})
+});
 </script>
 
 <template>
@@ -56,13 +67,25 @@ onMounted(async () => {
     <div class="tab">
       <div opacity="80" text="sm">类型</div>
       <div class="select-list">
-        <button class="select-button" @click="setType('plugins')" :class="{ active: type == 'plugins' }">
+        <button
+          class="select-button"
+          @click="setType('plugins')"
+          :class="{ active: type == 'plugins' }"
+        >
           插件
         </button>
-        <button class="select-button" @click="setType('adapters')" :class="{ active: type == 'adapters' }">
+        <button
+          class="select-button"
+          @click="setType('adapters')"
+          :class="{ active: type == 'adapters' }"
+        >
           适配器
         </button>
-        <button class="select-button" @click="setType('bots')" :class="{ active: type == 'bots' }">
+        <button
+          class="select-button"
+          @click="setType('bots')"
+          :class="{ active: type == 'bots' }"
+        >
           机器人
         </button>
       </div>
@@ -70,20 +93,48 @@ onMounted(async () => {
     <div class="search-bar">
       <div class="divider" style="margin-top: 1rem" />
       <div class="search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 32 32" class="icon">
-          <path fill="currentColor"
-            d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 32 32"
+          class="icon"
+        >
+          <path
+            fill="currentColor"
+            d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z"
+          />
         </svg>
-        <input data-v-48d9a5fe="" class="search-input" type="text" role="search" placeholder="Search..."
-          v-model="searchText" />
+        <input
+          data-v-48d9a5fe=""
+          class="search-input"
+          type="text"
+          role="search"
+          placeholder="Search..."
+          v-model="searchText"
+        />
       </div>
       <div class="divider" style="margin-bottom: 1rem" />
     </div>
-    <Pagination :pageTotal="pageTotal" v-model="pageNum" style="width: 100%" key="0" />
+    <Pagination
+      :pageTotal="pageTotal"
+      v-model="pageNum"
+      style="width: 100%"
+      key="0"
+    />
     <div class="card-list">
-      <Card v-for="(item, index) in onPagedData" :key="index" :item="item"></Card>
+      <Card
+        v-for="(item, index) in onPagedData"
+        :key="index"
+        :item="item"
+      ></Card>
     </div>
-    <Pagination :pageTotal="pageTotal" v-model="pageNum" style="width: 100%" key="2" />
+    <Pagination
+      :pageTotal="pageTotal"
+      v-model="pageNum"
+      style="width: 100%"
+      key="2"
+    />
   </div>
 </template>
 

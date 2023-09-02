@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
+import IconSearch from "./icons/IconSearch.vue";
 import Pagination from "./Pagination.vue";
 import Card from "./Card.vue";
 interface dataSchema {
@@ -93,20 +94,8 @@ onMounted(async () => {
     <div class="search-bar">
       <div class="divider" style="margin-top: 1rem" />
       <div class="search">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 32 32"
-          class="icon"
-        >
-          <path
-            fill="currentColor"
-            d="m29 27.586l-7.552-7.552a11.018 11.018 0 1 0-1.414 1.414L27.586 29ZM4 13a9 9 0 1 1 9 9a9.01 9.01 0 0 1-9-9Z"
-          />
-        </svg>
+        <IconSearch class="icon" />
         <input
-          data-v-48d9a5fe=""
           class="search-input"
           type="text"
           role="search"
@@ -120,7 +109,7 @@ onMounted(async () => {
       :pageTotal="pageTotal"
       v-model="pageNum"
       style="width: 100%"
-      key="0"
+      key="topPagination"
     />
     <div class="card-list">
       <Card
@@ -133,7 +122,7 @@ onMounted(async () => {
       :pageTotal="pageTotal"
       v-model="pageNum"
       style="width: 100%"
-      key="2"
+      key="bottomPagination"
     />
   </div>
 </template>

@@ -10,7 +10,7 @@ footer: false
 
 <script setup>
 import { ref } from "vue";
-import PluginList from "./components/PluginList.vue";
+import StoreList from "./components/StoreList.vue";
 </script>
 
-<Suspense><PluginList /></Suspense>
+<Suspense><StoreList /></Suspense>

@@ -22,7 +22,7 @@ from alicebot.message import BuildMessageType
 from .message import OneBotMessage, OneBotMessageSegment
 
 if TYPE_CHECKING:
-    from . import OneBotAdapter  # noqa: F401
+    from . import OneBotAdapter
 
 
 class BotSelf(BaseModel):

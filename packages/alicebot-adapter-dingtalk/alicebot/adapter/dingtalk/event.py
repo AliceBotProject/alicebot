@@ -11,7 +11,7 @@ from .exceptions import WebhookExpiredError
 from .message import DingTalkMessage
 
 if TYPE_CHECKING:
-    from . import DingTalkAdapter  # noqa: F401
+    from . import DingTalkAdapter
 
 __all__ = ["UserInfo", "Text", "DingTalkEvent"]
 

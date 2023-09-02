@@ -9,7 +9,7 @@ from ..message import MiraiMessage, MiraiMessageSegment
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent, OtherClientSender
 
 if TYPE_CHECKING:
-    from .. import MiraiAdapter  # noqa: F401
+    from .. import MiraiAdapter
 
 
 class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):

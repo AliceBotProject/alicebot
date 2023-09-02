@@ -42,7 +42,7 @@ export default defineConfig({
     sidebar: {
       "/guide/": sidebarGuide(),
       "/api/": sidebarApi("/api/"),
-      // "/dev-api/": sidebarApi("/dev-api/"),
+      "/dev-api/": sidebarApi("/dev-api/"),
     },
 
     editLink: {

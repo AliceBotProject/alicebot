@@ -243,9 +243,9 @@ def wrap_get_func(
     return func
 
 
-if sys.version_info >= (3, 10):
+if sys.version_info >= (3, 10):  # pragma: no cover
     from inspect import get_annotations
-else:
+else:  # pragma: no cover
 
     def get_annotations(
         obj: Union[Callable[..., object], Type[Any], ModuleType]

@@ -50,9 +50,9 @@ from alicebot.utils import (
     wrap_get_func,
 )
 
-if sys.version_info >= (3, 11):
+if sys.version_info >= (3, 11):  # pragma: no cover
     import tomllib
-else:
+else:  # pragma: no cover
     import tomli as tomllib
 
 
@@ -191,7 +191,7 @@ class Bot:
         self._condition = asyncio.Condition()
 
         # 监听并拦截系统退出信号，从而完成一些善后工作后再关闭程序
-        if threading.current_thread() is threading.main_thread():
+        if threading.current_thread() is threading.main_thread():  # pragma: no cover
             # Signal 仅能在主线程中被处理。
             try:
                 loop = asyncio.get_running_loop()
@@ -215,7 +215,7 @@ class Bot:
         logger.info("Running AliceBot...")
 
         hot_reload_task = None
-        if self._hot_reload:
+        if self._hot_reload:  # pragma: no cover
             hot_reload_task = asyncio.create_task(self._run_hot_reload())
 
         for bot_run_hook_func in self._bot_run_hooks:
@@ -239,7 +239,7 @@ class Bot:
 
             await self.should_exit.wait()
 
-            if hot_reload_task is not None:
+            if hot_reload_task is not None:  # pragma: no cover
                 await hot_reload_task
         finally:
             for _adapter in self.adapters:
@@ -257,7 +257,9 @@ class Bot:
             self.plugins_priority_dict.clear()
             self._module_path_finder.path.clear()
 
-    def _remove_plugin_by_path(self, file: Path) -> List[Type[Plugin[Any, Any, Any]]]:
+    def _remove_plugin_by_path(
+        self, file: Path
+    ) -> List[Type[Plugin[Any, Any, Any]]]:  # pragma: no cover
         """根据路径删除已加载的插件。"""
         removed_plugins: List[Type[Plugin[Any, Any, Any]]] = []
         for plugins in self.plugins_priority_dict.values():
@@ -278,7 +280,7 @@ class Bot:
                 )
         return removed_plugins
 
-    async def _run_hot_reload(self) -> None:
+    async def _run_hot_reload(self) -> None:  # pragma: no cover
         """热重载。"""
         try:
             from watchfiles import Change, awatch
@@ -427,7 +429,7 @@ class Bot:
         self._load_plugins_from_dirs(*self._extend_plugin_dirs)
         self._update_config()
 
-    def _handle_exit(self, *_args: Any) -> None:
+    def _handle_exit(self, *_args: Any) -> None:  # pragma: no cover
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info("Stopping AliceBot...")
         if self.should_exit.is_set():
@@ -899,7 +901,9 @@ class Bot:
                 return _plugin
         raise LookupError(f'Can not find plugin named "{name}"')
 
-    def error_or_exception(self, message: str, exception: Exception) -> None:
+    def error_or_exception(
+        self, message: str, exception: Exception
+    ) -> None:  # pragma: no cover
         """根据当前 Bot 的配置输出 error 或者 exception 日志。
 
         Args:

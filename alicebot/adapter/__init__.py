@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 __all__ = ["Adapter"]
 
-if os.getenv("ALICEBOT_DEV") == "1":
+if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover
     # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
     __import__("pkg_resources").declare_namespace(__name__)
 

@@ -1,0 +1,12 @@
+superuser = 10001
+nickname = "小爱"
+
+[bot]
+# error here
+plugins = ""
+plugin_dirs = ["plugins"]
+adapters = []
+
+[bot.log]
+level = "INFO"
+verbose_exception = true

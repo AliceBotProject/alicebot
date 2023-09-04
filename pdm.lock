@@ -6,7 +6,7 @@ groups = ["default", "all", "apscheduler", "cqhttp", "dev", "dingtalk", "docs", 
 cross_platform = true
 static_urls = false
 lock_version = "4.3"
-content_hash = "sha256:eea7fea1f76462221d9dad52e4a0eb1e02a4df537edf8de1651983627b2ee4cc"
+content_hash = "sha256:c2929b2230dae527ad54de60a1abb9d5e325a2a24aacce86b8b75b0cb4676f7e"
 
 [[package]]
 name = "aiohttp"

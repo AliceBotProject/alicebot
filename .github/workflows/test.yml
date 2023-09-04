@@ -33,7 +33,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: true
       - name: Install dependencies
-        run: pdm install -G dev -G lint -G typing
+        run: pdm install -G dev -G test
 
       - name: Run pytest
         run: pdm run pytest -n auto --cov-report xml

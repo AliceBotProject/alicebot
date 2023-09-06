@@ -4,11 +4,11 @@ from typing import Any, List, Literal, Optional
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent
 
 
-class MateEvent(MiraiEvent):
+class MetaEvent(MiraiEvent):
     """默认不会被传播的特殊事件"""
 
 
-class BotEvent(MateEvent):
+class BotEvent(MetaEvent):
     """Bot 自身事件"""
 
     qq: int
@@ -44,7 +44,7 @@ class BotReloginEvent(BotEvent):
     type: Literal["BotReloginEvent"]
 
 
-class CommandExecutedEvent(MateEvent):
+class CommandExecutedEvent(MetaEvent):
     """命令被执行"""
 
     type: Literal["CommandExecutedEvent"]

@@ -12,9 +12,9 @@ from contextlib import asynccontextmanager
 from functools import partial
 from importlib.abc import MetaPathFinder
 from importlib.machinery import ModuleSpec, PathFinder
-from os import PathLike
 from types import GetSetDescriptorType, ModuleType
 from typing import (
+    TYPE_CHECKING,
     Any,
     AsyncGenerator,
     Awaitable,
@@ -38,6 +38,9 @@ from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
 from alicebot.typing import EventT
+
+if TYPE_CHECKING:
+    from os import PathLike
 
 __all__ = [
     "ModulePathFinder",

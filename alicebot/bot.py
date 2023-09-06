@@ -79,13 +79,13 @@ class Bot:
     """
 
     config: MainConfig
-    should_exit: asyncio.Event
+    should_exit: asyncio.Event  # pyright: ignore[reportUninitializedInstanceVariable]
     adapters: List[Adapter[Any, Any]]
     plugins_priority_dict: Dict[int, List[Type[Plugin[Any, Any, Any]]]]
     plugin_state: Dict[str, Any]
     global_state: Dict[Any, Any]
 
-    _condition: asyncio.Condition  # 用于处理 get 的 Condition
+    _condition: asyncio.Condition  # 用于处理 get 的 Condition # pyright: ignore[reportUninitializedInstanceVariable]
     _current_event: Optional[Event[Any]]  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
@@ -132,13 +132,11 @@ class Bot:
                 启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
         """
         self.config = MainConfig()
-        self.should_exit = asyncio.Event()
         self.plugins_priority_dict = defaultdict(list)
         self.plugin_state = defaultdict(lambda: None)
         self.global_state = {}
 
         self.adapters = []
-        self._condition = asyncio.Condition()
         self._current_event = None
         self._restart_flag = False
         self._module_path_finder = ModulePathFinder()

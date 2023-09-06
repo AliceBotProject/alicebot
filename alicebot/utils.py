@@ -57,7 +57,7 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 _TypeT = TypeVar("_TypeT", bound=Type[Any])
 
-StrOrBytesPath: TypeAlias = Union[str, bytes, PathLike[str], PathLike[bytes]]
+StrOrBytesPath: TypeAlias = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
 
 
 class ModulePathFinder(MetaPathFinder):

@@ -9,7 +9,11 @@ class FakeAdapter(Adapter[Event[Any], None]):
     """用于测试的适配器。"""
 
     EventFactory = Callable[
-        [Self], Union[Optional[Event[Self]], Awaitable[Optional[Event[Self]]]]
+        ["FakeAdapter"],
+        Union[
+            Optional[Event["FakeAdapter"]],
+            Awaitable[Optional[Event["FakeAdapter"]]],
+        ],
     ]
 
     name: str = "fake_adapter"

@@ -58,10 +58,12 @@ def test_get_classes_from_module_name() -> None:
     assert len(classes) == 0
 
     with pytest.raises(ImportError):
-        classes = get_classes_from_module_name("raise_value_error", type, reload=False)
+        classes = get_classes_from_module_name(
+            "raise_value_error", SuperClass, reload=False
+        )
     with pytest.raises(KeyboardInterrupt):
         classes = get_classes_from_module_name(
-            "raise_keyboard_interrupt_error", type, reload=False
+            "raise_keyboard_interrupt_error", SuperClass, reload=False
         )
 
 

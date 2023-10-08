@@ -17,6 +17,7 @@ class HttpServerTestEvent(Event["HttpServerTestAdapter"]):
 class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
     """HTTP 服务端示例适配器类。"""
 
+    name: str = "http_server_adapter"
     get_url: str = "/"
     post_url: str = "/"
     host: str = "127.0.0.1"

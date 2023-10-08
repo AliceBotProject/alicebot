@@ -55,6 +55,7 @@ typing = [ # used only in type check
 ]
 lint = ["black", "ruff", "mypy", "pylint", "pylint-pydantic"]
 docs = ["sophia-doc~=0.1.4", "tomlkit"]
+test = ["pytest", "pytest-asyncio", "pytest-xdist", "pytest-cov"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"
@@ -120,6 +121,7 @@ keep-runtime-typing = true
 "packages/*/alicebot/__init__.py" = ["D104"]
 "packages/*/alicebot/adapter/__init__.py" = ["D104"]
 "examples/plugins/*.py" = ["D", "T", "ANN"]
+"tests/*.py" = ["D", "PLR2004"]
 
 [tool.pyright]
 ignore = ["examples/plugins"]
@@ -173,6 +175,22 @@ good-names = ["i", "j", "k", "ex", "Run", "_", "e", "f", "ws", "cm", "at"]
 
 [tool.pylint.variables]
 allowed-redefined-builtins = ["id", "type"]
+
+[tool.pytest.ini_options]
+log_cli = true
+testpaths = "tests"
+addopts = "--cov=alicebot --cov-report=term-missing"
+
+[tool.coverage.run]
+omit = ["alicebot/adapter/utils.py"]
+
+[tool.coverage.report]
+exclude_also = [
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+    "@overload",
+    "@(abc\\.)?abstractmethod",
+]
 
 [tool.hatch.build.targets.sdist]
 include = ["/README.md", "/alicebot"]

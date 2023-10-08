@@ -4,4 +4,20 @@
   --vp-c-brand-lighter: #33adff;
   --vp-c-brand-dark: #008ae6;
   --vp-c-brand-darker: #006bb3;
+  --button-background: #9ca3af0d;
+  --button-background-hover: #9ca3af1a;
+  --button-background-active: #0099ff0d;
+  --button-color-active: #0099ff;
+  --divider: rgba(60, 60, 67, 0.12);
+  --card-border: rgba(82, 82, 89, 0.32);
+  --card-hover: #09f;
+  --card-icon: #000;
+  --card-des: #3c3c43;
+  --card-tag: #9ca3af2b;
+  --card-button: #f6f6f7;
+}
+html.dark {
+  --card-icon: #fff;
+  --card-button: #9ca3af0d;
+  --card-des: #9ca3af;
 }

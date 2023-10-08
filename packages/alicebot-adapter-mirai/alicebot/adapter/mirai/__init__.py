@@ -30,7 +30,7 @@ from alicebot.utils import PydanticEncoder
 
 from . import event
 from .config import Config
-from .event import BotEvent, CommandExecutedEvent, MateEvent, MiraiEvent
+from .event import BotEvent, CommandExecutedEvent, MetaEvent, MiraiEvent
 from .exceptions import ActionFailed, ApiTimeout, NetworkError
 from .message import MiraiMessage, MiraiMessageSegment
 
@@ -155,7 +155,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         mirai_event = self.get_event_model(msg["type"])(adapter=self, **msg)
 
-        if isinstance(mirai_event, MateEvent):
+        if isinstance(mirai_event, MetaEvent):
             # meta_event 不交由插件处理
             if isinstance(mirai_event, BotEvent):
                 logger.info(f"Bot {mirai_event.qq}: {mirai_event.type}")

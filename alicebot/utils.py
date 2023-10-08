@@ -12,9 +12,9 @@ from contextlib import asynccontextmanager
 from functools import partial
 from importlib.abc import MetaPathFinder
 from importlib.machinery import ModuleSpec, PathFinder
-from os import PathLike
 from types import GetSetDescriptorType, ModuleType
 from typing import (
+    TYPE_CHECKING,
     Any,
     AsyncGenerator,
     Awaitable,
@@ -39,6 +39,9 @@ from pydantic import BaseModel
 from alicebot.config import ConfigModel
 from alicebot.typing import EventT
 
+if TYPE_CHECKING:
+    from os import PathLike
+
 __all__ = [
     "ModulePathFinder",
     "is_config_class",
@@ -57,7 +60,7 @@ _P = ParamSpec("_P")
 _R = TypeVar("_R")
 _TypeT = TypeVar("_TypeT", bound=Type[Any])
 
-StrOrBytesPath: TypeAlias = Union[str, bytes, PathLike[str], PathLike[bytes]]
+StrOrBytesPath: TypeAlias = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
 
 
 class ModulePathFinder(MetaPathFinder):
@@ -243,9 +246,9 @@ def wrap_get_func(
     return func
 
 
-if sys.version_info >= (3, 10):
+if sys.version_info >= (3, 10):  # pragma: no cover
     from inspect import get_annotations
-else:
+else:  # pragma: no cover
 
     def get_annotations(
         obj: Union[Callable[..., object], Type[Any], ModuleType]

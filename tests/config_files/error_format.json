@@ -1,0 +1,14 @@
+{
+  "bot": {
+    "plugins": [],
+    "plugin_dirs": ["plugins"],
+    "adapters": [],
+    "log": {
+      "level": "INFO",
+      "verbose_exception": true
+    }
+  },
+  "superuser": 10001,
+  "nickname": "小爱"
+}
+// error format

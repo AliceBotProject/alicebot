@@ -14,7 +14,7 @@ interface dataSchema {
   tags: string[]; //list[str] Tag 列表
   is_official: boolean; // 是否为官方维护的插件
 }
-const URL = "https://marlenejiang.github.io/issue-ops/";
+const URL = "https://store.alicebot.dev/";
 const type = ref("plugins");
 const initData = ref();
 const searchText = ref("");

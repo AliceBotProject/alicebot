@@ -117,17 +117,26 @@ async def solve_dependencies(
                 stack=stack,
                 dependency_cache=dependency_cache,
             )
-        depend = cast(_T, dependent.__new__(dependent))  # type: ignore
+        depend_obj = cast(
+            Union[_T, AsyncContextManager[_T], ContextManager[_T]],
+            dependent.__new__(dependent),  # pyright: ignore[reportGeneralTypeIssues]
+        )
         for key, value in values.items():
-            setattr(depend, key, value)
-        depend.__init__()  # type: ignore # pylint: disable=unnecessary-dunder-call
+            setattr(depend_obj, key, value)
+        depend_obj.__init__()  # type: ignore[misc] # pylint: disable=unnecessary-dunder-call
 
-        if isinstance(depend, AsyncContextManager):
-            depend = cast(_T, await stack.enter_async_context(depend))  # type: ignore
-        elif isinstance(depend, ContextManager):
-            depend = cast(
-                _T, await stack.enter_async_context(sync_ctx_manager_wrapper(depend))  # type: ignore
+        if isinstance(depend_obj, AsyncContextManager):
+            depend = await stack.enter_async_context(
+                depend_obj  # pyright: ignore[reportUnknownArgumentType]
             )
+        elif isinstance(depend_obj, ContextManager):
+            depend = await stack.enter_async_context(
+                sync_ctx_manager_wrapper(
+                    depend_obj  # pyright: ignore[reportUnknownArgumentType]
+                )
+            )
+        else:
+            depend = depend_obj
     elif inspect.isasyncgenfunction(dependent):
         # type of dependent is Callable[[], AsyncGenerator[T, None]]
         cm = asynccontextmanager(dependent)()

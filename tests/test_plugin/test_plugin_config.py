@@ -1,3 +1,6 @@
+# pyright: reportPrivateUsage=false
+# ruff: noqa: SLF001
+
 from typing import Any
 
 import pytest
@@ -24,7 +27,7 @@ def test_plugin_config(bot: Bot) -> None:
     FakeAdapter.set_event_factories(
         lambda self: FakeMessageEvent(adapter=self, type="message")
     )
-    bot._config_dict = {  # type: ignore  # noqa: SLF001
+    bot._config_dict = {
         "plugin": {
             "test_plugin": {
                 "a": 1,
@@ -70,7 +73,7 @@ def test_plugin_config_subclass(bot: Bot) -> None:
     FakeAdapter.set_event_factories(
         lambda self: FakeMessageEvent(adapter=self, type="message")
     )
-    bot._config_dict = {  # type: ignore  # noqa: SLF001
+    bot._config_dict = {
         "plugin": {
             "test_plugin": {
                 "a": 1,

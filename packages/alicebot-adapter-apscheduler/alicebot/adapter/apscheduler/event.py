@@ -1,5 +1,5 @@
 """APScheduler 适配器事件。"""
-from typing import TYPE_CHECKING, Any, Dict, Type, Union
+from typing import TYPE_CHECKING, Any, Dict, Optional, Type, Union
 
 from apscheduler.job import Job
 from apscheduler.triggers.base import BaseTrigger
@@ -17,7 +17,7 @@ __all__ = ["APSchedulerEvent"]
 class APSchedulerEvent(Event["APSchedulerAdapter"]):
     """APSchedulerEvent 事件基类。"""
 
-    type: str = "apscheduler"
+    type: Optional[str] = "apscheduler"
     plugin_class: Type[Plugin]  # type: ignore
 
     @property

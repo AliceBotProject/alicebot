@@ -1,4 +1,6 @@
 """通知事件。"""
+# pyright: reportIncompatibleVariableOverride=false
+
 from typing import Literal, Optional
 
 from pydantic import create_model

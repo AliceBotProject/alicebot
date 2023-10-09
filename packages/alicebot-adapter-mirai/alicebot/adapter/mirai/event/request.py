@@ -1,4 +1,6 @@
 """申请事件。"""
+# pyright: reportIncompatibleVariableOverride=false
+
 from typing import Any, Dict, Literal
 
 from .base import MiraiEvent

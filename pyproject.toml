@@ -144,7 +144,6 @@ exclude = [
     '^packages/.*/alicebot/adapter/__init__\.py$',
     '^examples/.*\.py$',
 ]
-warn_unused_ignores = false
 warn_return_any = false
 
 [[tool.mypy.overrides]]
@@ -169,9 +168,6 @@ disable = [
 ]
 load-plugins = ["pylint_pydantic"]
 source-roots = ["."]
-
-[tool.pylint.basic]
-good-names = ["i", "j", "k", "ex", "Run", "_", "e", "f", "ws", "cm", "at"]
 
 [tool.pylint.variables]
 allowed-redefined-builtins = ["id", "type"]

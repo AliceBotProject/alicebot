@@ -1,4 +1,6 @@
 """消息事件。"""
+# pyright: reportIncompatibleVariableOverride=false
+
 from typing import TYPE_CHECKING, Any, Dict, Literal, Union
 from typing_extensions import Self
 

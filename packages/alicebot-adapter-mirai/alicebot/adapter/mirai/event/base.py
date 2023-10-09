@@ -1,4 +1,6 @@
 """事件基类。"""
+# pyright: reportIncompatibleVariableOverride=false
+
 from typing import TYPE_CHECKING, Literal
 
 from pydantic import BaseModel

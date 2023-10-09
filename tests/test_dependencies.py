@@ -5,14 +5,15 @@ from typing_extensions import Self
 
 import pytest
 
-from alicebot import Event
 from alicebot.dependencies import Depends, solve_dependencies
 
 
 def test_repr_inner_depends() -> None:
+    from alicebot import Bot
+
     assert repr(Depends()) == "InnerDepends(NoneType)"
     assert repr(Depends(use_cache=False)) == "InnerDepends(NoneType, use_cache=False)"
-    assert repr(Depends(Event)) == "InnerDepends(Event)"  # type: ignore
+    assert repr(Depends(Bot)) == "InnerDepends(Bot)"
 
 
 @pytest.mark.asyncio()

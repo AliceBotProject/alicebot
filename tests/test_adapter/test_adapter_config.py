@@ -1,3 +1,6 @@
+# pyright: reportPrivateUsage=false
+# ruff: noqa: SLF001
+
 from typing import Any
 
 from alicebot import Adapter, Bot, ConfigModel, Event
@@ -16,7 +19,7 @@ def test_adapter_config(bot: Bot) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
-    bot._config_dict = {  # type: ignore  # noqa: SLF001
+    bot._config_dict = {
         "adapter": {
             "test_adapter": {
                 "a": 1,

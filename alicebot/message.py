@@ -92,7 +92,7 @@ class Message(ABC, List[MessageSegmentT]):
                 core_schema.no_info_after_validator_function(
                     cls,
                     handler.generate_schema(
-                        List[cls.get_segment_class()]  # type: ignore
+                        List[cls.get_segment_class()]  # type: ignore[misc, index]
                     ),
                 ),
             ]
@@ -138,7 +138,7 @@ class Message(ABC, List[MessageSegmentT]):
         """
         return self.__class__(self).__iadd__(other)
 
-    def __radd__(self, other: BuildMessageType[MessageSegmentT]) -> Self:  # type: ignore
+    def __radd__(self, other: BuildMessageType[MessageSegmentT]) -> Self:
         """自定义消息与其他对象相加的方法。
 
         Args:

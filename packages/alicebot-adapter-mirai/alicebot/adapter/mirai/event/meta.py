@@ -1,4 +1,6 @@
 """默认不会被传播的特殊事件。"""
+# pyright: reportIncompatibleVariableOverride=false
+
 from typing import Any, List, Literal, Optional
 
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent

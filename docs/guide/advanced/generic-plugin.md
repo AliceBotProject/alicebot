@@ -102,4 +102,4 @@ class Count(Plugin[MessageEvent, Annotated[int, 0], Config]):
 
 ```
 
-但是在运行时读取泛型参数中的事件类型并自动判断以省略 `rule()` 方法中的类型判断尚且不支持。
+但是在运行时读取泛型参数中的事件类型并自动判断以省略 `rule()` 方法中的类型判断尚不支持。

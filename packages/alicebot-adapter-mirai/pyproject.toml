@@ -1,6 +1,6 @@
 [project]
 name = "alicebot-adapter-mirai"
-version = "0.8.1"
+version = "0.9.0"
 description = "Mirai adapter for AliceBot."
 authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
 license = { text = "AGPL-3.0-or-later" }
@@ -17,7 +17,7 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 requires-python = ">=3.8"
-dependencies = ["alicebot==0.8.1"]
+dependencies = ["alicebot==0.9.0"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"

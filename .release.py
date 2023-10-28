@@ -36,6 +36,7 @@ def write_version_json(file: Path, version: str) -> None:
     json_file["version"] = version
     with file.open("w", encoding="utf-8") as f:
         json.dump(json_file, f, indent=2)
+        f.write("\n")
 
 
 def write_version_toml(file: Path, version: str, *, is_package: bool = False) -> None:

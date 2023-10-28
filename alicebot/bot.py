@@ -499,9 +499,7 @@ class Bot:
                                 Event: current_event,
                             },
                         )
-                        if _plugin.name not in self.plugin_state and hasattr(
-                            _plugin, "__init_state__"
-                        ):
+                        if _plugin.name not in self.plugin_state:
                             plugin_state = _plugin.__init_state__()
                             if plugin_state is not None:
                                 self.plugin_state[_plugin.name] = plugin_state

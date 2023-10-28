@@ -2,6 +2,7 @@
 
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
+import inspect
 from abc import ABC, abstractmethod
 from enum import Enum
 from typing import (
@@ -11,10 +12,16 @@ from typing import (
     Generic,
     NoReturn,
     Optional,
+    Tuple,
     Type,
+    cast,
     final,
+    get_args,
+    get_origin,
 )
+from typing_extensions import Annotated
 
+from alicebot.config import ConfigModel
 from alicebot.dependencies import Depends
 from alicebot.event import Event
 from alicebot.exceptions import SkipException, StopException
@@ -59,17 +66,14 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
 
     if TYPE_CHECKING:
         event: EventT
-
-        def __init_state__(self) -> StateT:
-            """初始化插件状态。"""
-            ...  # pylint: disable=unnecessary-ellipsis
-
     else:
-        event: EventT = Depends(Event)
+        event = Depends(Event)
+
+    def __init_state__(self) -> Optional[StateT]:
+        """初始化插件状态。"""
 
     def __init_subclass__(
         cls,
-        *_args: Any,
         config: Optional[Type[ConfigT]] = None,
         init_state: Optional[StateT] = None,
         **_kwargs: Any,
@@ -81,9 +85,33 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
             init_state: 初始状态。
         """
         super().__init_subclass__()
+
+        orig_bases: Tuple[type, ...] = getattr(cls, "__orig_bases__", ())
+        for orig_base in orig_bases:
+            origin_class = get_origin(orig_base)
+            if inspect.isclass(origin_class) and issubclass(origin_class, Plugin):
+                try:
+                    _event_t, state_t, config_t = cast(
+                        Tuple[EventT, StateT, ConfigT], get_args(orig_base)
+                    )
+                except ValueError:  # pragma: no cover
+                    continue
+                if (
+                    config is None
+                    and inspect.isclass(config_t)
+                    and issubclass(config_t, ConfigModel)
+                ):
+                    config = config_t  # pyright: ignore
+                if (
+                    init_state is None
+                    and get_origin(state_t) is Annotated
+                    and hasattr(state_t, "__metadata__")
+                ):
+                    init_state = state_t.__metadata__[0]  # pyright: ignore
+
         if not hasattr(cls, "Config") and config is not None:
             cls.Config = config
-        if init_state is not None:
+        if cls.__init_state__ is Plugin.__init_state__ and init_state is not None:
             cls.__init_state__ = lambda _: init_state  # type: ignore
 
     @final

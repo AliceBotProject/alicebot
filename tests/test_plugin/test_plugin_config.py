@@ -107,3 +107,33 @@ def test_plugin_config_error(bot: Bot) -> None:
     bot.load_plugins(TestPlugin)
     with pytest.raises(ValidationError):
         bot.run()
+
+
+def test_plugin_config_subclass_generic(bot: Bot) -> None:
+    class Config(ConfigModel):
+        __config_name__ = "test_plugin"
+        a: int = 0
+        b: str = ""
+
+    class TestPlugin(Plugin[MessageEvent[Any], int, Config]):
+        async def handle(self) -> None:
+            assert self.config.a == 1
+            assert self.config.b == "test"
+
+        async def rule(self) -> bool:
+            return isinstance(self.event, MessageEvent)
+
+    FakeAdapter.set_event_factories(
+        lambda self: FakeMessageEvent(adapter=self, type="message")
+    )
+    bot._config_dict = {
+        "plugin": {
+            "test_plugin": {
+                "a": 1,
+                "b": "test",
+            },
+        },
+    }
+    bot.load_adapters(FakeAdapter)
+    bot.load_plugins(TestPlugin)
+    bot.run()

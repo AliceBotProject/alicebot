@@ -72,3 +72,34 @@ class Count(Plugin[MessageEvent, int, Config], init_state=0, config=Config):
 ```
 
 强烈推荐在编写插件时使用泛型，这可以让你最大化地利用 AliceBot 的类型注解和编辑器的类型检查功能，将大多数的错误杜绝在开发阶段。
+
+在 AliceBot 0.9 以上版本中，当你使用泛型类时，可以不必额外指定创建子类时的 `init_state` 和 `config` 参数，AliceBot 将自动从泛型参数中读取：
+
+```python {12}
+from typing_extensions import Annotated
+
+from alicebot import ConfigModel, Plugin
+from alicebot.adapter.cqhttp.event import MessageEvent
+
+
+class Config(ConfigModel):
+    prefix: str = "count: "
+    suffix: str = ""
+
+
+class Count(Plugin[MessageEvent, Annotated[int, 0], Config]):
+    async def handle(self) -> None:
+        self.state += 1
+        await self.event.reply(
+            self.config.prefix + str(self.state) + self.config.suffix
+        )
+
+    async def rule(self) -> bool:
+        return (
+            isinstance(self.event, MessageEvent)
+            and self.event.message.get_plain_text() == "count"
+        )
+
+```
+
+但是在运行时读取泛型参数中的事件类型并自动判断以省略 `rule()` 方法中的类型判断尚且不支持。

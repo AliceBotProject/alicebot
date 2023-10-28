@@ -16,10 +16,8 @@ from typing import (
     Type,
     cast,
     final,
-    get_args,
-    get_origin,
 )
-from typing_extensions import Annotated
+from typing_extensions import Annotated, get_args, get_origin
 
 from alicebot.config import ConfigModel
 from alicebot.dependencies import Depends

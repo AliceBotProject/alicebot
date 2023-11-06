@@ -4,6 +4,20 @@ sidebar: auto
 
 # 更新日志
 
+## [0.9.0](https://github.com/AliceBotProject/alicebot/compare/v0.8.1...v0.9.0) (2023-10-28)
+
+### Bug Fixes
+
+- 修复一些类型检查错误 ([#93](https://github.com/AliceBotProject/alicebot/issues/93)) ([fc48118](https://github.com/AliceBotProject/alicebot/commit/fc48118ce8b0fd6f8a83a0c91bc15f7573b5e769))
+- 修复在 Python 3.8 和 3.9 下的错误 ([815a7a6](https://github.com/AliceBotProject/alicebot/commit/815a7a61a0506b4c7b9992cc1975ec8394611b6d))
+- 修复在 Python 3.8 和 3.9 下的错误 ([6bdcedd](https://github.com/AliceBotProject/alicebot/commit/6bdceddfec1a5a52c6293e9332b0a66fd4a73641))
+- **mirai:** 修复拼写错误 ([#91](https://github.com/AliceBotProject/alicebot/issues/91)) ([e653af7](https://github.com/AliceBotProject/alicebot/commit/e653af7cc67e9070df51eb26ef21429341d15730))
+
+### Features
+
+- **bot:** 修改部分日志输出 ([#85](https://github.com/AliceBotProject/alicebot/issues/85)) ([c07b68a](https://github.com/AliceBotProject/alicebot/commit/c07b68aa0ba4e456eda1aa4871ca4c370a660c38))
+- **plugin:** 支持在运行时读取插件类的泛型参数以获取初始化状态和插件配置类 ([#98](https://github.com/AliceBotProject/alicebot/issues/98)) ([c20e7bb](https://github.com/AliceBotProject/alicebot/commit/c20e7bbeef980c7f60ad472ce17b8ab98dc92383))
+
 ## [0.8.1](https://github.com/AliceBotProject/alicebot/compare/v0.8.0...v0.8.1) (2023-08-27)
 
 ### Bug Fixes

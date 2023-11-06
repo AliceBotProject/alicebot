@@ -24,7 +24,7 @@ Bases: `abc.ABC`, `typing.Generic`
 
   - **Config** (_Type\[~ConfigT\]_)
 
-  - **event** (_~EventT_) - 当前正在被此插件处理的事件。
+  - **event** - 当前正在被此插件处理的事件。
 
   - **\_\_plugin\_load\_type\_\_** - 插件加载类型，由 AliceBot 自动设置，反映了此插件是如何被加载的。
 

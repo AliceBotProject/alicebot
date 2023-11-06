@@ -10,7 +10,7 @@ APSchedulerEvent 事件基类。
 
 - **Attributes**
 
-  - **type** (_str_)
+  - **type** (_Optional\[str\]_)
 
   - **plugin\_class** (_Type\[alicebot.plugin.Plugin\]_)
 

@@ -12,17 +12,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  black:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: psf/black@stable
-
   ruff:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: chartboost/ruff-action@v1
+
+      - uses: pdm-project/setup-pdm@v3
+        name: Setup PDM
+        with:
+          python-version: 3.9
+          cache: true
+      - name: Install dependencies
+        run: pdm install -G dev -G lint
+
+      - run: |
+          eval $(pdm venv activate)
+          ruff check --output-format=github .
+          ruff format --check .
 
   pylint:
     runs-on: ubuntu-latest

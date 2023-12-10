@@ -459,7 +459,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
             是否相等。
         """
         return (
-            type(other) is self.__class__  # pylint: disable=unidiomatic-typecheck
+            isinstance(other, self.__class__)
             and self.type == other.type
             and self.data == other.data
         )

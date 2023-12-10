@@ -8,13 +8,12 @@
 
 ### 安装依赖
 
-AliceBot 使用 [PDM](https://pdm.fming.dev/) 管理项目的依赖，并使用 [pre-commit](https://pre-commit.com/) 在提交前执行代码审查。
+AliceBot 使用 [PDM](https://pdm.fming.dev/) 管理项目的依赖。
 
-因此，你需要先根据 [PDM](https://pdm.fming.dev/latest/#installation) 的指引安装 PDM，之后在项目目录中执行以下命令：
+因此，你需要先根据 [PDM](https://pdm-project.org/latest/#installation) 的指引安装 PDM，之后在项目目录中执行以下命令：
 
 ```shell
 pdm install
-pre-commit install
 ```
 
 AliceBot 项目的文档使用 [VitePress](https://vitepress.dev/) 生成，如果你想要贡献 AliceBot 的文档，请额外安装 [pnpm](https://pnpm.io/) 环境，并在项目目录中执行以下命令：
@@ -27,16 +26,15 @@ pnpm install
 
 虽然并非强制，但强烈建议你使用 VSCode 作为编辑器对 AliceBot 项目的代码进行编辑，因为 AliceBot 具有完全的类型注解，VSCode 的 Pylance 插件具有相对较好的静态类型检查效果。
 
-如果你使用 VSCode 作为编辑器，需要安装 **Python**、**Pylance** 和 **isort** 插件，并进行以下配置：
+如果你使用 VSCode 作为编辑器，需要安装 **Python**、**Pylance** 和 **Ruff** 插件，并进行以下配置：
 
 ```json
 {
   "[python]": {
     "editor.formatOnPaste": false,
-    "editor.formatOnSaveMode": "file"
-  },
-  "python.analysis.diagnosticMode": "workspace",
-  "python.formatting.provider": "black"
+    "editor.formatOnSaveMode": "file",
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  }
 }
 ```
 
@@ -50,7 +48,7 @@ pnpm install
 
 AliceBot 的代码风格遵循 [PEP 8](https://www.python.org/dev/peps/pep-0008/) 规范。
 
-AliceBot 使用 [Black](https://github.com/psf/black) 作为格式化工具，并使用 [isort](https://github.com/PyCQA/isort) 确保导入顺序，如果你已经按照上文配置了 VSCodo，那么你应该很容易遵循此规范，否则请在提交前手动执行上述格式化工具。
+AliceBot 使用 [Ruff](https://docs.astral.sh/ruff/) 作为格式化工具，如果你已经按照上文配置了 VSCode，那么你应该很容易遵循此规范，否则请在提交前手动执行上述格式化工具。
 
 ### 类型注解
 

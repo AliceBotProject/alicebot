@@ -229,7 +229,7 @@ async def sync_ctx_manager_wrapper(
 
 
 def wrap_get_func(
-    func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]]
+    func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]],
 ) -> Callable[[EventT], Awaitable[bool]]:
     """将 `get()` 函数接受的参数包装为一个异步函数。
 
@@ -251,7 +251,7 @@ if sys.version_info >= (3, 10):  # pragma: no cover
 else:  # pragma: no cover
 
     def get_annotations(
-        obj: Union[Callable[..., object], Type[Any], ModuleType]
+        obj: Union[Callable[..., object], Type[Any], ModuleType],
     ) -> Dict[str, Any]:
         """计算一个对象的标注字典。
 

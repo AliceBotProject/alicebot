@@ -53,7 +53,7 @@ typing = [ # used only in type check
     "watchfiles",
     "trio>=0.22.2", # watchfiles used this lib
 ]
-lint = ["black", "ruff", "mypy", "pylint", "pylint-pydantic"]
+lint = ["ruff", "mypy", "pylint", "pylint-pydantic"]
 docs = ["sophia-doc~=0.1.4", "tomlkit"]
 test = ["pytest", "pytest-asyncio", "pytest-xdist", "pytest-cov"]
 
@@ -62,9 +62,6 @@ Homepage = "https://docs.alicebot.dev/"
 Documentation = "https://docs.alicebot.dev/"
 Repository = "https://github.com/AliceBotProject/alicebot"
 Changelog = "https://docs.alicebot.dev/changelog.html"
-
-[tool.black]
-target-version = ["py38", "py39", "py310", "py311"]
 
 [tool.ruff]
 line-length = 88
@@ -75,9 +72,10 @@ ignore = [
     "FBT",     # flake8-boolean-trap
     "COM",     # flake8-commas
     "EM",      # flake8-errmsg
+    "ISC",     # flake8-implicit-str-concat
     "INP",     # flake8-no-pep420
     "TID",     # flake8-tidy-imports
-    "E501",    # Line too long, handled by black
+    "E501",    # Line too long, handled by formatter
     "D415",    # First line should end with a period, question mark, or exclamation point
     "ANN101",  # Missing type annotation for self
     "ANN102",  # Missing type annotation for cls
@@ -129,6 +127,7 @@ pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
+reportUnknownArgumentType = false
 reportUnknownMemberType = false
 reportUnnecessaryIsInstance = false
 reportCallInDefaultInitializer = true

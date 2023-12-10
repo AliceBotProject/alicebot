@@ -92,7 +92,7 @@ class Message(ABC, List[MessageSegmentT]):
                 core_schema.no_info_after_validator_function(
                     cls,
                     handler.generate_schema(
-                        List[cls.get_segment_class()]  # type: ignore[misc, index]
+                        List[cls.get_segment_class()]  # type: ignore[misc]
                     ),
                 ),
             ]
@@ -459,7 +459,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
             是否相等。
         """
         return (
-            type(other) is self.__class__  # pylint: disable=unidiomatic-typecheck
+            isinstance(other, self.__class__)
             and self.type == other.type
             and self.data == other.data
         )

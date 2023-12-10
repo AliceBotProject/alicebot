@@ -27,7 +27,10 @@ from typing import (
     overload,
 )
 
-from pydantic import ValidationError, create_model
+from pydantic import (
+    ValidationError,
+    create_model,  # pyright: ignore[reportUnknownVariableType]
+)
 
 from alicebot.adapter import Adapter
 from alicebot.config import AdapterConfig, ConfigModel, MainConfig, PluginConfig
@@ -91,8 +94,12 @@ class Bot:
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
     _raw_config_dict: Dict[str, Any]  # 原始配置字典
-    _adapter_tasks: Set["asyncio.Task[None]"]  # 适配器任务集合，用于保持对适配器任务的引用
-    _handle_event_tasks: Set["asyncio.Task[None]"]  # 事件处理任务，用于保持对适配器任务的引用
+    _adapter_tasks: Set[
+        "asyncio.Task[None]"
+    ]  # 适配器任务集合，用于保持对适配器任务的引用
+    _handle_event_tasks: Set[
+        "asyncio.Task[None]"
+    ]  # 事件处理任务，用于保持对适配器任务的引用
 
     # 以下属性不会在重启时清除
     _config_file: Optional[str]  # 配置文件
@@ -102,7 +109,9 @@ class Bot:
     _extend_plugins: List[
         Union[Type[Plugin[Any, Any, Any]], str, Path]
     ]  # 使用 load_plugins() 方法程序化加载的插件列表
-    _extend_plugin_dirs: List[Path]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
+    _extend_plugin_dirs: List[
+        Path
+    ]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
     _extend_adapters: List[
         Union[Type[Adapter[Any, Any]], str]
     ]  # 使用 load_adapter() 方法程序化加载的适配器列表

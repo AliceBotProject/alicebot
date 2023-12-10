@@ -92,7 +92,7 @@ class Message(ABC, List[MessageSegmentT]):
                 core_schema.no_info_after_validator_function(
                     cls,
                     handler.generate_schema(
-                        List[cls.get_segment_class()]  # type: ignore[misc, index]
+                        List[cls.get_segment_class()]  # type: ignore[misc]
                     ),
                 ),
             ]

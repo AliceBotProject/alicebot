@@ -127,6 +127,7 @@ pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
+reportUnknownArgumentType = false
 reportUnknownMemberType = false
 reportUnnecessaryIsInstance = false
 reportCallInDefaultInitializer = true

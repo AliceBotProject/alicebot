@@ -9,7 +9,6 @@ footer: false
 # 商店
 
 <script setup>
-import { ref } from "vue";
 import StoreList from "./components/StoreList.vue";
 </script>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import type { DataItem } from "./StoreList.vue";
 import IconVerify from "./icons/IconVerify.vue";
 import IconGithub from "./icons/IconGithub.vue";
 import IconAuthor from "./icons/IconAuthor.vue";
@@ -8,41 +9,42 @@ import IconModule from "./icons/IconModules.vue";
 import IconVersion from "./icons/IconVersion.vue";
 import IconLicense from "./icons/IconLicense.vue";
 import IconCopy from "./icons/IconCopy.vue";
-const props = defineProps(["item"]);
-const version = ref("0.0.0");
-const openGithub = (url: string) => {
-  window.open(url);
+
+const props = defineProps<{ item: DataItem }>();
+
+const version = ref("unknown");
+
+const openHomepageLink = () => {
+  window.open(props.item.homepage);
 };
-const copyText = () => {
-  let input = document.createElement("textarea");
-  input.style.cssText =
-    "position: absolute; top: 0; left: 0; opacity: 0; z-index: -10;";
-  input.value = "pip install " + props.item.pypi_name;
-  document.body.appendChild(input);
-  input.select();
-  document.execCommand("copy");
-  document.body.removeChild(input);
+
+const copyInstallLink = async () => {
+  await navigator.clipboard.writeText("pip install " + props.item.pypi_name);
 };
+
 onMounted(async () => {
-  const _ = (
+  const v = (
     await (
       await fetch("https://pypi.org/pypi/" + props.item.pypi_name + "/json")
     ).json()
   )["info"]["version"];
-  !!_ && (version.value = _);
+  if (!!v) {
+    version.value = v;
+  }
 });
 </script>
+
 <template>
   <div class="card">
     <div class="card-top">
       <div class="card-head">
         <div class="card-title">
-          {{ item.name
-          }}<IconVerify v-if="item.is_official" style="margin-left: 0.1rem" />
+          {{ item.name }}
+          <IconVerify v-if="item.is_official" style="margin-left: 0.1rem" />
         </div>
         <div
           class="card-github"
-          @click="openGithub(item.homepage)"
+          @click="openHomepageLink"
           v-if="!!item.homepage"
         >
           <IconGithub />
@@ -87,23 +89,22 @@ onMounted(async () => {
         </div>
       </div>
     </div>
-    <div class="card-button" @click="copyText()">
+    <div class="card-button" @click="copyInstallLink">
       点击复制安装命令
-      <div style="margin-left: 0.3rem">
-        <IconCopy />
-      </div>
+      <IconCopy style="margin-left: 0.3rem" />
     </div>
   </div>
 </template>
+
 <style scoped>
 .card {
-  border: 1px solid var(--card-border);
-  border-radius: 0.5rem;
+  border: 1px solid var(--vp-c-bg-soft);
+  border-radius: 12px;
+  background-color: var(--vp-c-bg-soft);
   padding: 1.5rem;
   width: 100%;
   height: 100%;
   transition: border-color 0.25s;
-  cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -111,7 +112,7 @@ onMounted(async () => {
 }
 
 .card:hover {
-  border: 1px solid var(--card-hover);
+  border: 1px solid var(--vp-c-bg-elv);
 }
 
 .card-head {
@@ -129,15 +130,15 @@ onMounted(async () => {
 
 .card-github {
   cursor: pointer;
-  fill: var(--card-icon);
+  fill: var(--vp-c-neutral);
 }
 
 .card-github:hover {
-  fill: var(--card-hover);
+  fill: var(--vp-c-brand-1);
 }
 
 .card-des {
-  color: var(--card-des);
+  color: var(--vp-c-text-2);
   opacity: 0.7;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -156,7 +157,7 @@ onMounted(async () => {
 .card-tag {
   margin: 0.5rem 0.5rem 0 0;
   padding: 0 0.5rem;
-  background-color: var(--card-tag);
+  background-color: var(--vp-c-default-soft);
   border-radius: 0.1875rem;
 }
 
@@ -179,22 +180,24 @@ onMounted(async () => {
   align-items: center;
 }
 
+.card-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .card-button {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
   padding: 0.4rem 1rem;
-  background-color: var(--card-button);
+  background-color: var(--vp-c-default-soft);
   border-radius: 0.5rem;
   cursor: pointer;
 }
 
 .card-button:hover {
-  color: var(--card-hover);
-}
-
-.card-button:hover {
-  fill: var(--card-hover);
+  color: var(--vp-c-brand-1);
+  fill: var(--vp-c-brand-1);
 }
 </style>

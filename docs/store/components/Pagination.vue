@@ -1,25 +1,30 @@
 <script setup lang="ts">
 import { computed } from "vue";
-const props = defineProps(["modelValue", "pageTotal"]);
-const emit = defineEmits(["update:modelValue"]);
+
+const props = defineProps<{ modelValue: number; pageTotal: number }>();
+const emit = defineEmits<{
+  "update:modelValue": [v: number];
+}>();
+
 const onPrev = () => {
-  if (props.modelValue <= 1) return; // 限制上一页翻页按钮的边界
+  if (props.modelValue <= 1) return;
   emit("update:modelValue", props.modelValue - 1);
 };
 const onNext = () => {
-  if (props.modelValue >= props.pageTotal) return; // 限制下一页翻页按钮的边界
+  if (props.modelValue >= props.pageTotal) return;
   emit("update:modelValue", props.modelValue + 1);
 };
 const setPageNum = (pageNum: number | string) => {
-  if (typeof pageNum !== "number") return; //如果pageNum不是数值类型则返回
-  if (pageNum < 1) return; // 限制上一页翻页按钮的边界
-  if (pageNum > props.pageTotal) return; // 限制下一页翻页按钮的边界
+  if (typeof pageNum !== "number") return;
+  if (pageNum < 1) return;
+  if (pageNum > props.pageTotal) return;
   emit("update:modelValue", pageNum);
 };
+
 const genPageArray = (current: number, total: number, size: number) => {
-  let arr: Array<string | number> = [];
+  let arr: (string | number)[] = [];
   if (total < size + 2) {
-    arr = Array.from({ length: total }, (v, k) => k + 1);
+    arr = Array.from({ length: total }, (_, k) => k + 1);
   } else if (current < size - 2) {
     arr = Array.from(
       (function* gen(i, l) {
@@ -56,17 +61,18 @@ const genPageArray = (current: number, total: number, size: number) => {
   }
   return arr;
 };
-const pageArrayLg = computed(() => {
+
+const pageArrayLg = computed<(number | string)[]>(() => {
   const current = props.modelValue;
   const total = props.pageTotal;
   return genPageArray(current, total, 17);
 });
-const pageArrayMd = computed(() => {
+const pageArrayMd = computed<(number | string)[]>(() => {
   const current = props.modelValue;
   const total = props.pageTotal;
   return genPageArray(current, total, 10);
 });
-const pageArraySm = computed(() => {
+const pageArraySm = computed<(number | string)[]>(() => {
   const current = props.modelValue;
   const total = props.pageTotal;
   return genPageArray(current, total, 6);
@@ -157,15 +163,15 @@ const pageArraySm = computed(() => {
   padding: 0rem 0.25rem;
   align-items: center;
   justify-content: center;
-  background-color: var(--card-button);
+  background-color: var(--vp-c-bg-soft);
   border-radius: 0.25rem;
   cursor: pointer;
 }
 
 .paper-item:hover,
 .paper-item.active {
-  background-color: var(--button-background-active);
+  background-color: var(--vp-c-brand-soft);
   --un-text-opacity: 1;
-  color: var(--button-color-active);
+  color: var(--vp-c-brand-1);
 }
 </style>

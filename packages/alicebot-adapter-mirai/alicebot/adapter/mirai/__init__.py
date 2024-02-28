@@ -153,6 +153,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         Args:
             msg: 接收到的信息。
         """
+        if msg["type"] == "GroupSyncMessage":
+            return
         mirai_event = self.get_event_model(msg["type"])(adapter=self, **msg)
 
         if isinstance(mirai_event, MetaEvent):

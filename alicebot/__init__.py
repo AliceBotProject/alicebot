@@ -11,6 +11,7 @@
 - `ConfigModel` => [`alicebot.config.ConfigModel`](./config#ConfigModel)
 - `Depends` => [`alicebot.dependencies.Depends`](./dependencies#Depends)
 """
+
 from alicebot.adapter import Adapter
 from alicebot.bot import Bot
 from alicebot.config import ConfigModel

@@ -2,6 +2,7 @@
 
 实现依赖注入相关功能。
 """
+
 import inspect
 from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
 from typing import (
@@ -107,7 +108,7 @@ async def solve_dependencies(
         ):
             assert isinstance(sub_dependent, InnerDepends)
             if sub_dependent.dependency is None:
-                dependent_ann = ann.get(name, None)
+                dependent_ann = ann.get(name)
                 if dependent_ann is None:
                     raise TypeError("can not solve dependent")
                 sub_dependent.dependency = dependent_ann

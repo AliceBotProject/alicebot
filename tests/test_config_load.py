@@ -1,4 +1,5 @@
 """测试加载配置文件。"""
+
 # ruff: noqa: SLF001
 # pyright: reportPrivateUsage=false
 import json

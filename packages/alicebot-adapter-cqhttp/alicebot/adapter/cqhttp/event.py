@@ -99,13 +99,13 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         Returns:
             事件类型。
         """
-        post_type = _get_literal_field(cls.model_fields.get("post_type", None))
+        post_type = _get_literal_field(cls.model_fields.get("post_type"))
         if post_type is None:
             return (None, None, None)
         return (
             post_type,
-            _get_literal_field(cls.model_fields.get(post_type + "_type", None)),
-            _get_literal_field(cls.model_fields.get("sub_type", None)),
+            _get_literal_field(cls.model_fields.get(post_type + "_type")),
+            _get_literal_field(cls.model_fields.get("sub_type")),
         )
 
 

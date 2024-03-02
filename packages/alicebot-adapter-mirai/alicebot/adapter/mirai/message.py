@@ -1,4 +1,5 @@
 """Mirai 适配器消息。"""
+
 import json
 from typing import Any, Dict, List, Optional, Type
 from typing_extensions import Self

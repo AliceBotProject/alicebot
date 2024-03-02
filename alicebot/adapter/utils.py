@@ -2,6 +2,7 @@
 
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
+
 import asyncio
 from abc import ABCMeta, abstractmethod
 from typing import Literal, Optional, Union
@@ -177,9 +178,9 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     同时支持 WebSocket 客户端和服务端。
     """
 
-    websocket: Union[
-        web.WebSocketResponse, aiohttp.ClientWebSocketResponse, None
-    ] = None
+    websocket: Union[web.WebSocketResponse, aiohttp.ClientWebSocketResponse, None] = (
+        None
+    )
 
     # ws
     session: Optional[aiohttp.ClientSession]

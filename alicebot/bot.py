@@ -2,6 +2,7 @@
 
 AliceBot 的基础模块，每一个 AliceBot 机器人即是一个 `Bot` 实例。
 """
+
 import asyncio
 import json
 import pkgutil
@@ -544,8 +545,7 @@ class Bot:
         adapter_type: None = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> Event[Any]:
-        ...
+    ) -> Event[Any]: ...
 
     @overload
     async def get(
@@ -556,8 +556,7 @@ class Bot:
         adapter_type: Type[Adapter[EventT, Any]],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> EventT:
-        ...
+    ) -> EventT: ...
 
     @overload
     async def get(
@@ -568,8 +567,7 @@ class Bot:
         adapter_type: Optional[Type[AdapterT]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> EventT:
-        ...
+    ) -> EventT: ...
 
     async def get(
         self,
@@ -860,12 +858,10 @@ class Bot:
         self._load_adapters(*adapters)
 
     @overload
-    def get_adapter(self, adapter: str) -> Adapter[Any, Any]:
-        ...
+    def get_adapter(self, adapter: str) -> Adapter[Any, Any]: ...
 
     @overload
-    def get_adapter(self, adapter: Type[AdapterT]) -> AdapterT:
-        ...
+    def get_adapter(self, adapter: Type[AdapterT]) -> AdapterT: ...
 
     def get_adapter(
         self, adapter: Union[str, Type[AdapterT]]

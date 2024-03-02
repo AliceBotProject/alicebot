@@ -182,6 +182,41 @@ def test_plugin_stop(bot: Bot) -> None:
     assert not test_plugin_3_flag
 
 
+def test_plugin_block(bot: Bot) -> None:
+    test_plugin_1_flag = False
+    test_plugin_2_flag = False
+
+    class TestPlugin1(Plugin[MessageEvent[Any], None, None]):
+        priority = 0
+        block = True
+
+        async def handle(self) -> None:
+            nonlocal test_plugin_1_flag
+            test_plugin_1_flag = True
+
+        async def rule(self) -> bool:
+            return isinstance(self.event, FakeMessageEvent)
+
+    class TestPlugin2(Plugin[MessageEvent[Any], None, None]):
+        priority = 1
+
+        async def handle(self) -> None:
+            nonlocal test_plugin_2_flag
+            test_plugin_2_flag = True
+
+        async def rule(self) -> bool:
+            return isinstance(self.event, FakeMessageEvent)
+
+    FakeAdapter.set_event_factories(
+        lambda self: FakeMessageEvent(adapter=self, type="message")
+    )
+    bot.load_adapters(FakeAdapter)
+    bot.load_plugins(TestPlugin1, TestPlugin2)
+    bot.run()
+    assert test_plugin_1_flag
+    assert not test_plugin_2_flag
+
+
 def test_plugin_error(bot: Bot) -> None:
     class HandleError(Exception):
         pass

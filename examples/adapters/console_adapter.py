@@ -2,6 +2,7 @@
 
 用于接收命令行输入的适配器示例。
 """
+
 import asyncio
 import sys
 from typing_extensions import Self

@@ -1,4 +1,5 @@
 """Mirai 适配器异常。"""
+
 from typing import Any, Dict
 
 from alicebot.exceptions import AdapterException

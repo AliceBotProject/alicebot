@@ -1,4 +1,5 @@
 """AliceBot 内部使用的实用工具。"""
+
 import asyncio
 import importlib
 import inspect
@@ -271,7 +272,7 @@ else:  # pragma: no cover
             # class
             obj_dict = getattr(obj, "__dict__", None)
             if obj_dict and hasattr(obj_dict, "get"):
-                ann = obj_dict.get("__annotations__", None)
+                ann = obj_dict.get("__annotations__")
                 if isinstance(ann, GetSetDescriptorType):
                     ann = None
             else:

@@ -1,4 +1,5 @@
 """CQHTTP 适配器消息。"""
+
 from typing import Literal, Optional, Type, Union
 from typing_extensions import Self
 

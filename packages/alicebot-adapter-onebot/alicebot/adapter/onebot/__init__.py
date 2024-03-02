@@ -3,6 +3,7 @@
 本适配器适配了 OneBot v12 协议。
 协议详情请参考：[OneBot](https://12.onebot.dev/)。
 """
+
 import asyncio
 import inspect
 import json
@@ -171,9 +172,9 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             对应的事件类。
         """
         event_model = (
-            cls.event_models.get((post_type, detail_type, sub_type), None)
-            or cls.event_models.get((post_type, detail_type, None), None)
-            or cls.event_models.get((post_type, None, None), None)
+            cls.event_models.get((post_type, detail_type, sub_type))
+            or cls.event_models.get((post_type, detail_type, None))
+            or cls.event_models.get((post_type, None, None))
         )
         return event_model or cls.event_models[(None, None, None)]
 
@@ -183,14 +184,14 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         Args:
             msg: 接收到的信息。
         """
-        post_type = msg.get("post_type", None)
+        post_type = msg.get("post_type")
         if post_type is None:
             event_class = self.get_event_model(None, None, None)
         else:
             event_class = self.get_event_model(
                 post_type,
-                msg.get(post_type + "_type", None),
-                msg.get("sub_type", None),
+                msg.get(post_type + "_type"),
+                msg.get("sub_type"),
             )
 
         onebot_event = event_class(adapter=self, **msg)

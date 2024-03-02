@@ -2,6 +2,7 @@
 
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
+
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, Optional, Union
 from typing_extensions import Self

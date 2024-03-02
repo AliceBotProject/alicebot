@@ -18,11 +18,9 @@ def test_repr_inner_depends() -> None:
 
 @pytest.mark.asyncio()
 async def test_depends() -> None:
-    class DepA:
-        ...
+    class DepA: ...
 
-    class DepB:
-        ...
+    class DepB: ...
 
     class Dependent:
         a: DepA = Depends()
@@ -45,8 +43,7 @@ async def test_depends() -> None:
 
 @pytest.mark.asyncio()
 async def test_sub_depends() -> None:
-    class DepA:
-        ...
+    class DepA: ...
 
     class DepB:
         a: DepA = Depends()
@@ -165,8 +162,7 @@ async def test_depends_generator() -> None:
     enter_flag = False
     exit_flag = False
 
-    class DepA:
-        ...
+    class DepA: ...
 
     def dep_a() -> Generator[DepA, None, None]:
         nonlocal enter_flag, exit_flag
@@ -205,8 +201,7 @@ async def test_depends_async_generator() -> None:
     enter_flag = False
     exit_flag = False
 
-    class DepA:
-        ...
+    class DepA: ...
 
     async def dep_a() -> AsyncGenerator[DepA, None]:
         nonlocal enter_flag, exit_flag

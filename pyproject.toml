@@ -43,13 +43,14 @@ all = [
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "-e alicebot-adapter-cqhttp @ {root:uri}/packages/alicebot-adapter-cqhttp",
-    "-e alicebot-adapter-onebot @ {root:uri}/packages/alicebot-adapter-onebot",
-    "-e alicebot-adapter-mirai @ {root:uri}/packages/alicebot-adapter-mirai",
-    "-e alicebot-adapter-dingtalk @ {root:uri}/packages/alicebot-adapter-dingtalk",
-    "-e alicebot-adapter-apscheduler @ {root:uri}/packages/alicebot-adapter-apscheduler",
+    "-e alicebot-adapter-cqhttp @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-cqhttp",
+    "-e alicebot-adapter-onebot @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-onebot",
+    "-e alicebot-adapter-mirai @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-mirai",
+    "-e alicebot-adapter-dingtalk @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-dingtalk",
+    "-e alicebot-adapter-apscheduler @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-apscheduler",
 ]
 typing = [ # used only in type check
+    "tomli",
     "watchfiles",
     "trio>=0.22.2", # watchfiles used this lib
 ]
@@ -187,9 +188,6 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 
-[tool.hatch.build.targets.sdist]
-include = ["/README.md", "/alicebot"]
-
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

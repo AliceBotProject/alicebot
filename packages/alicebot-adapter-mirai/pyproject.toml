@@ -25,13 +25,13 @@ Documentation = "https://docs.alicebot.dev/"
 Repository = "https://github.com/AliceBotProject/alicebot"
 Changelog = "https://docs.alicebot.dev/changelog.html"
 
-[tool.hatch.build]
-exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
+[tool.pdm.build]
+excludes = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
 [tool.ruff]
 extend = "../../pyproject.toml"
 ignore = ["N815"]
 
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"

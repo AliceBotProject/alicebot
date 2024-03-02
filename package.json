@@ -12,16 +12,16 @@
   "homepage": "https://docs.alicebot.dev/",
   "license": "MIT",
   "dependencies": {
-    "vitepress": "1.0.0-rc.31",
-    "vue": "^3.3.11"
+    "vitepress": "1.0.0-rc.44",
+    "vue": "^3.4.21"
   },
   "devDependencies": {
-    "@types/node": "^20.10.4",
+    "@types/node": "^20.11.24",
     "conventional-changelog-cli": "^3.0.0",
     "markdownlint-cli2": "^0.8.1",
-    "prettier": "^3.1.1",
-    "pyright": "^1.1.339",
-    "zhlint": "^0.7.1"
+    "prettier": "^3.2.5",
+    "pyright": "^1.1.352",
+    "zhlint": "^0.8.0"
   },
   "scripts": {
     "docs:dev": "vitepress dev docs",

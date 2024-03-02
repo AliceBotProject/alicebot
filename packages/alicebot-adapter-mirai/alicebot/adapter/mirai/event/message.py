@@ -14,10 +14,9 @@ if TYPE_CHECKING:
     from .. import MiraiAdapter
 
 
-class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
-    """消息事件"""
+class MiraiBaseMessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
+    """Mirai 消息事件基类"""
 
-    sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
     messageChain: MiraiMessage
 
     @property
@@ -56,6 +55,12 @@ class MessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
             API 请求响应。
         """
         raise NotImplementedError
+
+
+class MessageEvent(MiraiBaseMessageEvent):
+    """消息事件"""
+
+    sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
 
     async def is_same_sender(self, other: Self) -> bool:
         """判断自身和另一个事件是否是同一个发送者。
@@ -218,3 +223,48 @@ class OtherClientMessage(MessageEvent):
             API 请求响应。
         """
         raise NotImplementedError
+
+
+class SyncMessage(MiraiBaseMessageEvent):
+    """同步消息"""
+
+    sender: Union[FriendInfo, GroupMemberInfo]
+
+    async def is_same_sender(self, other: Self) -> bool:  # noqa: ARG002
+        """判断自身和另一个事件是否是同一个发送者。
+
+        Args:
+            other: 另一个事件。
+
+        Returns:
+            是否是同一个发送者。
+        """
+        return True
+
+
+class FriendSyncMessage(SyncMessage):
+    """同步好友消息"""
+
+    type: Literal["FriendSyncMessage"]
+    subject: FriendInfo
+
+
+class GroupSyncMessage(SyncMessage):
+    """同步群消息"""
+
+    type: Literal["GroupSyncMessage"]
+    subject: GroupMemberInfo
+
+
+class TempSyncMessage(SyncMessage):
+    """同步群临时消息"""
+
+    type: Literal["TempSyncMessage"]
+    subject: GroupMemberInfo
+
+
+class StrangerSyncMessage(SyncMessage):
+    """同步陌生人消息"""
+
+    type: Literal["StrangerSyncMessage"]
+    subject: FriendInfo

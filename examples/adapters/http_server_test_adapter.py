@@ -2,6 +2,7 @@
 
 这里是一个最简单可以直接使用的 HTTP 服务端适配器示例。
 """
+
 from aiohttp import web
 
 from alicebot.adapter.utils import HttpServerAdapter

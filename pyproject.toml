@@ -66,6 +66,9 @@ Changelog = "https://docs.alicebot.dev/changelog.html"
 
 [tool.ruff]
 line-length = 88
+target-version = "py38"
+
+[tool.ruff.lint]
 select = ["ALL"]
 ignore = [
     "C90",     # mccabe
@@ -91,19 +94,18 @@ ignore = [
     "RUF002",  # Docstring contains ambiguous unicode character string
     "RUF003",  # Comment contains ambiguous unicode character string
 ]
-target-version = "py38"
 
-[tool.ruff.flake8-builtins]
+[tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "type"]
 
-[tool.ruff.isort]
+[tool.ruff.lint.isort]
 known-third-party = ["pydantic", "aiohttp", "loguru"]
 extra-standard-library = ["typing_extensions"]
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "google"
 
-[tool.ruff.pyflakes]
+[tool.ruff.lint.pyflakes]
 extend-generics = [
     "alicebot.plugin.Plugin",
     "alicebot.adapter.Adapter",
@@ -113,10 +115,10 @@ extend-generics = [
     "alicebot.message.MessageSegment",
 ]
 
-[tool.ruff.pyupgrade]
+[tool.ruff.lint.pyupgrade]
 keep-runtime-typing = true
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 "packages/*/alicebot/__init__.py" = ["D104"]
 "packages/*/alicebot/adapter/__init__.py" = ["D104"]
 "examples/plugins/*.py" = ["D", "T", "ANN"]

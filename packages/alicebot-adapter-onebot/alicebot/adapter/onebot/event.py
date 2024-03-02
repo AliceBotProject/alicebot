@@ -87,9 +87,9 @@ class OntBotEvent(Event["OneBotAdapter"]):
             事件类型。
         """
         return (
-            _get_literal_field(cls.model_fields.get("type", None)),
-            _get_literal_field(cls.model_fields.get("detail_type", None)),
-            _get_literal_field(cls.model_fields.get("sub_type", None)),
+            _get_literal_field(cls.model_fields.get("type")),
+            _get_literal_field(cls.model_fields.get("detail_type")),
+            _get_literal_field(cls.model_fields.get("sub_type")),
         )
 
 

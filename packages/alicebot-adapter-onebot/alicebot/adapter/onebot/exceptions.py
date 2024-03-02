@@ -1,4 +1,5 @@
 """OneBot 适配器异常。"""
+
 from typing import Any
 
 from alicebot.exceptions import AdapterException

@@ -54,7 +54,7 @@ def test_message_segment_data() -> None:
     assert "text" in msg_seg
     assert msg_seg["text"] == "Hello"
     assert msg_seg.get("text") == "Hello"
-    assert msg_seg.get("no_such_field", None) is None
+    assert msg_seg.get("no_such_field") is None
     assert len(msg_seg) == 1
     assert list(msg_seg.keys()) == ["text"]
     assert list(msg_seg.values()) == ["Hello"]

@@ -2,6 +2,7 @@
 
 所有 AliceBot 插件的基类。所有用户编写的插件必须继承自 `Plugin` 类。
 """
+
 import inspect
 from abc import ABC, abstractmethod
 from enum import Enum

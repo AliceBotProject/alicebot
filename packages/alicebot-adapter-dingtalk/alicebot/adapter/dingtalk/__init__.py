@@ -3,6 +3,7 @@
 本适配器适配了钉钉企业自建机器人协议。
 协议详情请参考：[钉钉开放平台](https://open.dingtalk.com/document/robots/robot-overview)。
 """
+
 import base64
 import hashlib
 import hmac

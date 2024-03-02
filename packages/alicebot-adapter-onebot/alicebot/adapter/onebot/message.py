@@ -1,4 +1,5 @@
 """OneBot 适配器消息。"""
+
 from typing import Type
 from typing_extensions import Self
 

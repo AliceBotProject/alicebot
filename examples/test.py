@@ -1,4 +1,5 @@
 """启动 AliceBot。"""
+
 from alicebot import Bot
 
 bot = Bot(hot_reload=True)

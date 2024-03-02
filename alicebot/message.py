@@ -3,6 +3,7 @@
 实现了常用的基本消息 `Message` 和消息字段 `MessageSegment` 模型供适配器使用。
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 """
+
 from abc import ABC, abstractmethod
 from typing import (
     Any,
@@ -247,14 +248,12 @@ class Message(ABC, List[MessageSegmentT]):
         )
 
     @overload
-    def replace(self, old: str, new: str, count: int = -1) -> Self:
-        ...
+    def replace(self, old: str, new: str, count: int = -1) -> Self: ...
 
     @overload
     def replace(
         self, old: MessageSegmentT, new: Optional[MessageSegmentT], count: int = -1
-    ) -> Self:
-        ...
+    ) -> Self: ...
 
     def replace(
         self,

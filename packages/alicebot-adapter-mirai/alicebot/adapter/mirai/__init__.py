@@ -4,6 +4,7 @@
 本适配器支持 mirai-api-http 的 Websocket Adapter 模式和 Reverse Websocket Adapter 模式。
 协议详情请参考：[mirai-api-http](https://github.com/project-mirai/mirai-api-http)。
 """
+
 import asyncio
 import inspect
 import json
@@ -106,7 +107,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 )
                 return
 
-            if not msg_dict.get("syncId", None):
+            if not msg_dict.get("syncId"):
                 if msg_dict.get("data", {}).get("code") == 0:
                     logger.info(
                         f"Verify success! "

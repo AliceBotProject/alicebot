@@ -1,4 +1,5 @@
 """DingTalk 适配器配置。"""
+
 from alicebot.config import ConfigModel
 
 __all__ = ["Config"]

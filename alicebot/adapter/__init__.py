@@ -2,6 +2,7 @@
 
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
+
 import os
 from abc import ABC, abstractmethod
 from typing import (
@@ -110,8 +111,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         event_type: None = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> EventT:
-        ...
+    ) -> EventT: ...
 
     @overload
     async def get(
@@ -121,8 +121,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         event_type: Type[_EventT],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
-    ) -> _EventT:
-        ...
+    ) -> _EventT: ...
 
     @final
     async def get(

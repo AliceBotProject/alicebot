@@ -1,4 +1,5 @@
 """CQHTTP 适配器异常。"""
+
 from typing import Any, ClassVar, Dict
 
 from alicebot.exceptions import AdapterException

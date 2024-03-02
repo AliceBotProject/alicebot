@@ -73,6 +73,22 @@ class MessageEvent(MiraiBaseMessageEvent):
         """
         return self.sender.id == other.sender.id
 
+    async def reply(
+        self,
+        message: BuildMessageType[MiraiMessageSegment],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
+
 
 class FriendMessage(MessageEvent):
     """好友消息"""
@@ -241,12 +257,44 @@ class SyncMessage(MiraiBaseMessageEvent):
         """
         return True
 
+    async def reply(
+        self,
+        message: BuildMessageType[MiraiMessageSegment],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
+
 
 class FriendSyncMessage(SyncMessage):
     """同步好友消息"""
 
     type: Literal["FriendSyncMessage"]
     subject: FriendInfo
+
+    async def reply(
+        self,
+        message: BuildMessageType[MiraiMessageSegment],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
 
 
 class GroupSyncMessage(SyncMessage):
@@ -255,6 +303,22 @@ class GroupSyncMessage(SyncMessage):
     type: Literal["GroupSyncMessage"]
     subject: GroupMemberInfo
 
+    async def reply(
+        self,
+        message: BuildMessageType[MiraiMessageSegment],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
+
 
 class TempSyncMessage(SyncMessage):
     """同步群临时消息"""
@@ -262,9 +326,41 @@ class TempSyncMessage(SyncMessage):
     type: Literal["TempSyncMessage"]
     subject: GroupMemberInfo
 
+    async def reply(
+        self,
+        message: BuildMessageType[MiraiMessageSegment],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError
+
 
 class StrangerSyncMessage(SyncMessage):
     """同步陌生人消息"""
 
     type: Literal["StrangerSyncMessage"]
     subject: FriendInfo
+
+    async def reply(
+        self,
+        message: BuildMessageType[MiraiMessageSegment],
+        quote: bool = False,
+    ) -> Dict[str, Any]:
+        """回复消息。
+
+        Args:
+            message: 回复消息的内容，同 `call_api()` 方法。
+            quote: 引用消息，默认为 `False`。
+
+        Returns:
+            API 请求响应。
+        """
+        raise NotImplementedError

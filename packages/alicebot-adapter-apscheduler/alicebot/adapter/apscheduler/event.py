@@ -27,11 +27,11 @@ class APSchedulerEvent(Event["APSchedulerAdapter"]):
         return self.adapter.plugin_class_to_job[self.plugin_class]
 
     @property
-    def trigger(self) -> Union[str, BaseTrigger]:
+    def trigger(self) -> Union[str, BaseTrigger, None]:
         """当前事件对应的 Plugin 的 `trigger`。"""
-        return getattr(self.plugin_class, "trigger")  # noqa: B009
+        return getattr(self.plugin_class, "trigger", None)
 
     @property
-    def trigger_args(self) -> Dict[str, Any]:
+    def trigger_args(self) -> Optional[Dict[str, Any]]:
         """当前事件对应的 Plugin 的 `trigger_args`。"""
-        return getattr(self.plugin_class, "trigger_args")  # noqa: B009
+        return getattr(self.plugin_class, "trigger_args", None)

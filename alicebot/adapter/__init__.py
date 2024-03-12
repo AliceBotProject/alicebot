@@ -19,6 +19,8 @@ from typing import (
     overload,
 )
 
+import structlog
+
 from alicebot.event import Event
 from alicebot.typing import ConfigT, EventT
 from alicebot.utils import is_config_class
@@ -27,6 +29,8 @@ if TYPE_CHECKING:
     from alicebot.bot import Bot
 
 __all__ = ["Adapter"]
+
+logger = structlog.stdlib.get_logger()
 
 if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover
     # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
@@ -77,10 +81,8 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         """附带有异常处理地安全运行适配器。"""
         try:
             await self.run()
-        except Exception as e:
-            self.bot.error_or_exception(
-                f"Run adapter {self.__class__.__name__} failed:", e
-            )
+        except Exception:
+            logger.exception("Run adapter failed", adapter_name=self.__class__.__name__)
 
     @abstractmethod
     async def run(self) -> None:

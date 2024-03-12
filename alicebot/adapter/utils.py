@@ -8,10 +8,10 @@ from abc import ABCMeta, abstractmethod
 from typing import Literal, Optional, Union
 
 import aiohttp
+import structlog
 from aiohttp import web
 
 from alicebot.adapter import Adapter
-from alicebot.log import logger
 from alicebot.typing import ConfigT, EventT
 
 __all__ = [
@@ -22,6 +22,8 @@ __all__ = [
     "WebSocketServerAdapter",
     "WebSocketAdapter",
 ]
+
+logger = structlog.stdlib.get_logger()
 
 
 class PollingAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
@@ -206,8 +208,8 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
             self.app.add_routes([web.get(self.url, self.handle_reverse_ws_response)])
         else:
             logger.error(
-                'Config "adapter_type" must be "ws" or "reverse-ws", not '
-                + self.adapter_type
+                'Config "adapter_type" must be "ws" or "reverse-ws"',
+                adapter_type=self.adapter_type,
             )
 
     async def run(self) -> None:
@@ -216,8 +218,8 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
             while True:
                 try:
                     await self.websocket_connect()
-                except aiohttp.ClientError as e:
-                    self.bot.error_or_exception("WebSocket connection error:", e)
+                except aiohttp.ClientError:
+                    logger.exception("WebSocket connection error")
                 if self.bot.should_exit.is_set():
                     break
                 await asyncio.sleep(self.reconnect_interval)

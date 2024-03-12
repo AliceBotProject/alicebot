@@ -28,6 +28,7 @@ from typing import (
     overload,
 )
 
+import structlog
 from pydantic import (
     ValidationError,
     create_model,  # pyright: ignore[reportUnknownVariableType]
@@ -43,7 +44,6 @@ from alicebot.exceptions import (
     SkipException,
     StopException,
 )
-from alicebot.log import logger
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.typing import AdapterHook, AdapterT, BotHook, EventHook, EventT
 from alicebot.utils import (
@@ -66,6 +66,8 @@ HANDLED_SIGNALS = (
     signal.SIGINT,  # Unix signal 2. Sent by Ctrl+C.
     signal.SIGTERM,  # Unix signal 15. Sent by `kill <pid>`.
 )
+
+logger = structlog.stdlib.get_logger()
 
 
 class Bot:
@@ -235,8 +237,8 @@ class Bot:
                     await adapter_startup_hook_func(_adapter)
                 try:
                     await _adapter.startup()
-                except Exception as e:
-                    self.error_or_exception(f"Startup adapter {_adapter!r} failed:", e)
+                except Exception:
+                    logger.exception("Startup adapter failed", adapter=_adapter)
 
             for _adapter in self.adapters:
                 for adapter_run_hook_func in self._adapter_run_hooks:
@@ -283,8 +285,7 @@ class Bot:
             for plugin_ in _removed_plugins:
                 plugins.remove(plugin_)
                 logger.info(
-                    "Succeeded to remove plugin "
-                    f'"{plugin_.__name__}" from file "{file}"'
+                    "Succeeded to remove plugin from file", plugin=plugin_, file=file
                 )
         return removed_plugins
 
@@ -322,7 +323,7 @@ class Bot:
                     and samefile(self._config_file, file)
                     and change_type == change_type.modified
                 ):
-                    logger.info(f'Reload config file "{self._config_file}"')
+                    logger.info("Reload config file", file=self._config_file)
                     old_config = self.config
                     self._reload_config_dict()
                     if (
@@ -346,18 +347,18 @@ class Bot:
                         continue
 
                 if change_type == Change.added:
-                    logger.info(f"Hot reload: Added file: {file}")
+                    logger.info("Hot reload: Added file", file=file)
                     self._load_plugins(
                         Path(file), plugin_load_type=PluginLoadType.DIR, reload=True
                     )
                     self._update_config()
                     continue
                 if change_type == Change.deleted:
-                    logger.info(f"Hot reload: Deleted file: {file}")
+                    logger.info("Hot reload: Deleted file", file=file)
                     self._remove_plugin_by_path(file)
                     self._update_config()
                 elif change_type == Change.modified:
-                    logger.info(f"Hot reload: Modified file: {file}")
+                    logger.info("Hot reload: Modified file", file=file)
                     self._remove_plugin_by_path(file)
                     self._load_plugins(
                         Path(file), plugin_load_type=PluginLoadType.DIR, reload=True
@@ -394,9 +395,27 @@ class Bot:
             adapter=update_config(self.adapters, "AdapterConfig", AdapterConfig),
             __base__=MainConfig,
         )(**self._raw_config_dict)
-        # 更新 log 级别
-        logger.remove()
-        logger.add(sys.stderr, level=self.config.bot.log.level)
+
+        if self.config.bot.log is not None:
+            log_level = 0
+            if isinstance(self.config.bot.log.level, int):
+                log_level = self.config.bot.log.level
+            elif isinstance(self.config.bot.log.level, str):
+                log_level = structlog.processors.NAME_TO_LEVEL[
+                    self.config.bot.log.level.lower()
+                ]
+
+            wrapper_class = structlog.make_filtering_bound_logger(log_level)
+
+            if not self.config.bot.log.verbose_exception:
+
+                class BoundLoggerWithoutException(wrapper_class):
+                    exception = wrapper_class.error
+                    aexception = wrapper_class.aerror
+
+                wrapper_class = BoundLoggerWithoutException
+
+            structlog.configure(wrapper_class=wrapper_class)
 
     def _reload_config_dict(self) -> None:
         """重新加载配置文件。"""
@@ -412,20 +431,20 @@ class Bot:
                     elif self._config_file.endswith(".toml"):
                         self._raw_config_dict = tomllib.load(f)
                     else:
-                        self.error_or_exception(
-                            "Read config file failed:",
-                            OSError("Unable to determine config file type"),
+                        logger.error(
+                            "Read config file failed: "
+                            "Unable to determine config file type"
                         )
-            except OSError as e:
-                self.error_or_exception("Can not open config file:", e)
-            except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError) as e:
-                self.error_or_exception("Read config file failed:", e)
+            except OSError:
+                logger.exception("Can not open config file:")
+            except (ValueError, json.JSONDecodeError, tomllib.TOMLDecodeError):
+                logger.exception("Read config file failed:")
 
         try:
             self.config = MainConfig(**self._raw_config_dict)
-        except ValidationError as e:
+        except ValidationError:
             self.config = MainConfig()
-            self.error_or_exception("Config dict parse error:", e)
+            logger.exception("Config dict parse error")
         self._update_config()
 
     def reload_plugins(self) -> None:
@@ -464,7 +483,9 @@ class Bot:
         """
         if show_log:
             logger.info(
-                f"Adapter {current_event.adapter.name} received: {current_event!r}"
+                "Event received from adapter",
+                adapter_name=current_event.adapter.name,
+                current_event=current_event,
             )
 
         if handle_get:
@@ -493,9 +514,7 @@ class Bot:
             await _hook_func(current_event)
 
         for plugin_priority in sorted(self.plugins_priority_dict.keys()):
-            logger.debug(
-                f"Checking for matching plugins with priority {plugin_priority!r}"
-            )
+            logger.debug("Checking for matching plugins", priority=plugin_priority)
             stop = False
             for plugin in self.plugins_priority_dict[plugin_priority]:
                 try:
@@ -514,7 +533,9 @@ class Bot:
                             if plugin_state is not None:
                                 self.plugin_state[_plugin.name] = plugin_state
                         if await _plugin.rule():
-                            logger.info(f"Event will be handled by {_plugin!r}")
+                            logger.info(
+                                "Event will be handled by plugin", plugin=_plugin
+                            )
                             try:
                                 await _plugin.handle()
                             finally:
@@ -526,8 +547,8 @@ class Bot:
                 except StopException:
                     # 插件要求停止当前事件传播
                     stop = True
-                except Exception as e:
-                    self.error_or_exception(f'Exception in plugin "{plugin}":', e)
+                except Exception:
+                    logger.exception("Exception in plugin", plugin=plugin)
             if stop:
                 break
 
@@ -649,21 +670,20 @@ class Bot:
             for _plugin in self.plugins:
                 if _plugin.__name__ == plugin_class.__name__:
                     logger.warning(
-                        f'Already have a same name plugin "{_plugin.__name__}"'
+                        "Already have a same name plugin", name=_plugin.__name__
                     )
             plugin_class.__plugin_load_type__ = plugin_load_type
             plugin_class.__plugin_file_path__ = plugin_file_path
             self.plugins_priority_dict[priority].append(plugin_class)
             logger.info(
-                f'Succeeded to load plugin "{plugin_class.__name__}" '
-                f'from class "{plugin_class!r}"'
+                "Succeeded to load plugin from class",
+                name=plugin_class.__name__,
+                plugin_class=plugin_class,
             )
         else:
-            self.error_or_exception(
-                f'Load plugin from class "{plugin_class!r}" failed:',
-                LoadModuleError(
-                    f'Plugin priority incorrect in the class "{plugin_class!r}"'
-                ),
+            logger.error(
+                "Load plugin from class failed: Plugin priority incorrect in the class",
+                plugin_class=plugin_class,
             )
 
     def _load_plugins_from_module_name(
@@ -678,8 +698,8 @@ class Bot:
             plugin_classes = get_classes_from_module_name(
                 module_name, Plugin, reload=reload
             )
-        except ImportError as e:
-            self.error_or_exception(f'Import module "{module_name}" failed:', e)
+        except ImportError:
+            logger.exception("Import module failed", module_name=module_name)
         else:
             for plugin_class, module in plugin_classes:
                 self._load_plugin_class(
@@ -713,14 +733,14 @@ class Bot:
                         plugin_, plugin_load_type or PluginLoadType.CLASS, None
                     )
                 elif isinstance(plugin_, str):
-                    logger.info(f'Loading plugins from module "{plugin_}"')
+                    logger.info("Loading plugins from module", module_name=plugin_)
                     self._load_plugins_from_module_name(
                         plugin_,
                         plugin_load_type=plugin_load_type or PluginLoadType.NAME,
                         reload=reload,
                     )
                 elif isinstance(plugin_, Path):
-                    logger.info(f'Loading plugins from path "{plugin_}"')
+                    logger.info("Loading plugins from path", path=plugin_)
                     if not plugin_.is_file():
                         raise LoadModuleError(  # noqa: TRY301
                             f'The plugin path "{plugin_}" must be a file'
@@ -761,8 +781,8 @@ class Bot:
                     raise TypeError(  # noqa: TRY301
                         f"{plugin_} can not be loaded as plugin"
                     )
-            except Exception as e:
-                self.error_or_exception(f'Load plugin "{plugin_}" failed:', e)
+            except Exception:
+                logger.exception("Load plugin failed:", plugin=plugin_)
 
     def load_plugins(
         self, *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path]
@@ -789,7 +809,7 @@ class Bot:
                 例如：`pathlib.Path("path/of/plugins/")` 。
         """
         dir_list = [str(x.resolve()) for x in dirs]
-        logger.info(f'Loading plugins from dirs "{", ".join(map(str, dir_list))}"')
+        logger.info("Loading plugins from dirs", dirs=", ".join(map(str, dir_list)))
         self._module_path_finder.path.extend(dir_list)
         for module_info in pkgutil.iter_modules(dir_list):
             if not module_info.name.startswith("_"):
@@ -821,6 +841,11 @@ class Bot:
             try:
                 if isinstance(adapter_, type) and issubclass(adapter_, Adapter):
                     adapter_object = adapter_(self)
+                    logger.info(
+                        "Succeeded to load adapter from class",
+                        name=adapter_object.__class__.__name__,
+                        adapter_class=adapter_,
+                    )
                 elif isinstance(adapter_, str):
                     adapter_classes = get_classes_from_module_name(adapter_, Adapter)
                     if not adapter_classes:
@@ -832,18 +857,19 @@ class Bot:
                             f"More then one Adapter class in the {adapter_} module"
                         )
                     adapter_object = adapter_classes[0][0](self)  # type: ignore
+                    logger.info(
+                        "Succeeded to load adapter from module",
+                        name=adapter_object.__class__.__name__,
+                        module_name=adapter_,
+                    )
                 else:
                     raise TypeError(  # noqa: TRY301
                         f"{adapter_} can not be loaded as adapter"
                     )
-            except Exception as e:
-                self.error_or_exception(f'Load adapter "{adapter_}" failed:', e)
+            except Exception:
+                logger.exception("Load adapter failed", adapter=adapter_)
             else:
                 self.adapters.append(adapter_object)
-                logger.info(
-                    f'Succeeded to load adapter "{adapter_object.__class__.__name__}" '
-                    f'from "{adapter_}"'
-                )
 
     def load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]) -> None:
         """加载适配器。
@@ -901,20 +927,6 @@ class Bot:
             if _plugin.__name__ == name:
                 return _plugin
         raise LookupError(f'Can not find plugin named "{name}"')
-
-    def error_or_exception(
-        self, message: str, exception: Exception
-    ) -> None:  # pragma: no cover
-        """根据当前 Bot 的配置输出 error 或者 exception 日志。
-
-        Args:
-            message: 消息。
-            exception: 异常。
-        """
-        if self.config.bot.log.verbose_exception:
-            logger.exception(message)
-        else:
-            logger.error(f"{message} {exception!r}")
 
     def bot_run_hook(self, func: BotHook) -> BotHook:
         """注册一个 Bot 启动时的函数。

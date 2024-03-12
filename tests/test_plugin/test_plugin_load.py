@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Any, NoReturn
 
 import pytest
+from structlog.testing import capture_logs
 
 from alicebot import Bot, Plugin
 from alicebot.exceptions import LoadModuleError
@@ -27,8 +28,13 @@ def test_plugin_load_error(bot: Bot) -> None:
 
     bot = Bot()
 
-    with pytest.raises(LoadModuleError):
+    with capture_logs() as cap_logs:
         bot.load_plugins(TestPlugin)
+    assert cap_logs[0] == {
+        "event": "Load plugin from class failed: Plugin priority incorrect in the class",
+        "plugin_class": TestPlugin,
+        "log_level": "error",
+    }
 
 
 def test_plugin_load_error_type(bot: Bot) -> None:

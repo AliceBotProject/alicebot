@@ -4,10 +4,12 @@
 # pyright: reportPrivateUsage=false
 import json
 from pathlib import Path
-from typing import Any, Dict, Type
+from typing import Any, Dict
 
 import pytest
+import structlog
 from pydantic import ValidationError
+from structlog.testing import capture_logs
 
 from alicebot import Bot
 
@@ -16,15 +18,6 @@ from alicebot import Bot
 def raw_config() -> Dict[str, Any]:
     with Path("config_files/raw_config.json").open(encoding="utf-8") as f:
         return json.load(f)
-
-
-@pytest.fixture()
-def bot_type(monkeypatch: pytest.MonkeyPatch) -> Type[Bot]:
-    def error_or_exception(_self: Bot, _message: str, exception: Exception) -> None:
-        raise exception
-
-    monkeypatch.setattr(Bot, "error_or_exception", error_or_exception)
-    return Bot
 
 
 def test_load_config(raw_config: Dict[str, Any]) -> None:
@@ -53,25 +46,47 @@ def test_load_config_dict(raw_config: Dict[str, Any]) -> None:
     assert bot.config.model_dump(mode="json") == raw_config
 
 
-def test_load_config_file_not_exist(bot_type: Type[Bot]) -> None:
-    bot = bot_type(config_file="config_files/no_such_file.toml")
+def test_load_config_file_not_exist() -> None:
+    bot = Bot(config_file="config_files/no_such_file.toml")
     with pytest.raises(FileNotFoundError):
         bot._reload_config_dict()
 
 
-def test_load_config_error(bot_type: Type[Bot]) -> None:
-    bot = bot_type(config_file="config_files/error_config.toml")
+def test_load_config_error() -> None:
+    bot = Bot(config_file="config_files/error_config.toml")
     with pytest.raises(ValidationError):
         bot._reload_config_dict()
 
 
-def test_load_config_error_ext(bot_type: Type[Bot]) -> None:
-    bot = bot_type(config_file="config_files/error_ext.txt")
-    with pytest.raises(OSError):  # noqa: PT011
+def test_load_config_error_ext() -> None:
+    bot = Bot(config_file="config_files/error_ext.txt")
+    with capture_logs() as cap_logs:
         bot._reload_config_dict()
+    assert cap_logs[0] == {
+        "event": "Read config file failed: Unable to determine config file type",
+        "log_level": "error",
+    }
 
 
-def test_load_config_error_format(bot_type: Type[Bot]) -> None:
-    bot = bot_type(config_file="config_files/error_format.json")
+def test_load_config_error_format() -> None:
+    bot = Bot(config_file="config_files/error_format.json")
     with pytest.raises(json.JSONDecodeError):
         bot._reload_config_dict()
+
+
+def test_load_config_with_log() -> None:
+    bot = Bot(
+        config_dict={
+            "bot": {
+                "log": {
+                    "level": 10,
+                    "verbose_exception": False,
+                },
+            },
+        }
+    )
+    bot._reload_config_dict()
+    wrapper_class = structlog.get_config()["wrapper_class"]
+    assert issubclass(wrapper_class, structlog.make_filtering_bound_logger(10))  # type: ignore
+    assert wrapper_class.exception == wrapper_class.error
+    assert wrapper_class.aexception == wrapper_class.aexception

@@ -4,15 +4,16 @@
 APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedocs.io/)。
 """
 
+# ruff: noqa: B009, B010
 import inspect
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Type, Union
 
+import structlog
 from apscheduler.job import Job
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.adapter import Adapter
-from alicebot.log import logger
 from alicebot.plugin import Plugin
 from alicebot.typing import PluginT
 
@@ -23,6 +24,8 @@ if TYPE_CHECKING:
     from apscheduler.triggers.base import BaseTrigger
 
 __all__ = ["APSchedulerAdapter", "scheduler_decorator"]
+
+logger = structlog.stdlib.get_logger()
 
 
 class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
@@ -47,32 +50,29 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
 
             if not hasattr(plugin, "trigger") or not hasattr(plugin, "trigger_args"):
                 logger.error(
-                    f"Plugin {plugin.__name__} __schedule__ is True, "
-                    f"but did not set trigger or trigger_args"
+                    "Plugin __schedule__ is True, but did not set trigger or trigger_args",
+                    plugin=plugin,
                 )
                 continue
 
-            trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")  # noqa: B009
-            trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")  # noqa: B009
+            trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")
+            trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")
 
             if not isinstance(trigger, str) or not isinstance(trigger_args, dict):
-                logger.error(
-                    f"Plugin {plugin.__name__} trigger or trigger_args type error"
-                )
+                logger.error("Plugin trigger or trigger_args type error", plugin=plugin)
                 continue
 
             try:
                 self.plugin_class_to_job[plugin] = self.scheduler.add_job(
                     self.create_event, args=(plugin,), trigger=trigger, **trigger_args
                 )
-            except Exception as e:
-                self.bot.error_or_exception(
-                    f"Plugin {plugin.__name__} add_job filed, "
-                    "please check trigger and trigger_args:",
-                    e,
+            except Exception:
+                logger.exception(
+                    "Plugin add_job filed, please check trigger and trigger_args:",
+                    plugin=plugin,
                 )
             else:
-                logger.info(f"Plugin {plugin.__name__} has been scheduled to run")
+                logger.info("Plugin has been scheduled to run", plugin=plugin)
 
         self.scheduler.start()
 
@@ -86,7 +86,10 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         Args:
             plugin_class: `Plugin` 类。
         """
-        logger.info(f"APSchedulerEvent set by {plugin_class} is created as scheduled")
+        logger.info(
+            "APSchedulerEvent set by plugin is created as scheduled",
+            plugin=plugin_class,
+        )
         await self.handle_event(
             APSchedulerEvent(adapter=self, plugin_class=plugin_class),
             handle_get=False,
@@ -115,9 +118,9 @@ def scheduler_decorator(
             raise TypeError("can only decorate class")
         if not issubclass(cls, Plugin):
             raise TypeError("can only decorate Plugin class")
-        setattr(cls, "__schedule__", True)  # noqa: B010
-        setattr(cls, "trigger", trigger)  # noqa: B010
-        setattr(cls, "trigger_args", trigger_args)  # noqa: B010
+        setattr(cls, "__schedule__", True)
+        setattr(cls, "trigger", trigger)
+        setattr(cls, "trigger_args", trigger_args)
         if override_rule:
 
             def _rule_decorator(func: Callable[[PluginT], Awaitable[bool]]) -> Any:

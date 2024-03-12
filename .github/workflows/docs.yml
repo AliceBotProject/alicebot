@@ -24,13 +24,11 @@ jobs:
           python-version: 3.9
           cache: true
       - name: Install dependencies
-        run: pdm install -G dev -G docs
+        run: pdm install --no-editable -G dev -G docs
 
       - name: Build API Doc
         run: pdm run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
-        env:
-          ALICEBOT_DEV: "1"
 
       - uses: pnpm/action-setup@v2
         with:

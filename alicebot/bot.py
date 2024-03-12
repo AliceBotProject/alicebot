@@ -409,7 +409,9 @@ class Bot:
 
             if not self.config.bot.log.verbose_exception:
 
-                class BoundLoggerWithoutException(wrapper_class):
+                class BoundLoggerWithoutException(wrapper_class):  # type: ignore
+                    """用于不记录异常的 wrapper_class。"""
+
                     exception = wrapper_class.error
                     aexception = wrapper_class.aerror
 

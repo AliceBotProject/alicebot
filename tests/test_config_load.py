@@ -87,6 +87,6 @@ def test_load_config_with_log() -> None:
     )
     bot._reload_config_dict()
     wrapper_class = structlog.get_config()["wrapper_class"]
-    assert issubclass(wrapper_class, structlog.make_filtering_bound_logger(10))  # type: ignore
+    assert issubclass(wrapper_class, structlog.make_filtering_bound_logger(10))  # pyright: ignore
     assert wrapper_class.exception == wrapper_class.error
     assert wrapper_class.aexception == wrapper_class.aexception

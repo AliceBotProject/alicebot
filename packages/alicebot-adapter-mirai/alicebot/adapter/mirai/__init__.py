@@ -23,9 +23,9 @@ from typing import (
 )
 
 import aiohttp
+import structlog
 
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import logger
 from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
@@ -36,6 +36,8 @@ from .exceptions import ActionFailed, ApiTimeout, NetworkError
 from .message import MiraiMessage, MiraiMessageSegment
 
 __all__ = ["MiraiAdapter"]
+
+logger = structlog.stdlib.get_logger()
 
 
 class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
@@ -101,22 +103,20 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:
                 msg_dict = msg.json()
-            except json.JSONDecodeError as e:
-                self.bot.error_or_exception(
-                    "WebSocket message parsing error, not json:", e
-                )
+            except json.JSONDecodeError:
+                logger.exception("WebSocket message parsing error, not json")
                 return
 
             if not msg_dict.get("syncId"):
                 if msg_dict.get("data", {}).get("code") == 0:
                     logger.info(
-                        f"Verify success! "
-                        f"Session key: {msg_dict.get('data').get('session')}"
+                        "Verify success!",
+                        session=msg_dict.get("data").get("session"),
                     )
                 else:
                     logger.warning(
-                        f"Verify failed with code {msg_dict.get('code') or msg_dict}, "
-                        f"retrying..."
+                        "Verify failed with code, retrying...",
+                        code=msg_dict.get("code") or msg_dict,
                     )
                     await asyncio.sleep(self.reconnect_interval)
             elif msg_dict.get("syncId") == "-1":
@@ -128,8 +128,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
             logger.error(
-                f"WebSocket connection closed "
-                f"with exception {self.websocket.exception()!r}"
+                "WebSocket connection closed with exception",
+                exception=self.websocket.exception(),
             )
 
     def _get_sync_id(self) -> int:
@@ -159,10 +159,16 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         if isinstance(mirai_event, MetaEvent):
             # meta_event 不交由插件处理
             if isinstance(mirai_event, BotEvent):
-                logger.info(f"Bot {mirai_event.qq}: {mirai_event.type}")
+                logger.info(
+                    "Bot event received",
+                    id=mirai_event.qq,
+                    type=mirai_event.type,
+                )
             elif isinstance(mirai_event, CommandExecutedEvent):
                 logger.info(
-                    f'Command "{mirai_event.name}" was executed: {mirai_event!r}'
+                    "Command was executed",
+                    event_name=mirai_event.name,
+                    event_info=mirai_event,
                 )
         else:
             await self.handle_event(mirai_event)
@@ -180,7 +186,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                     qq=self.config.qq,
                 )
             except ActionFailed as e:
-                logger.warning(f"Verify failed with code {e.code}, retrying...")
+                logger.warning("Verify failed with code, retrying...", code=e.code)
             else:
                 logger.info("Verify success!")
                 return

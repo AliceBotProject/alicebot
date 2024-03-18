@@ -3,7 +3,6 @@
 此模块定义了部分 AliceBot 使用的类型。
 """
 
-# ruff: noqa: TCH001
 from typing import TYPE_CHECKING, Awaitable, Callable, Optional, TypeVar
 
 from alicebot.message import BuildMessageType, MessageSegmentT, MessageT

@@ -198,8 +198,10 @@ self.event.get()
 如果你想要在插件中输出到控制台什么东西的话，建议不要直接使用 `print()`，可以这样输出日志：
 
 ```python
+import structlog
 from alicebot import Plugin
-from alicebot.log import logger
+
+logger = structlog.stdlib.get_logger()
 
 
 class TestPlugin(Plugin):

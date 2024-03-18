@@ -11,10 +11,10 @@ import time
 from typing import Any, Dict, Literal, Union
 
 import aiohttp
+import structlog
 from aiohttp import web
 
 from alicebot.adapter import Adapter
-from alicebot.log import logger
 
 from .config import Config
 from .event import DingTalkEvent
@@ -22,6 +22,8 @@ from .exceptions import NetworkError
 from .message import DingTalkMessage
 
 __all__ = ["DingTalkAdapter"]
+
+logger = structlog.stdlib.get_logger()
 
 
 class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
@@ -67,16 +69,14 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
         elif (
             abs(int(request.headers["timestamp"]) - time.time() * 1000) > 60 * 60 * 1000
         ):
-            logger.error(
-                f'Illegal http header, timestamp: {request.headers["timestamp"]}'
-            )
+            logger.error("Illegal http header", timestamp=request.headers["timestamp"])
         elif request.headers["sign"] != self.get_sign(request.headers["timestamp"]):
-            logger.error(f'Illegal http header, sign: {request.headers["sign"]}')
+            logger.error("Illegal http header", sign=request.headers["sign"])
         else:
             try:
                 dingtalk_event = DingTalkEvent(adapter=self, **(await request.json()))
-            except Exception as e:
-                self.bot.error_or_exception("Request parsing error:", e)
+            except Exception:
+                logger.exception("Request parsing error")
                 return web.Response()
             await self.handle_event(dingtalk_event)
         return web.Response()

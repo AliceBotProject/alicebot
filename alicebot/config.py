@@ -3,7 +3,7 @@
 AliceBot 使用 [pydantic](https://pydantic-docs.helpmanual.io/) 来读取配置。
 """
 
-from typing import Set, Union
+from typing import Optional, Set, Union
 
 from pydantic import BaseModel, ConfigDict, DirectoryPath, Field
 
@@ -54,7 +54,7 @@ class BotConfig(ConfigModel):
     plugins: Set[str] = Field(default_factory=set)
     plugin_dirs: Set[DirectoryPath] = Field(default_factory=set)
     adapters: Set[str] = Field(default_factory=set)
-    log: LogConfig = LogConfig()
+    log: Optional[LogConfig] = None
 
 
 class PluginConfig(ConfigModel):

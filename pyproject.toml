@@ -21,7 +21,8 @@ dependencies = [
     "tomli>=2.0.0,<3.0.0;python_version<'3.11'",
     "pydantic>=2.0.3,<3.0.0",
     "aiohttp>=3.8.0,<4.0.0",
-    "loguru>=0.7.0,<0.8.0",
+    "structlog>=24.1.0,<25.0.0",
+    "rich>=13.7.0,<14.0.0",
     "typing-extensions>=4.5.0",
 ]
 
@@ -99,7 +100,7 @@ ignore = [
 builtins-ignorelist = ["id", "type"]
 
 [tool.ruff.lint.isort]
-known-third-party = ["pydantic", "aiohttp", "loguru"]
+known-third-party = ["pydantic", "aiohttp", "structlog"]
 extra-standard-library = ["typing_extensions"]
 
 [tool.ruff.lint.pydocstyle]
@@ -189,6 +190,7 @@ exclude_also = [
     "@overload",
     "@(abc\\.)?abstractmethod",
 ]
+omit = ["alicebot/log.py"]
 
 [build-system]
 requires = ["pdm-backend"]

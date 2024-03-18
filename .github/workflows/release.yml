@@ -19,15 +19,13 @@ jobs:
           python-version: 3.9
           cache: true
       - name: Install dependencies
-        run: pdm install
+        run: pdm install --no-editable
 
       - name: Remove API Doc
         run: rm -rf docs/api
       - name: Build API Doc
         run: pdm run sophia-doc alicebot -o docs/api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
-        env:
-          ALICEBOT_DEV: "1"
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5

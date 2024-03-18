@@ -24,10 +24,10 @@ from typing import (
 )
 
 import aiohttp
+import structlog
 from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import logger
 from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
@@ -46,6 +46,7 @@ from .message import OneBotMessage, OneBotMessageSegment
 
 __all__ = ["OneBotAdapter"]
 
+logger = structlog.stdlib.get_logger()
 
 EventModels = Dict[
     Tuple[Optional[str], Optional[str], Optional[str]], Type[OntBotEvent]
@@ -122,10 +123,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:
                 msg_dict = msg.json()
-            except json.JSONDecodeError as e:
-                self.bot.error_or_exception(
-                    "WebSocket message parsing error, not json:", e
-                )
+            except json.JSONDecodeError:
+                logger.exception("WebSocket message parsing error, not json")
                 return
 
             if "post_type" in msg_dict:
@@ -137,8 +136,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
             logger.error(
-                f"WebSocket connection closed "
-                f"with exception {self.websocket.exception()!r}"
+                "WebSocket connection closed with exception",
+                exception=self.websocket.exception(),
             )
 
     def _get_api_echo(self) -> int:
@@ -202,15 +201,15 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             if onebot_event.detail_type == "connect":
                 assert isinstance(onebot_event, ConnectMetaEvent)
                 logger.info(
-                    f"WebSocket connection "
-                    f"from CQHTTP Bot {msg.get('self_id')} accepted!"
+                    "WebSocket connection from CQHTTP Bot accepted!",
+                    id=msg.get("self_id"),
                 )
             elif onebot_event.detail_type == "heartbeat":
                 assert isinstance(onebot_event, HeartbeatMetaEvent)
 
             elif onebot_event.detail_type == "status_update":
                 assert isinstance(onebot_event, StatusUpdateMetaEvent)
-                logger.info(f"OneBot status update: {onebot_event}")
+                logger.info("OneBot status update", status=onebot_event.status)
         else:
             await self.handle_event(onebot_event)
 

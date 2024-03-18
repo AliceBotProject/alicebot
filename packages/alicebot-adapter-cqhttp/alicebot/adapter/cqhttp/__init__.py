@@ -23,10 +23,10 @@ from typing import (
 )
 
 import aiohttp
+import structlog
 from aiohttp import web
 
 from alicebot.adapter.utils import WebSocketAdapter
-from alicebot.log import logger
 from alicebot.message import BuildMessageType
 from alicebot.utils import PydanticEncoder
 
@@ -37,6 +37,8 @@ from .exceptions import ActionFailed, ApiNotAvailable, ApiTimeout, NetworkError
 from .message import CQHTTPMessage, CQHTTPMessageSegment
 
 __all__ = ["CQHTTPAdapter"]
+
+logger = structlog.stdlib.get_logger()
 
 EventModels = Dict[
     Tuple[Optional[str], Optional[str], Optional[str]], Type[CQHTTPEvent]
@@ -113,10 +115,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:
                 msg_dict = msg.json()
-            except json.JSONDecodeError as e:
-                self.bot.error_or_exception(
-                    "WebSocket message parsing error, not json:", e
-                )
+            except json.JSONDecodeError:
+                logger.exception("WebSocket message parsing error, not json")
                 return
 
             if "post_type" in msg_dict:
@@ -128,8 +128,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         elif msg.type == aiohttp.WSMsgType.ERROR:
             logger.error(
-                f"WebSocket connection closed "
-                f"with exception {self.websocket.exception()!r}"
+                "WebSocket connection closed with exception",
+                exception=self.websocket.exception(),
             )
 
     def _get_api_echo(self) -> int:
@@ -194,8 +194,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                 assert isinstance(cqhttp_event, LifecycleMetaEvent)
                 if cqhttp_event.sub_type == "connect":
                     logger.info(
-                        f"WebSocket connection "
-                        f"from CQHTTP Bot {msg.get('self_id')} accepted!"
+                        "WebSocket connection from CQHTTP Bot accepted!",
+                        id=msg.get("self_id"),
                     )
             elif cqhttp_event.meta_event_type == "heartbeat":
                 assert isinstance(cqhttp_event, HeartbeatMetaEvent)
@@ -203,7 +203,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                     pass
                 else:
                     logger.error(
-                        f"CQHTTP Bot status is not good: {cqhttp_event.status.model_dump()}"
+                        "CQHTTP Bot status is not good",
+                        status=cqhttp_event.status.model_dump(),
                     )
         else:
             await self.handle_event(cqhttp_event)

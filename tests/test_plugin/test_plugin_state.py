@@ -15,8 +15,8 @@ def test_plugin_state(bot: Bot) -> None:
 
     class TestPlugin(Plugin[MessageEvent[Any], int, None]):
         async def handle(self) -> None:
-            if self.state is None:  # pyright: ignore[reportUnnecessaryComparison]
-                self.state = 0
+            if self.state is None:  # pyright: ignore
+                self.state = 0  # pyright: ignore
             self.state += 1
             await self.event.reply(str(self.state))
 

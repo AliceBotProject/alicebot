@@ -190,6 +190,7 @@ exclude_also = [
     "@overload",
     "@(abc\\.)?abstractmethod",
 ]
+omit = ["alicebot/log.py"]
 
 [build-system]
 requires = ["pdm-backend"]

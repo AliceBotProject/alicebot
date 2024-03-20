@@ -20,11 +20,11 @@ class Config(ConfigModel):
         access_token: 鉴权。
     """
 
-    __config_name__ = "cqhttp"
+    __config_name__ = "onebot"
     adapter_type: Literal["ws", "reverse-ws", "ws-reverse"] = "reverse-ws"
     host: str = "127.0.0.1"
     port: int = 8080
-    url: str = "/cqhttp/ws"
+    url: str = "/onebot/ws"
     reconnect_interval: int = 3
     api_timeout: int = 1000
     access_token: str = ""

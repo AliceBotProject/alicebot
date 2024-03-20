@@ -12,7 +12,6 @@ from typing import (
     get_args,
     get_origin,
 )
-from typing_extensions import Self
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
@@ -169,16 +168,13 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
         """
         raise NotImplementedError
 
-    async def is_same_sender(self, other: Self) -> bool:
-        """判断自身和另一个事件是否是同一个发送者。
-
-        Args:
-            other: 另一个事件。
+    def get_sender_id(self) -> str:
+        """获取消息的发送者的唯一标识符。
 
         Returns:
-            是否是同一个发送者。
+            消息的发送者的唯一标识符。
         """
-        return self.user_id == other.user_id
+        return self.user_id
 
 
 class PrivateMessageEvent(MessageEvent):

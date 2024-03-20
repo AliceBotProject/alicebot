@@ -1,6 +1,5 @@
 import inspect
 from typing import Any, Awaitable, Callable, ClassVar, Optional, Tuple, Union
-from typing_extensions import Self
 
 from alicebot import Adapter, Event, MessageEvent
 
@@ -45,11 +44,11 @@ class FakeAdapter(Adapter[Event[Any], None]):
 class FakeMessageEvent(MessageEvent[FakeAdapter]):
     message: str = "test"
 
+    def get_sender_id(self) -> None:
+        pass
+
     def get_plain_text(self) -> str:
         return self.message
 
     async def reply(self, message: str) -> None:
         pass
-
-    async def is_same_sender(self, other: Self) -> bool:
-        return self.adapter == other.adapter

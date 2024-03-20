@@ -2,7 +2,6 @@
 
 import time
 from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
-from typing_extensions import Self
 
 from pydantic import BaseModel, Field
 
@@ -62,6 +61,14 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
         """返回 message 字段。"""
         return DingTalkMessage.text(self.text.content)
 
+    def get_sender_id(self) -> str:
+        """获取消息的发送者的唯一标识符。
+
+        Returns:
+            消息的发送者的唯一标识符。
+        """
+        return self.senderId
+
     def get_plain_text(self) -> str:
         """获取消息的纯文本内容。
 
@@ -96,14 +103,3 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
                 at=at,
             )
         raise WebhookExpiredError
-
-    async def is_same_sender(self, other: Self) -> bool:
-        """判断自身和另一个事件是否是同一个发送者。
-
-        Args:
-            other: 另一个事件。
-
-        Returns:
-            是否是同一个发送者。
-        """
-        return self.senderId == other.senderId

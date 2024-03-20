@@ -11,7 +11,6 @@ from typing import (
     get_args,
     get_origin,
 )
-from typing_extensions import Self
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.fields import FieldInfo
@@ -131,6 +130,14 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
         """
         return f'Event<{self.type}>: "{self.message}"'
 
+    def get_sender_id(self) -> Optional[int]:
+        """获取消息的发送者的唯一标识符。
+
+        Returns:
+            消息的发送者的唯一标识符。
+        """
+        return self.sender.user_id
+
     def get_plain_text(self) -> str:
         """获取消息的纯文本内容。
 
@@ -151,17 +158,6 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
             API 请求响应。
         """
         raise NotImplementedError
-
-    async def is_same_sender(self, other: Self) -> bool:
-        """判断自身和另一个事件是否是同一个发送者。
-
-        Args:
-            other: 另一个事件。
-
-        Returns:
-            是否是同一个发送者。
-        """
-        return self.sender.user_id == other.sender.user_id
 
 
 class PrivateMessageEvent(MessageEvent):

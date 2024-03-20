@@ -71,7 +71,7 @@ def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
 
 
 class OntBotEvent(Event["OneBotAdapter"]):
-    """CQHTTP 事件基类"""
+    """OneBot 事件基类"""
 
     id: str
     time: float

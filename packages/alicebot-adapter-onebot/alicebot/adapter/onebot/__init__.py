@@ -201,7 +201,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             if onebot_event.detail_type == "connect":
                 assert isinstance(onebot_event, ConnectMetaEvent)
                 logger.info(
-                    "WebSocket connection from CQHTTP Bot accepted!",
+                    "WebSocket connection from OneBot accepted!",
                     id=msg.get("self_id"),
                 )
             elif onebot_event.detail_type == "heartbeat":

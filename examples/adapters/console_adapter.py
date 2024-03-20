@@ -5,7 +5,6 @@
 
 import asyncio
 import sys
-from typing_extensions import Self
 
 from alicebot import MessageEvent
 from alicebot.adapter import Adapter
@@ -19,6 +18,13 @@ class ConsoleAdapterEvent(MessageEvent["ConsoleAdapter"]):
     """
 
     message: str
+
+    def get_sender_id(self) -> None:
+        """获取消息的发送者的唯一标识符。
+
+        Returns:
+            消息的发送者的唯一标识符。
+        """
 
     def get_plain_text(self) -> str:
         """获取消息的纯文本内容。
@@ -35,14 +41,6 @@ class ConsoleAdapterEvent(MessageEvent["ConsoleAdapter"]):
             message: 回复消息的内容。
         """
         return await self.adapter.send(message)
-
-    async def is_same_sender(self, other: Self) -> bool:  # noqa: ARG002
-        """判断自身和另一个事件是否是同一个发送者。
-
-        Returns:
-            是否是同一个发送者。
-        """
-        return True
 
 
 class ConsoleAdapter(Adapter[ConsoleAdapterEvent, None]):

@@ -2,7 +2,6 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 from typing import TYPE_CHECKING, Any, Dict, Literal, Union
-from typing_extensions import Self
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 from alicebot.message import BuildMessageType
@@ -62,16 +61,13 @@ class MessageEvent(MiraiBaseMessageEvent):
 
     sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
 
-    async def is_same_sender(self, other: Self) -> bool:
-        """判断自身和另一个事件是否是同一个发送者。
-
-        Args:
-            other: 另一个事件。
+    def get_sender_id(self) -> int:
+        """获取消息的发送者的唯一标识符。
 
         Returns:
-            是否是同一个发送者。
+            消息的发送者的唯一标识符。
         """
-        return self.sender.id == other.sender.id
+        return self.sender.id
 
     async def reply(
         self,
@@ -244,18 +240,15 @@ class OtherClientMessage(MessageEvent):
 class SyncMessage(MiraiBaseMessageEvent):
     """同步消息"""
 
-    sender: Union[FriendInfo, GroupMemberInfo]
+    subject: Union[FriendInfo, GroupMemberInfo]
 
-    async def is_same_sender(self, other: Self) -> bool:  # noqa: ARG002
-        """判断自身和另一个事件是否是同一个发送者。
-
-        Args:
-            other: 另一个事件。
+    def get_sender_id(self) -> None:
+        """获取消息的发送者的唯一标识符。
 
         Returns:
-            是否是同一个发送者。
+            消息的发送者的唯一标识符。
         """
-        return True
+        return
 
     async def reply(
         self,

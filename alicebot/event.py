@@ -53,6 +53,14 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT]):
     """通用的消息事件类的基类。"""
 
     @abstractmethod
+    def get_sender_id(self) -> Union[None, int, str]:
+        """获取消息的发送者的唯一标识符。
+
+        Returns:
+            消息的发送者的唯一标识符。
+        """
+
+    @abstractmethod
     def get_plain_text(self) -> str:
         """获取消息的纯文本内容。
 
@@ -71,7 +79,6 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT]):
             回复消息动作的响应。
         """
 
-    @abstractmethod
     async def is_same_sender(self, other: Self) -> bool:
         """判断自身和另一个事件是否是同一个发送者。
 
@@ -81,6 +88,7 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT]):
         Returns:
             是否是同一个发送者。
         """
+        return self.get_sender_id() == other.get_sender_id()
 
     async def get(
         self,

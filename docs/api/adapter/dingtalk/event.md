@@ -14,15 +14,14 @@ Bases: `pydantic.main.BaseModel`
 
   - **staffId** (_Optional\[str\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -42,15 +41,14 @@ Bases: `pydantic.main.BaseModel`
 
   - **content** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -110,15 +108,14 @@ DingTalk 事件基类
 
   - **response\_at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -138,19 +135,15 @@ allow `self` as a field name.
 
   消息的纯文本内容。
 
-### _async method_ `is_same_sender(self, other)` {#DingTalkEvent.is\_same\_sender}
+### _method_ `get_sender_id(self)` {#DingTalkEvent.get\_sender\_id}
 
-判断自身和另一个事件是否是同一个发送者。
-
-- **Arguments**
-
-  - **other** (_typing\_extensions.Self_) - 另一个事件。
+获取消息的发送者的唯一标识符。
 
 - **Returns**
 
-  Type: _bool_
+  Type: _str_
 
-  是否是同一个发送者。
+  消息的发送者的唯一标识符。
 
 ### _readonly property_ `message` {#DingTalkEvent.message}
 

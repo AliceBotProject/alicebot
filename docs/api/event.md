@@ -18,15 +18,14 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `typing.Generic`
 
   - **\_\_handled\_\_** - 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -42,15 +41,14 @@ Bases: `alicebot.event.Event`, `typing.Generic`
 
 通用的消息事件类的基类。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -112,6 +110,16 @@ allow `self` as a field name.
   Type: _str_
 
   消息的纯文本内容。
+
+### _method_ `get_sender_id(self)` {#MessageEvent.get\_sender\_id}
+
+获取消息的发送者的唯一标识符。
+
+- **Returns**
+
+  Type: _Union\[NoneType, int, str\]_
+
+  消息的发送者的唯一标识符。
 
 ### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
 

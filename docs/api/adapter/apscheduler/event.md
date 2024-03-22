@@ -14,15 +14,14 @@ APSchedulerEvent 事件基类。
 
   - **plugin\_class** (_Type\[alicebot.plugin.Plugin\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -40,12 +39,12 @@ Type: _apscheduler.job.Job_
 
 ### _readonly property_ `trigger` {#APSchedulerEvent.trigger}
 
-Type: _Union\[str, apscheduler.triggers.base.BaseTrigger\]_
+Type: _Union\[str, apscheduler.triggers.base.BaseTrigger, NoneType\]_
 
 当前事件对应的 Plugin 的 `trigger`。
 
 ### _readonly property_ `trigger_args` {#APSchedulerEvent.trigger\_args}
 
-Type: _Dict\[str, Any\]_
+Type: _Optional\[Dict\[str, Any\]\]_
 
 当前事件对应的 Plugin 的 `trigger_args`。

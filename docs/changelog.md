@@ -4,7 +4,23 @@ sidebar: auto
 
 # 更新日志
 
-## [0.9.0](https://github.com/AliceBotProject/alicebot/compare/v0.8.1...v0.9.0) (2023-10-28)
+## [0.10.0](https://github.com/AliceBotProject/alicebot/compare/v0.9.0...v0.10.0) (2024-03-22)
+
+### Bug Fixes
+
+- 修复 OneBot 适配器中的拼写错误 ([#112](https://github.com/AliceBotProject/alicebot/issues/112)) ([f4ce37c](https://github.com/AliceBotProject/alicebot/commit/f4ce37c479b34803b49fbb23ec98b3e191586426))
+
+### Features
+
+- 给 MessageEvent 类添加用于获取唯一表示符的 get_sender_id method() 方法 ([#113](https://github.com/AliceBotProject/alicebot/issues/113)) ([d17b62d](https://github.com/AliceBotProject/alicebot/commit/d17b62d8addd274dbbe089afc9b2d88661ffd06f))
+- 使用 structlog 作为日志库 ([#111](https://github.com/AliceBotProject/alicebot/issues/111)) ([c5f546e](https://github.com/AliceBotProject/alicebot/commit/c5f546ed68a22c52d7263d82e71c5a10e4a444dd))
+- 添加 Mirai 适配器的同步消息事件 ([#108](https://github.com/AliceBotProject/alicebot/issues/108)) ([36249a9](https://github.com/AliceBotProject/alicebot/commit/36249a9599e1036052d1451dd05d9669eabb7642))
+
+### BREAKING CHANGES
+
+- 使用 structlog 作为日志库，弃用 alicebot.log 模块
+
+## [0.9.0](https://github.com/AliceBotProject/alicebot/compare/v0.8.1...v0.9.0) (2023-11-06)
 
 ### Bug Fixes
 

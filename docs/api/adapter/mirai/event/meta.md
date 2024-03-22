@@ -8,15 +8,14 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 默认不会被传播的特殊事件
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -36,15 +35,14 @@ Bot 自身事件
 
   - **qq** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -64,15 +62,14 @@ Bot 登录成功
 
   - **type** (_Literal\['BotOnlineEvent'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -92,15 +89,14 @@ Bot 主动离线
 
   - **type** (_Literal\['BotOfflineEventActive'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -120,15 +116,14 @@ Bot 被挤下线
 
   - **type** (_Literal\['BotOfflineEventForce'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -148,15 +143,14 @@ Bot 被服务器断开或因网络问题而掉线
 
   - **type** (_Literal\['BotOfflineEventDropped'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -176,15 +170,14 @@ Bot 主动重新登录
 
   - **type** (_Literal\['BotReloginEvent'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -212,15 +205,14 @@ Bases: `alicebot.adapter.mirai.event.meta.MetaEvent`
 
   - **args** (_List\[Any\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 

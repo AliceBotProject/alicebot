@@ -115,20 +115,6 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `error_or_exception(self, message, exception)` {#Bot.error\_or\_exception}
-
-根据当前 Bot 的配置输出 error 或者 exception 日志。
-
-- **Arguments**
-
-  - **message** (_str_) - 消息。
-
-  - **exception** (_Exception_) - 异常。
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `event_postprocessor_hook(self, func)` {#Bot.event\_postprocessor\_hook}
 
 注册一个事件后处理函数。

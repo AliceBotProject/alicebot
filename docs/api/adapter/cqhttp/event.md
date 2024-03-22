@@ -28,15 +28,14 @@ Bases: `pydantic.main.BaseModel`
 
   - **title** (_Optional\[str\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -60,15 +59,14 @@ Bases: `pydantic.main.BaseModel`
 
   - **flag** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -94,15 +92,14 @@ Bases: `pydantic.main.BaseModel`
 
   - **busid** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -124,15 +121,14 @@ Bases: `pydantic.main.BaseModel`
 
   - **good** (_bool_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -158,15 +154,14 @@ CQHTTP 事件基类
 
   - **post\_type** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -218,15 +213,14 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`, `alicebot.event.MessageEvent
 
   - **sender** (_Sender_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -246,19 +240,15 @@ allow `self` as a field name.
 
   消息的纯文本内容。
 
-### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
+### _method_ `get_sender_id(self)` {#MessageEvent.get\_sender\_id}
 
-判断自身和另一个事件是否是同一个发送者。
-
-- **Arguments**
-
-  - **other** (_typing\_extensions.Self_) - 另一个事件。
+获取消息的发送者的唯一标识符。
 
 - **Returns**
 
-  Type: _bool_
+  Type: _Optional\[int\]_
 
-  是否是同一个发送者。
+  消息的发送者的唯一标识符。
 
 ### _async method_ `reply(self, message)` {#MessageEvent.reply}
 
@@ -286,15 +276,14 @@ Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
   - **sub\_type** (_Literal\['friend', 'group', 'other'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -334,15 +323,14 @@ Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
   - **anonymous** (_Optional\[alicebot.adapter.cqhttp.event.Anonymous\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -378,15 +366,14 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
   - **notice\_type** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -412,15 +399,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **file** (_File_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -446,15 +432,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **group\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -482,15 +467,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **user\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -518,15 +502,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **user\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -556,15 +539,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **duration** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -586,15 +568,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **user\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -622,15 +603,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **message\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -654,15 +634,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **message\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -688,15 +667,14 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **user\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -720,15 +698,14 @@ Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
   - **group\_id** (_Optional\[int\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -752,15 +729,14 @@ Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
   - **target\_id** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -784,15 +760,14 @@ Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
   - **honor\_type** (_Literal\['talkative', 'performer', 'emotion'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -814,15 +789,14 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
   - **request\_type** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -868,15 +842,14 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
   - **flag** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -930,15 +903,14 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
   - **flag** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -984,15 +956,14 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
   - **meta\_event\_type** (_str_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -1014,15 +985,14 @@ Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
 
   - **sub\_type** (_Literal\['enable', 'disable', 'connect'\]_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -1046,15 +1016,14 @@ Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
 
   - **interval** (_int_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 

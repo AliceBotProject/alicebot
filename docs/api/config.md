@@ -14,15 +14,14 @@ AliceBot 配置模型。
 
   - **\_\_config\_name\_\_** - 配置名称。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -44,15 +43,14 @@ AliceBot 日志相关设置。
 
   - **verbose\_exception** (_bool_) - 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -76,17 +74,16 @@ Bot 配置。
 
   - **adapters** (_Set\[str\]_) - 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
 
-  - **log** (_LogConfig_) - AliceBot 日志相关设置。
+  - **log** (_Optional\[alicebot.config.LogConfig\]_) - AliceBot 日志相关设置。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -102,15 +99,14 @@ Bases: `alicebot.config.ConfigModel`
 
 插件配置。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -126,15 +122,14 @@ Bases: `alicebot.config.ConfigModel`
 
 适配器配置。
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 
@@ -158,15 +153,14 @@ AliceBot 配置。
 
   - **adapter** (_AdapterConfig_)
 
-### _method_ `__init__(__pydantic_self__, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
 Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
 validated to form a valid model.
 
-`__init__` uses `__pydantic_self__` instead of the more common `self` for the first arg to
-allow `self` as a field name.
+`self` is explicitly positional-only to allow `self` as a field name.
 
 - **Arguments**
 

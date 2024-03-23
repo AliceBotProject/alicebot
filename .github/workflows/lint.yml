@@ -5,19 +5,19 @@ on:
     branches:
       - master
     paths:
-      - "**.py"
+      - '**.py'
   pull_request:
     paths:
-      - "**.py"
+      - '**.py'
   workflow_dispatch:
 
 jobs:
   ruff:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9
@@ -33,9 +33,9 @@ jobs:
   pylint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9
@@ -50,9 +50,9 @@ jobs:
   pyright:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9
@@ -60,13 +60,13 @@ jobs:
       - name: Install dependencies
         run: pdm install -G dev -G lint -G typing -G test
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
-          version: ^6.10.0
-      - uses: actions/setup-node@v3
+          version: latest
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16"
-          cache: "pnpm"
+          node-version: latest
+          cache: pnpm
       - run: pnpm install
         shell: bash
 
@@ -77,9 +77,9 @@ jobs:
   mypy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9

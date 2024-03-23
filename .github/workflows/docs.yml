@@ -5,10 +5,10 @@ on:
     branches:
       - master
     paths-ignore:
-      - "examples/**"
+      - 'examples/**'
   pull_request:
     paths-ignore:
-      - "examples/**"
+      - 'examples/**'
   workflow_dispatch:
 
 jobs:
@@ -16,9 +16,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9
@@ -43,7 +43,7 @@ jobs:
       - name: Build VuePress site
         run: pnpm docs:build
 
-      - uses: actions/upload-pages-artifact@v1
+      - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'
         with:
           path: docs/.vitepress/dist
@@ -67,4 +67,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4

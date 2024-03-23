@@ -11,9 +11,9 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9
@@ -30,9 +30,9 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
-          commit-message: "docs: 更新 API 文档"
-          title: "docs: 更新 API 文档"
-          body: "自动更新 API 文档"
+          commit-message: 'docs: 更新 API 文档'
+          title: 'docs: 更新 API 文档'
+          body: 自动更新 API 文档
           branch: docs/update-api-docs
           base: master
 
@@ -42,9 +42,9 @@ jobs:
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v3
+      - uses: pdm-project/setup-pdm@v4
         name: Setup PDM
         with:
           python-version: 3.9

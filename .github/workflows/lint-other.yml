@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - master
-    paths:
-      - '!**.py'
+    paths-ignore:
+      - '**.py'
   pull_request:
-    paths:
-      - '!**.py'
+    paths-ignore:
+      - '**.py'
   workflow_dispatch:
 
 jobs:

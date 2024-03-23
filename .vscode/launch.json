@@ -1,0 +1,14 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "AliceBot: Examples",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/examples/test.py",
+      "console": "integratedTerminal",
+      "justMyCode": false,
+      "cwd": "${workspaceFolder}/examples"
+    }
+  ]
+}

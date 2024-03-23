@@ -1,1 +1,7 @@
 pnpm-lock.yaml
+docs/api/
+docs/dev-api/
+**/*.ts
+**/*.js
+**/*.vue
+**/*.jsonc

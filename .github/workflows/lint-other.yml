@@ -1,0 +1,47 @@
+name: Lint Other Files
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '!**.py'
+  pull_request:
+    paths:
+      - '!**.py'
+  workflow_dispatch:
+
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: pnpm
+      - run: pnpm install
+        shell: bash
+
+      - run: pnpm run prettier
+
+  eslint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: latest
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
+          cache: pnpm
+      - run: pnpm install
+        shell: bash
+
+      - run: pnpm run eslint

@@ -1,203 +1,103 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import type { DataItem } from "./StoreList.vue";
-import IconVerify from "./icons/IconVerify.vue";
-import IconGithub from "./icons/IconGithub.vue";
-import IconAuthor from "./icons/IconAuthor.vue";
-import IconPypi from "./icons/IconPypi.vue";
-import IconModule from "./icons/IconModules.vue";
-import IconVersion from "./icons/IconVersion.vue";
-import IconLicense from "./icons/IconLicense.vue";
-import IconCopy from "./icons/IconCopy.vue";
+import { onMounted, ref } from 'vue'
+import type { MetaData, PyPIData } from './types'
 
-const props = defineProps<{ item: DataItem }>();
+const props = defineProps<{ item: MetaData }>()
 
-const version = ref("unknown");
+const pypiJson = ref<PyPIData | undefined>(undefined)
+const description = ref<string >()
+const author = ref<string >('')
+const homepage = ref<string >('')
+const tags = ref<string[] >([])
 
-const openHomepageLink = () => {
-  window.open(props.item.homepage);
-};
+const openHomepageLink = () => window.open(homepage.value)
 
-const copyInstallLink = async () => {
-  await navigator.clipboard.writeText("pip install " + props.item.pypi_name);
-};
+async function copyInstallLink() {
+  if ('pypi_name' in props.item)
+    await navigator.clipboard.writeText(`pip install ${props.item.pypi_name}`)
+}
 
 onMounted(async () => {
-  const v = (
-    await (
-      await fetch("https://pypi.org/pypi/" + props.item.pypi_name + "/json")
+  if ('pypi_name' in props.item) {
+    pypiJson.value = await (
+      await fetch(`https://pypi.org/pypi/${props.item.pypi_name}/json`)
     ).json()
-  )["info"]["version"];
-  if (!!v) {
-    version.value = v;
+    description.value = pypiJson.value?.info.summary
+    author.value = pypiJson.value?.info.author ?? ''
+    homepage.value = pypiJson.value?.info.project_urls.Homepage ?? ''
+    tags.value = pypiJson.value?.info.keywords
+      .split(',')
+      .filter(tag => tag !== '') ?? []
   }
-});
+  else {
+    description.value = props.item.description
+    author.value = props.item.author
+    homepage.value = props.item.homepage
+    tags.value = props.item.tags.split(',').filter(tag => tag !== '')
+  }
+})
 </script>
 
 <template>
-  <div class="card">
-    <div class="card-top">
-      <div class="card-head">
-        <div class="card-title">
-          {{ item.name }}
-          <IconVerify v-if="item.is_official" style="margin-left: 0.1rem" />
-        </div>
-        <div
-          class="card-github"
-          @click="openHomepageLink"
-          v-if="!!item.homepage"
-        >
-          <IconGithub />
-        </div>
+  <div
+    class="h-full w-full flex flex-col border border-vp-bg-soft rounded-xl border-solid bg-vp-bg-soft p-6 duration-200 hover:border-vp-brand-1"
+  >
+    <div class="flex justify-between">
+      <div class="flex items-center font-bold">
+        {{ item.name }}
+        <div v-if="item.is_official" class="i-mdi-check-decagram ml-1 h-5 w-5 text-vp-brand-1" />
       </div>
-      <div class="card-des">{{ item?.description }}</div>
-      <div class="card-tags">
-        <div class="card-tag" v-for="(tag, index_) in item.tags" :key="index_">
-          {{ tag }}
-        </div>
-      </div>
-      <div class="card-details">
-        <div class="card-detail" title="作者" v-if="!!item.author">
-          <div class="card-icon">
-            <IconAuthor />
-          </div>
-          <div class="card-text">{{ item.author }}</div>
-        </div>
-        <div class="card-detail" title="pypi" v-if="!!item.pypi_name">
-          <div class="card-icon">
-            <IconPypi />
-          </div>
-          <div class="card-text">{{ item.pypi_name }}</div>
-        </div>
-        <div class="card-detail" title="module" v-if="!!item.module_name">
-          <div class="card-icon">
-            <IconModule />
-          </div>
-          <div class="card-text">{{ item.module_name }}</div>
-        </div>
-        <div class="card-detail" title="版本" v-if="!!item.pypi_name">
-          <div class="card-icon">
-            <IconVersion />
-          </div>
-          <div class="card-text" :key="item.pypi_name">{{ version }}</div>
-        </div>
-        <div class="card-detail" title="license" v-if="!!item.license">
-          <div class="card-icon">
-            <IconLicense />
-          </div>
-          <div class="card-text">{{ item.license }}</div>
-        </div>
+      <div class="i-mdi-github h-8 w-8 cursor-pointer text-vp-neutral hover:text-vp-brand-1" @click="openHomepageLink" />
+    </div>
+    <div class="my-1 text-sm text-vp-text-2">
+      {{ description }}
+    </div>
+    <div v-if="tags?.length" class="mt-2 flex flex-wrap gap-2 text-sm">
+      <div v-for="(tag, index) in tags" :key="index" class="rounded bg-vp-default-soft px-2 py-0.5">
+        {{ tag }}
       </div>
     </div>
-    <div class="card-button" @click="copyInstallLink">
-      点击复制安装命令
-      <IconCopy style="margin-left: 0.3rem" />
+    <div class="mt-2 flex flex-col text-sm">
+      <div class="h-6 flex items-center" title="author">
+        <div class="i-mdi-account" />
+        <div class="ml-2">
+          {{ author }}
+        </div>
+      </div>
+      <div v-if="'module_name' in item">
+        <div class="h-6 flex items-center" title="license">
+          <div class="i-mdi-scale-balance" />
+          <div class="ml-2">
+            {{ pypiJson?.info.license }}
+          </div>
+        </div>
+        <div class="h-6 flex items-center" title="version">
+          <div class="i-mdi-tag-multiple" />
+          <div class="ml-2">
+            {{ pypiJson?.info.version }}
+          </div>
+        </div>
+        <div class="h-6 flex items-center" title="pypi">
+          <div class="i-mdi-python" />
+          <div class="ml-2">
+            {{ item.pypi_name }}
+          </div>
+        </div>
+        <div class="h-6 flex items-center" title="module">
+          <div class="i-mdi-package-variant" />
+          <div class="ml-2">
+            {{ item.module_name }}
+          </div>
+        </div>
+      </div>
+      <div
+        v-if="'module_name' in item"
+        class="mt-2 w-full flex cursor-pointer items-center justify-center rounded-lg bg-vp-default-soft px-4 py-2 hover:fill-vp-brand-1 hover:text-vp-brand-1"
+        @click="copyInstallLink"
+      >
+        点击复制安装命令
+        <div class="i-mdi-package-down ml-1 h-5 w-5" />
+      </div>
     </div>
   </div>
 </template>
-
-<style scoped>
-.card {
-  border: 1px solid var(--vp-c-bg-soft);
-  border-radius: 12px;
-  background-color: var(--vp-c-bg-soft);
-  padding: 1.5rem;
-  width: 100%;
-  height: 100%;
-  transition: border-color 0.25s;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  max-width: 332px;
-}
-
-.card:hover {
-  border: 1px solid var(--vp-c-bg-elv);
-}
-
-.card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-title {
-  display: flex;
-  font-size: large;
-  font-weight: bold;
-  align-items: center;
-}
-
-.card-github {
-  cursor: pointer;
-  fill: var(--vp-c-neutral);
-}
-
-.card-github:hover {
-  fill: var(--vp-c-brand-1);
-}
-
-.card-des {
-  color: var(--vp-c-text-2);
-  opacity: 0.7;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  margin-top: 0.3rem;
-}
-
-.card-tags {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-}
-
-.card-tag {
-  margin: 0.5rem 0.5rem 0 0;
-  padding: 0 0.5rem;
-  background-color: var(--vp-c-default-soft);
-  border-radius: 0.1875rem;
-}
-
-.card-tags .card-tag:first-child {
-  margin-left: 0;
-}
-
-.card-details {
-  margin: 0.8rem 0 0.5rem 0;
-}
-
-.card-text {
-  margin-left: 0.5rem;
-  font-size: 0.95rem;
-  line-height: 1.5rem;
-}
-
-.card-detail {
-  display: flex;
-  align-items: center;
-}
-
-.card-icon {
-  width: 16px;
-  height: 16px;
-}
-
-.card-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  padding: 0.4rem 1rem;
-  background-color: var(--vp-c-default-soft);
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-.card-button:hover {
-  color: var(--vp-c-brand-1);
-  fill: var(--vp-c-brand-1);
-}
-</style>

@@ -160,9 +160,6 @@ node_modules/
 
 # Project
 .idea
-.vscode
-docs_build/**/*.rst
-docs_build/_build
 /examples/config.json
 /examples/config.toml
 /docs/dev-api/**/*.md

@@ -30,13 +30,13 @@ jobs:
         run: pdm run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
-          version: ^6.10.0
-      - uses: actions/setup-node@v3
+          version: latest
+      - uses: actions/setup-node@v4
         with:
-          node-version: "16"
-          cache: "pnpm"
+          node-version: latest
+          cache: pnpm
       - run: pnpm install
         shell: bash
 

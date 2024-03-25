@@ -35,18 +35,6 @@ const pageItems = computed(() => {
 watchEffect(async () => {
   dataItems.value = await (await fetch(`https://store.alicebot.dev/${storeType.value}.json`)).json()
   searchText.value = ''
-
-  let i = 0
-  while (i < 100) {
-    i++
-    dataItems.value.push({
-      module_name: 'alicebot_plugin_template',
-      pypi_name: 'alicebot-plugin-template',
-      name: `${storeType.value} ${i}`,
-      is_official: true,
-      time: 42,
-    })
-  }
 })
 </script>
 

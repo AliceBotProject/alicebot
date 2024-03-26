@@ -14,23 +14,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **staffId** (_Optional\[str\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `Text` {#Text}
 
 Bases: `pydantic.main.BaseModel`
@@ -40,23 +23,6 @@ Bases: `pydantic.main.BaseModel`
 - **Attributes**
 
   - **content** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `DingTalkEvent` {#DingTalkEvent}
 
@@ -107,23 +73,6 @@ DingTalk 事件基类
   - **response\_msg** (_Union\[NoneType, str, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
   - **response\_at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _method_ `get_plain_text(self)` {#DingTalkEvent-get-plain-text}
 

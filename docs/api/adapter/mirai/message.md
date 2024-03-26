@@ -8,18 +8,6 @@ Bases: `alicebot.message.Message`
 
 Mirai 消息
 
-### _method_ `__init__(self, *messages)` {#Message---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **\*messages** (_Union\[List\[~MessageSegmentT\], ~MessageSegmentT, str, Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `as_message_chain(self)` {#MiraiMessage-as-message-chain}
 
 返回符合 Mirai-api-http 标准的 messageChain 数组。

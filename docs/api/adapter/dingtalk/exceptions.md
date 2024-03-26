@@ -8,44 +8,14 @@ Bases: `alicebot.exceptions.AdapterException`
 
 DingTalk 异常基类。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**
-
 ## _class_ `NetworkError` {#NetworkError}
 
 Bases: `alicebot.adapter.dingtalk.exceptions.DingTalkException`
 
 网络异常。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**
-
 ## _class_ `WebhookExpiredError` {#WebhookExpiredError}
 
 Bases: `alicebot.adapter.dingtalk.exceptions.DingTalkException`
 
 Webhook 地址已到期。
-
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**

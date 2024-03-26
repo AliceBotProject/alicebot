@@ -1186,7 +1186,7 @@ files = [
 
 [[package]]
 name = "sophia-doc"
-version = "0.1.7"
+version = "0.1.8"
 requires_python = ">=3.8"
 summary = "A python package to automatically generate API documents for Python modules."
 groups = ["docs"]
@@ -1195,8 +1195,8 @@ dependencies = [
     "typing-extensions>=4.7.1",
 ]
 files = [
-    {file = "sophia_doc-0.1.7-py3-none-any.whl", hash = "sha256:4a8cdbce085b365b864a1125f6eb643dff63afac427483ba9724de5e4529b603"},
-    {file = "sophia_doc-0.1.7.tar.gz", hash = "sha256:11cd4737fb557b023b15b6d152db8dac35facede9c2bba9e551d7b05a3e72b42"},
+    {file = "sophia_doc-0.1.8-py3-none-any.whl", hash = "sha256:16a82f6dc5a7110f9a8aa03adfb012b2d67c2d2a392fda0fe5c23247de9afcd2"},
+    {file = "sophia_doc-0.1.8.tar.gz", hash = "sha256:f3b3c7f2950044c5fe1a1ad484e103f49120458528106551ea75410b316d8887"},
 ]
 
 [[package]]

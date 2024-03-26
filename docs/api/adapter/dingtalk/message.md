@@ -8,23 +8,6 @@ Bases: `alicebot.message.MessageSegment`
 
 DingTalk 消息
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `action_card_multi_btns(title, text, btns, btn_orientation = '0')` {#DingTalkMessage-action-card-multi-btns}
 
 DingTalk 独立跳转 actionCard 消息

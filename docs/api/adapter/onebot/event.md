@@ -14,23 +14,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `ImplVersion` {#ImplVersion}
 
 Bases: `pydantic.main.BaseModel`
@@ -45,23 +28,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **onebot\_version** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `BotStatus` {#BotStatus}
 
 Bases: `pydantic.main.BaseModel`
@@ -74,23 +40,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **online** (_bool_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `Status` {#Status}
 
 Bases: `pydantic.main.BaseModel`
@@ -102,23 +51,6 @@ Bases: `pydantic.main.BaseModel`
   - **good** (_bool_)
 
   - **bots** (_List\[alicebot.adapter.onebot.event.BotStatus\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `OntBotEvent` {#OntBotEvent}
 
@@ -137,23 +69,6 @@ OneBot 事件基类
   - **detail\_type** (_str_)
 
   - **sub\_type** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _method_ `get_event_type()` {#OntBotEvent-get-event-type}
 
@@ -175,23 +90,6 @@ Bases: `alicebot.adapter.onebot.event.OntBotEvent`
 
   - **self** (_BotSelf_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _readonly property_ `to_me` {#BotEvent-to-me}
 
 Type: _bool_
@@ -208,23 +106,6 @@ Bases: `alicebot.adapter.onebot.event.OntBotEvent`
 
   - **type** (_Literal\['meta'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `ConnectMetaEvent` {#ConnectMetaEvent}
 
 Bases: `alicebot.adapter.onebot.event.MetaEvent`
@@ -236,23 +117,6 @@ Bases: `alicebot.adapter.onebot.event.MetaEvent`
   - **detail\_type** (_Literal\['connect'\]_)
 
   - **version** (_ImplVersion_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `HeartbeatMetaEvent` {#HeartbeatMetaEvent}
 
@@ -266,23 +130,6 @@ Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
   - **interval** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `StatusUpdateMetaEvent` {#StatusUpdateMetaEvent}
 
 Bases: `alicebot.adapter.onebot.event.MetaEvent`
@@ -294,23 +141,6 @@ Bases: `alicebot.adapter.onebot.event.MetaEvent`
   - **detail\_type** (_Literal\['status\_update'\]_)
 
   - **status** (_Status_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `MessageEvent` {#MessageEvent}
 
@@ -329,23 +159,6 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`, `alicebot.event.MessageEvent[On
   - **alt\_message** (_str_)
 
   - **user\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _method_ `get_plain_text(self)` {#MessageEvent-get-plain-text}
 
@@ -391,23 +204,6 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
   - **detail\_type** (_Literal\['private'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message)` {#PrivateMessageEvent-reply}
 
 回复消息。
@@ -433,23 +229,6 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
   - **detail\_type** (_Literal\['group'\]_)
 
   - **group\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `reply(self, message)` {#GroupMessageEvent-reply}
 
@@ -479,23 +258,6 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
   - **channel\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message)` {#ChannelMessageEvent-reply}
 
 回复消息。
@@ -520,23 +282,6 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`
 
   - **type** (_Literal\['notice'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `FriendIncreaseEvent` {#FriendIncreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -549,23 +294,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `FriendDecreaseEvent` {#FriendDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -577,23 +305,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
   - **detail\_type** (_Literal\['friend\_decrease'\]_)
 
   - **user\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `PrivateMessageDeleteEvent` {#PrivateMessageDeleteEvent}
 
@@ -608,23 +319,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
   - **message\_id** (_str_)
 
   - **user\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupMemberIncreaseEvent` {#GroupMemberIncreaseEvent}
 
@@ -642,23 +336,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupMemberDecreaseEvent` {#GroupMemberDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -674,23 +351,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
   - **user\_id** (_str_)
 
   - **operator\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupMessageDeleteEvent` {#GroupMessageDeleteEvent}
 
@@ -710,23 +370,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GuildMemberIncreaseEvent` {#GuildMemberIncreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -743,23 +386,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GuildMemberDecreaseEvent` {#GuildMemberDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -775,23 +401,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
   - **user\_id** (_str_)
 
   - **operator\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `ChannelMemberIncreaseEvent` {#ChannelMemberIncreaseEvent}
 
@@ -811,23 +420,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `ChannelMemberDecreaseEvent` {#ChannelMemberDecreaseEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -845,23 +437,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
   - **user\_id** (_str_)
 
   - **operator\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `ChannelMessageDeleteEvent` {#ChannelMessageDeleteEvent}
 
@@ -883,23 +458,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `ChannelCreateEvent` {#ChannelCreateEvent}
 
 Bases: `alicebot.adapter.onebot.event.NoticeEvent`
@@ -915,23 +473,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
   - **channel\_id** (_str_)
 
   - **operator\_id** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `ChannelDeleteEvent` {#ChannelDeleteEvent}
 
@@ -949,23 +490,6 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `RequestEvent` {#RequestEvent}
 
 Bases: `alicebot.adapter.onebot.event.BotEvent`
@@ -975,20 +499,3 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`
 - **Attributes**
 
   - **type** (_Literal\['request'\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_

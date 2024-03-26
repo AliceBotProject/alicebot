@@ -16,18 +16,6 @@ Bases: `alicebot.adapter.Adapter`
 
   - **create\_task** (_bool_)
 
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `on_tick(self)` {#PollingAdapter-on-tick}
 
 当轮询发生。
@@ -53,18 +41,6 @@ HTTP 客户端适配器示例。
 - **Attributes**
 
   - **session** (_aiohttp.client.ClientSession_)
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `on_tick(self)` {#HttpClientAdapter-on-tick}
 
@@ -99,18 +75,6 @@ WebSocket 客户端适配器示例。
 - **Attributes**
 
   - **url** (_str_)
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `handle_response(self, msg)` {#WebSocketClientAdapter-handle-response}
 
@@ -153,18 +117,6 @@ HTTP 服务端适配器示例。
   - **get\_url** (_str_)
 
   - **post\_url** (_str_)
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `handle_response(self, request)` {#HttpServerAdapter-handle-response}
 
@@ -223,18 +175,6 @@ WebSocket 服务端适配器示例。
   - **port** (_int_)
 
   - **url** (_str_)
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `handle_response(self, request)` {#WebSocketServerAdapter-handle-response}
 
@@ -313,18 +253,6 @@ WebSocket 适配器示例。
   - **url** (_str_)
 
   - **reconnect\_interval** (_int_)
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `handle_reverse_ws_response(self, request)` {#WebSocketAdapter-handle-reverse-ws-response}
 

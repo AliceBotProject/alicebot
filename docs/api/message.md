@@ -148,23 +148,6 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.
 
   - **data** (_Dict\[str, Any\]_) - 消息字段内容。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `from_mapping(msg)` {#MessageSegment-from-mapping}
 
 用于将 `Mapping` 转换为消息字段。

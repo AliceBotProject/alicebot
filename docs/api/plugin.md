@@ -31,16 +31,6 @@ Bases: `abc.ABC`, `typing.Generic`
   - **\_\_plugin\_file\_path\_\_** - 当插件加载类型为 `PluginLoadType.CLASS` 时为 `None`，
   否则为定义插件在的 Python 模块的位置。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#object---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**
-
 ### _readonly property_ `bot` {#Plugin-bot}
 
 Type: _Bot_

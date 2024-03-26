@@ -12,23 +12,6 @@ Mirai 消息事件基类
 
   - **messageChain** (_alicebot.adapter.mirai.message.MiraiMessage_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `get_plain_text(self)` {#MiraiBaseMessageEvent-get-plain-text}
 
 获取消息的纯文本内容。
@@ -71,23 +54,6 @@ Bases: `alicebot.adapter.mirai.event.message.MiraiBaseMessageEvent`
 
   - **sender** (_Union\[alicebot.adapter.mirai.event.base.FriendInfo, alicebot.adapter.mirai.event.base.GroupMemberInfo, alicebot.adapter.mirai.event.base.OtherClientSender\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `get_sender_id(self)` {#MessageEvent-get-sender-id}
 
 获取消息的发送者的唯一标识符。
@@ -126,23 +92,6 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
   - **sender** (_alicebot.adapter.mirai.event.base.FriendInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message, quote = False)` {#FriendMessage-reply}
 
 回复消息。
@@ -170,23 +119,6 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
   - **type** (_Literal\['GroupMessage'\]_)
 
   - **sender** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `reply(self, message, quote = False)` {#GroupMessage-reply}
 
@@ -216,23 +148,6 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
   - **sender** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message, quote = False)` {#TempMessage-reply}
 
 回复消息。
@@ -260,23 +175,6 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
   - **type** (_Literal\['StrangerMessage'\]_)
 
   - **sender** (_alicebot.adapter.mirai.event.base.FriendInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `reply(self, message, quote = False)` {#StrangerMessage-reply}
 
@@ -306,23 +204,6 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
   - **sender** (_alicebot.adapter.mirai.event.base.OtherClientSender_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message, quote = False)` {#OtherClientMessage-reply}
 
 回复消息。
@@ -348,23 +229,6 @@ Bases: `alicebot.adapter.mirai.event.message.MiraiBaseMessageEvent`
 - **Attributes**
 
   - **subject** (_Union\[alicebot.adapter.mirai.event.base.FriendInfo, alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _method_ `get_sender_id(self)` {#SyncMessage-get-sender-id}
 
@@ -404,23 +268,6 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
 
   - **subject** (_alicebot.adapter.mirai.event.base.FriendInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message, quote = False)` {#FriendSyncMessage-reply}
 
 回复消息。
@@ -448,23 +295,6 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
   - **type** (_Literal\['GroupSyncMessage'\]_)
 
   - **subject** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `reply(self, message, quote = False)` {#GroupSyncMessage-reply}
 
@@ -494,23 +324,6 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
 
   - **subject** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `reply(self, message, quote = False)` {#TempSyncMessage-reply}
 
 回复消息。
@@ -538,23 +351,6 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
   - **type** (_Literal\['StrangerSyncMessage'\]_)
 
   - **subject** (_alicebot.adapter.mirai.event.base.FriendInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `reply(self, message, quote = False)` {#StrangerSyncMessage-reply}
 

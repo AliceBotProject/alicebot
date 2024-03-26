@@ -8,23 +8,6 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 申请事件
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `approve(self, message = '')` {#RequestEvent-approve}
 
 同意请求。
@@ -72,23 +55,6 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
   - **nick** (_str_)
 
   - **message** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `approve(self, message = '')` {#NewFriendRequestEvent-approve}
 
@@ -141,23 +107,6 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
   - **nick** (_str_)
 
   - **message** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `approve(self, message = '')` {#MemberJoinRequestEvent-approve}
 
@@ -226,23 +175,6 @@ Bot 被邀请入群申请
   - **nick** (_str_)
 
   - **message** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `approve(self, message = '')` {#BotInvitedJoinGroupRequestEvent-approve}
 

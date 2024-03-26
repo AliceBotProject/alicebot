@@ -8,31 +8,11 @@ Bases: `alicebot.exceptions.AdapterException`
 
 Mirai 异常基类。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**
-
 ## _class_ `NetworkError` {#NetworkError}
 
 Bases: `alicebot.adapter.mirai.exceptions.MiraiException`
 
 网络异常。
-
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**
 
 ## _class_ `ActionFailed` {#ActionFailed}
 
@@ -59,13 +39,3 @@ API 请求成功响应，但响应表示 API 操作失败。
 Bases: `alicebot.adapter.mirai.exceptions.MiraiException`
 
 API 请求响应超时。
-
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
-
-Initialize self.  See help(type(self)) for accurate signature.
-
-- **Arguments**
-
-  - **args**
-
-  - **kwargs**

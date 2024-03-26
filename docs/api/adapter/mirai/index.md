@@ -45,35 +45,6 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **qq** (_int_) - 机器人的 QQ 号码，必须指定。
 
-#### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `call_api(self, command, sub_command = None, **content)` {#MiraiAdapter-call-api}
 
 调用 Mirai API，协程会等待直到获得 API 响应。

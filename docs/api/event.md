@@ -18,45 +18,11 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `typing.Generic`
 
   - **\_\_handled\_\_** - 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _abstract class_ `MessageEvent` {#MessageEvent}
 
 Bases: `alicebot.event.Event`, `typing.Generic`
 
 通用的消息事件类的基类。
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _async method_ `ask(self, message, max_try_times = None, timeout = None)` {#MessageEvent-ask}
 

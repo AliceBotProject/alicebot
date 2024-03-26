@@ -37,35 +37,6 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **access\_token** (_str_) - 鉴权。
 
-#### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `__init__(self, bot)` {#Adapter---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `add_event_model(event_model)` {#OneBotAdapter-add-event-model}
 
 添加自定义事件模型，事件模型类必须继承于 `OntBotEvent`。

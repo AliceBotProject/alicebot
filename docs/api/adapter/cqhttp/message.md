@@ -8,18 +8,6 @@ Bases: `alicebot.message.Message`
 
 CQHTTP 消息。
 
-### _method_ `__init__(self, *messages)` {#Message---init--}
-
-初始化。
-
-- **Arguments**
-
-  - **\*messages** (_Union\[List\[~MessageSegmentT\], ~MessageSegmentT, str, Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
-
-- **Returns**
-
-  Type: _None_
-
 ### _method_ `get_segment_class()` {#CQHTTPMessage-get-segment-class}
 
 获取消息字段类。
@@ -35,23 +23,6 @@ CQHTTP 消息。
 Bases: `alicebot.message.MessageSegment[CQHTTPMessage]`
 
 CQHTTP 消息字段。
-
-### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ### _method_ `anonymous(ignore = None)` {#CQHTTPMessageSegment-anonymous}
 

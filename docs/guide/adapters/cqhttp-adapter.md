@@ -8,11 +8,7 @@ pip install alicebot-adapter-cqhttp
 
 ## 配置协议端
 
-CQHTTP 协议适配器是 OneBot 协议 (原 CKYU 平台的 CQHTTP 协议) 的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，以下是一些常用的支持 OneBot 协议的 QQ 协议端：
-
-- [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)
-- [mirai](https://github.com/mamoe/mirai) + [onebot-kotlin](https://github.com/yyuueexxiinngg/onebot-kotlin)
-- [oicq](https://github.com/takayama-lily/oicq)
+CQHTTP 协议适配器是 OneBot v11 协议 (原 CKYU 平台的 CQHTTP 协议) 的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，你可以参考 [OneBot 官网](https://onebot.dev/ecosystem.html) 寻找支持 OneBot v11 协议的协议端。
 
 以下以 go-cqhttp 为例：
 
@@ -29,6 +25,7 @@ account:
 
 message:
   # 上报数据类型
+  # 注意：此处必须是 array
   post-format: array
 
 # 连接服务列表，下面的反向WS和正向WS请只选择一个

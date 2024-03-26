@@ -45,36 +45,7 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **qq** (_int_) - 机器人的 QQ 号码，必须指定。
 
-#### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `call_api(self, command, sub_command = None, **content)` {#MiraiAdapter.call\_api}
+### _async method_ `call_api(self, command, sub_command = None, **content)` {#MiraiAdapter-call-api}
 
 调用 Mirai API，协程会等待直到获得 API 响应。
 
@@ -100,7 +71,7 @@ validated to form a valid model.
 
   - **ApiTimeout** - API 请求响应超时。
 
-### _method_ `get_event_model(event_type)` {#MiraiAdapter.get\_event\_model}
+### _method_ `get_event_model(event_type)` {#MiraiAdapter-get-event-model}
 
 根据接收到的消息类型返回对应的事件类。
 
@@ -110,7 +81,7 @@ validated to form a valid model.
 
   对应的事件类。
 
-### _async method_ `handle_mirai_event(self, msg)` {#MiraiAdapter.handle\_mirai\_event}
+### _async method_ `handle_mirai_event(self, msg)` {#MiraiAdapter-handle-mirai-event}
 
 处理 Mirai 事件。
 
@@ -122,7 +93,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `handle_websocket_msg(self, msg)` {#MiraiAdapter.handle\_websocket\_msg}
+### _async method_ `handle_websocket_msg(self, msg)` {#MiraiAdapter-handle-websocket-msg}
 
 处理 WebSocket 消息。
 
@@ -134,7 +105,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `reverse_ws_connection_hook(self)` {#MiraiAdapter.reverse\_ws\_connection\_hook}
+### _async method_ `reverse_ws_connection_hook(self)` {#MiraiAdapter-reverse-ws-connection-hook}
 
 反向 WebSocket 连接建立时的钩子函数。
 
@@ -142,7 +113,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `send(self, message_, message_type, target, quote = None)` {#MiraiAdapter.send}
+### _async method_ `send(self, message_, message_type, target, quote = None)` {#MiraiAdapter-send}
 
 调用 Mirai API 发送消息。
 
@@ -170,7 +141,7 @@ validated to form a valid model.
 
   - **...** - 同 `call_api()` 方法。
 
-### _async method_ `startup(self)` {#MiraiAdapter.startup}
+### _async method_ `startup(self)` {#MiraiAdapter-startup}
 
 初始化适配器。
 
@@ -178,7 +149,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `verify_identity(self)` {#MiraiAdapter.verify\_identity}
+### _async method_ `verify_identity(self)` {#MiraiAdapter-verify-identity}
 
 验证身份，创建与 Mirai-api-http 的连接。
 
@@ -186,7 +157,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `websocket_connect(self)` {#MiraiAdapter.websocket\_connect}
+### _async method_ `websocket_connect(self)` {#MiraiAdapter-websocket-connect}
 
 创建正向 WebSocket 连接。
 

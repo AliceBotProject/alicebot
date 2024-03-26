@@ -18,47 +18,13 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `typing.Generic`
 
   - **\_\_handled\_\_** - 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _abstract class_ `MessageEvent` {#MessageEvent}
 
 Bases: `alicebot.event.Event`, `typing.Generic`
 
 通用的消息事件类的基类。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `ask(self, message, max_try_times = None, timeout = None)` {#MessageEvent.ask}
+### _async method_ `ask(self, message, max_try_times = None, timeout = None)` {#MessageEvent-ask}
 
 询问消息。
 
@@ -75,11 +41,11 @@ validated to form a valid model.
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   用户回复的消息事件。
 
-### _async method_ `get(self, *, max_try_times = None, timeout = None)` {#MessageEvent.get}
+### _async method_ `get(self, *, max_try_times = None, timeout = None)` {#MessageEvent-get}
 
 获取用户回复消息。
 
@@ -93,7 +59,7 @@ validated to form a valid model.
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   用户回复的消息事件。
 
@@ -101,7 +67,7 @@ validated to form a valid model.
 
   - **GetEventTimeout** - 超过最大事件数或超时。
 
-### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
+### _method_ `get_plain_text(self)` {#MessageEvent-get-plain-text}
 
 获取消息的纯文本内容。
 
@@ -111,7 +77,7 @@ validated to form a valid model.
 
   消息的纯文本内容。
 
-### _method_ `get_sender_id(self)` {#MessageEvent.get\_sender\_id}
+### _method_ `get_sender_id(self)` {#MessageEvent-get-sender-id}
 
 获取消息的发送者的唯一标识符。
 
@@ -121,13 +87,13 @@ validated to form a valid model.
 
   消息的发送者的唯一标识符。
 
-### _async method_ `is_same_sender(self, other)` {#MessageEvent.is\_same\_sender}
+### _async method_ `is_same_sender(self, other)` {#MessageEvent-is-same-sender}
 
 判断自身和另一个事件是否是同一个发送者。
 
 - **Arguments**
 
-  - **other** (_typing\_extensions.Self_) - 另一个事件。
+  - **other** (_Self_) - 另一个事件。
 
 - **Returns**
 
@@ -135,7 +101,7 @@ validated to form a valid model.
 
   是否是同一个发送者。
 
-### _async method_ `reply(self, message)` {#MessageEvent.reply}
+### _async method_ `reply(self, message)` {#MessageEvent-reply}
 
 回复消息。
 

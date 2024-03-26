@@ -29,36 +29,7 @@ APScheduler 配置类，将在适配器被加载时被混入到机器人主配�
 
   - **scheduler\_config** (_Dict\[str, Any\]_) - 调度器配置。
 
-#### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `create_event(self, plugin_class)` {#APSchedulerAdapter.create\_event}
+### _async method_ `create_event(self, plugin_class)` {#APSchedulerAdapter-create-event}
 
 创建 `APSchedulerEvent` 事件。
 
@@ -70,7 +41,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `run(self)` {#APSchedulerAdapter.run}
+### _async method_ `run(self)` {#APSchedulerAdapter-run}
 
 启动调度器。
 
@@ -78,7 +49,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `send(self, *args, **kwargs)` {#APSchedulerAdapter.send}
+### _async method_ `send(self, *args, **kwargs)` {#APSchedulerAdapter-send}
 
 APScheduler 适配器不适用发送消息。
 
@@ -92,7 +63,7 @@ APScheduler 适配器不适用发送消息。
 
   Type: _Any_
 
-### _async method_ `shutdown(self)` {#APSchedulerAdapter.shutdown}
+### _async method_ `shutdown(self)` {#APSchedulerAdapter-shutdown}
 
 关闭调度器。
 
@@ -100,7 +71,7 @@ APScheduler 适配器不适用发送消息。
 
   Type: _None_
 
-### _async method_ `startup(self)` {#APSchedulerAdapter.startup}
+### _async method_ `startup(self)` {#APSchedulerAdapter-startup}
 
 创建 `AsyncIOScheduler` 对象。
 
@@ -108,7 +79,7 @@ APScheduler 适配器不适用发送消息。
 
   Type: _None_
 
-## _function_ `scheduler_decorator(trigger, trigger_args, override_rule = False)` {#scheduler\_decorator}
+## _function_ `scheduler_decorator(trigger, trigger_args, override_rule = False)` {#scheduler-decorator}
 
 用于为插件类添加计划任务功能的装饰器。
 

@@ -41,36 +41,7 @@ DingTalk 配置类，将在适配器被加载时被混入到机器人主配置�
 
   - **app\_secret** (_str_) - 机器人的 `appSecret`。
 
-#### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
-
-初始化。
-
-- **Arguments**
-
-  - **bot** (_Bot_) - 当前机器人对象。
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `get_sign(self, timestamp)` {#DingTalkAdapter.get\_sign}
+### _method_ `get_sign(self, timestamp)` {#DingTalkAdapter-get-sign}
 
 计算签名。
 
@@ -84,7 +55,7 @@ validated to form a valid model.
 
   签名。
 
-### _async method_ `handler(self, request)` {#DingTalkAdapter.handler}
+### _async method_ `handler(self, request)` {#DingTalkAdapter-handler}
 
 处理 aiohttp 服务器的接收。
 
@@ -96,7 +67,7 @@ validated to form a valid model.
 
   Type: _aiohttp.web\_response.Response_
 
-### _async method_ `run(self)` {#DingTalkAdapter.run}
+### _async method_ `run(self)` {#DingTalkAdapter-run}
 
 运行 aiohttp 服务器。
 
@@ -104,7 +75,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `send(self, webhook, conversation_type, msg, at = None)` {#DingTalkAdapter.send}
+### _async method_ `send(self, webhook, conversation_type, msg, at = None)` {#DingTalkAdapter-send}
 
 发送消息。
 
@@ -132,7 +103,7 @@ validated to form a valid model.
 
   - **NetworkError** - 调用 Webhook 地址时网络错误。
 
-### _async method_ `shutdown(self)` {#DingTalkAdapter.shutdown}
+### _async method_ `shutdown(self)` {#DingTalkAdapter-shutdown}
 
 清理 aiohttp AppRunner。
 
@@ -140,7 +111,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `startup(self)` {#DingTalkAdapter.startup}
+### _async method_ `startup(self)` {#DingTalkAdapter-startup}
 
 创建 aiohttp Application。
 

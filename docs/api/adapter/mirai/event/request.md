@@ -8,24 +8,7 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 申请事件
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self, message = '')` {#RequestEvent.approve}
+### _async method_ `approve(self, message = '')` {#RequestEvent-approve}
 
 同意请求。
 
@@ -39,7 +22,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self, message = '')` {#RequestEvent.refuse}
+### _async method_ `refuse(self, message = '')` {#RequestEvent-refuse}
 
 拒绝请求。
 
@@ -73,24 +56,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
   - **message** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self, message = '')` {#NewFriendRequestEvent.approve}
+### _async method_ `approve(self, message = '')` {#NewFriendRequestEvent-approve}
 
 同意请求。
 
@@ -104,7 +70,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self, message = '', black_list = False)` {#NewFriendRequestEvent.refuse}
+### _async method_ `refuse(self, message = '', black_list = False)` {#NewFriendRequestEvent-refuse}
 
 拒绝请求。
 
@@ -142,24 +108,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
   - **message** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self, message = '')` {#MemberJoinRequestEvent.approve}
+### _async method_ `approve(self, message = '')` {#MemberJoinRequestEvent-approve}
 
 同意请求。
 
@@ -173,7 +122,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `ignore(self, message = '', black_list = False)` {#MemberJoinRequestEvent.ignore}
+### _async method_ `ignore(self, message = '', black_list = False)` {#MemberJoinRequestEvent-ignore}
 
 忽略请求。
 
@@ -189,7 +138,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self, message = '', black_list = False)` {#MemberJoinRequestEvent.refuse}
+### _async method_ `refuse(self, message = '', black_list = False)` {#MemberJoinRequestEvent-refuse}
 
 拒绝请求。
 
@@ -227,24 +176,7 @@ Bot 被邀请入群申请
 
   - **message** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self, message = '')` {#BotInvitedJoinGroupRequestEvent.approve}
+### _async method_ `approve(self, message = '')` {#BotInvitedJoinGroupRequestEvent-approve}
 
 同意请求。
 
@@ -258,7 +190,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self, message = '')` {#BotInvitedJoinGroupRequestEvent.refuse}
+### _async method_ `refuse(self, message = '')` {#BotInvitedJoinGroupRequestEvent-refuse}
 
 拒绝请求。
 

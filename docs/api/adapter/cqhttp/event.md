@@ -28,23 +28,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **title** (_Optional\[str\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `Anonymous` {#Anonymous}
 
 Bases: `pydantic.main.BaseModel`
@@ -58,23 +41,6 @@ Bases: `pydantic.main.BaseModel`
   - **name** (_str_)
 
   - **flag** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `File` {#File}
 
@@ -92,23 +58,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **busid** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `Status` {#Status}
 
 Bases: `pydantic.main.BaseModel`
@@ -120,23 +69,6 @@ Bases: `pydantic.main.BaseModel`
   - **online** (_bool_)
 
   - **good** (_bool_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `CQHTTPEvent` {#CQHTTPEvent}
 
@@ -154,24 +86,7 @@ CQHTTP 事件基类
 
   - **post\_type** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `get_event_type()` {#CQHTTPEvent.get\_event\_type}
+### _method_ `get_event_type()` {#CQHTTPEvent-get-event-type}
 
 获取事件类型。
 
@@ -181,7 +96,7 @@ validated to form a valid model.
 
   事件类型。
 
-### _readonly property_ `to_me` {#CQHTTPEvent.to\_me}
+### _readonly property_ `to_me` {#CQHTTPEvent-to-me}
 
 Type: _bool_
 
@@ -213,24 +128,7 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`, `alicebot.event.MessageEvent
 
   - **sender** (_Sender_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
+### _method_ `get_plain_text(self)` {#MessageEvent-get-plain-text}
 
 获取消息的纯文本内容。
 
@@ -240,7 +138,7 @@ validated to form a valid model.
 
   消息的纯文本内容。
 
-### _method_ `get_sender_id(self)` {#MessageEvent.get\_sender\_id}
+### _method_ `get_sender_id(self)` {#MessageEvent-get-sender-id}
 
 获取消息的发送者的唯一标识符。
 
@@ -250,7 +148,7 @@ validated to form a valid model.
 
   消息的发送者的唯一标识符。
 
-### _async method_ `reply(self, message)` {#MessageEvent.reply}
+### _async method_ `reply(self, message)` {#MessageEvent-reply}
 
 回复消息。
 
@@ -276,24 +174,7 @@ Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
   - **sub\_type** (_Literal\['friend', 'group', 'other'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `reply(self, message)` {#PrivateMessageEvent.reply}
+### _async method_ `reply(self, message)` {#PrivateMessageEvent-reply}
 
 回复消息。
 
@@ -323,24 +204,7 @@ Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
   - **anonymous** (_Optional\[alicebot.adapter.cqhttp.event.Anonymous\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `reply(self, message)` {#GroupMessageEvent.reply}
+### _async method_ `reply(self, message)` {#GroupMessageEvent-reply}
 
 回复消息。
 
@@ -366,23 +230,6 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
   - **notice\_type** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupUploadNoticeEvent` {#GroupUploadNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
@@ -399,23 +246,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **file** (_File_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupAdminNoticeEvent` {#GroupAdminNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
@@ -431,23 +261,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
   - **user\_id** (_int_)
 
   - **group\_id** (_int_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupDecreaseNoticeEvent` {#GroupDecreaseNoticeEvent}
 
@@ -467,23 +280,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **user\_id** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupIncreaseNoticeEvent` {#GroupIncreaseNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
@@ -501,23 +297,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
   - **operator\_id** (_int_)
 
   - **user\_id** (_int_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupBanNoticeEvent` {#GroupBanNoticeEvent}
 
@@ -539,23 +318,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **duration** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `FriendAddNoticeEvent` {#FriendAddNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
@@ -567,23 +329,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
   - **notice\_type** (_Literal\['friend\_add'\]_)
 
   - **user\_id** (_int_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupRecallNoticeEvent` {#GroupRecallNoticeEvent}
 
@@ -603,23 +348,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **message\_id** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `FriendRecallNoticeEvent` {#FriendRecallNoticeEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
@@ -633,23 +361,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
   - **user\_id** (_int_)
 
   - **message\_id** (_int_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `NotifyEvent` {#NotifyEvent}
 
@@ -667,23 +378,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **user\_id** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `PokeNotifyEvent` {#PokeNotifyEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
@@ -697,23 +391,6 @@ Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
   - **target\_id** (_int_)
 
   - **group\_id** (_Optional\[int\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupLuckyKingNotifyEvent` {#GroupLuckyKingNotifyEvent}
 
@@ -729,23 +406,6 @@ Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
   - **target\_id** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupHonorNotifyEvent` {#GroupHonorNotifyEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
@@ -760,23 +420,6 @@ Bases: `alicebot.adapter.cqhttp.event.NotifyEvent`
 
   - **honor\_type** (_Literal\['talkative', 'performer', 'emotion'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `RequestEvent` {#RequestEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
@@ -789,24 +432,7 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
   - **request\_type** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self)` {#RequestEvent.approve}
+### _async method_ `approve(self)` {#RequestEvent-approve}
 
 同意请求。
 
@@ -816,7 +442,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self)` {#RequestEvent.refuse}
+### _async method_ `refuse(self)` {#RequestEvent-refuse}
 
 拒绝请求。
 
@@ -842,24 +468,7 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
   - **flag** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self, remark = '')` {#FriendRequestEvent.approve}
+### _async method_ `approve(self, remark = '')` {#FriendRequestEvent-approve}
 
 同意请求。
 
@@ -873,7 +482,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self)` {#FriendRequestEvent.refuse}
+### _async method_ `refuse(self)` {#FriendRequestEvent-refuse}
 
 拒绝请求。
 
@@ -903,24 +512,7 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
   - **flag** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
-### _async method_ `approve(self)` {#GroupRequestEvent.approve}
+### _async method_ `approve(self)` {#GroupRequestEvent-approve}
 
 同意请求。
 
@@ -930,7 +522,7 @@ validated to form a valid model.
 
   API 请求响应。
 
-### _async method_ `refuse(self, reason = '')` {#GroupRequestEvent.refuse}
+### _async method_ `refuse(self, reason = '')` {#GroupRequestEvent-refuse}
 
 拒绝请求。
 
@@ -956,23 +548,6 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
   - **meta\_event\_type** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `LifecycleMetaEvent` {#LifecycleMetaEvent}
 
 Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
@@ -984,23 +559,6 @@ Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
   - **meta\_event\_type** (_Literal\['lifecycle'\]_)
 
   - **sub\_type** (_Literal\['enable', 'disable', 'connect'\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `HeartbeatMetaEvent` {#HeartbeatMetaEvent}
 
@@ -1015,20 +573,3 @@ Bases: `alicebot.adapter.cqhttp.event.MetaEvent`
   - **status** (_Status_)
 
   - **interval** (_int_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_

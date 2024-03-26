@@ -8,23 +8,6 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 通知事件
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `NudgeEvent` {#NudgeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
@@ -45,45 +28,11 @@ Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
   - **target** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `FriendEvent` {#FriendEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
 好友事件
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `FriendInputStatusChangedEvent` {#FriendInputStatusChangedEvent}
 
@@ -98,23 +47,6 @@ Bases: `alicebot.adapter.mirai.event.notice.FriendEvent`
   - **friend** (_alicebot.adapter.mirai.event.base.FriendInfo_)
 
   - **inputting** (_bool_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `FriendNickChangedEvent` {#FriendNickChangedEvent}
 
@@ -131,23 +63,6 @@ Bases: `alicebot.adapter.mirai.event.notice.FriendEvent`
   - **from** (_str_)
 
   - **to** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `FriendRecallEvent` {#FriendRecallEvent}
 
@@ -167,68 +82,17 @@ Bases: `alicebot.adapter.mirai.event.notice.FriendEvent`
 
   - **operator** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupEvent` {#GroupEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 
 群事件
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupBotEvent` {#GroupBotEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
 与 Bot 相关的群事件
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `BotGroupPermissionChangeEvent` {#BotGroupPermissionChangeEvent}
 
@@ -246,23 +110,6 @@ Bot 在群里的权限被改变. 操作人一定是群主
 
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `BotMuteEvent` {#BotMuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
@@ -274,23 +121,6 @@ Bot 被禁言
   - **type** (_Literal\['BotMuteEvent'\]_)
 
   - **operator** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `BotUnmuteEvent` {#BotUnmuteEvent}
 
@@ -304,23 +134,6 @@ Bot 被取消禁言
 
   - **operator** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `BotJoinGroupEvent` {#BotJoinGroupEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
@@ -332,23 +145,6 @@ Bot加入了一个新群
   - **type** (_Literal\['BotJoinGroupEvent'\]_)
 
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `BotLeaveEventActive` {#BotLeaveEventActive}
 
@@ -362,23 +158,6 @@ Bot 主动退出一个群
 
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `BotLeaveEventKick` {#BotLeaveEventKick}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
@@ -390,23 +169,6 @@ Bot 被踢出一个群
   - **type** (_Literal\['BotLeaveEventKick'\]_)
 
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `BotLeaveEventDisband` {#BotLeaveEventDisband}
 
@@ -420,45 +182,11 @@ Bot 所在的群被解散
 
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupNoticeEvent` {#GroupNoticeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
 其他群事件
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupRecallEvent` {#GroupRecallEvent}
 
@@ -480,23 +208,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupNameChangeEvent` {#GroupNameChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
@@ -514,23 +225,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupEntranceAnnouncementChangeEvent` {#GroupEntranceAnnouncementChangeEvent}
 
@@ -550,23 +244,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupMuteAllEvent` {#GroupMuteAllEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
@@ -584,23 +261,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupAllowAnonymousChatEvent` {#GroupAllowAnonymousChatEvent}
 
@@ -620,23 +280,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupAllowConfessTalkEvent` {#GroupAllowConfessTalkEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
@@ -654,23 +297,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
   - **group** (_alicebot.adapter.mirai.event.base.GroupInfo_)
 
   - **isByBot** (_bool_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupAllowMemberInviteEvent` {#GroupAllowMemberInviteEvent}
 
@@ -690,23 +316,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupNoticeEvent`
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupMemberEvent` {#GroupMemberEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
@@ -717,23 +326,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
   - **member** (_alicebot.adapter.mirai.event.base.GroupMemberInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `MemberJoinEvent` {#MemberJoinEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
@@ -743,23 +335,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 - **Attributes**
 
   - **type** (_Literal\['MemberJoinEvent'\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `MemberLeaveEventKick` {#MemberLeaveEventKick}
 
@@ -773,23 +348,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `MemberLeaveEventQuit` {#MemberLeaveEventQuit}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
@@ -799,23 +357,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 - **Attributes**
 
   - **type** (_Literal\['MemberLeaveEventQuit'\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `MemberCardChangeEvent` {#MemberCardChangeEvent}
 
@@ -831,23 +372,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
   - **current** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `MemberSpecialTitleChangeEvent` {#MemberSpecialTitleChangeEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
@@ -861,23 +385,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
   - **origin** (_str_)
 
   - **current** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `MemberPermissionChangeEvent` {#MemberPermissionChangeEvent}
 
@@ -893,23 +400,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
   - **current** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `MemberMuteEvent` {#MemberMuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
@@ -924,23 +414,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `MemberUnmuteEvent` {#MemberUnmuteEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
@@ -952,23 +425,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
   - **type** (_Literal\['MemberUnmuteEvent'\]_)
 
   - **operator** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `MemberHonorChangeEvent` {#MemberHonorChangeEvent}
 
@@ -982,23 +438,6 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
   - **action** (_Literal\['achieve', 'lose'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `OtherClientEvent` {#OtherClientEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
@@ -1008,23 +447,6 @@ Bases: `alicebot.adapter.mirai.event.notice.NoticeEvent`
 - **Attributes**
 
   - **client** (_alicebot.adapter.mirai.event.base.OtherClientSender_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `OtherClientOnlineEvent` {#OtherClientOnlineEvent}
 
@@ -1038,23 +460,6 @@ Bases: `alicebot.adapter.mirai.event.notice.OtherClientEvent`
 
   - **kind** (_Optional\[int\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `OtherClientOfflineEvent` {#OtherClientOfflineEvent}
 
 Bases: `alicebot.adapter.mirai.event.notice.OtherClientEvent`
@@ -1064,20 +469,3 @@ Bases: `alicebot.adapter.mirai.event.notice.OtherClientEvent`
 - **Attributes**
 
   - **type** (_Literal\['OtherClientOfflineEvent'\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_

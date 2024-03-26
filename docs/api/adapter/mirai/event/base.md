@@ -14,23 +14,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **kind** (_Literal\['Friend', 'Group'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `FriendInfo` {#FriendInfo}
 
 Bases: `pydantic.main.BaseModel`
@@ -45,23 +28,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **remark** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `GroupInfo` {#GroupInfo}
 
 Bases: `pydantic.main.BaseModel`
@@ -75,23 +41,6 @@ Bases: `pydantic.main.BaseModel`
   - **name** (_str_)
 
   - **permission** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
 
 ## _class_ `GroupMemberInfo` {#GroupMemberInfo}
 
@@ -117,23 +66,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **group** (_GroupInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `OtherClientSender` {#OtherClientSender}
 
 Bases: `pydantic.main.BaseModel`
@@ -146,23 +78,6 @@ Bases: `pydantic.main.BaseModel`
 
   - **platform** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_
-
 ## _class_ `MiraiEvent` {#MiraiEvent}
 
 Bases: `alicebot.event.Event[MiraiAdapter]`
@@ -172,20 +87,3 @@ Mirai 事件基类
 - **Attributes**
 
   - **type** (_str_)
-
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
-
-Create a new model by parsing and validating input data from keyword arguments.
-
-Raises [`ValidationError`][pydantic_core.ValidationError] if the input data cannot be
-validated to form a valid model.
-
-`self` is explicitly positional-only to allow `self` as a field name.
-
-- **Arguments**
-
-  - **data** (_Any_)
-
-- **Returns**
-
-  Type: _None_

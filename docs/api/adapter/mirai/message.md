@@ -8,7 +8,7 @@ Bases: `alicebot.message.Message`
 
 Mirai 消息
 
-### _method_ `__init__(self, *messages)` {#Message.\_\_init\_\_}
+### _method_ `__init__(self, *messages)` {#Message---init--}
 
 初始化。
 
@@ -20,7 +20,7 @@ Mirai 消息
 
   Type: _None_
 
-### _method_ `as_message_chain(self)` {#MiraiMessage.as\_message\_chain}
+### _method_ `as_message_chain(self)` {#MiraiMessage-as-message-chain}
 
 返回符合 Mirai-api-http 标准的 messageChain 数组。
 
@@ -30,7 +30,7 @@ Mirai 消息
 
   messageChain 数组。
 
-### _method_ `get_segment_class()` {#MiraiMessage.get\_segment\_class}
+### _method_ `get_segment_class()` {#MiraiMessage-get-segment-class}
 
 获取消息字段类。
 
@@ -46,7 +46,7 @@ Bases: `alicebot.message.MessageSegment[MiraiMessage]`
 
 Mirai 消息段
 
-### _method_ `__init__(self, type, **data)` {#MiraiMessageSegment.\_\_init\_\_}
+### _method_ `__init__(self, type, **data)` {#MiraiMessageSegment---init--}
 
 初始化。
 
@@ -60,39 +60,39 @@ Mirai 消息段
 
   Type: _None_
 
-### _method_ `app(content)` {#MiraiMessageSegment.app}
+### _method_ `app(content)` {#MiraiMessageSegment-app}
 
 App 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `at(target)` {#MiraiMessageSegment.at}
+### _method_ `at(target)` {#MiraiMessageSegment-at}
 
 At 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `at_all()` {#MiraiMessageSegment.at\_all}
+### _method_ `at_all()` {#MiraiMessageSegment-at-all}
 
 AtAll 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `dice(value)` {#MiraiMessageSegment.dice}
+### _method_ `dice(value)` {#MiraiMessageSegment-dice}
 
 Dice 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `face(face_id = None, name = None)` {#MiraiMessageSegment.face}
+### _method_ `face(face_id = None, name = None)` {#MiraiMessageSegment-face}
 
 Face 消息
 
@@ -102,9 +102,9 @@ Face 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `flash_image(image_id = None, url = None, path = None)` {#MiraiMessageSegment.flash\_image}
+### _method_ `flash_image(image_id = None, url = None, path = None)` {#MiraiMessageSegment-flash-image}
 
 FlashImage 消息
 
@@ -116,19 +116,19 @@ FlashImage 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `from_str(msg)` {#MiraiMessageSegment.from\_str}
+### _method_ `from_str(msg)` {#MiraiMessageSegment-from-str}
 
 用于将 `str` 转换为消息字段。
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   由 `str` 转换的消息字段。
 
-### _method_ `get_message_class()` {#MiraiMessageSegment.get\_message\_class}
+### _method_ `get_message_class()` {#MiraiMessageSegment-get-message-class}
 
 获取消息类。
 
@@ -138,7 +138,7 @@ FlashImage 消息
 
   消息类。
 
-### _method_ `image(image_id = None, url = None, path = None)` {#MiraiMessageSegment.image}
+### _method_ `image(image_id = None, url = None, path = None)` {#MiraiMessageSegment-image}
 
 Image 消息
 
@@ -150,9 +150,9 @@ Image 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `is_text(self)` {#MiraiMessageSegment.is\_text}
+### _method_ `is_text(self)` {#MiraiMessageSegment-is-text}
 
 是否是纯文本消息字段。
 
@@ -162,15 +162,15 @@ Image 消息
 
   是否是纯文本消息字段。
 
-### _method_ `json(json_)` {#MiraiMessageSegment.json}
+### _method_ `json(json_)` {#MiraiMessageSegment-json}
 
 Json 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `music_share(kind, title, summary, jump_url, picture_url, music_url, brief)` {#MiraiMessageSegment.music\_share}
+### _method_ `music_share(kind, title, summary, jump_url, picture_url, music_url, brief)` {#MiraiMessageSegment-music-share}
 
 MusicShare 消息
 
@@ -190,25 +190,25 @@ MusicShare 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `plain(text)` {#MiraiMessageSegment.plain}
+### _method_ `plain(text)` {#MiraiMessageSegment-plain}
 
 Plain 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `poke(name)` {#MiraiMessageSegment.poke}
+### _method_ `poke(name)` {#MiraiMessageSegment-poke}
 
 Poke 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `quote(id_, group_id, sender_id, target_id, origin)` {#MiraiMessageSegment.quote}
+### _method_ `quote(id_, group_id, sender_id, target_id, origin)` {#MiraiMessageSegment-quote}
 
 Quote 消息
 
@@ -224,9 +224,9 @@ Quote 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `ser_model(self)` {#MiraiMessageSegment.ser\_model}
+### _method_ `ser_model(self)` {#MiraiMessageSegment-ser-model}
 
 返回符合 Mirai-api-http 标准的消息字段字典。
 
@@ -236,7 +236,7 @@ Quote 消息
 
   符合 Mirai-api-http 标准的消息字段字典。
 
-### _method_ `source(id_, time)` {#MiraiMessageSegment.source}
+### _method_ `source(id_, time)` {#MiraiMessageSegment-source}
 
 Source 消息
 
@@ -246,9 +246,9 @@ Source 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `voice(voice_id = None, url = None, path = None)` {#MiraiMessageSegment.voice}
+### _method_ `voice(voice_id = None, url = None, path = None)` {#MiraiMessageSegment-voice}
 
 Voice 消息
 
@@ -260,12 +260,12 @@ Voice 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
-### _method_ `xml(xml)` {#MiraiMessageSegment.xml}
+### _method_ `xml(xml)` {#MiraiMessageSegment-xml}
 
 Xml 消息
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_

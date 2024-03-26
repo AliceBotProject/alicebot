@@ -8,7 +8,7 @@ Bases: `alicebot.exceptions.AdapterException`
 
 OneBot 异常基类。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception.\_\_init\_\_}
+### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
 
 Initialize self.  See help(type(self)) for accurate signature.
 
@@ -24,7 +24,7 @@ Bases: `alicebot.adapter.onebot.exceptions.OneBotException`
 
 网络异常。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception.\_\_init\_\_}
+### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
 
 Initialize self.  See help(type(self)) for accurate signature.
 
@@ -40,7 +40,7 @@ Bases: `alicebot.adapter.onebot.exceptions.OneBotException`
 
 API 请求成功响应，但响应表示 API 操作失败。
 
-### _method_ `__init__(self, resp)` {#ActionFailed.\_\_init\_\_}
+### _method_ `__init__(self, resp)` {#ActionFailed---init--}
 
 初始化。
 
@@ -58,7 +58,7 @@ Bases: `alicebot.adapter.onebot.exceptions.OneBotException`
 
 API 请求响应超时。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#Exception.\_\_init\_\_}
+### _method_ `__init__(self, /, *args, **kwargs)` {#Exception---init--}
 
 Initialize self.  See help(type(self)) for accurate signature.
 

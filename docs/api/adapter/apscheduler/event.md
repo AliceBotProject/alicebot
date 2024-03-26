@@ -14,7 +14,7 @@ APSchedulerEvent 事件基类。
 
   - **plugin\_class** (_Type\[alicebot.plugin.Plugin\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -31,19 +31,19 @@ validated to form a valid model.
 
   Type: _None_
 
-### _readonly property_ `job` {#APSchedulerEvent.job}
+### _readonly property_ `job` {#APSchedulerEvent-job}
 
 Type: _apscheduler.job.Job_
 
 产生当前事件的 APScheduler `Job` 对象。
 
-### _readonly property_ `trigger` {#APSchedulerEvent.trigger}
+### _readonly property_ `trigger` {#APSchedulerEvent-trigger}
 
 Type: _Union\[str, apscheduler.triggers.base.BaseTrigger, NoneType\]_
 
 当前事件对应的 Plugin 的 `trigger`。
 
-### _readonly property_ `trigger_args` {#APSchedulerEvent.trigger\_args}
+### _readonly property_ `trigger_args` {#APSchedulerEvent-trigger-args}
 
 Type: _Optional\[Dict\[str, Any\]\]_
 

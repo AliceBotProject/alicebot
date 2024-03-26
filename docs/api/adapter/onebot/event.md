@@ -14,7 +14,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -45,7 +45,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **onebot\_version** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -74,7 +74,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **online** (_bool_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -103,7 +103,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **bots** (_List\[alicebot.adapter.onebot.event.BotStatus\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -138,7 +138,7 @@ OneBot 事件基类
 
   - **sub\_type** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -155,7 +155,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `get_event_type()` {#OntBotEvent.get\_event\_type}
+### _method_ `get_event_type()` {#OntBotEvent-get-event-type}
 
 获取事件类型。
 
@@ -175,7 +175,7 @@ Bases: `alicebot.adapter.onebot.event.OntBotEvent`
 
   - **self** (_BotSelf_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -192,7 +192,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _readonly property_ `to_me` {#BotEvent.to\_me}
+### _readonly property_ `to_me` {#BotEvent-to-me}
 
 Type: _bool_
 
@@ -208,7 +208,7 @@ Bases: `alicebot.adapter.onebot.event.OntBotEvent`
 
   - **type** (_Literal\['meta'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -237,7 +237,7 @@ Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
   - **version** (_ImplVersion_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -266,7 +266,7 @@ Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
   - **interval** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -295,7 +295,7 @@ Bases: `alicebot.adapter.onebot.event.MetaEvent`
 
   - **status** (_Status_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -330,7 +330,7 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`, `alicebot.event.MessageEvent[On
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -347,7 +347,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `get_plain_text(self)` {#MessageEvent.get\_plain\_text}
+### _method_ `get_plain_text(self)` {#MessageEvent-get-plain-text}
 
 获取消息的纯文本内容。
 
@@ -357,7 +357,7 @@ validated to form a valid model.
 
   消息的纯文本内容。
 
-### _method_ `get_sender_id(self)` {#MessageEvent.get\_sender\_id}
+### _method_ `get_sender_id(self)` {#MessageEvent-get-sender-id}
 
 获取消息的发送者的唯一标识符。
 
@@ -367,7 +367,7 @@ validated to form a valid model.
 
   消息的发送者的唯一标识符。
 
-### _async method_ `reply(self, message)` {#MessageEvent.reply}
+### _async method_ `reply(self, message)` {#MessageEvent-reply}
 
 回复消息。
 
@@ -391,7 +391,7 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
   - **detail\_type** (_Literal\['private'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -408,7 +408,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `reply(self, message)` {#PrivateMessageEvent.reply}
+### _async method_ `reply(self, message)` {#PrivateMessageEvent-reply}
 
 回复消息。
 
@@ -434,7 +434,7 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
   - **group\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -451,7 +451,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `reply(self, message)` {#GroupMessageEvent.reply}
+### _async method_ `reply(self, message)` {#GroupMessageEvent-reply}
 
 回复消息。
 
@@ -479,7 +479,7 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
   - **channel\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -496,7 +496,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `reply(self, message)` {#ChannelMessageEvent.reply}
+### _async method_ `reply(self, message)` {#ChannelMessageEvent-reply}
 
 回复消息。
 
@@ -520,7 +520,7 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`
 
   - **type** (_Literal\['notice'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -549,7 +549,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -578,7 +578,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -609,7 +609,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **user\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -642,7 +642,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -675,7 +675,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -710,7 +710,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -743,7 +743,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -776,7 +776,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -811,7 +811,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -846,7 +846,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -883,7 +883,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -916,7 +916,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -949,7 +949,7 @@ Bases: `alicebot.adapter.onebot.event.NoticeEvent`
 
   - **operator\_id** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -976,7 +976,7 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`
 
   - **type** (_Literal\['request'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 

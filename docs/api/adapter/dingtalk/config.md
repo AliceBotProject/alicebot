@@ -20,7 +20,7 @@ DingTalk 配置类，将在适配器被加载时被混入到机器人主配置�
 
   - **app\_secret** (_str_) - 机器人的 `appSecret`。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 

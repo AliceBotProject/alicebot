@@ -26,7 +26,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **global\_state** (_Dict\[Any, Any\]_) - 全局状态。
 
-### _method_ `__init__(self, *, config_file = 'config.toml', config_dict = None, hot_reload = False)` {#Bot.\_\_init\_\_}
+### _method_ `__init__(self, *, config_file = 'config.toml', config_dict = None, hot_reload = False)` {#Bot---init--}
 
 初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
 
@@ -45,7 +45,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   Type: _None_
 
-### _method_ `adapter_run_hook(self, func)` {#Bot.adapter\_run\_hook}
+### _method_ `adapter_run_hook(self, func)` {#Bot-adapter-run-hook}
 
 注册一个适配器运行时的函数。
 
@@ -59,7 +59,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `adapter_shutdown_hook(self, func)` {#Bot.adapter\_shutdown\_hook}
+### _method_ `adapter_shutdown_hook(self, func)` {#Bot-adapter-shutdown-hook}
 
 注册一个适配器关闭时的函数。
 
@@ -73,7 +73,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `adapter_startup_hook(self, func)` {#Bot.adapter\_startup\_hook}
+### _method_ `adapter_startup_hook(self, func)` {#Bot-adapter-startup-hook}
 
 注册一个适配器初始化时的函数。
 
@@ -87,7 +87,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `bot_exit_hook(self, func)` {#Bot.bot\_exit\_hook}
+### _method_ `bot_exit_hook(self, func)` {#Bot-bot-exit-hook}
 
 注册一个 Bot 退出时的函数。
 
@@ -101,7 +101,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `bot_run_hook(self, func)` {#Bot.bot\_run\_hook}
+### _method_ `bot_run_hook(self, func)` {#Bot-bot-run-hook}
 
 注册一个 Bot 启动时的函数。
 
@@ -115,7 +115,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `event_postprocessor_hook(self, func)` {#Bot.event\_postprocessor\_hook}
+### _method_ `event_postprocessor_hook(self, func)` {#Bot-event-postprocessor-hook}
 
 注册一个事件后处理函数。
 
@@ -129,7 +129,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _method_ `event_preprocessor_hook(self, func)` {#Bot.event\_preprocessor\_hook}
+### _method_ `event_preprocessor_hook(self, func)` {#Bot-event-preprocessor-hook}
 
 注册一个事件预处理函数。
 
@@ -143,7 +143,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   被注册的函数。
 
-### _async method_ `get(self, func = None, *, event_type = None, adapter_type = None, max_try_times = None, timeout = None)` {#Bot.get}
+### _async method_ `get(self, func = None, *, event_type = None, adapter_type = None, max_try_times = None, timeout = None)` {#Bot-get}
 
 获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
@@ -171,7 +171,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **GetEventTimeout** - 超过最大事件数或超时。
 
-### _method_ `get_adapter(self, adapter)` {#Bot.get\_adapter}
+### _method_ `get_adapter(self, adapter)` {#Bot-get-adapter}
 
 按照名称或适配器类获取已经加载的适配器。
 
@@ -189,7 +189,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **LookupError** - 找不到此名称的适配器对象。
 
-### _method_ `get_plugin(self, name)` {#Bot.get\_plugin}
+### _method_ `get_plugin(self, name)` {#Bot-get-plugin}
 
 按照名称获取已经加载的插件类。
 
@@ -207,7 +207,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **LookupError** - 找不到此名称的插件类。
 
-### _async method_ `handle_event(self, current_event, *, handle_get = True, show_log = True)` {#Bot.handle\_event}
+### _async method_ `handle_event(self, current_event, *, handle_get = True, show_log = True)` {#Bot-handle-event}
 
 被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
 
@@ -225,7 +225,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   Type: _None_
 
-### _method_ `load_adapters(self, *adapters)` {#Bot.load\_adapters}
+### _method_ `load_adapters(self, *adapters)` {#Bot-load-adapters}
 
 加载适配器。
 
@@ -240,7 +240,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   Type: _None_
 
-### _method_ `load_plugins(self, *plugins)` {#Bot.load\_plugins}
+### _method_ `load_plugins(self, *plugins)` {#Bot-load-plugins}
 
 加载插件。
 
@@ -258,7 +258,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   Type: _None_
 
-### _method_ `load_plugins_from_dirs(self, *dirs)` {#Bot.load\_plugins\_from\_dirs}
+### _method_ `load_plugins_from_dirs(self, *dirs)` {#Bot-load-plugins-from-dirs}
 
 从目录中加载插件，以 `_` 开头的模块中的插件不会被导入。路径可以是相对路径或绝对路径。
 
@@ -271,13 +271,13 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   Type: _None_
 
-### _readonly property_ `plugins` {#Bot.plugins}
+### _readonly property_ `plugins` {#Bot-plugins}
 
 Type: _List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]_
 
 当前已经加载的插件的列表。
 
-### _method_ `reload_plugins(self)` {#Bot.reload\_plugins}
+### _method_ `reload_plugins(self)` {#Bot-reload-plugins}
 
 手动重新加载所有插件。
 
@@ -285,7 +285,7 @@ Type: _List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]_
 
   Type: _None_
 
-### _method_ `restart(self)` {#Bot.restart}
+### _method_ `restart(self)` {#Bot-restart}
 
 退出并重新运行 AliceBot。
 
@@ -293,7 +293,7 @@ Type: _List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]_
 
   Type: _None_
 
-### _method_ `run(self)` {#Bot.run}
+### _method_ `run(self)` {#Bot-run}
 
 运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。
 

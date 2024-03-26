@@ -12,7 +12,7 @@ APScheduler 配置类，将在适配器被加载时被混入到机器人主配�
 
   - **scheduler\_config** (_Dict\[str, Any\]_) - 调度器配置。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 

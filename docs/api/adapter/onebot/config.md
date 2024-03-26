@@ -24,7 +24,7 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **access\_token** (_str_) - 鉴权。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 

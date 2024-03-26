@@ -14,7 +14,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **kind** (_Literal\['Friend', 'Group'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -45,7 +45,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **remark** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -76,7 +76,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **permission** (_Literal\['OWNER', 'ADMINISTRATOR', 'MEMBER'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -117,7 +117,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **group** (_GroupInfo_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -146,7 +146,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **platform** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -173,7 +173,7 @@ Mirai 事件基类
 
   - **type** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 

@@ -16,7 +16,7 @@ Bases: `alicebot.adapter.Adapter`
 
   - **create\_task** (_bool_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -28,7 +28,7 @@ Bases: `alicebot.adapter.Adapter`
 
   Type: _None_
 
-### _async method_ `on_tick(self)` {#PollingAdapter.on\_tick}
+### _async method_ `on_tick(self)` {#PollingAdapter-on-tick}
 
 当轮询发生。
 
@@ -36,7 +36,7 @@ Bases: `alicebot.adapter.Adapter`
 
   Type: _None_
 
-### _async method_ `run(self)` {#PollingAdapter.run}
+### _async method_ `run(self)` {#PollingAdapter-run}
 
 运行适配器。
 
@@ -54,7 +54,7 @@ HTTP 客户端适配器示例。
 
   - **session** (_aiohttp.client.ClientSession_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -66,7 +66,7 @@ HTTP 客户端适配器示例。
 
   Type: _None_
 
-### _async method_ `on_tick(self)` {#HttpClientAdapter.on\_tick}
+### _async method_ `on_tick(self)` {#HttpClientAdapter-on-tick}
 
 当轮询发生。
 
@@ -74,7 +74,7 @@ HTTP 客户端适配器示例。
 
   Type: _None_
 
-### _async method_ `shutdown(self)` {#HttpClientAdapter.shutdown}
+### _async method_ `shutdown(self)` {#HttpClientAdapter-shutdown}
 
 关闭并清理连接。
 
@@ -82,7 +82,7 @@ HTTP 客户端适配器示例。
 
   Type: _None_
 
-### _async method_ `startup(self)` {#HttpClientAdapter.startup}
+### _async method_ `startup(self)` {#HttpClientAdapter-startup}
 
 初始化适配器。
 
@@ -100,7 +100,7 @@ WebSocket 客户端适配器示例。
 
   - **url** (_str_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -112,7 +112,7 @@ WebSocket 客户端适配器示例。
 
   Type: _None_
 
-### _async method_ `handle_response(self, msg)` {#WebSocketClientAdapter.handle\_response}
+### _async method_ `handle_response(self, msg)` {#WebSocketClientAdapter-handle-response}
 
 处理响应。
 
@@ -124,7 +124,7 @@ WebSocket 客户端适配器示例。
 
   Type: _None_
 
-### _async method_ `run(self)` {#WebSocketClientAdapter.run}
+### _async method_ `run(self)` {#WebSocketClientAdapter-run}
 
 运行适配器。
 
@@ -154,7 +154,7 @@ HTTP 服务端适配器示例。
 
   - **post\_url** (_str_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -166,7 +166,7 @@ HTTP 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `handle_response(self, request)` {#HttpServerAdapter.handle\_response}
+### _async method_ `handle_response(self, request)` {#HttpServerAdapter-handle-response}
 
 处理响应。
 
@@ -178,7 +178,7 @@ HTTP 服务端适配器示例。
 
   Type: _aiohttp.web\_response.StreamResponse_
 
-### _async method_ `run(self)` {#HttpServerAdapter.run}
+### _async method_ `run(self)` {#HttpServerAdapter-run}
 
 运行适配器。
 
@@ -186,7 +186,7 @@ HTTP 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `shutdown(self)` {#HttpServerAdapter.shutdown}
+### _async method_ `shutdown(self)` {#HttpServerAdapter-shutdown}
 
 关闭并清理连接。
 
@@ -194,7 +194,7 @@ HTTP 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `startup(self)` {#HttpServerAdapter.startup}
+### _async method_ `startup(self)` {#HttpServerAdapter-startup}
 
 初始化适配器。
 
@@ -224,7 +224,7 @@ WebSocket 服务端适配器示例。
 
   - **url** (_str_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -236,7 +236,7 @@ WebSocket 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `handle_response(self, request)` {#WebSocketServerAdapter.handle\_response}
+### _async method_ `handle_response(self, request)` {#WebSocketServerAdapter-handle-response}
 
 处理 WebSocket。
 
@@ -248,7 +248,7 @@ WebSocket 服务端适配器示例。
 
   Type: _aiohttp.web\_ws.WebSocketResponse_
 
-### _async method_ `handle_ws_response(self, msg)` {#WebSocketServerAdapter.handle\_ws\_response}
+### _async method_ `handle_ws_response(self, msg)` {#WebSocketServerAdapter-handle-ws-response}
 
 处理 WebSocket 响应。
 
@@ -260,7 +260,7 @@ WebSocket 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `run(self)` {#WebSocketServerAdapter.run}
+### _async method_ `run(self)` {#WebSocketServerAdapter-run}
 
 运行适配器。
 
@@ -268,7 +268,7 @@ WebSocket 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `shutdown(self)` {#WebSocketServerAdapter.shutdown}
+### _async method_ `shutdown(self)` {#WebSocketServerAdapter-shutdown}
 
 关闭并清理连接。
 
@@ -276,7 +276,7 @@ WebSocket 服务端适配器示例。
 
   Type: _None_
 
-### _async method_ `startup(self)` {#WebSocketServerAdapter.startup}
+### _async method_ `startup(self)` {#WebSocketServerAdapter-startup}
 
 初始化适配器。
 
@@ -314,7 +314,7 @@ WebSocket 适配器示例。
 
   - **reconnect\_interval** (_int_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -326,7 +326,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `handle_reverse_ws_response(self, request)` {#WebSocketAdapter.handle\_reverse\_ws\_response}
+### _async method_ `handle_reverse_ws_response(self, request)` {#WebSocketAdapter-handle-reverse-ws-response}
 
 处理 aiohttp WebSocket 服务器的接收。
 
@@ -338,7 +338,7 @@ WebSocket 适配器示例。
 
   Type: _aiohttp.web\_ws.WebSocketResponse_
 
-### _async method_ `handle_websocket(self)` {#WebSocketAdapter.handle\_websocket}
+### _async method_ `handle_websocket(self)` {#WebSocketAdapter-handle-websocket}
 
 处理 WebSocket。
 
@@ -346,7 +346,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `handle_websocket_msg(self, msg)` {#WebSocketAdapter.handle\_websocket\_msg}
+### _async method_ `handle_websocket_msg(self, msg)` {#WebSocketAdapter-handle-websocket-msg}
 
 处理 WebSocket 消息。
 
@@ -358,7 +358,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `reverse_ws_connection_hook(self)` {#WebSocketAdapter.reverse\_ws\_connection\_hook}
+### _async method_ `reverse_ws_connection_hook(self)` {#WebSocketAdapter-reverse-ws-connection-hook}
 
 反向 WebSocket 连接建立时的钩子函数。
 
@@ -366,7 +366,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `run(self)` {#WebSocketAdapter.run}
+### _async method_ `run(self)` {#WebSocketAdapter-run}
 
 运行适配器。
 
@@ -374,7 +374,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `shutdown(self)` {#WebSocketAdapter.shutdown}
+### _async method_ `shutdown(self)` {#WebSocketAdapter-shutdown}
 
 关闭并清理连接。
 
@@ -382,7 +382,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `startup(self)` {#WebSocketAdapter.startup}
+### _async method_ `startup(self)` {#WebSocketAdapter-startup}
 
 初始化适配器。
 
@@ -390,7 +390,7 @@ WebSocket 适配器示例。
 
   Type: _None_
 
-### _async method_ `websocket_connect(self)` {#WebSocketAdapter.websocket\_connect}
+### _async method_ `websocket_connect(self)` {#WebSocketAdapter-websocket-connect}
 
 创建正向 WebSocket 连接。
 

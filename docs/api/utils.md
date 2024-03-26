@@ -12,7 +12,7 @@ Bases: `importlib.abc.MetaPathFinder`
 
   - **path** (_ClassVar\[List\[str\]\]_)
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#object.\_\_init\_\_}
+### _method_ `__init__(self, /, *args, **kwargs)` {#object---init--}
 
 Initialize self.  See help(type(self)) for accurate signature.
 
@@ -22,7 +22,7 @@ Initialize self.  See help(type(self)) for accurate signature.
 
   - **kwargs**
 
-### _method_ `find_spec(self, fullname, path = None, target = None)` {#ModulePathFinder.find\_spec}
+### _method_ `find_spec(self, fullname, path = None, target = None)` {#ModulePathFinder-find-spec}
 
 用于查找指定模块的 `spec`。
 
@@ -38,7 +38,7 @@ Initialize self.  See help(type(self)) for accurate signature.
 
   Type: _Optional\[\_frozen\_importlib.ModuleSpec\]_
 
-## _function_ `is_config_class(config_class)` {#is\_config\_class}
+## _function_ `is_config_class(config_class)` {#is-config-class}
 
 判断一个对象是否是配置类。
 
@@ -48,11 +48,11 @@ Initialize self.  See help(type(self)) for accurate signature.
 
 - **Returns**
 
-  Type: _typing\_extensions.TypeGuard\[typing.Type\[alicebot.config.ConfigModel\]\]_
+  Type: _TypeGuard\[Type\[alicebot.config.ConfigModel\]\]_
 
   返回是否是配置类。
 
-## _function_ `get_classes_from_module(module, super_class)` {#get\_classes\_from\_module}
+## _function_ `get_classes_from_module(module, super_class)` {#get-classes-from-module}
 
 从模块中查找指定类型的类。
 
@@ -68,7 +68,7 @@ Initialize self.  See help(type(self)) for accurate signature.
 
   返回符合条件的类的列表。
 
-## _function_ `get_classes_from_module_name(name, super_class, *, reload = False)` {#get\_classes\_from\_module\_name}
+## _function_ `get_classes_from_module_name(name, super_class, *, reload = False)` {#get-classes-from-module-name}
 
 从指定名称的模块中查找指定类型的类。
 
@@ -96,7 +96,7 @@ Bases: `json.encoder.JSONEncoder`
 
 用于解析 `pydantic.BaseModel` 的 `JSONEncoder` 类。
 
-### _method_ `__init__(self, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, sort_keys=False, indent=None, separators=None, default=None)` {#JSONEncoder.\_\_init\_\_}
+### _method_ `__init__(self, *, skipkeys=False, ensure_ascii=True, check_circular=True, allow_nan=True, sort_keys=False, indent=None, separators=None, default=None)` {#JSONEncoder---init--}
 
 Constructor for JSONEncoder, with sensible defaults.
 
@@ -154,7 +154,7 @@ version of the object or raise a ``TypeError``.
 
   - **default**
 
-### _method_ `default(self, o)` {#PydanticEncoder.default}
+### _method_ `default(self, o)` {#PydanticEncoder-default}
 
 返回 `o` 的可序列化对象。
 
@@ -182,23 +182,23 @@ version of the object or raise a ``TypeError``.
 
   如果两个路径是否指向相同的文件或目录。
 
-## _function_ `sync_func_wrapper(func, *, to_thread = False)` {#sync\_func\_wrapper}
+## _function_ `sync_func_wrapper(func, *, to_thread = False)` {#sync-func-wrapper}
 
 包装一个同步函数为异步函数。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[~\_P\], ~\_R\]_) - 待包装的同步函数。
+  - **func** (_Callable\[~\_P, ~\_R\]_) - 待包装的同步函数。
 
   - **to\_thread** (_bool_) - 是否在独立的线程中运行同步函数。默认为 `False`。
 
 - **Returns**
 
-  Type: _Callable\[\[~\_P\], Coroutine\[NoneType, NoneType, ~\_R\]\]_
+  Type: _Callable\[~\_P, Coroutine\[NoneType, NoneType, ~\_R\]\]_
 
   异步函数。
 
-## _function_ `sync_ctx_manager_wrapper(cm, *, to_thread = False)` {#sync\_ctx\_manager\_wrapper}
+## _function_ `sync_ctx_manager_wrapper(cm, *, to_thread = False)` {#sync-ctx-manager-wrapper}
 
 将同步上下文管理器包装为异步上下文管理器。
 
@@ -214,7 +214,7 @@ version of the object or raise a ``TypeError``.
 
   异步上下文管理器。
 
-## _function_ `wrap_get_func(func)` {#wrap\_get\_func}
+## _function_ `wrap_get_func(func)` {#wrap-get-func}
 
 将 `get()` 函数接受的参数包装为一个异步函数。
 
@@ -227,23 +227,3 @@ version of the object or raise a ``TypeError``.
   Type: _Callable\[\[~EventT\], Awaitable\[bool\]\]_
 
   异步函数。
-
-## _function_ `get_annotations(obj)` {#get\_annotations}
-
-计算一个对象的标注字典。
-
-- **Arguments**
-
-  - **obj** (_Union\[Callable\[..., object\], Type\[Any\], module\]_) - 一个可调用对象、类或模块。
-
-- **Returns**
-
-  Type: _Dict\[str, Any\]_
-
-  对象的标注字典。
-
-- **Raises**
-
-  - **TypeError** - `obj` 不是一个可调用对象、类或模块。
-
-  - **ValueError** - 对象的 `__annotations__` 不是一个字典或 `None`。

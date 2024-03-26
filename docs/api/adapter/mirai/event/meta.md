@@ -8,7 +8,7 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 默认不会被传播的特殊事件
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -35,7 +35,7 @@ Bot 自身事件
 
   - **qq** (_int_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -62,7 +62,7 @@ Bot 登录成功
 
   - **type** (_Literal\['BotOnlineEvent'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -89,7 +89,7 @@ Bot 主动离线
 
   - **type** (_Literal\['BotOfflineEventActive'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -116,7 +116,7 @@ Bot 被挤下线
 
   - **type** (_Literal\['BotOfflineEventForce'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -143,7 +143,7 @@ Bot 被服务器断开或因网络问题而掉线
 
   - **type** (_Literal\['BotOfflineEventDropped'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -170,7 +170,7 @@ Bot 主动重新登录
 
   - **type** (_Literal\['BotReloginEvent'\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -205,7 +205,7 @@ Bases: `alicebot.adapter.mirai.event.meta.MetaEvent`
 
   - **args** (_List\[Any\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 

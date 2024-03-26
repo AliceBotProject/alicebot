@@ -31,7 +31,7 @@ Bases: `abc.ABC`, `typing.Generic`
   - **\_\_plugin\_file\_path\_\_** - 当插件加载类型为 `PluginLoadType.CLASS` 时为 `None`，
   否则为定义插件在的 Python 模块的位置。
 
-### _method_ `__init__(self, /, *args, **kwargs)` {#object.\_\_init\_\_}
+### _method_ `__init__(self, /, *args, **kwargs)` {#object---init--}
 
 Initialize self.  See help(type(self)) for accurate signature.
 
@@ -41,19 +41,19 @@ Initialize self.  See help(type(self)) for accurate signature.
 
   - **kwargs**
 
-### _readonly property_ `bot` {#Plugin.bot}
+### _readonly property_ `bot` {#Plugin-bot}
 
 Type: _Bot_
 
 机器人对象。
 
-### _readonly property_ `config` {#Plugin.config}
+### _readonly property_ `config` {#Plugin-config}
 
 Type: _~ConfigT_
 
 插件配置。
 
-### _async method_ `handle(self)` {#Plugin.handle}
+### _async method_ `handle(self)` {#Plugin-handle}
 
 处理事件的方法。当 `rule()` 方法返回 `True` 时 AliceBot 会调用此方法。每个插件必须实现此方法。
 
@@ -61,13 +61,13 @@ Type: _~ConfigT_
 
   Type: _None_
 
-### _readonly property_ `name` {#Plugin.name}
+### _readonly property_ `name` {#Plugin-name}
 
 Type: _str_
 
 插件类名称。
 
-### _async method_ `rule(self)` {#Plugin.rule}
+### _async method_ `rule(self)` {#Plugin-rule}
 
 匹配事件的方法。事件处理时，会按照插件的优先级依次调用此方法，当此方法返回 `True` 时将事件交由此插件处理。每个插件必须实现此方法。
 
@@ -77,7 +77,7 @@ Type: _str_
 
   Type: _bool_
 
-### _method_ `skip(self)` {#Plugin.skip}
+### _method_ `skip(self)` {#Plugin-skip}
 
 跳过自身继续当前事件传播。
 
@@ -85,13 +85,13 @@ Type: _str_
 
   Type: _NoReturn_
 
-### _property_ `state` {#Plugin.state}
+### _property_ `state` {#Plugin-state}
 
 Type: _~StateT_
 
 插件状态。
 
-### _method_ `stop(self)` {#Plugin.stop}
+### _method_ `stop(self)` {#Plugin-stop}
 
 停止当前事件传播。
 

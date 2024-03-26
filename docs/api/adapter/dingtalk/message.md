@@ -8,7 +8,7 @@ Bases: `alicebot.message.MessageSegment`
 
 DingTalk 消息
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -25,7 +25,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `action_card_multi_btns(title, text, btns, btn_orientation = '0')` {#DingTalkMessage.action\_card\_multi\_btns}
+### _method_ `action_card_multi_btns(title, text, btns, btn_orientation = '0')` {#DingTalkMessage-action-card-multi-btns}
 
 DingTalk 独立跳转 actionCard 消息
 
@@ -41,7 +41,7 @@ DingTalk 独立跳转 actionCard 消息
 
   Type: _DingTalkMessage_
 
-### _method_ `action_card_single_btn(title, text, single_title, single_url, btn_orientation = '0')` {#DingTalkMessage.action\_card\_single\_btn}
+### _method_ `action_card_single_btn(title, text, single_title, single_url, btn_orientation = '0')` {#DingTalkMessage-action-card-single-btn}
 
 DingTalk 整体跳转 actionCard 消息
 
@@ -59,7 +59,7 @@ DingTalk 整体跳转 actionCard 消息
 
   Type: _DingTalkMessage_
 
-### _method_ `at(at_mobiles = None, at_user_ids = None, is_at_all = False)` {#DingTalkMessage.at}
+### _method_ `at(at_mobiles = None, at_user_ids = None, is_at_all = False)` {#DingTalkMessage-at}
 
 DingTalk At 信息
 
@@ -73,7 +73,7 @@ DingTalk At 信息
 
   Type: _DingTalkMessage_
 
-### _method_ `feed_card(links)` {#DingTalkMessage.feed\_card}
+### _method_ `feed_card(links)` {#DingTalkMessage-feed-card}
 
 DingTalk feedCard 消息
 
@@ -81,7 +81,7 @@ DingTalk feedCard 消息
 
   Type: _DingTalkMessage_
 
-### _method_ `get_plain_text(self)` {#DingTalkMessage.get\_plain\_text}
+### _method_ `get_plain_text(self)` {#DingTalkMessage-get-plain-text}
 
 获取消息中的纯文本部分。
 
@@ -91,7 +91,7 @@ DingTalk feedCard 消息
 
   消息中的纯文本部分。
 
-### _method_ `get_segment_class()` {#DingTalkMessage.get\_segment\_class}
+### _method_ `get_segment_class()` {#DingTalkMessage-get-segment-class}
 
 获取消息字段类。
 
@@ -101,7 +101,7 @@ DingTalk feedCard 消息
 
   消息字段类。
 
-### _method_ `link(text, title, message_url, pic_url = None)` {#DingTalkMessage.link}
+### _method_ `link(text, title, message_url, pic_url = None)` {#DingTalkMessage-link}
 
 DingTalk link 消息
 
@@ -117,7 +117,7 @@ DingTalk link 消息
 
   Type: _DingTalkMessage_
 
-### _method_ `markdown(title, text)` {#DingTalkMessage.markdown}
+### _method_ `markdown(title, text)` {#DingTalkMessage-markdown}
 
 DingTalk markdown 消息
 
@@ -129,7 +129,7 @@ DingTalk markdown 消息
 
   Type: _DingTalkMessage_
 
-### _method_ `raw(data)` {#DingTalkMessage.raw}
+### _method_ `raw(data)` {#DingTalkMessage-raw}
 
 DingTalk 原始消息
 
@@ -137,7 +137,7 @@ DingTalk 原始消息
 
   Type: _DingTalkMessage_
 
-### _method_ `ser_model(self)` {#DingTalkMessage.ser\_model}
+### _method_ `ser_model(self)` {#DingTalkMessage-ser-model}
 
 返回符合钉钉消息标准的消息字段字典。
 
@@ -147,7 +147,7 @@ DingTalk 原始消息
 
   符合钉钉消息标准的消息字段字典。
 
-### _method_ `text(content)` {#DingTalkMessage.text}
+### _method_ `text(content)` {#DingTalkMessage-text}
 
 DingTalk text 消息
 

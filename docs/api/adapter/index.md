@@ -18,7 +18,7 @@ Bases: `typing.Generic`, `abc.ABC`
 
   - **Config** (_Type\[~ConfigT\]_)
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -30,13 +30,13 @@ Bases: `typing.Generic`, `abc.ABC`
 
   Type: _None_
 
-### _readonly property_ `config` {#Adapter.config}
+### _readonly property_ `config` {#Adapter-config}
 
 Type: _~ConfigT_
 
 适配器配置。
 
-### _async method_ `get(self, func = None, *, event_type = None, max_try_times = None, timeout = None)` {#Adapter.get}
+### _async method_ `get(self, func = None, *, event_type = None, max_try_times = None, timeout = None)` {#Adapter-get}
 
 获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
@@ -66,7 +66,7 @@ Type: _~ConfigT_
 
   - **GetEventTimeout** - 超过最大事件数或超时。
 
-### _async method_ `run(self)` {#Adapter.run}
+### _async method_ `run(self)` {#Adapter-run}
 
 适配器运行方法，适配器开发者必须实现该方法。
 
@@ -76,7 +76,7 @@ Type: _~ConfigT_
 
   Type: _None_
 
-### _async method_ `safe_run(self)` {#Adapter.safe\_run}
+### _async method_ `safe_run(self)` {#Adapter-safe-run}
 
 附带有异常处理地安全运行适配器。
 
@@ -84,7 +84,7 @@ Type: _~ConfigT_
 
   Type: _None_
 
-### _async method_ `shutdown(self)` {#Adapter.shutdown}
+### _async method_ `shutdown(self)` {#Adapter-shutdown}
 
 在适配器结束运行时运行的方法，用于安全地关闭适配器。
 
@@ -95,7 +95,7 @@ AliceBot 在接收到系统的结束信号后依次运行并等待所有适配�
 
   Type: _None_
 
-### _async method_ `startup(self)` {#Adapter.startup}
+### _async method_ `startup(self)` {#Adapter-startup}
 
 在适配器开始运行前运行的方法，用于初始化适配器。
 

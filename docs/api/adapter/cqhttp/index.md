@@ -37,7 +37,7 @@ CQHTTP 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **access\_token** (_str_) - 鉴权。
 
-#### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+#### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -54,7 +54,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `__init__(self, bot)` {#Adapter.\_\_init\_\_}
+### _method_ `__init__(self, bot)` {#Adapter---init--}
 
 初始化。
 
@@ -66,7 +66,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `add_event_model(event_model)` {#CQHTTPAdapter.add\_event\_model}
+### _method_ `add_event_model(event_model)` {#CQHTTPAdapter-add-event-model}
 
 添加自定义事件模型，事件模型类必须继承于 `CQHTTPEvent`。
 
@@ -74,7 +74,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `call_api(self, api, **params)` {#CQHTTPAdapter.call\_api}
+### _async method_ `call_api(self, api, **params)` {#CQHTTPAdapter-call-api}
 
 调用 CQHTTP API，协程会等待直到获得 API 响应。
 
@@ -100,7 +100,7 @@ validated to form a valid model.
 
   - **ApiTimeout** - API 请求响应超时。
 
-### _method_ `get_event_model(post_type, detail_type, sub_type)` {#CQHTTPAdapter.get\_event\_model}
+### _method_ `get_event_model(post_type, detail_type, sub_type)` {#CQHTTPAdapter-get-event-model}
 
 根据接收到的消息类型返回对应的事件类。
 
@@ -116,7 +116,7 @@ validated to form a valid model.
 
   对应的事件类。
 
-### _async method_ `handle_cqhttp_event(self, msg)` {#CQHTTPAdapter.handle\_cqhttp\_event}
+### _async method_ `handle_cqhttp_event(self, msg)` {#CQHTTPAdapter-handle-cqhttp-event}
 
 处理 CQHTTP 事件。
 
@@ -128,7 +128,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `handle_websocket_msg(self, msg)` {#CQHTTPAdapter.handle\_websocket\_msg}
+### _async method_ `handle_websocket_msg(self, msg)` {#CQHTTPAdapter-handle-websocket-msg}
 
 处理 WebSocket 消息。
 
@@ -140,7 +140,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `reverse_ws_connection_hook(self)` {#CQHTTPAdapter.reverse\_ws\_connection\_hook}
+### _async method_ `reverse_ws_connection_hook(self)` {#CQHTTPAdapter-reverse-ws-connection-hook}
 
 反向 WebSocket 连接建立时的钩子函数。
 
@@ -148,7 +148,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `send(self, message_, message_type, id_)` {#CQHTTPAdapter.send}
+### _async method_ `send(self, message_, message_type, id_)` {#CQHTTPAdapter-send}
 
 发送消息，调用 `send_private_msg` 或 `send_group_msg` API 发送消息。
 
@@ -174,7 +174,7 @@ validated to form a valid model.
 
   - **...** - 同 `call_api()` 方法。
 
-### _async method_ `startup(self)` {#CQHTTPAdapter.startup}
+### _async method_ `startup(self)` {#CQHTTPAdapter-startup}
 
 初始化适配器。
 
@@ -182,7 +182,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _async method_ `websocket_connect(self)` {#CQHTTPAdapter.websocket\_connect}
+### _async method_ `websocket_connect(self)` {#CQHTTPAdapter-websocket-connect}
 
 创建正向 WebSocket 连接。
 

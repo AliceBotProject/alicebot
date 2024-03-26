@@ -16,7 +16,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 本类重载了 `+` 和 `+=` 运算符，可以直接和 `Message`, `MessageSegment` 等类型的对象执行取和运算。
 适配器开发者需要继承本类并重写 `get_segment_class()` 方法。
 
-### _method_ `__init__(self, *messages)` {#Message.\_\_init\_\_}
+### _method_ `__init__(self, *messages)` {#Message---init--}
 
 初始化。
 
@@ -28,17 +28,17 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
   Type: _None_
 
-### _method_ `copy(self)` {#Message.copy}
+### _method_ `copy(self)` {#Message-copy}
 
 返回自身的浅复制。
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   自身的浅复制。
 
-### _method_ `endswith(self, suffix, start = None, end = None)` {#Message.endswith}
+### _method_ `endswith(self, suffix, start = None, end = None)` {#Message-endswith}
 
 实现类似字符串的 `endswith()` 方法。
 
@@ -60,7 +60,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
   检查结果。
 
-### _method_ `get_plain_text(self)` {#Message.get\_plain\_text}
+### _method_ `get_plain_text(self)` {#Message-get-plain-text}
 
 获取消息中的纯文本部分。
 
@@ -70,7 +70,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
   消息中的纯文本部分。
 
-### _method_ `get_segment_class()` {#Message.get\_segment\_class}
+### _method_ `get_segment_class()` {#Message-get-segment-class}
 
 获取消息字段类。
 
@@ -80,7 +80,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
   消息字段类。
 
-### _method_ `is_text(self)` {#Message.is\_text}
+### _method_ `is_text(self)` {#Message-is-text}
 
 是否是纯文本消息。
 
@@ -88,7 +88,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
   Type: _bool_
 
-### _method_ `replace(self, old, new, count = -1)` {#Message.replace}
+### _method_ `replace(self, old, new, count = -1)` {#Message-replace}
 
 实现类似字符串的 `replace()` 方法。
 
@@ -106,11 +106,11 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   替换后的消息对象。
 
-### _method_ `startswith(self, prefix, start = None, end = None)` {#Message.startswith}
+### _method_ `startswith(self, prefix, start = None, end = None)` {#Message-startswith}
 
 实现类似字符串的 `startswith()` 方法。
 
@@ -148,7 +148,7 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.
 
   - **data** (_Dict\[str, Any\]_) - 消息字段内容。
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -165,7 +165,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `from_mapping(msg)` {#MessageSegment.from\_mapping}
+### _method_ `from_mapping(msg)` {#MessageSegment-from-mapping}
 
 用于将 `Mapping` 转换为消息字段。
 
@@ -173,21 +173,21 @@ validated to form a valid model.
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   由 Mapping 转换的消息字段。
 
-### _method_ `from_str(msg)` {#MessageSegment.from\_str}
+### _method_ `from_str(msg)` {#MessageSegment-from-str}
 
 用于将 `str` 转换为消息字段，子类应重写此方法。
 
 - **Returns**
 
-  Type: _typing\_extensions.Self_
+  Type: _Self_
 
   由 `str` 转换的消息字段。
 
-### _method_ `get(self, key, default = None)` {#MessageSegment.get}
+### _method_ `get(self, key, default = None)` {#MessageSegment-get}
 
 如果 `key` 存在于 `data` 字典中则返回 `key` 的值，否则返回 `default`。
 
@@ -201,7 +201,7 @@ validated to form a valid model.
 
   Type: _Any_
 
-### _method_ `get_message_class()` {#MessageSegment.get\_message\_class}
+### _method_ `get_message_class()` {#MessageSegment-get-message-class}
 
 获取消息类。
 
@@ -211,7 +211,7 @@ validated to form a valid model.
 
   消息类。
 
-### _method_ `is_text(self)` {#MessageSegment.is\_text}
+### _method_ `is_text(self)` {#MessageSegment-is-text}
 
 是否是纯文本消息字段。
 
@@ -221,7 +221,7 @@ validated to form a valid model.
 
   是否是纯文本消息字段。
 
-### _method_ `items(self)` {#MessageSegment.items}
+### _method_ `items(self)` {#MessageSegment-items}
 
 返回由 `data` 字典项 (`(键, 值)` 对) 组成的一个新视图。
 
@@ -229,7 +229,7 @@ validated to form a valid model.
 
   Type: _ItemsView\[str, Any\]_
 
-### _method_ `keys(self)` {#MessageSegment.keys}
+### _method_ `keys(self)` {#MessageSegment-keys}
 
 返回由 `data` 字典键组成的一个新视图。
 
@@ -237,7 +237,7 @@ validated to form a valid model.
 
   Type: _KeysView\[str\]_
 
-### _method_ `values(self)` {#MessageSegment.values}
+### _method_ `values(self)` {#MessageSegment-values}
 
 返回由 `data` 字典值组成的一个新视图。
 

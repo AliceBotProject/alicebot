@@ -14,7 +14,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **staffId** (_Optional\[str\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -41,7 +41,7 @@ Bases: `pydantic.main.BaseModel`
 
   - **content** (_str_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -108,7 +108,7 @@ DingTalk 事件基类
 
   - **response\_at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
-### _method_ `__init__(self, /, **data)` {#BaseModel.\_\_init\_\_}
+### _method_ `__init__(self, /, **data)` {#BaseModel---init--}
 
 Create a new model by parsing and validating input data from keyword arguments.
 
@@ -125,7 +125,7 @@ validated to form a valid model.
 
   Type: _None_
 
-### _method_ `get_plain_text(self)` {#DingTalkEvent.get\_plain\_text}
+### _method_ `get_plain_text(self)` {#DingTalkEvent-get-plain-text}
 
 获取消息的纯文本内容。
 
@@ -135,7 +135,7 @@ validated to form a valid model.
 
   消息的纯文本内容。
 
-### _method_ `get_sender_id(self)` {#DingTalkEvent.get\_sender\_id}
+### _method_ `get_sender_id(self)` {#DingTalkEvent-get-sender-id}
 
 获取消息的发送者的唯一标识符。
 
@@ -145,13 +145,13 @@ validated to form a valid model.
 
   消息的发送者的唯一标识符。
 
-### _readonly property_ `message` {#DingTalkEvent.message}
+### _readonly property_ `message` {#DingTalkEvent-message}
 
 Type: _alicebot.adapter.dingtalk.message.DingTalkMessage_
 
 返回 message 字段。
 
-### _async method_ `reply(self, message, at = None)` {#DingTalkEvent.reply}
+### _async method_ `reply(self, message, at = None)` {#DingTalkEvent-reply}
 
 回复消息。
 

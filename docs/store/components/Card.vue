@@ -18,22 +18,27 @@ async function copyInstallLink() {
 }
 
 onMounted(async () => {
-  if ('pypi_name' in props.item) {
-    pypiJson.value = await (
-      await fetch(`https://pypi.org/pypi/${props.item.pypi_name}/json`)
-    ).json()
-    description.value = pypiJson.value?.info.summary
-    author.value = pypiJson.value?.info.author ?? ''
-    homepage.value = pypiJson.value?.info.project_urls.Homepage ?? ''
-    tags.value = pypiJson.value?.info.keywords
-      .split(',')
-      .filter(tag => tag !== '') ?? []
-  }
-  else {
+  if (!('pypi_name' in props.item)) {
     description.value = props.item.description
     author.value = props.item.author
     homepage.value = props.item.homepage
     tags.value = props.item.tags.split(',').filter(tag => tag !== '')
+    return
+  }
+
+  pypiJson.value = await (
+    await fetch(`https://pypi.org/pypi/${props.item.pypi_name}/json`)
+  ).json()
+  if (pypiJson.value != null) {
+    description.value = pypiJson.value.info.summary
+    if (pypiJson.value.info.author.length > 0)
+      author.value = pypiJson.value.info.author
+    else
+      author.value = pypiJson.value.info.author_email.match(/([^<]*)\s*<.*?>/)?.[1].trim() ?? ''
+    homepage.value = pypiJson.value.info.project_urls.Homepage ?? ''
+    tags.value = pypiJson.value.info.keywords
+      .split(',')
+      .filter(tag => tag !== '') ?? []
   }
 })
 </script>

@@ -22,7 +22,7 @@ onMounted(async () => {
     description.value = props.item.description
     author.value = props.item.author
     homepage.value = props.item.homepage
-    tags.value = props.item.tags.split(',').filter(tag => tag !== '')
+    tags.value = props.item.tags.split(/[,\s]/).filter(tag => tag !== '')
     return
   }
 
@@ -31,13 +31,13 @@ onMounted(async () => {
   ).json()
   if (pypiJson.value != null) {
     description.value = pypiJson.value.info.summary
-    if (pypiJson.value.info.author.length > 0)
+    if (pypiJson.value.info.author?.length)
       author.value = pypiJson.value.info.author
     else
       author.value = pypiJson.value.info.author_email.match(/([^<]*)\s*<.*?>/)?.[1].trim() ?? ''
-    homepage.value = pypiJson.value.info.project_urls.Homepage ?? ''
+    homepage.value = pypiJson.value.info.project_urls.Repository ?? pypiJson.value.info.project_urls.Homepage ?? ''
     tags.value = pypiJson.value.info.keywords
-      .split(',')
+      .split(/[,\s]/)
       .filter(tag => tag !== '') ?? []
   }
 })

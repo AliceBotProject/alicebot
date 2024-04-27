@@ -1,6 +1,6 @@
 export interface PyPIData {
   info: {
-    author: string
+    author: string | null
     author_email: string
     classifiers: string[]
     description: string
@@ -16,7 +16,7 @@ export interface PyPIData {
     package_url: string
     platform: null
     project_url: string
-    project_urls: { [key: string]: string }
+    project_urls: { [key: string]: string | undefined }
     release_url: string
     requires_dist: string[]
     requires_python: string

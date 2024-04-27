@@ -84,7 +84,7 @@ watchEffect(async () => {
     </div>
     <Pagination key="topPagination" v-model="pageNumber" :total="pageTotal" />
     <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-      <Card v-for="(item, index) in pageItems" :key="index" :item="item" />
+      <Card v-for="(item, index) in pageItems" :key="index.toString() + item.name" :item="item" />
     </div>
     <Pagination key="bottomPagination" v-model="pageNumber" :total="pageTotal" />
   </div>

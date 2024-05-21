@@ -113,7 +113,7 @@ async def solve_dependencies(
                     raise TypeError("can not solve dependent")
                 sub_dependent.dependency = dependent_ann
             values[name] = await solve_dependencies(
-                sub_dependent.dependency,
+                cast(Dependency[_T], sub_dependent.dependency),
                 use_cache=sub_dependent.use_cache,
                 stack=stack,
                 dependency_cache=dependency_cache,
@@ -127,9 +127,9 @@ async def solve_dependencies(
         depend_obj.__init__()  # type: ignore[misc] # pylint: disable=unnecessary-dunder-call
 
         if isinstance(depend_obj, AsyncContextManager):
-            depend = await stack.enter_async_context(depend_obj)  # pyright: ignore
+            depend = await stack.enter_async_context(depend_obj)
         elif isinstance(depend_obj, ContextManager):
-            depend = await stack.enter_async_context(  # pyright: ignore
+            depend = await stack.enter_async_context(
                 sync_ctx_manager_wrapper(depend_obj)
             )
         else:
@@ -146,4 +146,4 @@ async def solve_dependencies(
         raise TypeError("dependent is not a class or generator function")
 
     dependency_cache[dependent] = depend
-    return depend  # pyright: ignore
+    return depend

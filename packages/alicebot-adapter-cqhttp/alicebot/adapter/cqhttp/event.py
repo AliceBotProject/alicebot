@@ -304,7 +304,6 @@ class NotifyEvent(NoticeEvent):
     __event__ = "notice.notify"
     notice_type: Literal["notify"]
     sub_type: str
-    group_id: Optional[int] = None
     user_id: int
 
 

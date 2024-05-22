@@ -110,9 +110,9 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT]):
         Raises:
             GetEventTimeout: 超过最大事件数或超时。
         """
-        return await self.adapter.get(  # pyright: ignore
+        return await self.adapter.get(
             self.is_same_sender,
-            event_type=type(self),  # pyright: ignore
+            event_type=type(self),
             max_try_times=max_try_times,
             timeout=timeout,
         )

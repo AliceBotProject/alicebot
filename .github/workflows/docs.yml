@@ -40,8 +40,8 @@ jobs:
       - run: pnpm install
         shell: bash
 
-      - name: Build VuePress site
-        run: pnpm docs:build
+      - name: Build VitePress site
+        run: pnpm run docs:build
 
       - uses: actions/upload-pages-artifact@v3
         if: github.event_name != 'pull_request'

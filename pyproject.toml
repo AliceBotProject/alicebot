@@ -127,6 +127,7 @@ keep-runtime-typing = true
 
 [tool.pyright]
 ignore = ["examples/plugins"]
+extraPaths = ["tests", "tests/test_utils"]
 pythonVersion = "3.8"
 pythonPlatform = "All"
 typeCheckingMode = "strict"

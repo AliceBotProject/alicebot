@@ -11,6 +11,11 @@ export default defineConfig({
   description: '简单的 Python 异步多后端聊天机器人框架',
 
   lastUpdated: true,
+  cleanUrls: true,
+
+  sitemap: {
+    hostname: 'https://docs.alicebot.dev',
+  },
 
   head: [
     ['link', { rel: 'icon', href: '/logo.png' }],
@@ -28,8 +33,8 @@ export default defineConfig({
     logo: '/logo.png',
     nav: [
       { text: '主页', link: '/' },
-      { text: '指南', link: '/guide/' },
-      { text: 'API', link: '/api/' },
+      { text: '指南', link: '/guide/', activeMatch: '/guide/' },
+      { text: 'API', link: '/api/', activeMatch: '/api/' },
       { text: '商店', link: '/store/' },
       { text: '更新日志', link: '/changelog' },
     ],

@@ -34,6 +34,7 @@ export default defineConfig({
     nav: [
       { text: '主页', link: '/' },
       { text: '指南', link: '/guide/', activeMatch: '/guide/' },
+      { text: '开发', link: '/develop/plugin', activeMatch: '/develop/' },
       { text: 'API', link: '/api/', activeMatch: '/api/' },
       { text: '商店', link: '/store/' },
       { text: '更新日志', link: '/changelog' },
@@ -41,6 +42,7 @@ export default defineConfig({
 
     sidebar: {
       '/guide/': sidebarGuide(),
+      '/develop/': sidebarDevelop(),
       '/api/': sidebarApi('/api/'),
       '/dev-api/': sidebarApi('/dev-api/'),
     },
@@ -149,6 +151,19 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
         '/guide/adapters/cqhttp-adapter.md',
         '/guide/adapters/mirai-adapter.md',
         '/guide/adapters/dingtalk-adapter.md',
+      ].map(getSidebarItem),
+    },
+  ]
+}
+
+function sidebarDevelop(): DefaultTheme.SidebarItem[] {
+  return [
+    {
+      text: '开发者指南',
+      collapsed: false,
+      items: [
+        '/develop/plugin.md',
+        '/develop/contributing.md',
       ].map(getSidebarItem),
     },
   ]

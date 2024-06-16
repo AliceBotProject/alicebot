@@ -58,7 +58,7 @@ AliceBot 使用 [Ruff](https://docs.astral.sh/ruff/) 作为格式化工具，如
 
 AliceBot 具有完全的类型注解。
 
-在 [pyproject.toml](./pyproject.toml) 文件中已经提供了针对 Pyright (Pylance 背后的类型检查器) 和 MyPy 的配置，请确保你的代码能够通过这种严格程度的类型检查。
+在 [pyproject.toml](https://github.com/AliceBotProject/alicebot/blob/master/pyproject.toml) 文件中已经提供了针对 Pyright (Pylance 背后的类型检查器) 和 MyPy 的配置，请确保你的代码能够通过这种严格程度的类型检查。
 
 如果必要，你可以在代码中使用 `# type: ignore` 注释来抑制类型检查，但请注意，请将此作为最后手段，不要轻易使用。
 

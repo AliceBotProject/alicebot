@@ -34,7 +34,7 @@ onMounted(async () => {
     if (pypiJson.value.info.author?.length)
       author.value = pypiJson.value.info.author
     else
-      author.value = pypiJson.value.info.author_email.match(/([^<]*)\s*<.*?>/)?.[1].trim() ?? ''
+      author.value = pypiJson.value.info.author_email.match(/([^<>]*)<.*?>/)?.[1].trim() ?? ''
     homepage.value = pypiJson.value.info.project_urls.Repository ?? pypiJson.value.info.project_urls.Homepage ?? ''
     tags.value = pypiJson.value.info.keywords
       .split(/[,\s]/)

@@ -73,7 +73,6 @@ target-version = "py38"
 select = ["ALL"]
 ignore = [
     "C90",     # mccabe
-    "BLE",     # flake8-blind-except
     "FBT",     # flake8-boolean-trap
     "COM",     # flake8-commas
     "EM",      # flake8-errmsg
@@ -82,8 +81,6 @@ ignore = [
     "TID",     # flake8-tidy-imports
     "E501",    # Line too long, handled by formatter
     "D415",    # First line should end with a period, question mark, or exclamation point
-    "ANN101",  # Missing type annotation for self
-    "ANN102",  # Missing type annotation for cls
     "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
     "S101",    # Use of assert detected
     "PGH003",  # Use specific rule codes when ignoring type issues
@@ -91,10 +88,8 @@ ignore = [
     "PLR0913", # Too many arguments to function call
     "TRY003",  # Avoid specifying long messages outside the exception class
     "PERF203", # try-except within a loop incurs performance overhead
-    "RUF001",  # String contains ambiguous unicode character string
-    "RUF002",  # Docstring contains ambiguous unicode character string
-    "RUF003",  # Comment contains ambiguous unicode character string
 ]
+allowed-confusables = ["，", "：", "！"]
 
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "type"]

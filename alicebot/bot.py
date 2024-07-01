@@ -766,7 +766,7 @@ class Bot:
                         except OSError:
                             continue
                     if plugin_module_name is None:
-                        rel_path = plugin_.resolve().relative_to(Path().resolve())
+                        rel_path = plugin_.resolve().relative_to(Path().cwd())
                         if rel_path.stem == "__init__":
                             plugin_module_name = ".".join(rel_path.parts[:-1])
                         else:

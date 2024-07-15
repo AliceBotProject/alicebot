@@ -1,5 +1,6 @@
 import inspect
-from typing import Any, Awaitable, Callable, ClassVar, Optional, Tuple, Union
+from collections.abc import Awaitable
+from typing import Any, Callable, ClassVar, Optional, Union
 
 from alicebot import Adapter, Event, MessageEvent
 
@@ -16,7 +17,7 @@ class FakeAdapter(Adapter[Event[Any], None]):
     ]
 
     name: str = "fake_adapter"
-    event_factories: ClassVar[Tuple[EventFactory, ...]] = ()
+    event_factories: ClassVar[tuple[EventFactory, ...]] = ()
     handle_get: ClassVar[bool] = True
 
     async def run(self) -> None:

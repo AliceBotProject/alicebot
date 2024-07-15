@@ -11,5 +11,5 @@ class Schedule(Plugin):
 
     async def rule(self) -> bool:
         return (
-            self.event.type == "apscheduler" and type(self) == self.event.plugin_class
+            self.event.type == "apscheduler" and type(self) is self.event.plugin_class
         )

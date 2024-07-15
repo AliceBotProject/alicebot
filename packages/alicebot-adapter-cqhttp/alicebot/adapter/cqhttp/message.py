@@ -1,6 +1,6 @@
 """CQHTTP 适配器消息。"""
 
-from typing import Literal, Optional, Type, Union
+from typing import Literal, Optional, Union
 from typing_extensions import Self
 
 from alicebot.message import Message, MessageSegment
@@ -12,7 +12,7 @@ class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
     """CQHTTP 消息。"""
 
     @classmethod
-    def get_segment_class(cls) -> Type["CQHTTPMessageSegment"]:
+    def get_segment_class(cls) -> type["CQHTTPMessageSegment"]:
         """获取消息字段类。
 
         Returns:
@@ -25,7 +25,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     """CQHTTP 消息字段。"""
 
     @classmethod
-    def get_message_class(cls) -> Type[CQHTTPMessage]:
+    def get_message_class(cls) -> type[CQHTTPMessage]:
         """获取消息类。
 
         Returns:

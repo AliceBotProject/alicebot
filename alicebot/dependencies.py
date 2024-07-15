@@ -4,28 +4,22 @@
 """
 
 import inspect
-from contextlib import AsyncExitStack, asynccontextmanager, contextmanager
-from typing import (
-    Any,
-    AsyncContextManager,
-    AsyncGenerator,
-    Callable,
-    ContextManager,
-    Dict,
-    Generator,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-    cast,
+from collections.abc import AsyncGenerator, Generator
+from contextlib import (
+    AbstractAsyncContextManager,
+    AbstractContextManager,
+    AsyncExitStack,
+    asynccontextmanager,
+    contextmanager,
 )
+from typing import Any, Callable, Optional, TypeVar, Union, cast
 
 from alicebot.utils import get_annotations, sync_ctx_manager_wrapper
 
 _T = TypeVar("_T")
 Dependency = Union[
     # Class
-    Type[Union[_T, AsyncContextManager[_T], ContextManager[_T]]],
+    type[Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]]],
     # GeneratorContextManager
     Callable[[], AsyncGenerator[_T, None]],
     Callable[[], Generator[_T, None, None]],
@@ -80,7 +74,7 @@ async def solve_dependencies(
     *,
     use_cache: bool,
     stack: AsyncExitStack,
-    dependency_cache: Dict[Dependency[Any], Any],
+    dependency_cache: dict[Dependency[Any], Any],
 ) -> _T:
     """解析子依赖。
 
@@ -101,7 +95,7 @@ async def solve_dependencies(
 
     if isinstance(dependent, type):
         # type of dependent is Type[T]
-        values: Dict[str, Any] = {}
+        values: dict[str, Any] = {}
         ann = get_annotations(dependent)
         for name, sub_dependent in inspect.getmembers(
             dependent, lambda x: isinstance(x, InnerDepends)
@@ -119,16 +113,16 @@ async def solve_dependencies(
                 dependency_cache=dependency_cache,
             )
         depend_obj = cast(
-            Union[_T, AsyncContextManager[_T], ContextManager[_T]],
+            Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]],
             dependent.__new__(dependent),  # pyright: ignore
         )
         for key, value in values.items():
             setattr(depend_obj, key, value)
         depend_obj.__init__()  # type: ignore[misc] # pylint: disable=unnecessary-dunder-call
 
-        if isinstance(depend_obj, AsyncContextManager):
+        if isinstance(depend_obj, AbstractAsyncContextManager):
             depend = await stack.enter_async_context(depend_obj)
-        elif isinstance(depend_obj, ContextManager):
+        elif isinstance(depend_obj, AbstractContextManager):
             depend = await stack.enter_async_context(
                 sync_ctx_manager_wrapper(depend_obj)
             )

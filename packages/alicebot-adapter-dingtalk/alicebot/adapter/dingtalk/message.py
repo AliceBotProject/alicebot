@@ -1,6 +1,6 @@
 """DingTalk 适配器消息。"""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import model_serializer
 
@@ -31,7 +31,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         return super().__str__()
 
     @model_serializer
-    def ser_model(self) -> Dict[str, Any]:
+    def ser_model(self) -> dict[str, Any]:
         """返回符合钉钉消息标准的消息字段字典。
 
         Returns:
@@ -52,7 +52,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         return ""
 
     @classmethod
-    def raw(cls, data: Dict[str, Any]) -> "DingTalkMessage":
+    def raw(cls, data: dict[str, Any]) -> "DingTalkMessage":
         """DingTalk 原始消息"""
         return cls(type="raw", data=data)
 
@@ -104,7 +104,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
 
     @classmethod
     def action_card_multi_btns(
-        cls, title: str, text: str, btns: List[Any], btn_orientation: str = "0"
+        cls, title: str, text: str, btns: list[Any], btn_orientation: str = "0"
     ) -> "DingTalkMessage":
         """DingTalk 独立跳转 actionCard 消息"""
         return cls(
@@ -118,15 +118,15 @@ class DingTalkMessage(MessageSegment):  # type: ignore
         )
 
     @classmethod
-    def feed_card(cls, links: List[Any]) -> "DingTalkMessage":
+    def feed_card(cls, links: list[Any]) -> "DingTalkMessage":
         """DingTalk feedCard 消息"""
         return cls(type="feedCard", data={"links": links})
 
     @classmethod
     def at(
         cls,
-        at_mobiles: Optional[List[str]] = None,
-        at_user_ids: Optional[List[str]] = None,
+        at_mobiles: Optional[list[str]] = None,
+        at_user_ids: Optional[list[str]] = None,
         is_at_all: bool = False,
     ) -> "DingTalkMessage":
         """DingTalk At 信息"""

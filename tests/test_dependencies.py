@@ -1,6 +1,7 @@
+from collections.abc import AsyncGenerator, Generator
 from contextlib import AsyncExitStack
 from types import TracebackType
-from typing import AsyncGenerator, Generator, Optional, Type
+from typing import Optional
 from typing_extensions import Self
 
 import pytest
@@ -81,7 +82,7 @@ async def test_depends_context_manager() -> None:
 
         def __exit__(
             self,
-            __exc_type: Optional[Type[BaseException]],
+            __exc_type: Optional[type[BaseException]],
             __exc_value: Optional[BaseException],
             __traceback: Optional[TracebackType],
         ) -> None:
@@ -124,7 +125,7 @@ async def test_depends_async_context_manager() -> None:
 
         async def __aexit__(
             self,
-            __exc_type: Optional[Type[BaseException]],
+            __exc_type: Optional[type[BaseException]],
             __exc_value: Optional[BaseException],
             __traceback: Optional[TracebackType],
         ) -> None:

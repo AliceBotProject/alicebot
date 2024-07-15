@@ -1,5 +1,4 @@
-from typing import Any
-from typing_extensions import Annotated
+from typing import Annotated, Any
 
 from fake_adapter import FakeAdapter, FakeMessageEvent
 

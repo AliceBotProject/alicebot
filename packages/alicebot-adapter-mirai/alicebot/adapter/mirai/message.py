@@ -1,7 +1,7 @@
 """Mirai 适配器消息。"""
 
 import json
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Optional
 from typing_extensions import Self
 
 from pydantic import model_serializer
@@ -16,7 +16,7 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
     """Mirai 消息"""
 
     @classmethod
-    def get_segment_class(cls) -> Type["MiraiMessageSegment"]:
+    def get_segment_class(cls) -> type["MiraiMessageSegment"]:
         """获取消息字段类。
 
         Returns:
@@ -24,7 +24,7 @@ class MiraiMessage(Message["MiraiMessageSegment"]):
         """
         return MiraiMessageSegment
 
-    def as_message_chain(self) -> List[Dict[str, Any]]:
+    def as_message_chain(self) -> list[dict[str, Any]]:
         """返回符合 Mirai-api-http 标准的 messageChain 数组。
 
         Returns:
@@ -48,7 +48,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         )
 
     @classmethod
-    def get_message_class(cls) -> Type["MiraiMessage"]:
+    def get_message_class(cls) -> type["MiraiMessage"]:
         """获取消息类。
 
         Returns:
@@ -81,7 +81,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return json.dumps(self, cls=PydanticEncoder)
 
     @model_serializer
-    def ser_model(self) -> Dict[str, Any]:
+    def ser_model(self) -> dict[str, Any]:
         """返回符合 Mirai-api-http 标准的消息字段字典。
 
         Returns:

@@ -4,11 +4,8 @@
 from typing import (
     TYPE_CHECKING,
     Any,
-    Dict,
-    List,
     Literal,
     Optional,
-    Tuple,
     get_args,
     get_origin,
 )
@@ -54,7 +51,7 @@ class Status(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     good: bool
-    bots: List[BotStatus]
+    bots: list[BotStatus]
 
 
 def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
@@ -79,7 +76,7 @@ class OntBotEvent(Event["OneBotAdapter"]):
     sub_type: str
 
     @classmethod
-    def get_event_type(cls) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    def get_event_type(cls) -> tuple[Optional[str], Optional[str], Optional[str]]:
         """获取事件类型。
 
         Returns:
@@ -157,7 +154,7 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
 
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -184,7 +181,7 @@ class PrivateMessageEvent(MessageEvent):
 
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -208,7 +205,7 @@ class GroupMessageEvent(MessageEvent):
 
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -233,7 +230,7 @@ class ChannelMessageEvent(MessageEvent):
 
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:

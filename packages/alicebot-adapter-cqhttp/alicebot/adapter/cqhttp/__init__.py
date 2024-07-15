@@ -9,18 +9,9 @@ import inspect
 import json
 import sys
 import time
+from collections.abc import Awaitable
 from functools import partial
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    ClassVar,
-    Dict,
-    Literal,
-    Optional,
-    Tuple,
-    Type,
-)
+from typing import Any, Callable, ClassVar, Literal, Optional
 
 import aiohttp
 import structlog
@@ -40,8 +31,8 @@ __all__ = ["CQHTTPAdapter"]
 
 logger = structlog.stdlib.get_logger()
 
-EventModels = Dict[
-    Tuple[Optional[str], Optional[str], Optional[str]], Type[CQHTTPEvent]
+EventModels = dict[
+    tuple[Optional[str], Optional[str], Optional[str]], type[CQHTTPEvent]
 ]
 
 DEFAULT_EVENT_MODELS: EventModels = {}
@@ -58,7 +49,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
     event_models: ClassVar[EventModels] = DEFAULT_EVENT_MODELS
 
-    _api_response: Dict[str, Any]
+    _api_response: dict[str, Any]
     _api_response_cond: asyncio.Condition
     _api_id: int = 0
 
@@ -137,7 +128,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         return self._api_id
 
     @classmethod
-    def add_event_model(cls, event_model: Type[CQHTTPEvent]) -> None:
+    def add_event_model(cls, event_model: type[CQHTTPEvent]) -> None:
         """添加自定义事件模型，事件模型类必须继承于 `CQHTTPEvent`。
 
         Args:
@@ -151,7 +142,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         post_type: Optional[str],
         detail_type: Optional[str],
         sub_type: Optional[str],
-    ) -> Type[CQHTTPEvent]:
+    ) -> type[CQHTTPEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:
@@ -169,7 +160,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         )
         return event_model or cls.event_models[(None, None, None)]
 
-    async def handle_cqhttp_event(self, msg: Dict[str, Any]) -> None:
+    async def handle_cqhttp_event(self, msg: dict[str, Any]) -> None:
         """处理 CQHTTP 事件。
 
         Args:

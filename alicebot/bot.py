@@ -11,28 +11,14 @@ import sys
 import threading
 import time
 from collections import defaultdict
+from collections.abc import Awaitable
 from contextlib import AsyncExitStack
 from itertools import chain
 from pathlib import Path
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    Set,
-    Tuple,
-    Type,
-    Union,
-    overload,
-)
+from typing import Any, Callable, Optional, Union, overload
 
 import structlog
-from pydantic import (
-    ValidationError,
-    create_model,  # pyright: ignore[reportUnknownVariableType]
-)
+from pydantic import ValidationError, create_model
 
 from alicebot.adapter import Adapter
 from alicebot.config import AdapterConfig, ConfigModel, MainConfig, PluginConfig
@@ -86,51 +72,51 @@ class Bot:
 
     config: MainConfig
     should_exit: asyncio.Event  # pyright: ignore[reportUninitializedInstanceVariable]
-    adapters: List[Adapter[Any, Any]]
-    plugins_priority_dict: Dict[int, List[Type[Plugin[Any, Any, Any]]]]
-    plugin_state: Dict[str, Any]
-    global_state: Dict[Any, Any]
+    adapters: list[Adapter[Any, Any]]
+    plugins_priority_dict: dict[int, list[type[Plugin[Any, Any, Any]]]]
+    plugin_state: dict[str, Any]
+    global_state: dict[Any, Any]
 
     _condition: asyncio.Condition  # 用于处理 get 的 Condition # pyright: ignore[reportUninitializedInstanceVariable]
     _current_event: Optional[Event[Any]]  # 当前待处理的 Event
 
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
-    _raw_config_dict: Dict[str, Any]  # 原始配置字典
-    _adapter_tasks: Set[
+    _raw_config_dict: dict[str, Any]  # 原始配置字典
+    _adapter_tasks: set[
         "asyncio.Task[None]"
     ]  # 适配器任务集合，用于保持对适配器任务的引用
-    _handle_event_tasks: Set[
+    _handle_event_tasks: set[
         "asyncio.Task[None]"
     ]  # 事件处理任务，用于保持对适配器任务的引用
 
     # 以下属性不会在重启时清除
     _config_file: Optional[str]  # 配置文件
-    _config_dict: Optional[Dict[str, Any]]  # 配置字典
+    _config_dict: Optional[dict[str, Any]]  # 配置字典
     _hot_reload: bool  # 热重载
 
-    _extend_plugins: List[
-        Union[Type[Plugin[Any, Any, Any]], str, Path]
+    _extend_plugins: list[
+        Union[type[Plugin[Any, Any, Any]], str, Path]
     ]  # 使用 load_plugins() 方法程序化加载的插件列表
-    _extend_plugin_dirs: List[
+    _extend_plugin_dirs: list[
         Path
     ]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
-    _extend_adapters: List[
-        Union[Type[Adapter[Any, Any]], str]
+    _extend_adapters: list[
+        Union[type[Adapter[Any, Any]], str]
     ]  # 使用 load_adapter() 方法程序化加载的适配器列表
-    _bot_run_hooks: List[BotHook]
-    _bot_exit_hooks: List[BotHook]
-    _adapter_startup_hooks: List[AdapterHook]
-    _adapter_run_hooks: List[AdapterHook]
-    _adapter_shutdown_hooks: List[AdapterHook]
-    _event_preprocessor_hooks: List[EventHook]
-    _event_postprocessor_hooks: List[EventHook]
+    _bot_run_hooks: list[BotHook]
+    _bot_exit_hooks: list[BotHook]
+    _adapter_startup_hooks: list[AdapterHook]
+    _adapter_run_hooks: list[AdapterHook]
+    _adapter_shutdown_hooks: list[AdapterHook]
+    _event_preprocessor_hooks: list[EventHook]
+    _event_postprocessor_hooks: list[EventHook]
 
     def __init__(
         self,
         *,
         config_file: Optional[str] = "config.toml",
-        config_dict: Optional[Dict[str, Any]] = None,
+        config_dict: Optional[dict[str, Any]] = None,
         hot_reload: bool = False,
     ) -> None:
         """初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
@@ -174,7 +160,7 @@ class Bot:
         sys.meta_path.insert(0, self._module_path_finder)
 
     @property
-    def plugins(self) -> List[Type[Plugin[Any, Any, Any]]]:
+    def plugins(self) -> list[type[Plugin[Any, Any, Any]]]:
         """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
@@ -269,9 +255,9 @@ class Bot:
 
     def _remove_plugin_by_path(
         self, file: Path
-    ) -> List[Type[Plugin[Any, Any, Any]]]:  # pragma: no cover
+    ) -> list[type[Plugin[Any, Any, Any]]]:  # pragma: no cover
         """根据路径删除已加载的插件。"""
-        removed_plugins: List[Type[Plugin[Any, Any, Any]]] = []
+        removed_plugins: list[type[Plugin[Any, Any, Any]]] = []
         for plugins in self.plugins_priority_dict.values():
             _removed_plugins = list(
                 filter(
@@ -369,11 +355,11 @@ class Bot:
         """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
-            source: Union[List[Type[Plugin[Any, Any, Any]]], List[Adapter[Any, Any]]],
+            source: Union[list[type[Plugin[Any, Any, Any]]], list[Adapter[Any, Any]]],
             name: str,
-            base: Type[ConfigModel],
-        ) -> Tuple[Type[ConfigModel], ConfigModel]:
-            config_update_dict: Dict[str, Any] = {}
+            base: type[ConfigModel],
+        ) -> tuple[type[ConfigModel], ConfigModel]:
+            config_update_dict: dict[str, Any] = {}
             for i in source:
                 config_class = getattr(i, "Config", None)
                 if is_config_class(config_class):
@@ -576,7 +562,7 @@ class Bot:
         func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
-        adapter_type: Type[Adapter[EventT, Any]],
+        adapter_type: type[Adapter[EventT, Any]],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
     ) -> EventT: ...
@@ -586,8 +572,8 @@ class Bot:
         self,
         func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Type[EventT],
-        adapter_type: Optional[Type[AdapterT]] = None,
+        event_type: type[EventT],
+        adapter_type: Optional[type[AdapterT]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
     ) -> EventT: ...
@@ -596,8 +582,8 @@ class Bot:
         self,
         func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Optional[Type[Event[Any]]] = None,
-        adapter_type: Optional[Type[Adapter[Any, Any]]] = None,
+        event_type: Optional[type[Event[Any]]] = None,
+        adapter_type: Optional[type[Adapter[Any, Any]]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
     ) -> Event[Any]:
@@ -662,7 +648,7 @@ class Bot:
 
     def _load_plugin_class(
         self,
-        plugin_class: Type[Plugin[Any, Any, Any]],
+        plugin_class: type[Plugin[Any, Any, Any]],
         plugin_load_type: PluginLoadType,
         plugin_file_path: Optional[str],
     ) -> None:
@@ -712,7 +698,7 @@ class Bot:
 
     def _load_plugins(
         self,
-        *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path],
+        *plugins: Union[type[Plugin[Any, Any, Any]], str, Path],
         plugin_load_type: Optional[PluginLoadType] = None,
         reload: bool = False,
     ) -> None:
@@ -787,7 +773,7 @@ class Bot:
                 logger.exception("Load plugin failed:", plugin=plugin_)
 
     def load_plugins(
-        self, *plugins: Union[Type[Plugin[Any, Any, Any]], str, Path]
+        self, *plugins: Union[type[Plugin[Any, Any, Any]], str, Path]
     ) -> None:
         """加载插件。
 
@@ -829,7 +815,7 @@ class Bot:
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)
 
-    def _load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]) -> None:
+    def _load_adapters(self, *adapters: Union[type[Adapter[Any, Any]], str]) -> None:
         """加载适配器。
 
         Args:
@@ -873,7 +859,7 @@ class Bot:
             else:
                 self.adapters.append(adapter_object)
 
-    def load_adapters(self, *adapters: Union[Type[Adapter[Any, Any]], str]) -> None:
+    def load_adapters(self, *adapters: Union[type[Adapter[Any, Any]], str]) -> None:
         """加载适配器。
 
         Args:
@@ -889,10 +875,10 @@ class Bot:
     def get_adapter(self, adapter: str) -> Adapter[Any, Any]: ...
 
     @overload
-    def get_adapter(self, adapter: Type[AdapterT]) -> AdapterT: ...
+    def get_adapter(self, adapter: type[AdapterT]) -> AdapterT: ...
 
     def get_adapter(
-        self, adapter: Union[str, Type[AdapterT]]
+        self, adapter: Union[str, type[AdapterT]]
     ) -> Union[Adapter[Any, Any], AdapterT]:
         """按照名称或适配器类获取已经加载的适配器。
 
@@ -913,7 +899,7 @@ class Bot:
                 return _adapter
         raise LookupError(f'Can not find adapter named "{adapter}"')
 
-    def get_plugin(self, name: str) -> Type[Plugin[Any, Any, Any]]:
+    def get_plugin(self, name: str) -> type[Plugin[Any, Any, Any]]:
         """按照名称获取已经加载的插件类。
 
         Args:

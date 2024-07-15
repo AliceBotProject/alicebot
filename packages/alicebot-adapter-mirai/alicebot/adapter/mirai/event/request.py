@@ -1,7 +1,7 @@
 """申请事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import Any, Dict, Literal
+from typing import Any, Literal
 
 from .base import MiraiEvent
 
@@ -9,7 +9,7 @@ from .base import MiraiEvent
 class RequestEvent(MiraiEvent):
     """申请事件"""
 
-    async def approve(self, message: str = "") -> Dict[str, Any]:
+    async def approve(self, message: str = "") -> dict[str, Any]:
         """同意请求。
 
         Args:
@@ -20,7 +20,7 @@ class RequestEvent(MiraiEvent):
         """
         raise NotImplementedError
 
-    async def refuse(self, message: str = "") -> Dict[str, Any]:
+    async def refuse(self, message: str = "") -> dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -42,7 +42,7 @@ class NewFriendRequestEvent(RequestEvent):
     nick: str
     message: str
 
-    async def approve(self, message: str = "") -> Dict[str, Any]:
+    async def approve(self, message: str = "") -> dict[str, Any]:
         """同意请求。
 
         Args:
@@ -61,7 +61,7 @@ class NewFriendRequestEvent(RequestEvent):
 
     async def refuse(
         self, message: str = "", black_list: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -91,7 +91,7 @@ class MemberJoinRequestEvent(RequestEvent):
     nick: str
     message: str
 
-    async def approve(self, message: str = "") -> Dict[str, Any]:
+    async def approve(self, message: str = "") -> dict[str, Any]:
         """同意请求。
 
         Args:
@@ -110,7 +110,7 @@ class MemberJoinRequestEvent(RequestEvent):
 
     async def refuse(
         self, message: str = "", black_list: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """拒绝请求。
 
         Args:
@@ -130,7 +130,7 @@ class MemberJoinRequestEvent(RequestEvent):
 
     async def ignore(
         self, message: str = "", black_list: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """忽略请求。
 
         Args:
@@ -160,7 +160,7 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
     nick: str
     message: str
 
-    async def approve(self, message: str = "") -> Dict[str, Any]:
+    async def approve(self, message: str = "") -> dict[str, Any]:
         """同意请求。
 
         Args:
@@ -177,7 +177,7 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
             message=message,
         )
 
-    async def refuse(self, message: str = "") -> Dict[str, Any]:
+    async def refuse(self, message: str = "") -> dict[str, Any]:
         """拒绝请求。
 
         Args:

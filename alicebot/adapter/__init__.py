@@ -5,14 +5,13 @@
 
 import os
 from abc import ABC, abstractmethod
+from collections.abc import Awaitable
 from typing import (
     TYPE_CHECKING,
     Any,
-    Awaitable,
     Callable,
     Generic,
     Optional,
-    Type,
     TypeVar,
     Union,
     final,
@@ -50,7 +49,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
 
     name: str
     bot: "Bot"
-    Config: Type[ConfigT]
+    Config: type[ConfigT]
 
     def __init__(self, bot: "Bot") -> None:
         """初始化。
@@ -120,7 +119,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         self,
         func: Optional[Callable[[_EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
-        event_type: Type[_EventT],
+        event_type: type[_EventT],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
     ) -> _EventT: ...

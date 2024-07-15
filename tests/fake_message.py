@@ -1,4 +1,3 @@
-from typing import Type
 from typing_extensions import Self
 
 from alicebot.message import Message, MessageSegment
@@ -8,7 +7,7 @@ class FakeMessage(Message["FakeMessageSegment"]):
     """用于测试的消息。"""
 
     @classmethod
-    def get_segment_class(cls) -> Type["FakeMessageSegment"]:
+    def get_segment_class(cls) -> type["FakeMessageSegment"]:
         """获取消息字段类。
 
         Returns:
@@ -21,7 +20,7 @@ class FakeMessageSegment(MessageSegment["FakeMessage"]):
     """用于测试的消息字段。"""
 
     @classmethod
-    def get_message_class(cls) -> Type["FakeMessage"]:
+    def get_message_class(cls) -> type["FakeMessage"]:
         """获取消息类。
 
         Returns:

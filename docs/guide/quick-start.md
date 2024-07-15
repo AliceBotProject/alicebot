@@ -3,7 +3,7 @@
 ## 安装
 
 ::: warning 注意
-AliceBot 仅支持 Python 3.8+ 版本。
+AliceBot 仅支持 Python 3.9+ 版本。
 :::
 
 使用 Python 软件包安装程序 (pip) 进行安装：

@@ -2,7 +2,7 @@ import asyncio
 import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, Union
+from typing import Any, Union
 
 import pytest
 import structlog
@@ -40,7 +40,7 @@ def bot() -> Bot:
 
     async def set_exception_handler(_bot: Bot) -> None:
         def async_loop_exception_handler(
-            loop: asyncio.AbstractEventLoop, context: Dict[str, Any]
+            loop: asyncio.AbstractEventLoop, context: dict[str, Any]
         ) -> None:
             nonlocal exception
             exception = context.get("exception", RuntimeError(context["message"]))

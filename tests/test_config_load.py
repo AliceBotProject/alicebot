@@ -4,7 +4,7 @@
 # pyright: reportPrivateUsage=false
 import json
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any
 
 import pytest
 import structlog
@@ -15,30 +15,30 @@ from alicebot import Bot
 
 
 @pytest.fixture(scope="module")
-def raw_config() -> Dict[str, Any]:
+def raw_config() -> dict[str, Any]:
     with Path("config_files/raw_config.json").open(encoding="utf-8") as f:
         return json.load(f)
 
 
-def test_load_config(raw_config: Dict[str, Any]) -> None:
+def test_load_config(raw_config: dict[str, Any]) -> None:
     bot = Bot()
     bot._reload_config_dict()
     assert bot.config.model_dump(mode="json") == raw_config
 
 
-def test_load_config_toml(raw_config: Dict[str, Any]) -> None:
+def test_load_config_toml(raw_config: dict[str, Any]) -> None:
     bot = Bot(config_file="config_files/config.toml")
     bot._reload_config_dict()
     assert bot.config.model_dump(mode="json") == raw_config
 
 
-def test_load_config_json(raw_config: Dict[str, Any]) -> None:
+def test_load_config_json(raw_config: dict[str, Any]) -> None:
     bot = Bot(config_file="config_files/config.json")
     bot._reload_config_dict()
     assert bot.config.model_dump(mode="json") == raw_config
 
 
-def test_load_config_dict(raw_config: Dict[str, Any]) -> None:
+def test_load_config_dict(raw_config: dict[str, Any]) -> None:
     with Path("config_files/config.json").open(encoding="utf-8") as f:
         config_dict = json.load(f)
     bot = Bot(config_dict=config_dict)

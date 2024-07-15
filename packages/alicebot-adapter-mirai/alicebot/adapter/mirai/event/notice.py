@@ -1,9 +1,9 @@
 """通知事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Literal, Optional
 
-from pydantic import create_model  # pyright: ignore[reportUnknownVariableType]
+from pydantic import create_model
 
 from .base import (
     FriendInfo,
@@ -44,7 +44,7 @@ class FriendInputStatusChangedEvent(FriendEvent):
 
 
 # 因为 from 是 python 关键字，所以不能直接定义
-_temp_dict: Dict[str, Any] = {
+_temp_dict: dict[str, Any] = {
     "from": (str, ...),
     "to": (str, ...),
 }

@@ -1,8 +1,9 @@
 import inspect
 import json
 from abc import ABC
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, Generator, cast
+from typing import Any, cast
 
 import get_classes_test_module
 import pytest

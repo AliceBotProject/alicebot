@@ -1,16 +1,7 @@
 """CQHTTP 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Dict,
-    Literal,
-    Optional,
-    Tuple,
-    get_args,
-    get_origin,
-)
+from typing import TYPE_CHECKING, Any, Literal, Optional, get_args, get_origin
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.fields import FieldInfo
@@ -92,7 +83,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         return getattr(self, "user_id", None) == self.self_id
 
     @classmethod
-    def get_event_type(cls) -> Tuple[Optional[str], Optional[str], Optional[str]]:
+    def get_event_type(cls) -> tuple[Optional[str], Optional[str], Optional[str]]:
         """获取事件类型。
 
         Returns:
@@ -148,7 +139,7 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
 
     async def reply(
         self, message: BuildMessageType[CQHTTPMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -169,7 +160,7 @@ class PrivateMessageEvent(MessageEvent):
 
     async def reply(
         self, message: BuildMessageType[CQHTTPMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -194,7 +185,7 @@ class GroupMessageEvent(MessageEvent):
 
     async def reply(
         self, message: BuildMessageType[CQHTTPMessageSegment]
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -341,7 +332,7 @@ class RequestEvent(CQHTTPEvent):
     post_type: Literal["request"]
     request_type: str
 
-    async def approve(self) -> Dict[str, Any]:
+    async def approve(self) -> dict[str, Any]:
         """同意请求。
 
         Returns:
@@ -349,7 +340,7 @@ class RequestEvent(CQHTTPEvent):
         """
         raise NotImplementedError
 
-    async def refuse(self) -> Dict[str, Any]:
+    async def refuse(self) -> dict[str, Any]:
         """拒绝请求。
 
         Returns:
@@ -367,7 +358,7 @@ class FriendRequestEvent(RequestEvent):
     comment: str
     flag: str
 
-    async def approve(self, remark: str = "") -> Dict[str, Any]:
+    async def approve(self, remark: str = "") -> dict[str, Any]:
         """同意请求。
 
         Args:
@@ -380,7 +371,7 @@ class FriendRequestEvent(RequestEvent):
             flag=self.flag, approve=True, remark=remark
         )
 
-    async def refuse(self) -> Dict[str, Any]:
+    async def refuse(self) -> dict[str, Any]:
         """拒绝请求。
 
         Returns:
@@ -400,7 +391,7 @@ class GroupRequestEvent(RequestEvent):
     comment: str
     flag: str
 
-    async def approve(self) -> Dict[str, Any]:
+    async def approve(self) -> dict[str, Any]:
         """同意请求。
 
         Returns:
@@ -410,7 +401,7 @@ class GroupRequestEvent(RequestEvent):
             flag=self.flag, sub_type=self.sub_type, approve=True
         )
 
-    async def refuse(self, reason: str = "") -> Dict[str, Any]:
+    async def refuse(self, reason: str = "") -> dict[str, Any]:
         """拒绝请求。
 
         Args:

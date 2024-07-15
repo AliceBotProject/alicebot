@@ -1,6 +1,5 @@
 """OneBot 适配器消息。"""
 
-from typing import Type
 from typing_extensions import Self
 
 from alicebot.message import Message, MessageSegment
@@ -12,7 +11,7 @@ class OneBotMessage(Message["OneBotMessageSegment"]):
     """OneBot 消息。"""
 
     @classmethod
-    def get_segment_class(cls) -> Type["OneBotMessageSegment"]:
+    def get_segment_class(cls) -> type["OneBotMessageSegment"]:
         """获取消息字段类。
 
         Returns:
@@ -25,7 +24,7 @@ class OneBotMessageSegment(MessageSegment["OneBotMessage"]):
     """OneBot 消息字段。"""
 
     @classmethod
-    def get_message_class(cls) -> Type["OneBotMessage"]:
+    def get_message_class(cls) -> type["OneBotMessage"]:
         """获取消息类。
 
         Returns:

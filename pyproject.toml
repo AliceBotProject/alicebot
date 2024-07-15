@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Communications :: Chat",
 ]
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 dependencies = [
     "tomli>=2.0.0,<3.0.0;python_version<'3.11'",
     "pydantic>=2.0.3,<3.0.0",
@@ -67,7 +67,7 @@ Changelog = "https://docs.alicebot.dev/changelog.html"
 
 [tool.ruff]
 line-length = 88
-target-version = "py38"
+target-version = "py39"
 
 [tool.ruff.lint]
 select = ["ALL"]
@@ -123,7 +123,7 @@ keep-runtime-typing = true
 [tool.pyright]
 ignore = ["examples/plugins"]
 extraPaths = ["tests", "tests/test_utils"]
-pythonVersion = "3.8"
+pythonVersion = "3.9"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
 reportMissingTypeStubs = false
@@ -136,7 +136,7 @@ reportShadowedImports = true
 reportUninitializedInstanceVariable = true
 
 [tool.mypy]
-python_version = "3.8"
+python_version = "3.9"
 strict = true
 exclude = [
     '^packages/.*/alicebot/__init__\.py$',

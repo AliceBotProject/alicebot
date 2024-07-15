@@ -3,7 +3,8 @@
 此模块定义了部分 AliceBot 使用的类型。
 """
 
-from typing import TYPE_CHECKING, Awaitable, Callable, Optional, TypeVar
+from collections.abc import Awaitable
+from typing import TYPE_CHECKING, Callable, Optional, TypeVar
 
 from alicebot.message import BuildMessageType, MessageSegmentT, MessageT
 

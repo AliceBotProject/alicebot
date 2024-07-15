@@ -9,7 +9,8 @@ import os.path
 import sys
 import traceback
 from abc import ABC
-from contextlib import asynccontextmanager
+from collections.abc import AsyncGenerator, Awaitable, Coroutine, Sequence
+from contextlib import AbstractContextManager, asynccontextmanager
 from functools import partial
 from importlib.abc import MetaPathFinder
 from importlib.machinery import ModuleSpec, PathFinder
@@ -17,18 +18,9 @@ from types import GetSetDescriptorType, ModuleType
 from typing import (
     TYPE_CHECKING,
     Any,
-    AsyncGenerator,
-    Awaitable,
     Callable,
     ClassVar,
-    ContextManager,
-    Coroutine,
-    Dict,
-    List,
     Optional,
-    Sequence,
-    Tuple,
-    Type,
     TypeVar,
     Union,
     cast,
@@ -59,7 +51,7 @@ __all__ = [
 _T = TypeVar("_T")
 _P = ParamSpec("_P")
 _R = TypeVar("_R")
-_TypeT = TypeVar("_TypeT", bound=Type[Any])
+_TypeT = TypeVar("_TypeT", bound=type[Any])
 
 StrOrBytesPath: TypeAlias = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
 
@@ -67,7 +59,7 @@ StrOrBytesPath: TypeAlias = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"
 class ModulePathFinder(MetaPathFinder):
     """用于查找 AliceBot 组件的元路径查找器。"""
 
-    path: ClassVar[List[str]] = []
+    path: ClassVar[list[str]] = []
 
     def find_spec(
         self,
@@ -81,7 +73,7 @@ class ModulePathFinder(MetaPathFinder):
         return PathFinder.find_spec(fullname, self.path + list(path), target)
 
 
-def is_config_class(config_class: Any) -> TypeGuard[Type[ConfigModel]]:
+def is_config_class(config_class: Any) -> TypeGuard[type[ConfigModel]]:
     """判断一个对象是否是配置类。
 
     Args:
@@ -99,7 +91,7 @@ def is_config_class(config_class: Any) -> TypeGuard[Type[ConfigModel]]:
     )
 
 
-def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_TypeT]:
+def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> list[_TypeT]:
     """从模块中查找指定类型的类。
 
     Args:
@@ -109,7 +101,7 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_Ty
     Returns:
         返回符合条件的类的列表。
     """
-    classes: List[_TypeT] = []
+    classes: list[_TypeT] = []
     for _, module_attr in inspect.getmembers(module, inspect.isclass):
         if (
             (inspect.getmodule(module_attr) or module) is module
@@ -124,7 +116,7 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> List[_Ty
 
 def get_classes_from_module_name(
     name: str, super_class: _TypeT, *, reload: bool = False
-) -> List[Tuple[_TypeT, ModuleType]]:
+) -> list[tuple[_TypeT, ModuleType]]:
     """从指定名称的模块中查找指定类型的类。
 
     Args:
@@ -207,7 +199,7 @@ def sync_func_wrapper(
 
 @asynccontextmanager
 async def sync_ctx_manager_wrapper(
-    cm: ContextManager[_T], *, to_thread: bool = False
+    cm: AbstractContextManager[_T], *, to_thread: bool = False
 ) -> AsyncGenerator[_T, None]:
     """将同步上下文管理器包装为异步上下文管理器。
 
@@ -252,8 +244,8 @@ if sys.version_info >= (3, 10):  # pragma: no cover
 else:  # pragma: no cover
 
     def get_annotations(
-        obj: Union[Callable[..., object], Type[Any], ModuleType],
-    ) -> Dict[str, Any]:
+        obj: Union[Callable[..., object], type[Any], ModuleType],
+    ) -> dict[str, Any]:
         """计算一个对象的标注字典。
 
         Args:
@@ -266,7 +258,7 @@ else:  # pragma: no cover
         Returns:
             对象的标注字典。
         """
-        ann: Union[Dict[str, Any], None]
+        ann: Union[dict[str, Any], None]
 
         if isinstance(obj, type):
             # class

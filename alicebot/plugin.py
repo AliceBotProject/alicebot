@@ -8,17 +8,17 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import (
     TYPE_CHECKING,
+    Annotated,
     Any,
     ClassVar,
     Generic,
     NoReturn,
     Optional,
-    Tuple,
-    Type,
     cast,
     final,
+    get_args,
+    get_origin,
 )
-from typing_extensions import Annotated, get_args, get_origin
 
 from alicebot.config import ConfigModel
 from alicebot.dependencies import Depends
@@ -58,7 +58,7 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
     block: ClassVar[bool] = False
 
     # 不能使用 ClassVar 因为 PEP 526 不允许这样做
-    Config: Type[ConfigT]
+    Config: type[ConfigT]
 
     __plugin_load_type__: ClassVar[PluginLoadType]
     __plugin_file_path__: ClassVar[Optional[str]]
@@ -73,7 +73,7 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
 
     def __init_subclass__(
         cls,
-        config: Optional[Type[ConfigT]] = None,
+        config: Optional[type[ConfigT]] = None,
         init_state: Optional[StateT] = None,
         **_kwargs: Any,
     ) -> None:
@@ -85,13 +85,13 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
         """
         super().__init_subclass__()
 
-        orig_bases: Tuple[type, ...] = getattr(cls, "__orig_bases__", ())
+        orig_bases: tuple[type, ...] = getattr(cls, "__orig_bases__", ())
         for orig_base in orig_bases:
             origin_class = get_origin(orig_base)
             if inspect.isclass(origin_class) and issubclass(origin_class, Plugin):
                 try:
                     _event_t, state_t, config_t = cast(
-                        Tuple[EventT, StateT, ConfigT], get_args(orig_base)
+                        tuple[EventT, StateT, ConfigT], get_args(orig_base)
                     )
                 except ValueError:  # pragma: no cover
                     continue
@@ -100,7 +100,7 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
                     and inspect.isclass(config_t)
                     and issubclass(config_t, ConfigModel)
                 ):
-                    config = config_t  # pyright: ignore
+                    config = config_t
                 if (
                     init_state is None
                     and get_origin(state_t) is Annotated

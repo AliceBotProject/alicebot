@@ -5,21 +5,15 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import (
+from collections.abc import ItemsView, Iterator, KeysView, Mapping, ValuesView
+from typing import (  # noqa: UP035
     Any,
-    Dict,
     Generic,
-    ItemsView,
-    Iterator,
-    KeysView,
-    List,
-    Mapping,
     Optional,
     SupportsIndex,
     Type,
     TypeVar,
     Union,
-    ValuesView,
     overload,
 )
 from typing_extensions import Self
@@ -39,10 +33,10 @@ MessageT = TypeVar("MessageT", bound="Message[Any]")
 MessageSegmentT = TypeVar("MessageSegmentT", bound="MessageSegment[Any]")
 
 # 可以转化为 Message 的类型
-BuildMessageType = Union[List[MessageSegmentT], MessageSegmentT, str, Mapping[str, Any]]
+BuildMessageType = Union[list[MessageSegmentT], MessageSegmentT, str, Mapping[str, Any]]
 
 
-class Message(ABC, List[MessageSegmentT]):
+class Message(ABC, list[MessageSegmentT]):
     """消息。
 
     本类是 `List` 的子类，并重写了 `__init__()` 方法，
@@ -75,7 +69,7 @@ class Message(ABC, List[MessageSegmentT]):
 
     @classmethod
     @abstractmethod
-    def get_segment_class(cls) -> Type[MessageSegmentT]:
+    def get_segment_class(cls) -> type[MessageSegmentT]:
         """获取消息字段类。
 
         Returns:
@@ -84,7 +78,7 @@ class Message(ABC, List[MessageSegmentT]):
 
     @classmethod
     def __get_pydantic_core_schema__(
-        cls, _source: Type[Any], handler: GetCoreSchemaHandler
+        cls, _source: type[Any], handler: GetCoreSchemaHandler
     ) -> core_schema.CoreSchema:
         """Pydantic 自定义模式。"""
         return core_schema.union_schema(
@@ -93,7 +87,7 @@ class Message(ABC, List[MessageSegmentT]):
                 core_schema.no_info_after_validator_function(
                     cls,
                     handler.generate_schema(
-                        List[cls.get_segment_class()]  # type: ignore[misc]
+                        list[cls.get_segment_class()]  # type: ignore[misc]
                     ),
                 ),
             ]
@@ -340,11 +334,11 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
     """
 
     type: str
-    data: Dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict)
 
     @classmethod
     @abstractmethod
-    def get_message_class(cls) -> Type[MessageT]:
+    def get_message_class(cls) -> Type[MessageT]:  # noqa: UP006
         """获取消息类。
 
         Returns:

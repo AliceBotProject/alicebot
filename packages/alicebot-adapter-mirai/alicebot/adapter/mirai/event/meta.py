@@ -1,7 +1,7 @@
 """默认不会被传播的特殊事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import Any, List, Literal, Optional
+from typing import Any, Literal, Optional
 
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent
 
@@ -53,4 +53,4 @@ class CommandExecutedEvent(MetaEvent):
     name: str
     friend: Optional[FriendInfo] = None
     member: Optional[GroupMemberInfo] = None
-    args: List[Any]
+    args: list[Any]

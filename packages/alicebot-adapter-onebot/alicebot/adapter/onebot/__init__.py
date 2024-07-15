@@ -9,19 +9,9 @@ import inspect
 import json
 import sys
 import time
+from collections.abc import Awaitable
 from functools import partial
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    ClassVar,
-    Dict,
-    Literal,
-    Optional,
-    Tuple,
-    Type,
-    Union,
-)
+from typing import Any, Callable, ClassVar, Literal, Optional, Union
 
 import aiohttp
 import structlog
@@ -48,8 +38,8 @@ __all__ = ["OneBotAdapter"]
 
 logger = structlog.stdlib.get_logger()
 
-EventModels = Dict[
-    Tuple[Optional[str], Optional[str], Optional[str]], Type[OntBotEvent]
+EventModels = dict[
+    tuple[Optional[str], Optional[str], Optional[str]], type[OntBotEvent]
 ]
 
 DEFAULT_EVENT_MODELS: EventModels = {}
@@ -66,7 +56,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
 
     event_models: ClassVar[EventModels] = DEFAULT_EVENT_MODELS
 
-    _api_response: Dict[str, Any]
+    _api_response: dict[str, Any]
     _api_response_cond: asyncio.Condition
     _api_id: int = 0
 
@@ -145,7 +135,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         return self._api_id
 
     @classmethod
-    def add_event_model(cls, event_model: Type[OntBotEvent]) -> None:
+    def add_event_model(cls, event_model: type[OntBotEvent]) -> None:
         """添加自定义事件模型，事件模型类必须继承于 `OntBotEvent`。
 
         Args:
@@ -159,7 +149,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         post_type: Optional[str],
         detail_type: Optional[str],
         sub_type: Optional[str],
-    ) -> Type[OntBotEvent]:
+    ) -> type[OntBotEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:
@@ -177,7 +167,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         )
         return event_model or cls.event_models[(None, None, None)]
 
-    async def handle_onebot_event(self, msg: Dict[str, Any]) -> None:
+    async def handle_onebot_event(self, msg: dict[str, Any]) -> None:
         """处理 OneBot 事件。
 
         Args:

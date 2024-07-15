@@ -6,8 +6,9 @@ APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedoc
 
 # ruff: noqa: B009, B010
 import inspect
+from collections.abc import Awaitable
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Awaitable, Callable, Dict, Type, Union
+from typing import TYPE_CHECKING, Any, Callable, Union
 
 import structlog
 from apscheduler.job import Job
@@ -35,7 +36,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     Config = Config
 
     scheduler: AsyncIOScheduler
-    plugin_class_to_job: Dict[Type[Plugin[Any, Any, Any]], Job]
+    plugin_class_to_job: dict[type[Plugin[Any, Any, Any]], Job]
 
     async def startup(self) -> None:
         """创建 `AsyncIOScheduler` 对象。"""
@@ -56,7 +57,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                 continue
 
             trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")
-            trigger_args: Dict[str, Any] = getattr(plugin, "trigger_args")
+            trigger_args: dict[str, Any] = getattr(plugin, "trigger_args")
 
             if not isinstance(trigger, str) or not isinstance(trigger_args, dict):
                 logger.error("Plugin trigger or trigger_args type error", plugin=plugin)
@@ -80,7 +81,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         """关闭调度器。"""
         self.scheduler.shutdown()
 
-    async def create_event(self, plugin_class: Type[Plugin[Any, Any, Any]]) -> None:
+    async def create_event(self, plugin_class: type[Plugin[Any, Any, Any]]) -> None:
         """创建 `APSchedulerEvent` 事件。
 
         Args:
@@ -102,8 +103,8 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
 
 
 def scheduler_decorator(
-    trigger: str, trigger_args: Dict[str, Any], override_rule: bool = False
-) -> Callable[[Type[PluginT]], Type[PluginT]]:
+    trigger: str, trigger_args: dict[str, Any], override_rule: bool = False
+) -> Callable[[type[PluginT]], type[PluginT]]:
     """用于为插件类添加计划任务功能的装饰器。
 
     Args:
@@ -113,7 +114,7 @@ def scheduler_decorator(
             若为 `True`，则会在 `rule()` 方法中添加处理本插件定义的计划任务事件的逻辑。
     """
 
-    def _decorator(cls: Type[PluginT]) -> Type[PluginT]:
+    def _decorator(cls: type[PluginT]) -> type[PluginT]:
         if not inspect.isclass(cls):
             raise TypeError("can only decorate class")
         if not issubclass(cls, Plugin):

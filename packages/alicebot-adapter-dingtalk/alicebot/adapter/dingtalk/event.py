@@ -1,7 +1,7 @@
 """DingTalk 适配器事件。"""
 
 import time
-from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Literal, Optional, Union
 
 from pydantic import BaseModel, Field
 
@@ -50,11 +50,11 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
     isInAtList: Optional[bool] = None
     senderStaffId: Optional[str] = None
     chatbotUserId: str
-    atUsers: List[UserInfo]
+    atUsers: list[UserInfo]
     text: Text
 
-    response_msg: Union[None, str, Dict[str, Any], DingTalkMessage] = None
-    response_at: Union[None, Dict[str, Any], DingTalkMessage] = None
+    response_msg: Union[None, str, dict[str, Any], DingTalkMessage] = None
+    response_at: Union[None, dict[str, Any], DingTalkMessage] = None
 
     @property
     def message(self) -> DingTalkMessage:
@@ -79,9 +79,9 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
 
     async def reply(
         self,
-        message: Union[str, Dict[str, Any], DingTalkMessage],
-        at: Union[None, Dict[str, Any], DingTalkMessage] = None,
-    ) -> Dict[str, Any]:
+        message: Union[str, dict[str, Any], DingTalkMessage],
+        at: Union[None, dict[str, Any], DingTalkMessage] = None,
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:

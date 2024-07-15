@@ -10,17 +10,9 @@ import inspect
 import json
 import sys
 import time
+from collections.abc import Awaitable
 from functools import partial
-from typing import (
-    Any,
-    Awaitable,
-    Callable,
-    ClassVar,
-    Dict,
-    Literal,
-    Optional,
-    Type,
-)
+from typing import Any, Callable, ClassVar, Literal, Optional
 
 import aiohttp
 import structlog
@@ -50,13 +42,13 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     name: str = "mirai"
     Config = Config
 
-    event_models: ClassVar[Dict[str, Type[MiraiEvent]]] = {
+    event_models: ClassVar[dict[str, type[MiraiEvent]]] = {
         name: model
         for name, model in inspect.getmembers(event, inspect.isclass)
         if issubclass(model, MiraiEvent)
     }
 
-    _api_response: Dict[str, Any]
+    _api_response: dict[str, Any]
     _api_response_cond: asyncio.Condition
     _sync_id: int = 0
     _verify_identity_task: "asyncio.Task[None]"
@@ -137,7 +129,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         return self._sync_id
 
     @classmethod
-    def get_event_model(cls, event_type: str) -> Type[MiraiEvent]:
+    def get_event_model(cls, event_type: str) -> type[MiraiEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:
@@ -148,7 +140,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         return cls.event_models[event_type]
 
-    async def handle_mirai_event(self, msg: Dict[str, Any]) -> None:
+    async def handle_mirai_event(self, msg: dict[str, Any]) -> None:
         """处理 Mirai 事件。
 
         Args:

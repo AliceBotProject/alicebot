@@ -1,7 +1,7 @@
 """消息事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import TYPE_CHECKING, Any, Dict, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal, Union
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 from alicebot.message import BuildMessageType
@@ -43,7 +43,7 @@ class MiraiBaseMessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -73,7 +73,7 @@ class MessageEvent(MiraiBaseMessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -96,7 +96,7 @@ class FriendMessage(MessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -128,7 +128,7 @@ class GroupMessage(MessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -160,7 +160,7 @@ class TempMessage(MessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -192,7 +192,7 @@ class StrangerMessage(MessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -224,7 +224,7 @@ class OtherClientMessage(MessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -254,7 +254,7 @@ class SyncMessage(MiraiBaseMessageEvent):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -277,7 +277,7 @@ class FriendSyncMessage(SyncMessage):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -300,7 +300,7 @@ class GroupSyncMessage(SyncMessage):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -323,7 +323,7 @@ class TempSyncMessage(SyncMessage):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:
@@ -346,7 +346,7 @@ class StrangerSyncMessage(SyncMessage):
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """回复消息。
 
         Args:

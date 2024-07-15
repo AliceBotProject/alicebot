@@ -91,7 +91,7 @@ def test_plugin_init_state_annotated(bot: Bot) -> None:
 
     class TestPlugin(Plugin[MessageEvent[Any], Annotated[int, 0], None]):
         async def handle(self) -> None:
-            self.state += 1
+            self.state += 1  # pyright: ignore
             await self.event.reply(str(self.state))
 
         async def rule(self) -> bool:

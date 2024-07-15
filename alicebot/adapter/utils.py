@@ -72,9 +72,10 @@ class WebSocketClientAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
 
     async def run(self) -> None:
         """运行适配器。"""
-        async with aiohttp.ClientSession() as session, session.ws_connect(
-            self.url
-        ) as ws:
+        async with (
+            aiohttp.ClientSession() as session,
+            session.ws_connect(self.url) as ws,
+        ):
             msg: aiohttp.WSMessage
             async for msg in ws:
                 if self.bot.should_exit.is_set():

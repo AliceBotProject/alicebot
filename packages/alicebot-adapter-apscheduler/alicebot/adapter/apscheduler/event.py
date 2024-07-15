@@ -1,7 +1,6 @@
 """APScheduler 适配器事件。"""
 
-import builtins
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any, Optional, Type, Union  # noqa: UP035
 
 from apscheduler.job import Job
 from apscheduler.triggers.base import BaseTrigger
@@ -20,7 +19,7 @@ class APSchedulerEvent(Event["APSchedulerAdapter"]):
     """APSchedulerEvent 事件基类。"""
 
     type: Optional[str] = "apscheduler"
-    plugin_class: builtins.type[Plugin]  # type: ignore
+    plugin_class: Type[Plugin]  # type: ignore  # noqa: UP006
 
     @property
     def job(self) -> Job:

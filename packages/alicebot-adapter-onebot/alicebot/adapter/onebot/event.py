@@ -1,14 +1,8 @@
 """OntBot 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Literal,
-    Optional,
-    get_args,
-    get_origin,
-)
+from typing import TYPE_CHECKING, Any, Literal, Optional, get_args, get_origin
+from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
@@ -136,22 +130,15 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
     alt_message: str
     user_id: str
 
+    @override
     def __repr__(self) -> str:
-        """返回消息事件的描述。
-
-        Returns:
-            消息事件的描述。
-        """
         return f'Event<{self.type}>: "{self.message}"'
 
+    @override
     def get_plain_text(self) -> str:
-        """获取消息的纯文本内容。
-
-        Returns:
-            消息的纯文本内容。
-        """
         return self.message.get_plain_text()
 
+    @override
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
     ) -> dict[str, Any]:
@@ -165,12 +152,8 @@ class MessageEvent(BotEvent, BaseMessageEvent["OneBotAdapter"]):
         """
         raise NotImplementedError
 
+    @override
     def get_sender_id(self) -> str:
-        """获取消息的发送者的唯一标识符。
-
-        Returns:
-            消息的发送者的唯一标识符。
-        """
         return self.user_id
 
 
@@ -179,17 +162,10 @@ class PrivateMessageEvent(MessageEvent):
 
     detail_type: Literal["private"]
 
+    @override
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.send_message(
             detail_type="private",
             user_id=self.user_id,
@@ -203,17 +179,10 @@ class GroupMessageEvent(MessageEvent):
     detail_type: Literal["group"]
     group_id: str
 
+    @override
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.send_message(
             detail_type="group",
             group_id=self.group_id,
@@ -228,17 +197,10 @@ class ChannelMessageEvent(MessageEvent):
     guild_id: str
     channel_id: str
 
+    @override
     async def reply(
         self, message: BuildMessageType[OneBotMessageSegment]
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.send_message(
             detail_type="channel",
             guild_id=self.guild_id,

@@ -2,6 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 from typing import TYPE_CHECKING, Any, Literal, Union
+from typing_extensions import override
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 from alicebot.message import BuildMessageType
@@ -23,22 +24,15 @@ class MiraiBaseMessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
         """与 messageChain 相同。"""
         return self.messageChain
 
+    @override
     def __repr__(self) -> str:
-        """返回消息事件的描述。
-
-        Returns:
-            消息事件的描述。
-        """
         return f'Event<{self.type}>: "{self.messageChain}"'
 
+    @override
     def get_plain_text(self) -> str:
-        """获取消息的纯文本内容。
-
-        Returns:
-            消息的纯文本内容。
-        """
         return self.messageChain.get_plain_text()
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
@@ -61,14 +55,11 @@ class MessageEvent(MiraiBaseMessageEvent):
 
     sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
 
+    @override
     def get_sender_id(self) -> int:
-        """获取消息的发送者的唯一标识符。
-
-        Returns:
-            消息的发送者的唯一标识符。
-        """
         return self.sender.id
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
@@ -92,20 +83,12 @@ class FriendMessage(MessageEvent):
     type: Literal["FriendMessage"]
     sender: FriendInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         if quote:
             return await self.adapter.send(
                 message,
@@ -124,20 +107,12 @@ class GroupMessage(MessageEvent):
     type: Literal["GroupMessage"]
     sender: GroupMemberInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         if quote:
             return await self.adapter.send(
                 message,
@@ -156,20 +131,12 @@ class TempMessage(MessageEvent):
     type: Literal["TempMessage"]
     sender: GroupMemberInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         if quote:
             return await self.adapter.sendTempMessage(
                 qq=self.sender.id,
@@ -188,20 +155,12 @@ class StrangerMessage(MessageEvent):
     type: Literal["StrangerMessage"]
     sender: FriendInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         if quote:
             return await self.adapter.send(
                 message,
@@ -220,20 +179,12 @@ class OtherClientMessage(MessageEvent):
     type: Literal["OtherClientMessage"]
     sender: OtherClientSender
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         raise NotImplementedError
 
 
@@ -242,28 +193,16 @@ class SyncMessage(MiraiBaseMessageEvent):
 
     subject: Union[FriendInfo, GroupMemberInfo]
 
+    @override
     def get_sender_id(self) -> None:
-        """获取消息的发送者的唯一标识符。
-
-        Returns:
-            消息的发送者的唯一标识符。
-        """
         return
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         raise NotImplementedError
 
 
@@ -273,20 +212,12 @@ class FriendSyncMessage(SyncMessage):
     type: Literal["FriendSyncMessage"]
     subject: FriendInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         raise NotImplementedError
 
 
@@ -296,20 +227,12 @@ class GroupSyncMessage(SyncMessage):
     type: Literal["GroupSyncMessage"]
     subject: GroupMemberInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         raise NotImplementedError
 
 
@@ -319,20 +242,12 @@ class TempSyncMessage(SyncMessage):
     type: Literal["TempSyncMessage"]
     subject: GroupMemberInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         raise NotImplementedError
 
 
@@ -342,18 +257,10 @@ class StrangerSyncMessage(SyncMessage):
     type: Literal["StrangerSyncMessage"]
     subject: FriendInfo
 
+    @override
     async def reply(
         self,
         message: BuildMessageType[MiraiMessageSegment],
         quote: bool = False,
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-            quote: 引用消息，默认为 `False`。
-
-        Returns:
-            API 请求响应。
-        """
         raise NotImplementedError

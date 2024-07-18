@@ -1,4 +1,5 @@
 from typing import Any
+from typing_extensions import override
 
 import pytest
 from fake_adapter import FakeAdapter, FakeMessageEvent
@@ -11,9 +12,11 @@ def test_plugin_rule(bot: Bot) -> None:
         pass
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             raise HandleFlag
 
+        @override
         async def rule(self) -> bool:
             return (
                 isinstance(self.event, MessageEvent)
@@ -31,13 +34,16 @@ def test_plugin_rule(bot: Bot) -> None:
 
 def test_plugin_reply(bot: Bot) -> None:
     class TestEvent(FakeMessageEvent):
+        @override
         async def reply(self, message: str) -> None:
             assert message == "Hello"
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             await self.event.reply("Hello")
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -53,11 +59,13 @@ def test_plugin_priority(bot: Bot) -> None:
     flag = 0
 
     class TestPriorityPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             nonlocal flag
             assert flag == self.priority
             flag += 1
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -80,9 +88,11 @@ def test_plugin_priority(bot: Bot) -> None:
 
 def test_plugin_name(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.name == "TestPlugin"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -101,6 +111,7 @@ def test_plugin_skip(bot: Bot) -> None:
     class TestPlugin1(Plugin[MessageEvent[Any], None, None]):
         priority = 0
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_1_flag
             await self.do_something()
@@ -109,16 +120,19 @@ def test_plugin_skip(bot: Bot) -> None:
         async def do_something(self) -> None:
             self.skip()
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
     class TestPlugin2(Plugin[MessageEvent[Any], None, None]):
         priority = 1
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_2_flag
             test_plugin_2_flag = True
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -140,6 +154,7 @@ def test_plugin_stop(bot: Bot) -> None:
     class TestPlugin1(Plugin[MessageEvent[Any], None, None]):
         priority = 0
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_1_flag
             await self.do_something()
@@ -148,26 +163,31 @@ def test_plugin_stop(bot: Bot) -> None:
         async def do_something(self) -> None:
             self.stop()
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
     class TestPlugin2(Plugin[MessageEvent[Any], None, None]):
         priority = 0
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_2_flag
             test_plugin_2_flag = True
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
     class TestPlugin3(Plugin[MessageEvent[Any], None, None]):
         priority = 1
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_3_flag
             test_plugin_3_flag = True
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -190,20 +210,24 @@ def test_plugin_block(bot: Bot) -> None:
         priority = 0
         block = True
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_1_flag
             test_plugin_1_flag = True
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
     class TestPlugin2(Plugin[MessageEvent[Any], None, None]):
         priority = 1
 
+        @override
         async def handle(self) -> None:
             nonlocal test_plugin_2_flag
             test_plugin_2_flag = True
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -222,9 +246,11 @@ def test_plugin_error(bot: Bot) -> None:
         pass
 
     class TestPlugin(Plugin[Any, None, None]):
+        @override
         async def handle(self) -> None:
             raise HandleError
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 

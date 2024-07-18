@@ -1,6 +1,7 @@
 """DingTalk 适配器消息。"""
 
 from typing import Any, Optional
+from typing_extensions import override
 
 from pydantic import model_serializer
 
@@ -12,20 +13,13 @@ __all__ = ["DingTalkMessage"]
 class DingTalkMessage(MessageSegment):  # type: ignore
     """DingTalk 消息"""
 
+    @override
     @classmethod
-    def get_segment_class(cls) -> None:
-        """获取消息字段类。
+    def get_message_class(cls) -> None:  # type: ignore
+        return None
 
-        Returns:
-            消息字段类。
-        """
-
+    @override
     def __str__(self) -> str:
-        """返回消息的文本表示。
-
-        Returns:
-            消息的文本表示。
-        """
         if self.type == "text":
             return self.data["content"]
         return super().__str__()

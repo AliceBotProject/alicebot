@@ -12,6 +12,7 @@ import time
 from collections.abc import Awaitable
 from functools import partial
 from typing import Any, Callable, ClassVar, Literal, Optional, Union
+from typing_extensions import override
 
 import aiohttp
 import structlog
@@ -71,8 +72,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         """
         return partial(self.call_api, item)
 
+    @override
     async def startup(self) -> None:
-        """初始化适配器。"""
         adapter_type = self.config.adapter_type
         if adapter_type == "ws-reverse":
             adapter_type = "reverse-ws"
@@ -84,8 +85,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         self._api_response_cond = asyncio.Condition()
         await super().startup()
 
+    @override
     async def reverse_ws_connection_hook(self) -> None:
-        """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info("WebSocket connected!")
         if self.config.access_token:
             assert isinstance(self.websocket, web.WebSocketResponse)
@@ -95,8 +96,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
             ):
                 await self.websocket.close()
 
+    @override
     async def websocket_connect(self) -> None:
-        """创建正向 WebSocket 连接。"""
         assert self.session is not None
         logger.info("Tying to connect to WebSocket server...")
         async with self.session.ws_connect(
@@ -107,8 +108,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         ) as self.websocket:
             await self.handle_websocket()
 
+    @override
     async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
-        """处理 WebSocket 消息。"""
         assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:

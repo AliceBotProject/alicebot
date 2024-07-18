@@ -2,6 +2,7 @@
 
 import time
 from typing import TYPE_CHECKING, Any, Literal, Optional, Union
+from typing_extensions import override
 
 from pydantic import BaseModel, Field
 
@@ -61,22 +62,15 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
         """返回 message 字段。"""
         return DingTalkMessage.text(self.text.content)
 
+    @override
     def get_sender_id(self) -> str:
-        """获取消息的发送者的唯一标识符。
-
-        Returns:
-            消息的发送者的唯一标识符。
-        """
         return self.senderId
 
+    @override
     def get_plain_text(self) -> str:
-        """获取消息的纯文本内容。
-
-        Returns:
-            消息的纯文本内容。
-        """
         return self.message.get_plain_text()
 
+    @override
     async def reply(
         self,
         message: Union[str, dict[str, Any], DingTalkMessage],

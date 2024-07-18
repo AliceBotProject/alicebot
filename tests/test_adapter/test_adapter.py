@@ -1,4 +1,5 @@
 from typing import Any
+from typing_extensions import override
 
 import pytest
 
@@ -13,6 +14,7 @@ def test_adapter_startup_error(bot: Bot) -> None:
 
 def test_adapter_raise_error(bot: Bot) -> None:
     class TestAdapter(Adapter[Event[Any], None]):
+        @override
         async def run(self) -> None:
             """运行适配器。"""
             self.bot.should_exit.set()

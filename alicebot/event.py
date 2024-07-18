@@ -5,7 +5,7 @@
 
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, Optional, Union
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 from pydantic import BaseModel, ConfigDict
 
@@ -32,20 +32,12 @@ class Event(ABC, BaseModel, Generic[AdapterT]):
     type: Optional[str]
     __handled__: bool = False
 
+    @override
     def __str__(self) -> str:
-        """返回事件的文本表示。
-
-        Returns:
-            事件的文本表示。
-        """
         return f"Event<{self.type}>"
 
+    @override
     def __repr__(self) -> str:
-        """返回事件的描述。
-
-        Returns:
-            事件的描述。
-        """
         return self.__str__()
 
 

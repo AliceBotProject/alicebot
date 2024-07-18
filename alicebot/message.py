@@ -16,7 +16,7 @@ from typing import (  # noqa: UP035
     Union,
     overload,
 )
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import core_schema
@@ -93,22 +93,15 @@ class Message(ABC, list[MessageSegmentT]):
             ]
         )
 
+    @override
     def __repr__(self) -> str:
-        """返回消息的描述。
-
-        Returns:
-            消息的描述。
-        """
         return f"Message:[{','.join(map(repr, self))}]"
 
+    @override
     def __str__(self) -> str:
-        """返回消息的文本表示。
-
-        Returns:
-            消息的文本表示。
-        """
         return "".join(map(str, self))
 
+    @override
     def __contains__(self, item: object) -> bool:
         """判断消息中是否包含指定文本或消息字段。
 
@@ -173,6 +166,7 @@ class Message(ABC, list[MessageSegmentT]):
         """
         return "".join(map(str, filter(lambda x: x.is_text(), self)))
 
+    @override
     def copy(self) -> Self:
         """返回自身的浅复制。
 
@@ -371,22 +365,15 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         return cls(**msg)
 
+    @override
     def __str__(self) -> str:
-        """返回消息字段的文本表示。
-
-        Returns:
-            消息字段的文本表示。
-        """
         return str(self.data)
 
+    @override
     def __repr__(self) -> str:
-        """返回消息字段的描述。
-
-        Returns:
-            消息字段的描述。
-        """
         return f"MessageSegment<{self.type}>:{self!s}"
 
+    @override
     def __getitem__(self, key: str) -> Any:
         """取索引。相当于对 `data` 属性进行此操作。
 
@@ -415,6 +402,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         del self.data[key]
 
+    @override
     def __len__(self) -> int:
         """取长度。相当于对 `data` 属性进行此操作。
 
@@ -423,6 +411,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         return len(self.data)
 
+    @override
     def __iter__(self) -> Iterator[str]:  # type: ignore
         """迭代。相当于对 `data` 属性进行此操作。
 
@@ -431,6 +420,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         yield from self.data.__iter__()
 
+    @override
     def __contains__(self, key: object) -> bool:
         """索引是否包含在对象内。相当于对 `data` 属性进行此操作。
 
@@ -442,30 +432,16 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         return key in self.data
 
+    @override
     def __eq__(self, other: object) -> bool:
-        """判断是否相等。
-
-        Args:
-            other: 其他对象。
-
-        Returns:
-            是否相等。
-        """
         return (
             isinstance(other, self.__class__)
             and self.type == other.type
             and self.data == other.data
         )
 
+    @override
     def __ne__(self, other: object) -> bool:
-        """判断是否不相等。
-
-        Args:
-            other: 其他对象。
-
-        Returns:
-            是否不相等。
-        """
         return not self.__eq__(other)
 
     def __add__(self, other: Any) -> MessageT:
@@ -490,18 +466,22 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
         """
         return self.get_message_class()(other) + self
 
+    @override
     def get(self, key: str, default: Any = None) -> Any:
         """如果 `key` 存在于 `data` 字典中则返回 `key` 的值，否则返回 `default`。"""
         return self.data.get(key, default)
 
+    @override
     def keys(self) -> KeysView[str]:
         """返回由 `data` 字典键组成的一个新视图。"""
         return self.data.keys()
 
+    @override
     def values(self) -> ValuesView[Any]:
         """返回由 `data` 字典值组成的一个新视图。"""
         return self.data.values()
 
+    @override
     def items(self) -> ItemsView[str, Any]:
         """返回由 `data` 字典项 (`(键, 值)` 对) 组成的一个新视图。"""
         return self.data.items()

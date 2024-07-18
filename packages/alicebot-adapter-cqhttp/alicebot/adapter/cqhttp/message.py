@@ -1,7 +1,7 @@
 """CQHTTP 适配器消息。"""
 
 from typing import Literal, Optional, Union
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 from alicebot.message import Message, MessageSegment
 
@@ -11,46 +11,27 @@ __all__ = ["CQHTTPMessage", "CQHTTPMessageSegment", "escape"]
 class CQHTTPMessage(Message["CQHTTPMessageSegment"]):
     """CQHTTP 消息。"""
 
+    @override
     @classmethod
     def get_segment_class(cls) -> type["CQHTTPMessageSegment"]:
-        """获取消息字段类。
-
-        Returns:
-            消息字段类。
-        """
         return CQHTTPMessageSegment
 
 
 class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     """CQHTTP 消息字段。"""
 
+    @override
     @classmethod
     def get_message_class(cls) -> type[CQHTTPMessage]:
-        """获取消息类。
-
-        Returns:
-            消息类。
-        """
         return CQHTTPMessage
 
+    @override
     @classmethod
     def from_str(cls, msg: str) -> Self:
-        """用于将 `str` 转换为消息字段。
-
-        Args:
-            msg: 要解析为消息字段的数据。
-
-        Returns:
-            由 `str` 转换的消息字段。
-        """
         return cls.text(msg)
 
+    @override
     def __str__(self) -> str:
-        """返回消息字段的文本表示。
-
-        Returns:
-            消息字段的文本表示。
-        """
         if self.type == "text":
             return self.data.get("text", "")
         return self.get_cqcode()

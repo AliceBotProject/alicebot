@@ -13,6 +13,7 @@ import time
 from collections.abc import Awaitable
 from functools import partial
 from typing import Any, Callable, ClassVar, Literal, Optional
+from typing_extensions import override
 
 import aiohttp
 import structlog
@@ -64,8 +65,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         """
         return partial(self.call_api, item)
 
+    @override
     async def startup(self) -> None:
-        """初始化适配器。"""
         self.adapter_type = self.config.adapter_type
         self.host = self.config.host
         self.port = self.config.port
@@ -74,13 +75,13 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         self._api_response_cond = asyncio.Condition()
         await super().startup()
 
+    @override
     async def reverse_ws_connection_hook(self) -> None:
-        """反向 WebSocket 连接建立时的钩子函数。"""
         logger.info("WebSocket connected!")
         self._verify_identity_task = asyncio.create_task(self.verify_identity())
 
+    @override
     async def websocket_connect(self) -> None:
-        """创建正向 WebSocket 连接。"""
         assert self.session is not None
         logger.info("Trying to verify identity and create connection...")
         async with self.session.ws_connect(
@@ -89,8 +90,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         ) as self.websocket:
             await self.handle_websocket()
 
+    @override
     async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
-        """处理 WebSocket 消息。"""
         assert self.websocket is not None
         if msg.type == aiohttp.WSMsgType.TEXT:
             try:

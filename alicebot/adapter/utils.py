@@ -6,6 +6,7 @@
 import asyncio
 from abc import ABCMeta, abstractmethod
 from typing import Literal, Optional, Union
+from typing_extensions import override
 
 import aiohttp
 import structlog
@@ -33,8 +34,8 @@ class PollingAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     create_task: bool = False
     _on_tick_task: Optional["asyncio.Task[None]"] = None
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         while not self.bot.should_exit.is_set():
             await asyncio.sleep(self.delay)
             if self.create_task:
@@ -52,16 +53,12 @@ class HttpClientAdapter(PollingAdapter[EventT, ConfigT], metaclass=ABCMeta):
 
     session: aiohttp.ClientSession
 
+    @override
     async def startup(self) -> None:
-        """初始化适配器。"""
         self.session = aiohttp.ClientSession()
 
-    @abstractmethod
-    async def on_tick(self) -> None:
-        """当轮询发生。"""
-
+    @override
     async def shutdown(self) -> None:
-        """关闭并清理连接。"""
         await self.session.close()
 
 
@@ -70,8 +67,8 @@ class WebSocketClientAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
 
     url: str
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         async with (
             aiohttp.ClientSession() as session,
             session.ws_connect(self.url) as ws,
@@ -100,8 +97,8 @@ class HttpServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     get_url: str
     post_url: str
 
+    @override
     async def startup(self) -> None:
-        """初始化适配器。"""
         self.app = web.Application()
         self.app.add_routes(
             [
@@ -110,15 +107,15 @@ class HttpServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
             ]
         )
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.host, self.port)
         await self.site.start()
 
+    @override
     async def shutdown(self) -> None:
-        """关闭并清理连接。"""
         await self.runner.cleanup()
 
     @abstractmethod
@@ -137,20 +134,20 @@ class WebSocketServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     port: int
     url: str
 
+    @override
     async def startup(self) -> None:
-        """初始化适配器。"""
         self.app = web.Application()
         self.app.add_routes([web.get(self.url, self.handle_response)])
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.host, self.port)
         await self.site.start()
 
+    @override
     async def shutdown(self) -> None:
-        """关闭并清理连接。"""
         await self.websocket.close()
         await self.site.stop()
         await self.runner.cleanup()
@@ -200,6 +197,7 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     url: str
     reconnect_interval: int = 3
 
+    @override
     async def startup(self) -> None:
         """初始化适配器。"""
         if self.adapter_type == "ws":
@@ -213,8 +211,8 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
                 adapter_type=self.adapter_type,
             )
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         if self.adapter_type == "ws":
             while True:
                 try:
@@ -231,8 +229,8 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
             self.site = web.TCPSite(self.runner, self.host, self.port)
             await self.site.start()
 
+    @override
     async def shutdown(self) -> None:
-        """关闭并清理连接。"""
         if self.websocket is not None:
             await self.websocket.close()
         if self.adapter_type == "ws":

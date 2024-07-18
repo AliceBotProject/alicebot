@@ -3,6 +3,8 @@
 这里是一个最简单可以直接使用的 HTTP 服务端适配器示例。
 """
 
+from typing_extensions import override
+
 from aiohttp import web
 
 from alicebot.adapter.utils import HttpServerAdapter
@@ -24,8 +26,8 @@ class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
     host: str = "127.0.0.1"
     port: int = 8080
 
+    @override
     async def handle_response(self, request: web.Request) -> web.StreamResponse:
-        """处理响应。"""
         event = HttpServerTestEvent(
             adapter=self,
             type="message",

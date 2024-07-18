@@ -2,6 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 from typing import TYPE_CHECKING, Any, Literal, Optional, get_args, get_origin
+from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.fields import FieldInfo
@@ -113,30 +114,19 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
     font: int
     sender: Sender
 
+    @override
     def __repr__(self) -> str:
-        """返回消息事件的描述。
-
-        Returns:
-            消息事件的描述。
-        """
         return f'Event<{self.type}>: "{self.message}"'
 
+    @override
     def get_sender_id(self) -> Optional[int]:
-        """获取消息的发送者的唯一标识符。
-
-        Returns:
-            消息的发送者的唯一标识符。
-        """
         return self.sender.user_id
 
+    @override
     def get_plain_text(self) -> str:
-        """获取消息的纯文本内容。
-
-        Returns:
-            消息的纯文本内容。
-        """
         return self.message.get_plain_text()
 
+    @override
     async def reply(
         self, message: BuildMessageType[CQHTTPMessageSegment]
     ) -> dict[str, Any]:
@@ -158,17 +148,10 @@ class PrivateMessageEvent(MessageEvent):
     message_type: Literal["private"]
     sub_type: Literal["friend", "group", "other"]
 
+    @override
     async def reply(
         self, message: BuildMessageType[CQHTTPMessageSegment]
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.send_private_msg(
             user_id=self.user_id, message=CQHTTPMessage(message)
         )
@@ -183,17 +166,10 @@ class GroupMessageEvent(MessageEvent):
     group_id: int
     anonymous: Optional[Anonymous] = None
 
+    @override
     async def reply(
         self, message: BuildMessageType[CQHTTPMessageSegment]
     ) -> dict[str, Any]:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容，同 `call_api()` 方法。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.send_group_msg(
             group_id=self.group_id, message=CQHTTPMessage(message)
         )
@@ -358,6 +334,7 @@ class FriendRequestEvent(RequestEvent):
     comment: str
     flag: str
 
+    @override
     async def approve(self, remark: str = "") -> dict[str, Any]:
         """同意请求。
 
@@ -371,12 +348,8 @@ class FriendRequestEvent(RequestEvent):
             flag=self.flag, approve=True, remark=remark
         )
 
+    @override
     async def refuse(self) -> dict[str, Any]:
-        """拒绝请求。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.set_friend_add_request(flag=self.flag, approve=False)
 
 
@@ -391,16 +364,13 @@ class GroupRequestEvent(RequestEvent):
     comment: str
     flag: str
 
+    @override
     async def approve(self) -> dict[str, Any]:
-        """同意请求。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.set_group_add_request(
             flag=self.flag, sub_type=self.sub_type, approve=True
         )
 
+    @override
     async def refuse(self, reason: str = "") -> dict[str, Any]:
         """拒绝请求。
 

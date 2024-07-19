@@ -635,7 +635,10 @@ class Bot:
                     )
                     and (
                         adapter_type is None
-                        or isinstance(self._current_event.adapter, adapter_type)
+                        or isinstance(
+                            self._current_event.adapter,  # pyright: ignore[reportUnknownMemberType]
+                            adapter_type,
+                        )
                     )
                     and await _func(self._current_event)
                 ):

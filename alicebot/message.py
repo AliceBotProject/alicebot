@@ -36,7 +36,7 @@ MessageSegmentT = TypeVar("MessageSegmentT", bound="MessageSegment[Any]")
 BuildMessageType = Union[list[MessageSegmentT], MessageSegmentT, str, Mapping[str, Any]]
 
 
-class Message(ABC, list[MessageSegmentT]):
+class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
     """消息。
 
     本类是 `List` 的子类，并重写了 `__init__()` 方法，

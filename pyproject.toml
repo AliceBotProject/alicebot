@@ -74,15 +74,15 @@ select = ["ALL"]
 ignore = [
     "C90",     # mccabe
     "FBT",     # flake8-boolean-trap
-    "COM",     # flake8-commas
     "EM",      # flake8-errmsg
-    "ISC",     # flake8-implicit-str-concat
     "INP",     # flake8-no-pep420
-    "TID",     # flake8-tidy-imports
     "E501",    # Line too long, handled by formatter
     "D415",    # First line should end with a period, question mark, or exclamation point
     "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
     "S101",    # Use of assert detected
+    "COM812",  # Trailing comma missing
+    "TD003",   # Missing issue link on the line following this TODO
+    "FIX002",  # Line contains TODO
     "PGH003",  # Use specific rule codes when ignoring type issues
     "PLR0912", # Too many branches
     "PLR0913", # Too many arguments to function call
@@ -126,9 +126,6 @@ extraPaths = ["tests", "tests/test_utils"]
 pythonVersion = "3.9"
 pythonPlatform = "All"
 typeCheckingMode = "strict"
-reportMissingTypeStubs = false
-reportUnknownArgumentType = false
-reportUnknownMemberType = false
 reportUnnecessaryIsInstance = false
 reportCallInDefaultInitializer = true
 reportImplicitOverride = true

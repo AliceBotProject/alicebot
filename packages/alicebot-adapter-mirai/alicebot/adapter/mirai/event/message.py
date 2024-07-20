@@ -7,11 +7,11 @@ from typing_extensions import override
 from alicebot.event import MessageEvent as BaseMessageEvent
 from alicebot.message import BuildMessageType
 
-from ..message import MiraiMessage, MiraiMessageSegment
+from ..message import MiraiMessage, MiraiMessageSegment  # noqa: TID252
 from .base import FriendInfo, GroupMemberInfo, MiraiEvent, OtherClientSender
 
 if TYPE_CHECKING:
-    from .. import MiraiAdapter
+    from .. import MiraiAdapter  # noqa: TID252
 
 
 class MiraiBaseMessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):

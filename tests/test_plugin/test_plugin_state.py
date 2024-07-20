@@ -17,7 +17,7 @@ def test_plugin_state(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], int, None]):
         @override
         async def handle(self) -> None:
-            if self.state is None:  # pyright: ignore
+            if self.state is None:  # pyright: ignore[reportUnnecessaryComparison]
                 self.state = 0
             self.state += 1
             await self.event.reply(str(self.state))
@@ -104,8 +104,10 @@ def test_plugin_init_state_annotated(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], Annotated[int, 0], None]):
         @override
         async def handle(self) -> None:
+            # TODO(st1020): pyright bug, remove this after pyright update
+            # https://github.com/microsoft/pyright/pull/8455
             self.state += 1  # pyright: ignore
-            await self.event.reply(str(self.state))
+            await self.event.reply(str(self.state))  # pyright: ignore
 
         @override
         async def rule(self) -> bool:

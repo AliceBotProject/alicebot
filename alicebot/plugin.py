@@ -110,7 +110,10 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
 
         if not hasattr(cls, "Config") and config is not None:
             cls.Config = config
-        if cls.__init_state__ is Plugin.__init_state__ and init_state is not None:
+        if (
+            cls.__init_state__ is cast(Plugin[Any, Any, Any], Plugin).__init_state__  # type: ignore[comparison-overlap]
+            and init_state is not None
+        ):
             cls.__init_state__ = lambda _: init_state  # type: ignore
 
     @final

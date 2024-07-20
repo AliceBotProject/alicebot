@@ -4,6 +4,7 @@
 APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedocs.io/)。
 """
 
+# pyright: reportUnknownMemberType=false, reportMissingTypeStubs = false
 # ruff: noqa: B009, B010
 import inspect
 from collections.abc import Awaitable
@@ -138,7 +139,7 @@ def scheduler_decorator(
 
                 return _wrapper
 
-            cls.rule = _rule_decorator(cls.rule)  # type: ignore
-        return cls  # type: ignore
+            cls.rule = _rule_decorator(cls.rule)  # type: ignore[method-assign]
+        return cls  # type: ignore[return-value]
 
     return _decorator

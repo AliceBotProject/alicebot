@@ -58,7 +58,7 @@ def write_version_toml(file: Path, version: str, *, is_package: bool = False) ->
         assert isinstance(dependencies_array, Array)
         dependencies_array[0] = f"alicebot=={version}"
     with file.open("w", encoding="utf-8") as f:
-        tomlkit.dump(toml_file, f)
+        tomlkit.dump(toml_file, f)  # pyright: ignore[reportUnknownMemberType]
 
 
 write_version_json(Path("package.json"), version)

@@ -123,10 +123,12 @@ async def solve_dependencies(
         depend_obj.__init__()  # type: ignore[misc] # pylint: disable=unnecessary-dunder-call
 
         if isinstance(depend_obj, AbstractAsyncContextManager):
-            depend = await stack.enter_async_context(depend_obj)
+            depend = await stack.enter_async_context(
+                cast(AbstractAsyncContextManager[_T], depend_obj)
+            )
         elif isinstance(depend_obj, AbstractContextManager):
             depend = await stack.enter_async_context(
-                sync_ctx_manager_wrapper(depend_obj)
+                sync_ctx_manager_wrapper(cast(AbstractContextManager[_T], depend_obj))
             )
         else:
             depend = depend_obj

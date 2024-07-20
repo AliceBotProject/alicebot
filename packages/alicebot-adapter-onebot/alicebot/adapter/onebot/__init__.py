@@ -29,7 +29,7 @@ from .event import (
     ConnectMetaEvent,
     HeartbeatMetaEvent,
     MetaEvent,
-    OntBotEvent,
+    OneBotEvent,
     StatusUpdateMetaEvent,
 )
 from .exceptions import ActionFailed, ApiTimeout, NetworkError
@@ -40,16 +40,16 @@ __all__ = ["OneBotAdapter"]
 logger = structlog.stdlib.get_logger()
 
 EventModels = dict[
-    tuple[Optional[str], Optional[str], Optional[str]], type[OntBotEvent]
+    tuple[Optional[str], Optional[str], Optional[str]], type[OneBotEvent]
 ]
 
 DEFAULT_EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
-    if issubclass(model, OntBotEvent):
+    if issubclass(model, OneBotEvent):
         DEFAULT_EVENT_MODELS[model.get_event_type()] = model
 
 
-class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
+class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
     """OneBot 协议适配器。"""
 
     name = "onebot"
@@ -136,8 +136,8 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         return self._api_id
 
     @classmethod
-    def add_event_model(cls, event_model: type[OntBotEvent]) -> None:
-        """添加自定义事件模型，事件模型类必须继承于 `OntBotEvent`。
+    def add_event_model(cls, event_model: type[OneBotEvent]) -> None:
+        """添加自定义事件模型，事件模型类必须继承于 `OneBotEvent`。
 
         Args:
             event_model: 事件模型类。
@@ -150,7 +150,7 @@ class OneBotAdapter(WebSocketAdapter[OntBotEvent, Config]):
         post_type: Optional[str],
         detail_type: Optional[str],
         sub_type: Optional[str],
-    ) -> type[OntBotEvent]:
+    ) -> type[OneBotEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
         Args:

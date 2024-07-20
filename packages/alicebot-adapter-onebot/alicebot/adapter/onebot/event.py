@@ -1,4 +1,4 @@
-"""OntBot 适配器事件。"""
+"""OneBot 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
 from typing import TYPE_CHECKING, Any, Literal, Optional, get_args, get_origin
@@ -60,7 +60,7 @@ def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
     return literal_values[0]
 
 
-class OntBotEvent(Event["OneBotAdapter"]):
+class OneBotEvent(Event["OneBotAdapter"]):
     """OneBot 事件基类"""
 
     id: str
@@ -83,7 +83,7 @@ class OntBotEvent(Event["OneBotAdapter"]):
         )
 
 
-class BotEvent(OntBotEvent):
+class BotEvent(OneBotEvent):
     """包含 self 字段的机器人事件"""
 
     self: BotSelf
@@ -94,7 +94,7 @@ class BotEvent(OntBotEvent):
         return getattr(self, "user_id", None) == self.self.user_id
 
 
-class MetaEvent(OntBotEvent):
+class MetaEvent(OneBotEvent):
     """元事件"""
 
     type: Literal["meta"]

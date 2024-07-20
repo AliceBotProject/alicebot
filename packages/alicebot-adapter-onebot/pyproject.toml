@@ -5,7 +5,7 @@ description = "OneBot v12 adapter for AliceBot."
 authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
 license = { text = "MIT" }
 readme = "README.md"
-keywords = ["bot", "chatbot", "qq", "ontbot", "cqhttp"]
+keywords = ["bot", "chatbot", "qq", "onebot", "cqhttp"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Framework :: AsyncIO",

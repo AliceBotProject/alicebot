@@ -131,6 +131,7 @@ reportUnknownArgumentType = false
 reportUnknownMemberType = false
 reportUnnecessaryIsInstance = false
 reportCallInDefaultInitializer = true
+reportImplicitOverride = true
 reportPropertyTypeMismatch = true
 reportShadowedImports = true
 reportUninitializedInstanceVariable = true
@@ -151,11 +152,14 @@ ignore_missing_imports = true
 
 [tool.pylint.main]
 disable = [
-    "arguments-differ",
+    # Warning
     "broad-exception-caught",
+    # Convention
     "import-outside-toplevel",
     "line-too-long",
+    "missing-function-docstring",
     "too-many-lines",
+    # Refactor
     "duplicate-code",
     "too-few-public-methods",
     "too-many-arguments",

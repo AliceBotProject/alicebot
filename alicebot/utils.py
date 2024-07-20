@@ -25,7 +25,7 @@ from typing import (
     Union,
     cast,
 )
-from typing_extensions import ParamSpec, TypeAlias, TypeGuard
+from typing_extensions import ParamSpec, TypeAlias, TypeGuard, override
 
 from pydantic import BaseModel
 
@@ -61,6 +61,7 @@ class ModulePathFinder(MetaPathFinder):
 
     path: ClassVar[list[str]] = []
 
+    @override
     def find_spec(
         self,
         fullname: str,
@@ -147,8 +148,8 @@ def get_classes_from_module_name(
 class PydanticEncoder(json.JSONEncoder):
     """用于解析 `pydantic.BaseModel` 的 `JSONEncoder` 类。"""
 
+    @override
     def default(self, o: Any) -> Any:
-        """返回 `o` 的可序列化对象。"""
         if isinstance(o, BaseModel):
             return o.model_dump(mode="json")
         return super().default(o)

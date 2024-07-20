@@ -2,6 +2,7 @@
 # ruff: noqa: SLF001
 
 from typing import Any
+from typing_extensions import override
 
 import pytest
 from fake_adapter import FakeAdapter, FakeMessageEvent
@@ -17,10 +18,12 @@ def test_plugin_config(bot: Bot) -> None:
             a: int = 0
             b: str = ""
 
+        @override
         async def handle(self) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, MessageEvent)
 
@@ -42,9 +45,11 @@ def test_plugin_config(bot: Bot) -> None:
 
 def test_plugin_no_config(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], int, None]):
+        @override
         async def handle(self) -> None:
             assert self.config is None
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, MessageEvent)
 
@@ -63,10 +68,12 @@ def test_plugin_config_subclass(bot: Bot) -> None:
         b: str = ""
 
     class TestPlugin(Plugin[MessageEvent[Any], int, Config], config=Config):
+        @override
         async def handle(self) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, MessageEvent)
 
@@ -93,10 +100,12 @@ def test_plugin_config_error(bot: Bot) -> None:
             a: int
             b: str
 
+        @override
         async def handle(self) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, MessageEvent)
 
@@ -116,10 +125,12 @@ def test_plugin_config_subclass_generic(bot: Bot) -> None:
         b: str = ""
 
     class TestPlugin(Plugin[MessageEvent[Any], int, Config]):
+        @override
         async def handle(self) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, MessageEvent)
 

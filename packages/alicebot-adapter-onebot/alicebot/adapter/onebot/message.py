@@ -1,6 +1,6 @@
 """OneBot 适配器消息。"""
 
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 from alicebot.message import Message, MessageSegment
 
@@ -10,46 +10,27 @@ __all__ = ["OneBotMessage", "OneBotMessageSegment"]
 class OneBotMessage(Message["OneBotMessageSegment"]):
     """OneBot 消息。"""
 
+    @override
     @classmethod
     def get_segment_class(cls) -> type["OneBotMessageSegment"]:
-        """获取消息字段类。
-
-        Returns:
-            消息字段类。
-        """
         return OneBotMessageSegment
 
 
 class OneBotMessageSegment(MessageSegment["OneBotMessage"]):
     """OneBot 消息字段。"""
 
+    @override
     @classmethod
     def get_message_class(cls) -> type["OneBotMessage"]:
-        """获取消息类。
-
-        Returns:
-            消息类。
-        """
         return OneBotMessage
 
+    @override
     @classmethod
     def from_str(cls, msg: str) -> Self:
-        """用于将 `str` 转换为消息字段。
-
-        Args:
-            msg: 要解析为消息字段的数据。
-
-        Returns:
-            由 `str` 转换的消息字段。
-        """
         return cls.text(msg)
 
+    @override
     def __str__(self) -> str:
-        """返回消息的文本表示。
-
-        Returns:
-            消息的文本表示。
-        """
         if self.type == "text":
             return self.data.get("text", "")
         return f"[{self.type}: {self.data!r}]"

@@ -2,6 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 from typing import Any, Literal
+from typing_extensions import override
 
 from .base import MiraiEvent
 
@@ -42,15 +43,8 @@ class NewFriendRequestEvent(RequestEvent):
     nick: str
     message: str
 
+    @override
     async def approve(self, message: str = "") -> dict[str, Any]:
-        """同意请求。
-
-        Args:
-            message: 回复的信息，默认为空。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.resp_newFriendRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,
@@ -59,6 +53,7 @@ class NewFriendRequestEvent(RequestEvent):
             message=message,
         )
 
+    @override
     async def refuse(
         self, message: str = "", black_list: bool = False
     ) -> dict[str, Any]:
@@ -91,15 +86,8 @@ class MemberJoinRequestEvent(RequestEvent):
     nick: str
     message: str
 
+    @override
     async def approve(self, message: str = "") -> dict[str, Any]:
-        """同意请求。
-
-        Args:
-            message: 回复的信息，默认为空。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.resp_memberJoinRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,
@@ -108,6 +96,7 @@ class MemberJoinRequestEvent(RequestEvent):
             message=message,
         )
 
+    @override
     async def refuse(
         self, message: str = "", black_list: bool = False
     ) -> dict[str, Any]:
@@ -160,15 +149,8 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
     nick: str
     message: str
 
+    @override
     async def approve(self, message: str = "") -> dict[str, Any]:
-        """同意请求。
-
-        Args:
-            message: 回复的信息，默认为空。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.resp_botInvitedJoinGroupRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,
@@ -177,15 +159,8 @@ class BotInvitedJoinGroupRequestEvent(RequestEvent):
             message=message,
         )
 
+    @override
     async def refuse(self, message: str = "") -> dict[str, Any]:
-        """拒绝请求。
-
-        Args:
-            message: 回复的信息，默认为空。
-
-        Returns:
-            API 请求响应。
-        """
         return await self.adapter.resp_botInvitedJoinGroupRequestEvent(
             eventId=self.eventId,
             fromId=self.fromId,

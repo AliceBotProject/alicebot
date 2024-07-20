@@ -9,6 +9,7 @@ import hashlib
 import hmac
 import time
 from typing import Any, Literal, Union
+from typing_extensions import override
 
 import aiohttp
 import structlog
@@ -38,22 +39,22 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
 
     session: aiohttp.ClientSession
 
+    @override
     async def startup(self) -> None:
-        """创建 aiohttp Application。"""
         self.app = web.Application()
         self.app.add_routes([web.post(self.config.url, self.handler)])
 
         self.session = aiohttp.ClientSession()
 
+    @override
     async def run(self) -> None:
-        """运行 aiohttp 服务器。"""
         self.runner = web.AppRunner(self.app)
         await self.runner.setup()
         self.site = web.TCPSite(self.runner, self.config.host, self.config.port)
         await self.site.start()
 
+    @override
     async def shutdown(self) -> None:
-        """清理 aiohttp AppRunner。"""
         await self.session.close()
         await self.site.stop()
         await self.runner.cleanup()

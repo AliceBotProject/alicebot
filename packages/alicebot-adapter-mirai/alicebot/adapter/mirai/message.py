@@ -2,7 +2,7 @@
 
 import json
 from typing import Any, Optional
-from typing_extensions import Self
+from typing_extensions import Self, override
 
 from pydantic import model_serializer
 
@@ -15,13 +15,9 @@ __all__ = ["MiraiMessage", "MiraiMessageSegment"]
 class MiraiMessage(Message["MiraiMessageSegment"]):
     """Mirai 消息"""
 
+    @override
     @classmethod
     def get_segment_class(cls) -> type["MiraiMessageSegment"]:
-        """获取消息字段类。
-
-        Returns:
-            消息字段类。
-        """
         return MiraiMessageSegment
 
     def as_message_chain(self) -> list[dict[str, Any]]:
@@ -47,33 +43,18 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
             type=type, data={k: v for k, v in data.items() if v is not None}
         )
 
+    @override
     @classmethod
     def get_message_class(cls) -> type["MiraiMessage"]:
-        """获取消息类。
-
-        Returns:
-            消息类。
-        """
         return MiraiMessage
 
+    @override
     @classmethod
     def from_str(cls, msg: str) -> Self:
-        """用于将 `str` 转换为消息字段。
-
-        Args:
-            msg: 要解析为消息字段的数据。
-
-        Returns:
-            由 `str` 转换的消息字段。
-        """
         return cls.plain(msg)
 
+    @override
     def __str__(self) -> str:
-        """返回消息字段的文本表示。
-
-        Returns:
-            消息字段的文本表示。
-        """
         if self.type == "Source":
             return ""
         if self.type == "Plain":
@@ -89,12 +70,8 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         """
         return {"type": self.type, **self.data}
 
+    @override
     def is_text(self) -> bool:
-        """是否是纯文本消息字段。
-
-        Returns:
-            是否是纯文本消息字段。
-        """
         return self.type == "Plain"
 
     @classmethod

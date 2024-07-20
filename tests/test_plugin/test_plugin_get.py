@@ -1,5 +1,6 @@
 import asyncio
 from typing import Any
+from typing_extensions import override
 
 import pytest
 from fake_adapter import FakeAdapter, FakeMessageEvent
@@ -10,10 +11,12 @@ from alicebot.exceptions import GetEventTimeout
 
 def test_plugin_get(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.event.get_plain_text() == "test_0"
             assert (await self.event.get()).get_plain_text() == "test_1"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -28,14 +31,17 @@ def test_plugin_get(bot: Bot) -> None:
 
 def test_plugin_ask(bot: Bot) -> None:
     class TestEvent(FakeMessageEvent):
+        @override
         async def reply(self, message: str) -> None:
             assert message == "Hello"
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.event.get_plain_text() == "test_0"
             assert (await self.event.ask("Hello")).get_plain_text() == "test_1"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -50,10 +56,12 @@ def test_plugin_ask(bot: Bot) -> None:
 
 def test_plugin_get_timeout(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.event.get_plain_text() == "test_0"
             assert (await self.event.get(timeout=0.1)).get_plain_text() == "test_1"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -68,11 +76,13 @@ def test_plugin_get_timeout(bot: Bot) -> None:
 
 def test_plugin_get_timeout_error(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.event.get_plain_text() == "test_0"
             with pytest.raises(GetEventTimeout):
                 await self.event.get(timeout=0.1)
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -90,11 +100,13 @@ def test_plugin_get_timeout_error(bot: Bot) -> None:
 
 def test_plugin_get_timeout_zero(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.event.get_plain_text() == "test_0"
             with pytest.raises(GetEventTimeout):
                 await self.event.get(timeout=0)
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -112,10 +124,12 @@ def test_plugin_get_timeout_zero(bot: Bot) -> None:
 
 def test_plugin_get_try_times(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             assert self.event.get_plain_text() == "test_0"
             assert (await self.event.get(max_try_times=1)).get_plain_text() == "test_1"
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
@@ -130,6 +144,7 @@ def test_plugin_get_try_times(bot: Bot) -> None:
 
 def test_plugin_get_try_times_error(bot: Bot) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             with pytest.raises(GetEventTimeout):
                 await self.bot.get(
@@ -138,6 +153,7 @@ def test_plugin_get_try_times_error(bot: Bot) -> None:
                     max_try_times=1,
                 )
 
+        @override
         async def rule(self) -> bool:
             return self.event.get_plain_text() == "test_0"
 
@@ -156,12 +172,14 @@ def test_plugin_get_no_handle(bot: Bot) -> None:
     flag = 0
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
+        @override
         async def handle(self) -> None:
             nonlocal flag
             flag += 1
             with pytest.raises(GetEventTimeout):
                 await self.event.get()
 
+        @override
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 

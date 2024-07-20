@@ -9,6 +9,7 @@ import inspect
 from collections.abc import Awaitable
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Union
+from typing_extensions import override
 
 import structlog
 from apscheduler.job import Job
@@ -38,13 +39,13 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     scheduler: AsyncIOScheduler
     plugin_class_to_job: dict[type[Plugin[Any, Any, Any]], Job]
 
+    @override
     async def startup(self) -> None:
-        """创建 `AsyncIOScheduler` 对象。"""
         self.scheduler = AsyncIOScheduler(self.config.scheduler_config)
         self.plugin_class_to_job = {}
 
+    @override
     async def run(self) -> None:
-        """启动调度器。"""
         for plugin in self.bot.plugins:
             if not hasattr(plugin, "__schedule__"):
                 continue
@@ -77,8 +78,8 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
 
         self.scheduler.start()
 
+    @override
     async def shutdown(self) -> None:
-        """关闭调度器。"""
         self.scheduler.shutdown()
 
     async def create_event(self, plugin_class: type[Plugin[Any, Any, Any]]) -> None:

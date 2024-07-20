@@ -1,6 +1,7 @@
 import inspect
 from collections.abc import Awaitable
 from typing import Any, Callable, ClassVar, Optional, Union
+from typing_extensions import override
 
 from alicebot import Adapter, Event, MessageEvent
 
@@ -20,8 +21,8 @@ class FakeAdapter(Adapter[Event[Any], None]):
     event_factories: ClassVar[tuple[EventFactory, ...]] = ()
     handle_get: ClassVar[bool] = True
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         for event_factory in self.event_factories:
             event_factory_call = event_factory(self)
             if inspect.isawaitable(event_factory_call):
@@ -45,11 +46,14 @@ class FakeAdapter(Adapter[Event[Any], None]):
 class FakeMessageEvent(MessageEvent[FakeAdapter]):
     message: str = "test"
 
+    @override
     def get_sender_id(self) -> None:
         pass
 
+    @override
     def get_plain_text(self) -> str:
         return self.message
 
+    @override
     async def reply(self, message: str) -> None:
         pass

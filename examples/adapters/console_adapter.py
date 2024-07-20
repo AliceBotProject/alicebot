@@ -5,6 +5,7 @@
 
 import asyncio
 import sys
+from typing_extensions import override
 
 from alicebot import MessageEvent
 from alicebot.adapter import Adapter
@@ -19,27 +20,16 @@ class ConsoleAdapterEvent(MessageEvent["ConsoleAdapter"]):
 
     message: str
 
+    @override
     def get_sender_id(self) -> None:
-        """获取消息的发送者的唯一标识符。
+        return None
 
-        Returns:
-            消息的发送者的唯一标识符。
-        """
-
+    @override
     def get_plain_text(self) -> str:
-        """获取消息的纯文本内容。
-
-        Returns:
-            消息的纯文本内容。
-        """
         return self.message
 
+    @override
     async def reply(self, message: str) -> None:
-        """回复消息。
-
-        Args:
-            message: 回复消息的内容。
-        """
         return await self.adapter.send(message)
 
 
@@ -48,8 +38,8 @@ class ConsoleAdapter(Adapter[ConsoleAdapterEvent, None]):
 
     name: str = "console"
 
+    @override
     async def run(self) -> None:
-        """运行适配器。"""
         while not self.bot.should_exit.is_set():
             print("Please input message: ")  # noqa: T201
             message = await asyncio.get_event_loop().run_in_executor(

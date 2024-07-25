@@ -604,7 +604,7 @@ class Bot:
         Raises:
             GetEventTimeout: 超过最大事件数或超时。
         """
-        _func = wrap_get_func(func)
+        _func = wrap_get_func(func, event_type=event_type, adapter_type=adapter_type)
 
         try_times = 0
         start_time = time.time()
@@ -629,17 +629,6 @@ class Bot:
                 if (
                     self._current_event is not None
                     and not self._current_event.__handled__
-                    and (
-                        event_type is None
-                        or isinstance(self._current_event, event_type)
-                    )
-                    and (
-                        adapter_type is None
-                        or isinstance(
-                            self._current_event.adapter,  # pyright: ignore[reportUnknownMemberType]
-                            adapter_type,
-                        )
-                    )
                     and await _func(self._current_event)
                 ):
                     self._current_event.__handled__ = True
@@ -899,7 +888,7 @@ class Bot:
                 if _adapter.name == adapter:
                     return _adapter
             elif isinstance(_adapter, adapter):
-                return _adapter
+                return _adapter  # pyright: ignore[reportUnknownVariableType]
         raise LookupError(f'Can not find adapter named "{adapter}"')
 
     def get_plugin(self, name: str) -> type[Plugin[Any, Any, Any]]:

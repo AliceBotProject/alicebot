@@ -35,6 +35,9 @@ from alicebot.typing import EventT
 if TYPE_CHECKING:
     from os import PathLike
 
+    from alicebot.adapter import Adapter
+    from alicebot.event import Event
+
 __all__ = [
     "ModulePathFinder",
     "is_config_class",
@@ -224,20 +227,33 @@ async def sync_ctx_manager_wrapper(
 
 def wrap_get_func(
     func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]],
+    *,
+    event_type: Optional[type["Event[Any]"]] = None,
+    adapter_type: Optional[type["Adapter[Any, Any]"]] = None,
 ) -> Callable[[EventT], Awaitable[bool]]:
     """将 `get()` 函数接受的参数包装为一个异步函数。
 
     Args:
         func: `get()` 函数接受的参数。
+        event_type: 事件类型。
+        adapter_type: 适配器类型。
 
     Returns:
         异步函数。
     """
     if func is None:
-        return sync_func_wrapper(lambda _: True)
-    if not asyncio.iscoroutinefunction(func):
-        return sync_func_wrapper(func)  # type: ignore
-    return func
+        func = sync_func_wrapper(lambda _: True)
+    elif not asyncio.iscoroutinefunction(func):
+        func = sync_func_wrapper(cast(Callable[[EventT], bool], func))
+
+    async def _func(event: EventT) -> bool:
+        return (
+            (event_type is None or isinstance(event, event_type))
+            and (adapter_type is None or isinstance(event.adapter, adapter_type))  # pyright: ignore[reportUnknownMemberType]
+            and await func(event)  # pyright: ignore[reportUnknownArgumentType]
+        )
+
+    return _func
 
 
 if sys.version_info >= (3, 10):  # pragma: no cover

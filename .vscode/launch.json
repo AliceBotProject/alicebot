@@ -8,7 +8,10 @@
       "program": "${workspaceFolder}/examples/test.py",
       "console": "integratedTerminal",
       "justMyCode": false,
-      "cwd": "${workspaceFolder}/examples"
+      "cwd": "${workspaceFolder}/examples",
+      "env": {
+        "ALICEBOT_DEV": "1"
+      }
     }
   ]
 }

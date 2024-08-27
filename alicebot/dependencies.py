@@ -116,7 +116,7 @@ async def solve_dependencies(
             )
         depend_obj = cast(
             Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]],
-            dependent.__new__(dependent),  # pyright: ignore
+            dependent.__new__(dependent),  # type: ignore
         )
         for key, value in values.items():
             setattr(depend_obj, key, value)

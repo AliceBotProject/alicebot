@@ -1,3 +1,4 @@
+import sys
 from typing import Any
 from typing_extensions import override
 
@@ -6,15 +7,18 @@ from fake_adapter import FakeAdapter, FakeMessageEvent
 
 from alicebot import Bot, MessageEvent, Plugin
 
+if sys.version_info < (3, 11):
+    from exceptiongroup import ExceptionGroup
+
 
 def test_plugin_rule(bot: Bot) -> None:
-    class HandleFlag(BaseException):
-        pass
+    flag = False
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
         @override
         async def handle(self) -> None:
-            raise HandleFlag
+            nonlocal flag
+            flag = True
 
         @override
         async def rule(self) -> bool:
@@ -28,8 +32,8 @@ def test_plugin_rule(bot: Bot) -> None:
     )
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin)
-    with pytest.raises(HandleFlag):
-        bot.run()
+    bot.run()
+    assert flag
 
 
 def test_plugin_reply(bot: Bot) -> None:
@@ -259,5 +263,6 @@ def test_plugin_error(bot: Bot) -> None:
     )
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin)
-    with pytest.raises(HandleError):
+    with pytest.raises(ExceptionGroup) as exc_info:  # pyright: ignore[reportUnknownVariableType]
         bot.run()
+    assert exc_info.group_contains(HandleError)

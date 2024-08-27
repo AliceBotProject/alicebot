@@ -100,7 +100,8 @@ class Adapter(Generic[EventT, ConfigT], ABC):
     async def shutdown(self) -> None:
         """在适配器结束运行时运行的方法，用于安全地关闭适配器。
 
-        AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 `shutdown()` 方法。
+        AliceBot 在接收到系统的结束信号后先发送 cancel 请求给 run 任务。
+        在所有适配器都停止运行后，会依次运行并等待所有适配器的 `shutdown()` 方法。
         当强制退出时此方法可能未被执行。
         """
 

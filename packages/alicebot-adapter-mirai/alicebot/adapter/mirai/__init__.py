@@ -5,7 +5,6 @@
 协议详情请参考：[mirai-api-http](https://github.com/project-mirai/mirai-api-http)。
 """
 
-import asyncio
 import inspect
 import json
 import sys
@@ -16,7 +15,9 @@ from typing import Any, Callable, ClassVar, Literal, Optional
 from typing_extensions import override
 
 import aiohttp
+import anyio
 import structlog
+from anyio.lowlevel import checkpoint
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.message import BuildMessageType
@@ -50,9 +51,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
     }
 
     _api_response: dict[str, Any]
-    _api_response_cond: asyncio.Condition
+    _api_response_cond: anyio.Condition
     _sync_id: int = 0
-    _verify_identity_task: "asyncio.Task[None]"
 
     def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
         """用于调用 API。可以直接通过访问适配器的属性访问对应名称的 API。
@@ -72,13 +72,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         self.port = self.config.port
         self.url = self.config.url
         self.reconnect_interval = self.config.reconnect_interval
-        self._api_response_cond = asyncio.Condition()
+        self._api_response_cond = anyio.Condition()
         await super().startup()
-
-    @override
-    async def reverse_ws_connection_hook(self) -> None:
-        logger.info("WebSocket connected!")
-        self._verify_identity_task = asyncio.create_task(self.verify_identity())
 
     @override
     async def websocket_connect(self) -> None:
@@ -89,6 +84,12 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
             f"verifyKey={self.config.verify_key}&qq={self.config.qq}"
         ) as self.websocket:
             await self.handle_websocket()
+
+    @override
+    async def handle_websocket(self) -> None:
+        async with anyio.create_task_group() as tg:
+            tg.start_soon(super().handle_websocket)
+            tg.start_soon(self.verify_identity)
 
     @override
     async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:
@@ -111,7 +112,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                         "Verify failed with code, retrying...",
                         code=msg_dict.get("code") or msg_dict,
                     )
-                    await asyncio.sleep(self.reconnect_interval)
+                    await anyio.sleep(self.reconnect_interval)
             elif msg_dict.get("syncId") == "-1":
                 await self.handle_mirai_event(msg_dict.get("data"))
             else:
@@ -168,8 +169,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
 
     async def verify_identity(self) -> None:
         """验证身份，创建与 Mirai-api-http 的连接。"""
-        while not self.bot.should_exit.is_set():
-            await asyncio.sleep(self.reconnect_interval)
+        while True:
+            await anyio.sleep(self.reconnect_interval)
             try:
                 logger.info("Trying to verify identity and create connection...")
                 await self.call_api(
@@ -220,16 +221,17 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
             raise NetworkError from e
 
         start_time = time.time()
-        while not self.bot.should_exit.is_set():
+        while True:
+            await checkpoint()
             if time.time() - start_time > self.config.api_timeout:
                 break
             async with self._api_response_cond:
                 try:
-                    await asyncio.wait_for(
-                        self._api_response_cond.wait(),
-                        timeout=start_time + self.config.api_timeout - time.time(),
-                    )
-                except asyncio.TimeoutError:
+                    with anyio.fail_after(
+                        start_time + self.config.api_timeout - time.time()
+                    ):
+                        await self._api_response_cond.wait()
+                except TimeoutError:
                     break
                 if self._api_response.get("syncId") == sync_id:
                     status_code = self._api_response.get("data", {}).get("code")

@@ -1,6 +1,5 @@
 """AliceBot 内部使用的实用工具。"""
 
-import asyncio
 import importlib
 import inspect
 import json
@@ -27,6 +26,8 @@ from typing import (
 )
 from typing_extensions import ParamSpec, TypeAlias, TypeGuard, override
 
+import anyio
+import anyio.to_thread
 from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
@@ -189,9 +190,8 @@ def sync_func_wrapper(
     if to_thread:
 
         async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
-            loop = asyncio.get_running_loop()
             func_call = partial(func, *args, **kwargs)
-            return await loop.run_in_executor(None, func_call)
+            return await anyio.to_thread.run_sync(func_call)
 
     else:
 
@@ -243,7 +243,7 @@ def wrap_get_func(
     """
     if func is None:
         func = sync_func_wrapper(lambda _: True)
-    elif not asyncio.iscoroutinefunction(func):
+    elif not inspect.iscoroutinefunction(func):
         func = sync_func_wrapper(cast(Callable[[EventT], bool], func))
 
     async def _func(event: EventT) -> bool:

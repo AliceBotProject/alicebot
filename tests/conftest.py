@@ -1,8 +1,7 @@
-import asyncio
 import os
 import sys
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 import pytest
 import structlog
@@ -35,26 +34,4 @@ def fixture_configure_structlog() -> None:
 
 @pytest.fixture
 def bot() -> Bot:
-    bot = Bot(config_file=None)
-    exception: Union[BaseException, None] = None
-
-    async def set_exception_handler(_bot: Bot) -> None:
-        def async_loop_exception_handler(
-            loop: asyncio.AbstractEventLoop, context: dict[str, Any]
-        ) -> None:
-            nonlocal exception
-            exception = context.get("exception", RuntimeError(context["message"]))
-            loop.set_exception_handler(None)
-            bot.should_exit.set()
-
-        loop = asyncio.get_running_loop()
-        loop.set_exception_handler(async_loop_exception_handler)
-
-    async def bot_exit_hook(_bot: Bot) -> None:
-        if exception is not None:
-            raise exception
-
-    bot.bot_run_hook(set_exception_handler)
-    bot.bot_exit_hook(bot_exit_hook)
-
-    return bot
+    return Bot(config_file=None)

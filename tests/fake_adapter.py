@@ -3,6 +3,8 @@ from collections.abc import Awaitable
 from typing import Any, Callable, ClassVar, Optional, Union
 from typing_extensions import override
 
+from anyio.lowlevel import checkpoint
+
 from alicebot import Adapter, Event, MessageEvent
 
 
@@ -34,6 +36,9 @@ class FakeAdapter(Adapter[Event[Any], None]):
 
             if isinstance(event, Event):
                 await self.handle_event(event, handle_get=self.handle_get)
+
+        for _ in range(10):  # 尽可能让其他任务执行完毕后再退出
+            await checkpoint()
 
         self.bot.should_exit.set()
 

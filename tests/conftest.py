@@ -11,12 +11,12 @@ from alicebot import Bot
 
 
 @pytest.fixture(scope="session", autouse=True)
-def change_test_dir() -> None:  # noqa: PT004
+def change_test_dir() -> None:
     os.chdir(Path(__file__).parent)
 
 
 @pytest.fixture(autouse=True)
-def fixture_configure_structlog() -> None:  # noqa: PT004
+def fixture_configure_structlog() -> None:
     class PrintLogger:
         def msg(self, **kwargs: Any) -> None:
             print(kwargs)  # noqa: T201
@@ -33,7 +33,7 @@ def fixture_configure_structlog() -> None:  # noqa: PT004
     structlog.configure(logger_factory=PrintLogger, processors=[])
 
 
-@pytest.fixture()
+@pytest.fixture
 def bot() -> Bot:
     bot = Bot(config_file=None)
     exception: Union[BaseException, None] = None

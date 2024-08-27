@@ -73,22 +73,23 @@ target-version = "py39"
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
-    "C90",     # mccabe
-    "FBT",     # flake8-boolean-trap
-    "EM",      # flake8-errmsg
-    "INP",     # flake8-no-pep420
-    "E501",    # Line too long, handled by formatter
-    "D415",    # First line should end with a period, question mark, or exclamation point
-    "ANN401",  # Dynamically typed expressions (typing.Any) are disallowed
-    "S101",    # Use of assert detected
-    "COM812",  # Trailing comma missing
-    "TD003",   # Missing issue link on the line following this TODO
-    "FIX002",  # Line contains TODO
-    "PGH003",  # Use specific rule codes when ignoring type issues
-    "PLR0912", # Too many branches
-    "PLR0913", # Too many arguments to function call
-    "TRY003",  # Avoid specifying long messages outside the exception class
-    "PERF203", # try-except within a loop incurs performance overhead
+    "C90",      # mccabe
+    "FBT",      # flake8-boolean-trap
+    "EM",       # flake8-errmsg
+    "INP",      # flake8-no-pep420
+    "E501",     # Line too long, handled by formatter
+    "D415",     # First line should end with a period, question mark, or exclamation point
+    "ANN401",   # Dynamically typed expressions (typing.Any) are disallowed
+    "ASYNC109", # Async function definition with a timeout parameter
+    "S101",     # Use of assert detected
+    "COM812",   # Trailing comma missing
+    "TD003",    # Missing issue link on the line following this TODO
+    "FIX002",   # Line contains TODO
+    "PGH003",   # Use specific rule codes when ignoring type issues
+    "PLR0912",  # Too many branches
+    "PLR0913",  # Too many arguments to function call
+    "TRY003",   # Avoid specifying long messages outside the exception class
+    "PERF203",  # try-except within a loop incurs performance overhead
 ]
 allowed-confusables = ["，", "：", "！"]
 

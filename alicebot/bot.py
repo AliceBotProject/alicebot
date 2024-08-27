@@ -243,7 +243,7 @@ class Bot:
                     await adapter_shutdown_hook_func(_adapter)
                 await _adapter.shutdown()
 
-            while self._adapter_tasks:
+            while self._adapter_tasks:  # noqa: ASYNC110
                 await asyncio.sleep(0)
 
             for bot_exit_hook_func in self._bot_exit_hooks:

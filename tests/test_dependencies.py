@@ -17,7 +17,7 @@ def test_repr_inner_depends() -> None:
     assert repr(Depends(Bot)) == "InnerDepends(Bot)"
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends() -> None:
     class DepA: ...
 
@@ -42,7 +42,7 @@ async def test_depends() -> None:
     assert isinstance(obj.b, DepB)
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_sub_depends() -> None:
     class DepA: ...
 
@@ -69,7 +69,7 @@ async def test_sub_depends() -> None:
     assert obj.b.a is obj.a
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends_context_manager() -> None:
     enter_flag = False
     exit_flag = False
@@ -112,7 +112,7 @@ async def test_depends_context_manager() -> None:
     assert obj.b.a is obj.a
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends_async_context_manager() -> None:
     enter_flag = False
     exit_flag = False
@@ -158,7 +158,7 @@ async def test_depends_async_context_manager() -> None:
     assert exit_flag
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends_generator() -> None:
     enter_flag = False
     exit_flag = False
@@ -197,7 +197,7 @@ async def test_depends_generator() -> None:
     assert exit_flag
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends_async_generator() -> None:
     enter_flag = False
     exit_flag = False
@@ -236,7 +236,7 @@ async def test_depends_async_generator() -> None:
     assert exit_flag
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends_solve_error() -> None:
     class Dependent:
         a = Depends()  # type: ignore
@@ -251,7 +251,7 @@ async def test_depends_solve_error() -> None:
             )
 
 
-@pytest.mark.asyncio()
+@pytest.mark.asyncio
 async def test_depends_type_error() -> None:
     class Dependent:
         a = Depends(1)  # type: ignore

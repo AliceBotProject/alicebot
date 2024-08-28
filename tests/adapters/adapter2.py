@@ -9,4 +9,4 @@ class Adapter2(Adapter[Any, None]):
 
     @override
     async def run(self) -> None:
-        self.bot.should_exit.set()
+        self.bot.exit()

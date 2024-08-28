@@ -9,7 +9,7 @@ class Adapter1(Adapter[Any, None]):
 
     @override
     async def run(self) -> None:
-        self.bot.should_exit.set()
+        self.bot.exit()
 
 
 class Adapter2(Adapter[Any, None]):
@@ -17,4 +17,4 @@ class Adapter2(Adapter[Any, None]):
 
     @override
     async def run(self) -> None:
-        self.bot.should_exit.set()
+        self.bot.exit()

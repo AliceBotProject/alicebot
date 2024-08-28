@@ -40,7 +40,7 @@ class FakeAdapter(Adapter[Event[Any], None]):
         for _ in range(10):  # 尽可能让其他任务执行完毕后再退出
             await checkpoint()
 
-        self.bot.should_exit.set()
+        self.bot.exit()
 
     @classmethod
     def set_event_factories(cls, *event_factories: EventFactory) -> None:

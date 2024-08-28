@@ -18,7 +18,7 @@ def test_adapter_startup_error(bot: Bot) -> None:
 
         @override
         async def run(self) -> None:
-            self.bot.should_exit.set()
+            self.bot.exit()
 
     bot.load_adapters(TestAdapter)
     with pytest.raises(ExceptionGroup) as exc_info:  # pyright: ignore[reportUnknownVariableType]
@@ -31,7 +31,7 @@ def test_adapter_raise_error(bot: Bot) -> None:
         @override
         async def run(self) -> None:
             """运行适配器。"""
-            self.bot.should_exit.set()
+            self.bot.exit()
             raise RuntimeError
 
     bot.load_adapters(TestAdapter)

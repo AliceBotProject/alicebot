@@ -16,7 +16,7 @@ def test_adapter_config(bot: Bot) -> None:
 
         @override
         async def run(self) -> None:
-            self.bot.should_exit.set()
+            self.bot._should_exit.set()
             assert self.config.a == 1
             assert self.config.b == "test"
 
@@ -36,7 +36,7 @@ def test_adapter_no_config(bot: Bot) -> None:
     class TestAdapter(Adapter[Event[Any], None]):
         @override
         async def run(self) -> None:
-            self.bot.should_exit.set()
+            self.bot._should_exit.set()
             assert self.config is None
 
     bot.load_adapters(TestAdapter)

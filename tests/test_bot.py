@@ -7,7 +7,7 @@ def test_bot_restart() -> None:
     async def bot_run_hook(bot: Bot) -> None:
         nonlocal flag
         if flag:
-            bot.should_exit.set()
+            bot.exit()
             return
         bot.restart()
         flag = True

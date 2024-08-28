@@ -65,7 +65,6 @@ class Bot:
 
     Attributes:
         config: 机器人配置。
-        should_exit: 机器人是否应该进入准备退出状态。
         adapters: 当前已经加载的适配器的列表。
         plugins_priority_dict: 插件优先级字典。
         plugin_state: 插件状态。
@@ -73,7 +72,6 @@ class Bot:
     """
 
     config: MainConfig
-    should_exit: anyio.Event  # pyright: ignore[reportUninitializedInstanceVariable]
     adapters: list[Adapter[Any, Any]]
     plugins_priority_dict: dict[int, list[type[Plugin[Any, Any, Any]]]]
     plugin_state: dict[str, Any]
@@ -84,6 +82,7 @@ class Bot:
     _condition: anyio.Condition  # 用于处理 get 的 Condition # pyright: ignore[reportUninitializedInstanceVariable]
     _current_event: Optional[Event[Any]]  # 当前待处理的 Event
 
+    _should_exit: anyio.Event  # 机器人是否应该进入准备退出状态 # pyright: ignore[reportUninitializedInstanceVariable]
     _restart_flag: bool  # 重新启动标志
     _module_path_finder: ModulePathFinder  # 用于查找 plugins 的模块元路径查找器
     _raw_config_dict: dict[str, Any]  # 原始配置字典
@@ -168,7 +167,12 @@ class Bot:
         """退出并重新运行 AliceBot。"""
         logger.info("Restarting AliceBot...")
         self._restart_flag = True
-        self.should_exit.set()
+        self._should_exit.set()
+
+    def exit(self) -> None:
+        """退出 AliceBot。"""
+        logger.info("Exiting AliceBot...")
+        self._should_exit.set()
 
     async def run_async(self) -> None:
         """异步运行 AliceBot。"""
@@ -190,7 +194,7 @@ class Bot:
 
     async def _init(self) -> None:
         """初始化 AliceBot。"""
-        self.should_exit = anyio.Event()
+        self._should_exit = anyio.Event()
         self._condition = anyio.Condition()
         self._event_send_stream, self._event_receive_stream = (
             anyio.create_memory_object_stream()
@@ -227,7 +231,7 @@ class Bot:
                         await adapter_run_hook_func(_adapter)
                     tg.start_soon(_adapter.safe_run)
 
-            await self.should_exit.wait()
+            await self._should_exit.wait()
         finally:
             for _adapter in self.adapters:
                 for adapter_shutdown_hook_func in self._adapter_shutdown_hooks:
@@ -285,7 +289,7 @@ class Bot:
                     else set()
                 )
             ),
-            stop_event=self.should_exit,
+            stop_event=self._should_exit,
         ):
             # 按照 Change.deleted, Change.modified, Change.added 的顺序处理
             # 以确保发生重命名时先处理删除再处理新增
@@ -449,15 +453,15 @@ class Bot:
     def _handle_exit(self, *_args: Any) -> None:  # pragma: no cover
         """当机器人收到退出信号时，根据情况进行处理。"""
         logger.info("Stopping AliceBot...")
-        if self.should_exit.is_set():
+        if self._should_exit.is_set():
             logger.warning("Force Exit AliceBot...")
             sys.exit()
         else:
-            self.should_exit.set()
+            self._should_exit.set()
 
     async def _handle_should_exit(self, cancel_scope: anyio.CancelScope) -> None:
         """当 should_exit 被设置时取消当前的 task group。"""
-        await self.should_exit.wait()
+        await self._should_exit.wait()
         cancel_scope.cancel()
 
     async def handle_event(
@@ -625,7 +629,7 @@ class Bot:
 
         try_times = 0
         start_time = time.time()
-        while not self.should_exit.is_set():
+        while not self._should_exit.is_set():
             if max_try_times is not None and try_times > max_try_times:
                 break
             if timeout is not None and time.time() - start_time > timeout:

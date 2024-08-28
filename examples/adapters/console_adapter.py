@@ -3,12 +3,13 @@
 用于接收命令行输入的适配器示例。
 """
 
-import asyncio
 import sys
 from typing_extensions import override
 
+import anyio.to_thread
+
 from alicebot import MessageEvent
-from alicebot.adapter import Adapter
+from alicebot.adapter.utils import PollingAdapter
 
 
 class ConsoleAdapterEvent(MessageEvent["ConsoleAdapter"]):
@@ -33,21 +34,18 @@ class ConsoleAdapterEvent(MessageEvent["ConsoleAdapter"]):
         return await self.adapter.send(message)
 
 
-class ConsoleAdapter(Adapter[ConsoleAdapterEvent, None]):
+class ConsoleAdapter(PollingAdapter[ConsoleAdapterEvent, None]):
     """Console 适配器。"""
 
     name: str = "console"
 
     @override
-    async def run(self) -> None:
-        while not self.bot.should_exit.is_set():
-            print("Please input message: ")  # noqa: T201
-            message = await asyncio.get_event_loop().run_in_executor(
-                None, sys.stdin.readline
-            )
-            await self.handle_event(
-                ConsoleAdapterEvent(adapter=self, type="message", message=message)
-            )
+    async def on_tick(self) -> None:
+        print("Please input message: ")  # noqa: T201
+        message = await anyio.to_thread.run_sync(sys.stdin.readline)
+        await self.handle_event(
+            ConsoleAdapterEvent(adapter=self, type="message", message=message)
+        )
 
     async def send(self, message: str) -> None:
         """发送消息。

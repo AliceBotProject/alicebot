@@ -3,14 +3,15 @@
 这里定义了一些在编写适配器时常用的基类，适配器开发者可以直接继承自这里的类或者用作参考。
 """
 
-import asyncio
 from abc import ABCMeta, abstractmethod
 from typing import Literal, Optional, Union
 from typing_extensions import override
 
 import aiohttp
+import anyio
 import structlog
 from aiohttp import web
+from anyio.lowlevel import checkpoint
 
 from alicebot.adapter import Adapter
 from alicebot.typing import ConfigT, EventT
@@ -30,18 +31,11 @@ logger = structlog.stdlib.get_logger()
 class PollingAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """轮询式适配器示例。"""
 
-    delay: float = 0.1
-    create_task: bool = False
-    _on_tick_task: Optional["asyncio.Task[None]"] = None
-
     @override
     async def run(self) -> None:
-        while not self.bot.should_exit.is_set():
-            await asyncio.sleep(self.delay)
-            if self.create_task:
-                self._on_tick_task = asyncio.create_task(self.on_tick())
-            else:
-                await self.on_tick()
+        while True:
+            await checkpoint()
+            await self.on_tick()
 
     @abstractmethod
     async def on_tick(self) -> None:
@@ -75,8 +69,7 @@ class WebSocketClientAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
         ):
             msg: aiohttp.WSMessage
             async for msg in ws:
-                if self.bot.should_exit.is_set():
-                    break
+                await checkpoint()
                 if msg.type == aiohttp.WSMsgType.ERROR:
                     break
                 await self.handle_response(msg)
@@ -219,9 +212,7 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
                     await self.websocket_connect()
                 except aiohttp.ClientError:
                     logger.exception("WebSocket connection error")
-                if self.bot.should_exit.is_set():
-                    break
-                await asyncio.sleep(self.reconnect_interval)
+                await anyio.sleep(self.reconnect_interval)
         elif self.adapter_type == "reverse-ws":
             assert self.app is not None
             self.runner = web.AppRunner(self.app)
@@ -270,9 +261,9 @@ class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
         if self.websocket is None or self.websocket.closed:
             return
         async for msg in self.websocket:
+            await checkpoint()
             await self.handle_websocket_msg(msg)
-        if not self.bot.should_exit.is_set():
-            logger.warning("WebSocket connection closed!")
+        logger.warning("WebSocket connection closed!")
 
     @abstractmethod
     async def handle_websocket_msg(self, msg: aiohttp.WSMessage) -> None:

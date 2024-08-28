@@ -4,7 +4,6 @@
 协议详情请参考：[OneBot](https://12.onebot.dev/)。
 """
 
-import asyncio
 import inspect
 import json
 import sys
@@ -15,8 +14,10 @@ from typing import Any, Callable, ClassVar, Literal, Optional, Union
 from typing_extensions import override
 
 import aiohttp
+import anyio
 import structlog
 from aiohttp import web
+from anyio.lowlevel import checkpoint
 
 from alicebot.adapter.utils import WebSocketAdapter
 from alicebot.message import BuildMessageType
@@ -58,7 +59,7 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
     event_models: ClassVar[EventModels] = DEFAULT_EVENT_MODELS
 
     _api_response: dict[str, Any]
-    _api_response_cond: asyncio.Condition
+    _api_response_cond: anyio.Condition
     _api_id: int = 0
 
     def __getattr__(self, item: str) -> Callable[..., Awaitable[Any]]:
@@ -82,7 +83,7 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
         self.port = self.config.port
         self.url = self.config.url
         self.reconnect_interval = self.config.reconnect_interval
-        self._api_response_cond = asyncio.Condition()
+        self._api_response_cond = anyio.Condition()
         await super().startup()
 
     @override
@@ -239,16 +240,17 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
             raise NetworkError from e
 
         start_time = time.time()
-        while not self.bot.should_exit.is_set():
+        while True:
+            await checkpoint()
             if time.time() - start_time > self.config.api_timeout:
                 break
             async with self._api_response_cond:
                 try:
-                    await asyncio.wait_for(
-                        self._api_response_cond.wait(),
-                        timeout=start_time + self.config.api_timeout - time.time(),
-                    )
-                except asyncio.TimeoutError:
+                    with anyio.fail_after(
+                        start_time + self.config.api_timeout - time.time()
+                    ):
+                        await self._api_response_cond.wait()
+                except TimeoutError:
                     break
                 if self._api_response["echo"] == api_echo:
                     if (
@@ -258,9 +260,7 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
                         raise ActionFailed(resp=self._api_response)
                     return self._api_response.get("data")
 
-        if not self.bot.should_exit.is_set():
-            raise ApiTimeout
-        return None
+        raise ApiTimeout
 
     async def send(
         self,

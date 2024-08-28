@@ -1,7 +1,7 @@
-import asyncio
 from typing import Any
 from typing_extensions import override
 
+import anyio
 import pytest
 from fake_adapter import FakeAdapter, FakeMessageEvent
 
@@ -87,7 +87,7 @@ def test_plugin_get_timeout_error(bot: Bot) -> None:
             return isinstance(self.event, FakeMessageEvent)
 
     async def wait_half_sec(_: Any) -> None:
-        await asyncio.sleep(0.5)
+        await anyio.sleep(0.5)
 
     FakeAdapter.set_event_factories(
         lambda self: FakeMessageEvent(adapter=self, type="message", message="test_0"),
@@ -111,7 +111,7 @@ def test_plugin_get_timeout_zero(bot: Bot) -> None:
             return isinstance(self.event, FakeMessageEvent)
 
     async def wait_half_sec(_: Any) -> None:
-        await asyncio.sleep(0.5)
+        await anyio.sleep(0.5)
 
     FakeAdapter.set_event_factories(
         lambda self: FakeMessageEvent(adapter=self, type="message", message="test_0"),

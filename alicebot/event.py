@@ -4,14 +4,14 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, Any, Generic, Optional, Union
+from typing import TYPE_CHECKING, Any, Generic, NamedTuple, Optional, Union
 from typing_extensions import Self, override
 
 from pydantic import BaseModel, ConfigDict
 
 from alicebot.typing import AdapterT
 
-__all__ = ["Event", "MessageEvent"]
+__all__ = ["Event", "EventHandleOption", "MessageEvent"]
 
 
 class Event(ABC, BaseModel, Generic[AdapterT]):
@@ -39,6 +39,18 @@ class Event(ABC, BaseModel, Generic[AdapterT]):
     @override
     def __repr__(self) -> str:
         return self.__str__()
+
+
+class EventHandleOption(NamedTuple):
+    """事件处理选项。
+
+    Attributes:
+        event: 当前事件。
+        handle_get: 当前事件是否可以被 get 方法捕获。
+    """
+
+    event: Event[Any]
+    handle_get: bool
 
 
 class MessageEvent(Event[AdapterT], Generic[AdapterT]):

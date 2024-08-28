@@ -24,6 +24,7 @@ dependencies = [
     "structlog>=24.1.0,<25.0.0",
     "rich>=13.7.0,<14.0.0",
     "typing-extensions>=4.5.0",
+    "anyio>=4.4.0,<5.0.0",
 ]
 
 [project.optional-dependencies]
@@ -45,20 +46,18 @@ all = [
 [tool.pdm.dev-dependencies]
 dev = [
     "setuptools",
+    "trio",
+    "exceptiongroup",
     "-e alicebot-adapter-cqhttp @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-cqhttp",
     "-e alicebot-adapter-onebot @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-onebot",
     "-e alicebot-adapter-mirai @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-mirai",
     "-e alicebot-adapter-dingtalk @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-dingtalk",
     "-e alicebot-adapter-apscheduler @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-apscheduler",
 ]
-typing = [ # used only in type check
-    "tomli",
-    "watchfiles",
-    "trio>=0.22.2", # watchfiles used this lib
-]
+typing = ["tomli", "watchfiles"] # used only in type check
 lint = ["ruff", "mypy", "pylint", "pylint-pydantic"]
 docs = ["sophia-doc~=0.1.4", "tomlkit"]
-test = ["pytest", "pytest-asyncio", "pytest-xdist", "pytest-cov"]
+test = ["pytest", "pytest-xdist", "pytest-cov"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"

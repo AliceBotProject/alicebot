@@ -92,7 +92,7 @@ def test_samefile() -> None:
     assert not samefile(file1, file2)
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sync_func_wrapper() -> None:
     def sync_func(a: int, b: int) -> int:
         return a + b
@@ -106,7 +106,7 @@ async def test_sync_func_wrapper() -> None:
     assert await async_func(1, 2) == 3
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_sync_ctx_manager_wrapper() -> None:
     @contextmanager
     def sync_context_manager() -> Generator[str, None, None]:
@@ -125,7 +125,7 @@ async def test_sync_ctx_manager_wrapper() -> None:
             assert result == "test"
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_wrap_get_func() -> None:
     async def async_func(_event: Event[Any]) -> bool:
         return True

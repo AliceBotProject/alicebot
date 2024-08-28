@@ -91,6 +91,7 @@ class Bot:
     _config_file: Optional[str]  # 配置文件
     _config_dict: Optional[dict[str, Any]]  # 配置字典
     _hot_reload: bool  # 热重载
+    _handle_signals: bool  # 处理信号
 
     _extend_plugins: list[
         Union[type[Plugin[Any, Any, Any]], str, Path]
@@ -115,6 +116,7 @@ class Bot:
         config_file: Optional[str] = "config.toml",
         config_dict: Optional[dict[str, Any]] = None,
         hot_reload: bool = False,
+        handle_signals: bool = True,
     ) -> None:
         """初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
 
@@ -125,6 +127,7 @@ class Bot:
                 若指定字典，则会忽略 `config_file` 配置，不再读取配置文件。
             hot_reload: 热重载。
                 启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
+            handle_signals: 是否处理系统信号，默认为 `True`。
         """
         self.config = MainConfig()
         self.plugins_priority_dict = defaultdict(list)
@@ -140,6 +143,7 @@ class Bot:
         self._config_file = config_file
         self._config_dict = config_dict
         self._hot_reload = hot_reload
+        self._handle_signals = handle_signals
 
         self._extend_plugins = []
         self._extend_plugin_dirs = []
@@ -182,9 +186,10 @@ class Bot:
             await self._init()
             async with anyio.create_task_group() as tg:
                 tg.start_soon(self._run)
-                tg.start_soon(self._handle_exit_signal)
-                tg.start_soon(self._handle_should_exit, tg.cancel_scope)
                 tg.start_soon(self._handle_event_receive)
+                tg.start_soon(self._handle_should_exit, tg.cancel_scope)
+                if self._handle_signals:  # pragma: no cover
+                    tg.start_soon(self._handle_exit_signal)
                 if self._hot_reload:  # pragma: no cover
                     tg.start_soon(self._run_hot_reload)
             if self._restart_flag:

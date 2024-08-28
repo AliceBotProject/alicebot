@@ -34,4 +34,4 @@ def fixture_configure_structlog() -> None:
 
 @pytest.fixture
 def bot() -> Bot:
-    return Bot(config_file=None)
+    return Bot(config_file=None, handle_signals=False)

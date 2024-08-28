@@ -433,18 +433,27 @@ class Bot:
         self._update_config()
 
     async def _handle_exit_signal(self) -> None:  # pragma: no cover
-        """当机器人收到退出信号时，根据情况进行处理。"""
+        """根据平台不同注册信号处理程序。"""
         if threading.current_thread() is not threading.main_thread():
             # Signal 仅能在主线程中被处理
             return
-        with anyio.open_signal_receiver(*HANDLED_SIGNALS) as signals:
-            async for _signal in signals:
-                logger.info("Stopping AliceBot...")
-                if self.should_exit.is_set():
-                    logger.warning("Force Exit AliceBot...")
-                    sys.exit()
-                else:
-                    self.should_exit.set()
+        try:
+            with anyio.open_signal_receiver(*HANDLED_SIGNALS) as signals:
+                async for _signal in signals:
+                    self._handle_exit()
+        except NotImplementedError:
+            # add_signal_handler 仅在 Unix 下可用，以下对于 Windows
+            for sig in HANDLED_SIGNALS:
+                signal.signal(sig, self._handle_exit)
+
+    def _handle_exit(self, *_args: Any) -> None:  # pragma: no cover
+        """当机器人收到退出信号时，根据情况进行处理。"""
+        logger.info("Stopping AliceBot...")
+        if self.should_exit.is_set():
+            logger.warning("Force Exit AliceBot...")
+            sys.exit()
+        else:
+            self.should_exit.set()
 
     async def _handle_should_exit(self, cancel_scope: anyio.CancelScope) -> None:
         """当 should_exit 被设置时取消当前的 task group。"""

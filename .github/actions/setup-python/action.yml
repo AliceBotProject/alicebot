@@ -33,7 +33,7 @@ runs:
       if: ${{ inputs.sync && inputs.cache }}
       uses: actions/cache@v4
       with:
-        path: /tmp/.uv-cache
+        path: ${{ runner.os == 'Windows' && 'D:\\uv-cache' || '/tmp/.uv-cache' }}
         key: ${{ runner.os }}-${{ runner.arch }}-python-${{ inputs.python-version }}-uv-${{ hashFiles('uv.lock') }}
 
     - name: Install the project
@@ -41,11 +41,11 @@ runs:
       run: uv sync --all-extras --dev
       shell: bash
       env:
-        UV_CACHE_DIR: /tmp/.uv-cache
+        UV_CACHE_DIR: ${{ runner.os == 'Windows' && 'D:\\uv-cache' || '/tmp/.uv-cache' }}
 
     - name: Minimize uv cache
       if: ${{ inputs.sync && inputs.cache }}
       run: uv cache prune --ci
       shell: bash
       env:
-        UV_CACHE_DIR: /tmp/.uv-cache
+        UV_CACHE_DIR: ${{ runner.os == 'Windows' && 'D:\\uv-cache' || '/tmp/.uv-cache' }}

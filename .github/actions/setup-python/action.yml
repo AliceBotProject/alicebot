@@ -14,9 +14,6 @@ inputs:
 
 runs:
   using: composite
-  env:
-    # Configure a constant location for the uv cache
-    UV_CACHE_DIR: /tmp/.uv-cache
   steps:
     - name: Set up uv
       if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
@@ -35,7 +32,7 @@ runs:
       if: ${{ inputs.sync && inputs.cache }}
       uses: actions/cache@v4
       with:
-        path: ${{ env.UV_CACHE_DIR }}
+        path: /tmp/.uv-cache
         key: ${{ runner.os }}-${{ runner.arch }}-python-${{ inputs.python-version }}-uv-${{ hashFiles('uv.lock') }}
 
     - name: Install the project

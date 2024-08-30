@@ -12,7 +12,7 @@ AliceBot 提供了一个插件模版 [AliceBotProject/alicebot-plugin-template](
 git clone https://github.com/AliceBotProject/alicebot-plugin-template.git
 ```
 
-### 开始
+## 开始
 
 AliceBot 的插件的项目名建议以 `alicebot-plugin-` 开头，全部小写，例如 `alicebot-plugin-example`。项目名应该被用于 PyPI 的包名、代码仓库名等。对于模块名，则应按照 Python 语言的惯例，将项目名中的 `-` 替换为 `_`，例如 `alicebot_plugin_example`。
 
@@ -35,7 +35,7 @@ license = { text = "MIT" } # TODO
 
 之后编辑 `README.md` 文件和 `LICENSE` 文件，将其替换为你的插件的对应信息。
 
-### 编写插件
+## 编写插件
 
 AliceBot 插件模版使用 [uv](https://github.com/astral-sh/uv) 作为依赖管理工具，因此，你需要先根据 [uv](https://docs.astral.sh/uv/getting-started/installation/) 的指引安装 uv，之后在项目目录中执行以下命令：
 
@@ -51,7 +51,7 @@ uv add <package>
 
 你的插件的代码应位于 `alicebot_plugin_<you_plugin_name>` 目录下，插件模板提供了一个简单的插件示例，你可以在此基础上进行修改。
 
-### 发布插件
+## 发布插件
 
 为了将你的插件提交到 AliceBot 的插件商店，你需要先将你的插件发布到 PyPI 上。
 
@@ -70,6 +70,6 @@ uv add <package>
 
 选择“Publish a plugin”，修改 Issue 的标题中的 `{name}` 为你的插件的名字，并在下方的表单中填写 `pypi_name` 和 `module_name`。
 
-比如，对于之前提到的 `alicebot-plugin-hello` 这个插件来说，Issue 的标题应该是 `[plugin]: Hello`，`pypi_name` 应该填写 `alicebot-plugin-hello`，`module_name` 应该填写 `alicebot_plugin_hello`。
+比如，对于之前提到的 `alicebot-plugin-hello` 这个插件来说，Issue 的标题应该是 `plugin: Hello`，`pypi_name` 应该填写 `alicebot-plugin-hello`，`module_name` 应该填写 `alicebot_plugin_hello`。
 
 提交 Issue 后，机器人将开始自动验证，通过验证后将自动提交 PR，你只需要等待管理员合并 PR 即可将插件发布在 AliceBot 的插件商店。

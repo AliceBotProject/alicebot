@@ -31,9 +31,13 @@ extend = "../../pyproject.toml"
 [tool.ruff.lint]
 ignore = ["N815"]
 
-[tool.pdm.build]
-excludes = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
+[tool.uv.sources]
+alicebot = { workspace = true }
+
+[tool.hatch.build]
+packages = ["alicebot"]
+exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

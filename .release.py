@@ -66,7 +66,6 @@ write_version_toml(Path("pyproject.toml"), version)
 for package in Path("packages").iterdir():
     if package.is_dir():
         write_version_toml(package / "pyproject.toml", version, is_package=True)
-subprocess.run(["pdm", "update"], check=True)
 subprocess.run(["pnpm", "run", "changelog"], check=True)
 with Path("docs/changelog.md").open(encoding="utf-8") as f:
     changelog_file = f.read()

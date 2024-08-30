@@ -12,12 +12,12 @@ AliceBot 仅支持 Python 3.9+ 版本。
 pip install alicebot
 ```
 
-从 GitHub 中安装最新的开发版：
+从 GitHub 中构建最新的开发版：
 
 ```sh
 git clone https://github.com/AliceBotProject/alicebot.git
 cd alicebot
-pdm install
+uvx --from build pyproject-build --installer uv
 ```
 
 ## 安装适配器

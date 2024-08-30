@@ -40,8 +40,12 @@ runs:
       if: ${{ inputs.sync }}
       run: uv sync --all-extras --dev
       shell: bash
+      env:
+        UV_CACHE_DIR: /tmp/.uv-cache
 
     - name: Minimize uv cache
       if: ${{ inputs.sync && inputs.cache }}
       run: uv cache prune --ci
       shell: bash
+      env:
+        UV_CACHE_DIR: /tmp/.uv-cache

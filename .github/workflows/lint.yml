@@ -16,77 +16,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pdm-project/setup-pdm@v4
-        name: Setup PDM
-        with:
-          python-version: 3.9
-          cache: true
-      - name: Install dependencies
-        run: pdm install -G dev -G lint
-
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
       - run: |
-          eval $(pdm venv activate)
-          ruff check --output-format=github .
-          ruff format --check .
+          uv run ruff check --output-format=github .
+          uv run ruff format --check .
 
   pylint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pdm-project/setup-pdm@v4
-        name: Setup PDM
-        with:
-          python-version: 3.9
-          cache: true
-      - name: Install dependencies
-        run: pdm install -G dev -G lint
-
-      - run: |
-          eval $(pdm venv activate)
-          pylint alicebot packages/*
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
+      - run: uv run pylint alicebot packages/*
 
   pyright:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pdm-project/setup-pdm@v4
-        name: Setup PDM
-        with:
-          python-version: 3.9
-          cache: true
-      - name: Install dependencies
-        run: pdm install -G dev -G lint -G typing -G test
-
-      - uses: pnpm/action-setup@v3
-        with:
-          version: latest
-      - uses: actions/setup-node@v4
-        with:
-          node-version: latest
-          cache: pnpm
-      - run: pnpm install
-        shell: bash
-
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
+      - name: Setup Node
+        uses: ./.github/actions/setup-node
       - run: |
-          eval $(pdm venv activate)
+          source .venv/bin/activate
           pnpm run pyright
 
   mypy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: pdm-project/setup-pdm@v4
-        name: Setup PDM
-        with:
-          python-version: 3.9
-          cache: true
-      - name: Install dependencies
-        run: pdm install -G dev -G lint -G typing -G test
-
-      - run: |
-          eval $(pdm venv activate)
-          mypy .
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
+      - run: uv run mypy .

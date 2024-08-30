@@ -33,37 +33,52 @@ onebot = ["alicebot-adapter-onebot"]
 mirai = ["alicebot-adapter-mirai"]
 dingtalk = ["alicebot-adapter-dingtalk"]
 apscheduler = ["alicebot-adapter-apscheduler"]
-hot_reload = ["watchfiles"]
+hot_reload = ["watchfiles>=0.24"]
 all = [
     "alicebot-adapter-cqhttp",
     "alicebot-adapter-onebot",
     "alicebot-adapter-mirai",
     "alicebot-adapter-dingtalk",
     "alicebot-adapter-apscheduler",
-    "watchfiles",
+    "watchfiles>=0.24",
 ]
-
-[tool.pdm.dev-dependencies]
-dev = [
-    "setuptools",
-    "trio",
-    "exceptiongroup",
-    "-e alicebot-adapter-cqhttp @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-cqhttp",
-    "-e alicebot-adapter-onebot @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-onebot",
-    "-e alicebot-adapter-mirai @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-mirai",
-    "-e alicebot-adapter-dingtalk @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-dingtalk",
-    "-e alicebot-adapter-apscheduler @ file:///${PROJECT_ROOT}/packages/alicebot-adapter-apscheduler",
-]
-typing = ["tomli", "watchfiles"] # used only in type check
-lint = ["ruff", "mypy", "pylint", "pylint-pydantic"]
-docs = ["sophia-doc~=0.1.4", "tomlkit"]
-test = ["pytest", "pytest-xdist", "pytest-cov"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"
 Documentation = "https://docs.alicebot.dev/"
 Repository = "https://github.com/AliceBotProject/alicebot"
 Changelog = "https://docs.alicebot.dev/changelog.html"
+
+[tool.uv]
+dev-dependencies = [
+    # dev
+    "setuptools>=74",
+    "trio>=0.26",
+    "exceptiongroup>=1",
+    "tomli>=2",
+    # lint
+    "ruff>=0.6",
+    "mypy>=1",
+    "pylint>=3",
+    "pylint-pydantic>=0.3",
+    # docs
+    "sophia-doc>=0.1",
+    "tomlkit>=0.13",
+    # test
+    "pytest>=8",
+    "pytest-xdist>=3",
+    "pytest-cov>=5",
+]
+
+[tool.uv.sources]
+alicebot-adapter-cqhttp = { workspace = true }
+alicebot-adapter-onebot = { workspace = true }
+alicebot-adapter-mirai = { workspace = true }
+alicebot-adapter-dingtalk = { workspace = true }
+alicebot-adapter-apscheduler = { workspace = true }
+
+[tool.uv.workspace]
+members = ["packages/*"]
 
 [tool.ruff]
 line-length = 88
@@ -190,6 +205,9 @@ exclude_also = [
 ]
 omit = ["alicebot/log.py"]
 
+[tool.hatch.build.targets.sdist]
+include = ["/README.md", "/alicebot"]
+
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ["hatchling"]
+build-backend = "hatchling.build"

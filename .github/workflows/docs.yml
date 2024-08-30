@@ -18,27 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v4
-        name: Setup PDM
-        with:
-          python-version: 3.9
-          cache: true
-      - name: Install dependencies
-        run: pdm install --no-editable -G dev -G docs
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
 
       - name: Build API Doc
-        run: pdm run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
+        run: uv run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash
+        env:
+          ALICEBOT_DEV: '1'
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: latest
-      - uses: actions/setup-node@v4
-        with:
-          node-version: latest
-          cache: pnpm
-      - run: pnpm install
-        shell: bash
+      - name: Setup Node
+        uses: ./.github/actions/setup-node
 
       - name: Build VitePress site
         run: pnpm run docs:build

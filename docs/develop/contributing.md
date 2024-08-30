@@ -12,12 +12,12 @@
 
 ### 安装依赖
 
-AliceBot 使用 [PDM](https://pdm.fming.dev/) 管理项目的依赖。
+AliceBot 使用 [uv](https://github.com/astral-sh/uv) 管理项目的依赖。
 
-因此，你需要先根据 [PDM](https://pdm-project.org/latest/#installation) 的指引安装 PDM，之后在项目目录中执行以下命令：
+因此，你需要先根据 [uv](https://docs.astral.sh/uv/getting-started/installation/) 的指引安装 uv，之后在项目目录中执行以下命令：
 
 ```shell
-pdm install
+uv sync --all-extras --dev
 ```
 
 AliceBot 项目的文档使用 [VitePress](https://vitepress.dev/) 生成，如果你想要贡献 AliceBot 的文档，请额外安装 [pnpm](https://pnpm.io/)，并在项目目录中执行以下命令：

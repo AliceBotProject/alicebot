@@ -29,16 +29,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: pdm-project/setup-pdm@v4
-        name: Setup PDM
+      - name: Setup Python
+        uses: ./.github/actions/setup-python
         with:
           python-version: ${{ matrix.python-version }}
-          cache: true
-      - name: Install dependencies
-        run: pdm install -G dev -G test
 
       - name: Run pytest
-        run: pdm run pytest -n auto --cov-report xml
+        run: uv run pytest -n auto --cov-report xml
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4

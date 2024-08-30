@@ -1,0 +1,51 @@
+name: Setup Python
+description: Setup Python
+
+inputs:
+  python-version:
+    description: Python version
+    default: '3.12'
+  sync:
+    description: Sync the project's dependencies with the environment
+    default: true
+  cache:
+    description: Store dependencies in the cache
+    default: true
+
+runs:
+  using: composite
+  steps:
+    - name: Set up uv
+      if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      shell: bash
+    - name: Set up uv
+      if: ${{ runner.os == 'Windows' }}
+      run: irm https://astral.sh/uv/install.ps1 | iex
+      shell: powershell
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ inputs.python-version }}
+
+    - name: Restore uv cache
+      if: ${{ inputs.sync && inputs.cache }}
+      uses: actions/cache@v4
+      with:
+        path: ${{ runner.os == 'Windows' && 'D:\\uv-cache' || '/tmp/.uv-cache' }}
+        key: ${{ runner.os }}-${{ runner.arch }}-python-${{ inputs.python-version }}-uv-${{ hashFiles('uv.lock') }}
+
+    - name: Install the project
+      if: ${{ inputs.sync }}
+      run: uv sync --all-extras --dev
+      shell: bash
+      env:
+        UV_CACHE_DIR: ${{ runner.os == 'Windows' && 'D:\\uv-cache' || '/tmp/.uv-cache' }}
+
+    - name: Minimize uv cache
+      if: ${{ inputs.sync && inputs.cache }}
+      run: uv cache prune --ci
+      shell: bash
+      env:
+        UV_CACHE_DIR: ${{ runner.os == 'Windows' && 'D:\\uv-cache' || '/tmp/.uv-cache' }}

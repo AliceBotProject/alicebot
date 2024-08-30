@@ -1,0 +1,15 @@
+name: Setup Node
+description: Setup Node
+
+runs:
+  using: composite
+  steps:
+    - uses: pnpm/action-setup@v4
+      with:
+        version: latest
+    - uses: actions/setup-node@v4
+      with:
+        node-version: latest
+        cache: pnpm
+    - run: pnpm install
+      shell: bash

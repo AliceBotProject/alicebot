@@ -37,16 +37,16 @@ license = { text = "MIT" } # TODO
 
 ### 编写插件
 
-AliceBot 插件模版使用 [PDM](https://pdm-project.org/) 作为依赖管理工具，因此，你需要先根据 [PDM](https://pdm-project.org/latest/#installation) 的指引安装 PDM，之后在项目目录中执行以下命令：
+AliceBot 插件模版使用 [uv](https://github.com/astral-sh/uv) 作为依赖管理工具，因此，你需要先根据 [uv](https://docs.astral.sh/uv/getting-started/installation/) 的指引安装 uv，之后在项目目录中执行以下命令：
 
 ```sh
-pdm install
+uv sync --all-extras --dev
 ```
 
 如果你的插件依赖了其他包，可以使用以下命令添加依赖：
 
 ```sh
-pdm add <package>
+uv add <package>
 ```
 
 你的插件的代码应位于 `alicebot_plugin_<you_plugin_name>` 目录下，插件模板提供了一个简单的插件示例，你可以在此基础上进行修改。
@@ -60,9 +60,7 @@ pdm add <package>
 1. 确保你的插件已经可以正常安装，并且可以运行。
 2. 确保的你插件的信息无误，`pyproject.toml` 文件中的信息已经正确填写，`README.md` 文件和 `LICENSE` 文件已经替换为你自己的信息。
 
-你可以参考 [PyPI 文档](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives)和 [PDM 文档](https://pdm-project.org/latest/usage/publish/)的指引将你的插件发布到 PyPI 上。
-
-简单来说，你需要注册一个 PyPI 账号，生成一个个人访问令牌 (Token)，最后使用 `pdm publish` 命令将你的插件发布到 PyPI 上。
+你可以参考 [PyPI 文档](https://packaging.python.org/en/latest/tutorials/packaging-projects/#uploading-the-distribution-archives)和 [uv 文档](https://docs.astral.sh/uv/guides/publish/)的指引将你的插件发布到 PyPI 上。
 
 完成 PyPI 的发布后就可以将你的插件发布在 AliceBot 的插件商店了。
 

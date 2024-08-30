@@ -18,6 +18,7 @@ runs:
     - name: Set up uv
       if: ${{ runner.os == 'Linux' || runner.os == 'macOS' }}
       run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      shell: bash
     - name: Set up uv
       if: ${{ runner.os == 'Windows' }}
       run: irm https://astral.sh/uv/install.ps1 | iex
@@ -38,7 +39,9 @@ runs:
     - name: Install the project
       if: ${{ inputs.sync }}
       run: uv sync --all-extras --dev
+      shell: bash
 
     - name: Minimize uv cache
       if: ${{ inputs.sync && inputs.cache }}
       run: uv cache prune --ci
+      shell: bash

@@ -42,28 +42,23 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/setup-python
 
-      - run: uvx --from build pyproject-build --installer uv
+      - run: uv build -o dist
         shell: bash
 
-      - run: uvx --from build pyproject-build --installer uv -o ../../dist
+      - run: uv build -o dist --package alicebot-adapter-apscheduler
         shell: bash
-        working-directory: ./packages/alicebot-adapter-apscheduler
 
-      - run: uvx --from build pyproject-build --installer uv -o ../../dist
+      - run: uv build -o dist --package alicebot-adapter-cqhttp
         shell: bash
-        working-directory: ./packages/alicebot-adapter-cqhttp
 
-      - run: uvx --from build pyproject-build --installer uv -o ../../dist
+      - run: uv build -o dist --package alicebot-adapter-onebot
         shell: bash
-        working-directory: ./packages/alicebot-adapter-onebot
 
-      - run: uvx --from build pyproject-build --installer uv -o ../../dist
+      - run: uv build -o dist --package alicebot-adapter-dingtalk
         shell: bash
-        working-directory: ./packages/alicebot-adapter-dingtalk
 
-      - run: uvx --from build pyproject-build --installer uv -o ../../dist
+      - run: uv build -o dist --package alicebot-adapter-mirai
         shell: bash
-        working-directory: ./packages/alicebot-adapter-mirai
 
       - name: upload windows dists
         uses: actions/upload-artifact@v4

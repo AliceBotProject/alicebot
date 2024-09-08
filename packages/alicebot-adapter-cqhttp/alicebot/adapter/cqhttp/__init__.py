@@ -180,7 +180,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
                     break
             event_class = self.get_event_model(
                 post_type,
-                detail_type,
+                detail_type or msg.get(post_type + "_type"),
                 msg.get("sub_type"),
             )
 

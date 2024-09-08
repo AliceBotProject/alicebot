@@ -37,6 +37,7 @@ EventModels = dict[
     tuple[Optional[str], Optional[str], Optional[str]], type[CQHTTPEvent]
 ]
 
+DETAIL_TYPE_KEYS = ("message_type", "notice_type", "request_type", "meta_event_type")
 DEFAULT_EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
     if issubclass(model, CQHTTPEvent):
@@ -172,9 +173,14 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         if post_type is None:
             event_class = self.get_event_model(None, None, None)
         else:
+            detail_type: Optional[str] = None
+            for key in DETAIL_TYPE_KEYS:
+                detail_type = msg.get(key)
+                if detail_type is not None:
+                    break
             event_class = self.get_event_model(
                 post_type,
-                msg.get(post_type + "_type"),
+                detail_type,
                 msg.get("sub_type"),
             )
 

@@ -32,6 +32,7 @@ cqhttp = ["alicebot-adapter-cqhttp"]
 onebot = ["alicebot-adapter-onebot"]
 mirai = ["alicebot-adapter-mirai"]
 dingtalk = ["alicebot-adapter-dingtalk"]
+telegram = ["alicebot-adapter-telegram"]
 apscheduler = ["alicebot-adapter-apscheduler"]
 hot_reload = ["watchfiles>=0.24"]
 all = [
@@ -39,6 +40,7 @@ all = [
     "alicebot-adapter-onebot",
     "alicebot-adapter-mirai",
     "alicebot-adapter-dingtalk",
+    "alicebot-adapter-telegram",
     "alicebot-adapter-apscheduler",
     "watchfiles>=0.24",
 ]
@@ -75,6 +77,7 @@ alicebot-adapter-cqhttp = { workspace = true }
 alicebot-adapter-onebot = { workspace = true }
 alicebot-adapter-mirai = { workspace = true }
 alicebot-adapter-dingtalk = { workspace = true }
+alicebot-adapter-telegram = { workspace = true }
 alicebot-adapter-apscheduler = { workspace = true }
 
 [tool.uv.workspace]

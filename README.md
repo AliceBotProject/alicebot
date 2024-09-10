@@ -83,6 +83,7 @@ AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种
 - [OneBot v12 协议](https://12.onebot.dev/) 的 [ws](https://12.onebot.dev/connect/communication/websocket/) 和 [ws-reverse](https://12.onebot.dev/connect/communication/websocket-reverse/) 连接方式
 - [mirai-api-http 协议](https://github.com/project-mirai/mirai-api-http) 2.0+ [ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/WebsocketAdapter.md) 和 [reverse-ws](https://github.com/project-mirai/mirai-api-http/blob/master/docs/adapter/ReverseWebsocketAdapter.md) 连接方式
 - [钉钉](https://developers.dingtalk.com/document/robots/robot-overview)企业机器人的 outgoing (回调) 连接方式
+- [Telegram](https://core.telegram.org/bots) 机器人的 polling 和 webhook 连接方式
 
 更多协议正在适配中 ...
 

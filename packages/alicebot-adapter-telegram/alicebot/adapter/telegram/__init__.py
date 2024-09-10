@@ -6,10 +6,10 @@
 
 import inspect
 import json
+import uuid
 from functools import partial
 from typing import Any, Optional, Union
 from typing_extensions import TypeGuard, override
-from uuid import uuid4
 
 import aiohttp
 import structlog
@@ -83,7 +83,7 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
             self.app.add_routes(
                 [web.post(self.config.webhook_url, self.handle_response)]
             )
-            self._secret_token = uuid4().hex
+            self._secret_token = uuid.uuid4().hex
         self.session = aiohttp.ClientSession()
 
     @override
@@ -164,42 +164,22 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
             )
             return
         event_class = EVENT_MODELS[event_class_name]
-        event = event_class(adapter=self, type=event_class_name, update=update)
-        await self.handle_event(event)
+        telegram_event = event_class(adapter=self, type=event_class_name, update=update)
+        await self.handle_event(telegram_event)
 
-    async def call_api(self, api: str, **params: Any) -> Any:
-        """调用 Telegram Bot API，协程会等待直到获得 API 响应。
-
-        Args:
-            api: API 名称。
-            **params: API 参数。
-
-        Returns:
-            API 响应。
-
-        Raises:
-            NetworkError: 网络错误。
-            ActionFailed: API 请求响应 failed， API 操作失败。
-        """
-        file_type_adapter = TypeAdapter(InputFile)
-        return_type_adapter: TypeAdapter[Response[Any]] = TypeAdapter(Response[Any])
-        if hasattr(TelegramAPI, api):
-            sign = inspect.signature(getattr(TelegramAPI, api))
-            return_type_adapter = TypeAdapter(Response[sign.return_annotation])
+    def _format_telegram_api_params(
+        self, **params: Any
+    ) -> Union[aiohttp.FormData, dict[str, Any]]:
+        file_type_adapter: TypeAdapter[InputFile] = TypeAdapter(InputFile)
 
         def is_file(v: Any) -> TypeGuard[InputFile]:
             try:
                 file_type_adapter.validate_python(v, strict=True)
             except ValidationError:
                 return False
-            else:
-                return True
+            return True
 
-        api = snake_to_lower_camel_case(api)
-        has_file = any(is_file(v) for v in params.values())
-
-        form_data, json_data = None, None
-        if has_file:
+        if any(is_file(v) for v in params.values()):
             form_data = aiohttp.FormData()
             unnamed_file_count = 0
             for k, v in params.items():
@@ -215,12 +195,41 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
                         )
                 else:
                     form_data.add_field(k, json.dumps(v, default=to_jsonable_python))
+            return form_data
+
+        return {
+            k: to_jsonable_python(v, exclude_none=True)
+            for k, v in params.items()
+            if v is not None
+        }
+
+    async def call_api(self, api: str, **params: Any) -> Any:
+        """调用 Telegram Bot API，协程会等待直到获得 API 响应。
+
+        Args:
+            api: API 名称。
+            **params: API 参数。
+
+        Returns:
+            API 响应。
+
+        Raises:
+            NetworkError: 网络错误。
+            ActionFailed: API 请求响应 failed， API 操作失败。
+        """
+        return_type_adapter: TypeAdapter[Response[Any]] = TypeAdapter(Response[Any])
+        if hasattr(TelegramAPI, api):
+            sign = inspect.signature(getattr(TelegramAPI, api))
+            return_type_adapter = TypeAdapter(Response[sign.return_annotation])  # type: ignore
+
+        api = snake_to_lower_camel_case(api)
+
+        data = self._format_telegram_api_params(**params)
+        if isinstance(data, aiohttp.FormData):
+            form_data, json_data = data, None
         else:
-            json_data = {
-                k: to_jsonable_python(v, exclude_none=True)
-                for k, v in params.items()
-                if v is not None
-            }
+            form_data, json_data = None, data
+
         try:
             logger.debug(
                 "Telegram API call", api=api, json_data=json_data, form_data=form_data

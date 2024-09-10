@@ -187,6 +187,7 @@ disable = [
 ]
 load-plugins = ["pylint_pydantic"]
 source-roots = ["."]
+ignore = ["packages/alicebot-adapter-telegram/examples"]
 
 [tool.pylint.variables]
 allowed-redefined-builtins = ["id", "type"]

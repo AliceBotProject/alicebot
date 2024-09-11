@@ -1,0 +1,37 @@
+[project]
+name = "alicebot-adapter-telegram"
+version = "0.10.0"
+description = "Telegram adapter for AliceBot."
+authors = [{ name = "AliceBot", email = "concontact@alicebot.dev" }]
+license = { text = "MIT" }
+readme = "README.md"
+keywords = ["bot", "chatbot", "telegram"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: AsyncIO",
+    "Framework :: Robot Framework",
+    "Framework :: Robot Framework :: Library",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Topic :: Communications :: Chat",
+]
+requires-python = ">=3.9"
+dependencies = ["alicebot==0.10.0"]
+
+[project.urls]
+Homepage = "https://docs.alicebot.dev/"
+Documentation = "https://docs.alicebot.dev/"
+Repository = "https://github.com/AliceBotProject/alicebot"
+Changelog = "https://docs.alicebot.dev/changelog.html"
+
+[tool.uv.sources]
+alicebot = { workspace = true }
+
+[tool.hatch.build]
+packages = ["alicebot"]
+exclude = ["alicebot/__init__.py", "alicebot/adapter/__init__.py"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,4 +1,8 @@
-"""用于生成 Telegram 模型和 API 代码的代码生成器。"""
+"""用于生成 Telegram 模型和 API 代码的代码生成器。
+
+使用代码生成器来生成 Telegram 模型的想法来自于 https://github.com/nonebot/adapter-telegram。
+所使用的 Telegram API 标准来自 https://github.com/PaulSonOfLars/telegram-bot-api-spec。
+"""
 
 import subprocess
 from keyword import kwlist

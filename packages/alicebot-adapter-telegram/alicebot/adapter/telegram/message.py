@@ -1,5 +1,5 @@
 """Telegram 适配器消息。"""
-
+# Based on: https://github.com/nonebot/adapter-telegram/blob/beta/nonebot/adapters/telegram/message.py
 # ruff: noqa: D102
 
 from typing_extensions import Self, override

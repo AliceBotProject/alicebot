@@ -4,9 +4,10 @@
 
 from typing_extensions import Self, override
 
-from alicebot.message import Message, MessageSegment
+from alicebot.message import Message
 
-from .model import MessageEntity, User
+from .entity import Entity
+from .model import MessageEntity
 
 __all__ = ["TelegramMessage", "TelegramMessageSegment"]
 
@@ -79,7 +80,7 @@ class TelegramMessage(Message["TelegramMessageSegment"]):
         ]
 
 
-class TelegramMessageSegment(MessageSegment["TelegramMessage"]):
+class TelegramMessageSegment(Entity["TelegramMessage"]):
     """Telegram 消息字段，对应 Telegram 的 MessageEntity。"""
 
     @override
@@ -109,81 +110,3 @@ class TelegramMessageSegment(MessageSegment["TelegramMessage"]):
     @classmethod
     def text(cls, text: str) -> Self:
         return cls(type="text", data={"text": text})
-
-    @classmethod
-    def mention(cls, text: str) -> Self:
-        return cls(type="mention", data={"text": text})
-
-    @classmethod
-    def hashtag(cls, text: str) -> Self:
-        return cls(type="hashtag", data={"text": text})
-
-    @classmethod
-    def cashtag(cls, text: str) -> Self:
-        return cls(type="cashtag", data={"text": text})
-
-    @classmethod
-    def bot_command(cls, text: str) -> Self:
-        return cls(type="bot_command", data={"text": text})
-
-    @classmethod
-    def url(cls, text: str) -> Self:
-        return cls(type="url", data={"text": text})
-
-    @classmethod
-    def email(cls, text: str) -> Self:
-        return cls(type="email", data={"text": text})
-
-    @classmethod
-    def phone_number(cls, text: str) -> Self:
-        return cls(type="phone_number", data={"text": text})
-
-    @classmethod
-    def bold(cls, text: str) -> Self:
-        return cls(type="bold", data={"text": text})
-
-    @classmethod
-    def italic(cls, text: str) -> Self:
-        return cls(type="italic", data={"text": text})
-
-    @classmethod
-    def underline(cls, text: str) -> Self:
-        return cls(type="underline", data={"text": text})
-
-    @classmethod
-    def strikethrough(cls, text: str) -> Self:
-        return cls(type="strikethrough", data={"text": text})
-
-    @classmethod
-    def spoiler(cls, text: str) -> Self:
-        return cls(type="spoiler", data={"text": text})
-
-    @classmethod
-    def blockquote(cls, text: str) -> Self:
-        return cls(type="blockquote", data={"text": text})
-
-    @classmethod
-    def expandable_blockquote(cls, text: str) -> Self:
-        return cls(type="expandable_blockquote", data={"text": text})
-
-    @classmethod
-    def code(cls, text: str) -> Self:
-        return cls(type="code", data={"text": text})
-
-    @classmethod
-    def pre(cls, text: str, language: str) -> Self:
-        return cls(type="pre", data={"text": text, "language": language})
-
-    @classmethod
-    def text_link(cls, text: str, url: str) -> Self:
-        return cls(type="text_link", data={"text": text, "url": url})
-
-    @classmethod
-    def text_mention(cls, text: str, user: User) -> Self:
-        return cls(type="text_mention", data={"text": text, "user": user})
-
-    @classmethod
-    def custom_emoji(cls, text: str, custom_emoji_id: str) -> Self:
-        return cls(
-            type="custom_emoji", data={"text": text, "custom_emoji_id": custom_emoji_id}
-        )

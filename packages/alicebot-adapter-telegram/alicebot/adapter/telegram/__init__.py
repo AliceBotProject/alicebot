@@ -218,7 +218,7 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
         if response_type is None:
             return_type_adapter = TypeAdapter(Response[Any])
         else:
-            return_type_adapter = TypeAdapter(Response[response_type])
+            return_type_adapter = TypeAdapter(Response[response_type])  # type: ignore
 
         data = self._format_telegram_api_params(**params)
         if isinstance(data, aiohttp.FormData):

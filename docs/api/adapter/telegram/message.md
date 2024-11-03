@@ -42,61 +42,9 @@ Telegram 消息。
 
 ## _class_ `TelegramMessageSegment` {#TelegramMessageSegment}
 
-Bases: `alicebot.message.MessageSegment[TelegramMessage]`
+Bases: `alicebot.adapter.telegram.entity.Entity[TelegramMessage]`
 
 Telegram 消息字段，对应 Telegram 的 MessageEntity。
-
-### _method_ `blockquote(text)` {#TelegramMessageSegment-blockquote}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `bold(text)` {#TelegramMessageSegment-bold}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `bot_command(text)` {#TelegramMessageSegment-bot-command}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `cashtag(text)` {#TelegramMessageSegment-cashtag}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `code(text)` {#TelegramMessageSegment-code}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `custom_emoji(text, custom_emoji_id)` {#TelegramMessageSegment-custom-emoji}
-
-- **Arguments**
-
-  - **custom\_emoji\_id** (_str_)
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `email(text)` {#TelegramMessageSegment-email}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `expandable_blockquote(text)` {#TelegramMessageSegment-expandable-blockquote}
-
-- **Returns**
-
-  Type: _Self_
 
 ### _method_ `from_str(msg)` {#TelegramMessageSegment-from-str}
 
@@ -118,12 +66,6 @@ Telegram 消息字段，对应 Telegram 的 MessageEntity。
 
   消息类。
 
-### _method_ `hashtag(text)` {#TelegramMessageSegment-hashtag}
-
-- **Returns**
-
-  Type: _Self_
-
 ### _method_ `is_text(self)` {#TelegramMessageSegment-is-text}
 
 是否是纯文本消息字段。
@@ -134,83 +76,11 @@ Telegram 消息字段，对应 Telegram 的 MessageEntity。
 
   是否是纯文本消息字段。
 
-### _method_ `italic(text)` {#TelegramMessageSegment-italic}
-
-- **Returns**
-
-  Type: _Self_
-
 ### _readonly property_ `length` {#TelegramMessageSegment-length}
 
 Type: _int_
 
-### _method_ `mention(text)` {#TelegramMessageSegment-mention}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `phone_number(text)` {#TelegramMessageSegment-phone-number}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `pre(text, language)` {#TelegramMessageSegment-pre}
-
-- **Arguments**
-
-  - **language** (_str_)
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `spoiler(text)` {#TelegramMessageSegment-spoiler}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `strikethrough(text)` {#TelegramMessageSegment-strikethrough}
-
-- **Returns**
-
-  Type: _Self_
-
 ### _method_ `text(text)` {#TelegramMessageSegment-text}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `text_link(text, url)` {#TelegramMessageSegment-text-link}
-
-- **Arguments**
-
-  - **url** (_str_)
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `text_mention(text, user)` {#TelegramMessageSegment-text-mention}
-
-- **Arguments**
-
-  - **user** (_alicebot.adapter.telegram.model.User_)
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `underline(text)` {#TelegramMessageSegment-underline}
-
-- **Returns**
-
-  Type: _Self_
-
-### _method_ `url(text)` {#TelegramMessageSegment-url}
 
 - **Returns**
 

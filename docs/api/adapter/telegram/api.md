@@ -2,9 +2,35 @@
 
 Telegram API 定义。
 
-## _class_ `TelegramAPI` {#TelegramAPI}
+## _abstract class_ `TelegramAPIBase` {#TelegramAPIBase}
 
-Bases: `object`
+Bases: `abc.ABC`
+
+Helper class that provides a standard way to create an ABC using
+
+inheritance.
+
+### _async method_ `call_api(self, api, *, response_type = None, **params)` {#TelegramAPIBase-call-api}
+
+- **Arguments**
+
+  - **api** (_str_)
+
+  - **response\_type** (_Optional\[type\[~\_T\]\]_)
+
+  - **params** (_Any_)
+
+- **Returns**
+
+  Type: _Any_
+
+## _abstract class_ `TelegramAPI` {#TelegramAPI}
+
+Bases: `alicebot.adapter.telegram.api.TelegramAPIBase`
+
+Helper class that provides a standard way to create an ABC using
+
+inheritance.
 
 ### _async method_ `add_sticker_to_set(self, *, user_id, name, sticker)` {#TelegramAPI-add-sticker-to-set}
 

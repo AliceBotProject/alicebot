@@ -13,7 +13,7 @@ CQHTTP 协议适配器。
 
 - **Attributes**
 
-  - **event\_models** (_ClassVar\[Dict\[Tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\], Type\[alicebot.adapter.cqhttp.event.CQHTTPEvent\]\]\]_)
+  - **event\_models** (_ClassVar\[dict\[tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\], type\[alicebot.adapter.cqhttp.event.CQHTTPEvent\]\]\]_)
 
 ### _class_ `Config` {#Config}
 
@@ -83,7 +83,7 @@ CQHTTP 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Returns**
 
-  Type: _Type\[alicebot.adapter.cqhttp.event.CQHTTPEvent\]_
+  Type: _type\[alicebot.adapter.cqhttp.event.CQHTTPEvent\]_
 
   对应的事件类。
 
@@ -93,7 +93,7 @@ CQHTTP 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Arguments**
 
-  - **msg** (_Dict\[str, Any\]_) - 接收到的信息。
+  - **msg** (_dict\[str, typing.Any\]_) - 接收到的信息。
 
 - **Returns**
 
@@ -125,7 +125,7 @@ CQHTTP 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Arguments**
 
-  - **message\_** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
+  - **message\_** (_Union\[list\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
   `CQHTTPMessageSegment`, `CQHTTPMessage。`
   将使用 `CQHTTPMessage` 进行封装。
 

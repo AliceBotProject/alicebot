@@ -34,13 +34,13 @@ Type: _alicebot.adapter.mirai.message.MiraiMessage_
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -70,13 +70,13 @@ Bases: `alicebot.adapter.mirai.event.message.MiraiBaseMessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -98,13 +98,13 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -126,13 +126,13 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -154,13 +154,13 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -182,13 +182,13 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -210,13 +210,13 @@ Bases: `alicebot.adapter.mirai.event.message.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -246,13 +246,13 @@ Bases: `alicebot.adapter.mirai.event.message.MiraiBaseMessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -274,13 +274,13 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -302,13 +302,13 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -330,13 +330,13 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -358,12 +358,12 @@ Bases: `alicebot.adapter.mirai.event.message.SyncMessage`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
   - **quote** (_bool_) - 引用消息，默认为 `False`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。

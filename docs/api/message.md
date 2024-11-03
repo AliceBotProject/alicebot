@@ -22,7 +22,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
 - **Arguments**
 
-  - **\*messages** (_Union\[List\[~MessageSegmentT\], ~MessageSegmentT, str, Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
+  - **\*messages** (_Union\[list\[~MessageSegmentT\], ~MessageSegmentT, str, collections.abc.Mapping\[str, Any\]\]_) - 可以被转化为消息的数据。
 
 - **Returns**
 
@@ -76,7 +76,7 @@ Bases: `abc.ABC`, `list`, `typing.Generic`
 
 - **Returns**
 
-  Type: _Type\[~MessageSegmentT\]_
+  Type: _type\[~MessageSegmentT\]_
 
   消息字段类。
 
@@ -146,7 +146,7 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.
 
   - **type** (_str_) - 消息字段类型。
 
-  - **data** (_Dict\[str, Any\]_) - 消息字段内容。
+  - **data** (_dict\[str, typing.Any\]_) - 消息字段内容。
 
 ### _method_ `from_mapping(msg)` {#MessageSegment-from-mapping}
 
@@ -210,7 +210,7 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.
 
 - **Returns**
 
-  Type: _ItemsView\[str, Any\]_
+  Type: _collections.abc.ItemsView\[str, typing.Any\]_
 
 ### _method_ `keys(self)` {#MessageSegment-keys}
 
@@ -218,7 +218,7 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.
 
 - **Returns**
 
-  Type: _KeysView\[str\]_
+  Type: _collections.abc.KeysView\[str\]_
 
 ### _method_ `values(self)` {#MessageSegment-values}
 
@@ -226,4 +226,4 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `collections.abc.Mapping`, `typing.
 
 - **Returns**
 
-  Type: _ValuesView\[Any\]_
+  Type: _collections.abc.ValuesView\[typing.Any\]_

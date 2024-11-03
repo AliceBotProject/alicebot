@@ -12,7 +12,7 @@ APSchedulerEvent 事件基类。
 
   - **type** (_Optional\[str\]_)
 
-  - **plugin\_class** (_Type\[alicebot.plugin.Plugin\]_)
+  - **plugin\_class** (_Any_)
 
 ### _readonly property_ `job` {#APSchedulerEvent-job}
 
@@ -28,6 +28,6 @@ Type: _Union\[str, apscheduler.triggers.base.BaseTrigger, NoneType\]_
 
 ### _readonly property_ `trigger_args` {#APSchedulerEvent-trigger-args}
 
-Type: _Optional\[Dict\[str, Any\]\]_
+Type: _Optional\[dict\[str, Any\]\]_
 
 当前事件对应的 Plugin 的 `trigger_args`。

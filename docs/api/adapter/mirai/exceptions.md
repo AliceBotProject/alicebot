@@ -28,7 +28,7 @@ API 请求成功响应，但响应表示 API 操作失败。
 
   - **code** (_int_) - 错误代码。
 
-  - **resp** (_Dict\[str, Any\]_) - 返回的响应。
+  - **resp** (_dict\[str, typing.Any\]_) - 返回的响应。
 
 - **Returns**
 

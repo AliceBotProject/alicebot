@@ -66,13 +66,13 @@ DingTalk 事件基类
 
   - **chatbotUserId** (_str_)
 
-  - **atUsers** (_List\[alicebot.adapter.dingtalk.event.UserInfo\]_)
+  - **atUsers** (_list\[alicebot.adapter.dingtalk.event.UserInfo\]_)
 
   - **text** (_Text_)
 
-  - **response\_msg** (_Union\[NoneType, str, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
+  - **response\_msg** (_Union\[NoneType, str, dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
-  - **response\_at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
+  - **response\_at** (_Union\[NoneType, dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_)
 
 ### _method_ `get_plain_text(self)` {#DingTalkEvent-get-plain-text}
 
@@ -106,13 +106,13 @@ Type: _alicebot.adapter.dingtalk.message.DingTalkMessage_
 
 - **Arguments**
 
-  - **message** (_Union\[str, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
+  - **message** (_Union\[str, dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 回复消息的内容，可以是 `str`, `Dict` 或 `DingTalkMessage`。
 
-  - **at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 回复消息时 At 的对象，必须时 at 类型的 `DingTalkMessage`，或者符合标准的 `Dict`。
+  - **at** (_Union\[NoneType, dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 回复消息时 At 的对象，必须时 at 类型的 `DingTalkMessage`，或者符合标准的 `Dict`。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   调用 Webhook 地址后钉钉服务器的响应。
 

@@ -10,4 +10,4 @@ APScheduler 配置类，将在适配器被加载时被混入到机器人主配�
 
 - **Attributes**
 
-  - **scheduler\_config** (_Dict\[str, Any\]_) - 调度器配置。
+  - **scheduler\_config** (_dict\[str, typing.Any\]_) - 调度器配置。

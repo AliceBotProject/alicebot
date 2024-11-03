@@ -46,7 +46,7 @@ Telegram 适配器配置
 
   - **api\_timeout** (_int_) - 进行 API 调用时等待返回响应的超时时间。
 
-### _async method_ `call_api(self, api, **params)` {#TelegramAdapter-call-api}
+### _async method_ `call_api(self, api, *, response_type = None, **params)` {#TelegramAdapter-call-api}
 
 调用 Telegram Bot API，协程会等待直到获得 API 响应。
 
@@ -54,11 +54,13 @@ Telegram 适配器配置
 
   - **api** (_str_) - API 名称。
 
+  - **response\_type** (_Optional\[type\[~\_T\]\]_) - API 响应类型。
+
   - **\*\*params** (_Any_) - API 参数。
 
 - **Returns**
 
-  Type: _Any_
+  Type: _Optional\[~\_T\]_
 
   API 响应。
 

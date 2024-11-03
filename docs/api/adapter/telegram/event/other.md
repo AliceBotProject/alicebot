@@ -1,94 +1,10 @@
-# alicebot.adapter.telegram.event
+# alicebot.adapter.telegram.event.other
 
 Telegram 适配器事件。
 
-## _class_ `TelegramEvent` {#TelegramEvent}
-
-Bases: `alicebot.event.Event[TelegramAdapter]`
-
-Telegram Event Baseclass.
-
-- **Attributes**
-
-  - **update** (_alicebot.adapter.telegram.model.Update_)
-
-### _readonly property_ `update_id` {#TelegramEvent-update-id}
-
-Type: _int_
-
-The update's unique identifier.
-
-## _class_ `MessageEvent` {#MessageEvent}
-
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`, `alicebot.event.MessageEvent[TelegramAdapter]`
-
-New incoming message of any kind - text, photo, sticker, etc.
-
-### _method_ `get_message(self)` {#MessageEvent-get-message}
-
-获取 TelegramMessage 对象。
-
-- **Returns**
-
-  Type: _alicebot.adapter.telegram.message.TelegramMessage_
-
-  TelegramMessage 对象。
-
-### _method_ `get_plain_text(self)` {#MessageEvent-get-plain-text}
-
-获取消息的纯文本内容。
-
-- **Returns**
-
-  Type: _str_
-
-  消息的纯文本内容。
-
-### _method_ `get_sender_id(self)` {#MessageEvent-get-sender-id}
-
-获取消息的发送者的唯一标识符。
-
-- **Returns**
-
-  Type: _Union\[NoneType, int, str\]_
-
-  消息的发送者的唯一标识符。
-
-### _readonly property_ `message` {#MessageEvent-message}
-
-Type: _alicebot.adapter.telegram.model.Message_
-
-The message object.
-
-### _async method_ `reply(self, message, disable_notification = None, protect_content = None, message_effect_id = None, reply_parameters = None, reply_markup = None, **kwargs)` {#MessageEvent-reply}
-
-回复消息。
-
-- **Arguments**
-
-  - **message** (_Union\[str, alicebot.adapter.telegram.message.TelegramMessage, alicebot.adapter.telegram.media.TelegramMedia\]_) - 回复消息的内容。
-
-  - **disable\_notification** (_Optional\[bool\]_)
-
-  - **protect\_content** (_Optional\[bool\]_)
-
-  - **message\_effect\_id** (_Optional\[str\]_)
-
-  - **reply\_parameters** (_Optional\[alicebot.adapter.telegram.model.ReplyParameters\]_)
-
-  - **reply\_markup** (_Union\[alicebot.adapter.telegram.model.InlineKeyboardMarkup, alicebot.adapter.telegram.model.ReplyKeyboardMarkup, alicebot.adapter.telegram.model.ReplyKeyboardRemove, alicebot.adapter.telegram.model.ForceReply, NoneType\]_)
-
-  - **kwargs** (_Any_)
-
-- **Returns**
-
-  Type: _Any_
-
-  回复消息动作的响应。
-
 ## _class_ `EditedMessageEvent` {#EditedMessageEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New version of a message that is known to the bot and was edited.
 
@@ -100,9 +16,9 @@ The edited_message object.
 
 ## _class_ `ChannelPostEvent` {#ChannelPostEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
-New incoming channel post of any kind - text, photo, sticker, etc.
+New incoming channel post of any kind - text, photo, sticker, etc..
 
 ### _readonly property_ `channel_post` {#ChannelPostEvent-channel-post}
 
@@ -112,7 +28,7 @@ The channel_post object.
 
 ## _class_ `EditedChannelPostEvent` {#EditedChannelPostEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New version of a channel post that is known to the bot and was edited.
 
@@ -124,9 +40,9 @@ The edited_channel_post object.
 
 ## _class_ `BusinessConnectionEvent` {#BusinessConnectionEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
-The bot was connected to or disconnected from a business account.
+The bot was connected to or disconnected from a business account, or a user edited an existing connection with the bot.
 
 ### _readonly property_ `business_connection` {#BusinessConnectionEvent-business-connection}
 
@@ -136,7 +52,7 @@ The business_connection object.
 
 ## _class_ `BusinessMessageEvent` {#BusinessMessageEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New message from a connected business account.
 
@@ -148,7 +64,7 @@ The business_message object.
 
 ## _class_ `EditedBusinessMessageEvent` {#EditedBusinessMessageEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New version of a message from a connected business account.
 
@@ -160,7 +76,7 @@ The edited_business_message object.
 
 ## _class_ `DeletedBusinessMessagesEvent` {#DeletedBusinessMessagesEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 Messages were deleted from a connected business account.
 
@@ -172,7 +88,7 @@ The deleted_business_messages object.
 
 ## _class_ `MessageReactionEvent` {#MessageReactionEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 A reaction to a message was changed by a user.
 
@@ -184,7 +100,7 @@ The message_reaction object.
 
 ## _class_ `MessageReactionCountEvent` {#MessageReactionCountEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 Reactions to a message with anonymous reactions were changed.
 
@@ -196,7 +112,7 @@ The message_reaction_count object.
 
 ## _class_ `InlineQueryEvent` {#InlineQueryEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New incoming inline query.
 
@@ -208,7 +124,7 @@ The inline_query object.
 
 ## _class_ `ChosenInlineResultEvent` {#ChosenInlineResultEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 The result of an inline query that was chosen by a user and sent to their chat partner.
 
@@ -220,7 +136,7 @@ The chosen_inline_result object.
 
 ## _class_ `CallbackQueryEvent` {#CallbackQueryEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New incoming callback query.
 
@@ -232,7 +148,7 @@ The callback_query object.
 
 ## _class_ `ShippingQueryEvent` {#ShippingQueryEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New incoming shipping query.
 
@@ -244,7 +160,7 @@ The shipping_query object.
 
 ## _class_ `PreCheckoutQueryEvent` {#PreCheckoutQueryEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New incoming pre-checkout query.
 
@@ -254,9 +170,21 @@ Type: _alicebot.adapter.telegram.model.PreCheckoutQuery_
 
 The pre_checkout_query object.
 
+## _class_ `PurchasedPaidMediaEvent` {#PurchasedPaidMediaEvent}
+
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
+
+A user purchased paid media with a non-empty payload sent by the bot in a non-channel chat.
+
+### _readonly property_ `purchased_paid_media` {#PurchasedPaidMediaEvent-purchased-paid-media}
+
+Type: _alicebot.adapter.telegram.model.PaidMediaPurchased_
+
+The purchased_paid_media object.
+
 ## _class_ `PollEvent` {#PollEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 New poll state.
 
@@ -268,7 +196,7 @@ The poll object.
 
 ## _class_ `PollAnswerEvent` {#PollAnswerEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 A user changed their answer in a non-anonymous poll.
 
@@ -280,7 +208,7 @@ The poll_answer object.
 
 ## _class_ `MyChatMemberEvent` {#MyChatMemberEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 The bot's chat member status was updated in a chat.
 
@@ -292,7 +220,7 @@ The my_chat_member object.
 
 ## _class_ `ChatMemberEvent` {#ChatMemberEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 A chat member's status was updated in a chat.
 
@@ -304,7 +232,7 @@ The chat_member object.
 
 ## _class_ `ChatJoinRequestEvent` {#ChatJoinRequestEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 A request to join the chat has been sent.
 
@@ -316,7 +244,7 @@ The chat_join_request object.
 
 ## _class_ `ChatBoostEvent` {#ChatBoostEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 A chat boost was added or changed.
 
@@ -328,7 +256,7 @@ The chat_boost object.
 
 ## _class_ `RemovedChatBoostEvent` {#RemovedChatBoostEvent}
 
-Bases: `alicebot.adapter.telegram.event.TelegramEvent`
+Bases: `alicebot.adapter.telegram.event.base.TelegramEvent`
 
 A boost was removed from a chat.
 

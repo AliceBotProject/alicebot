@@ -10,7 +10,7 @@ Bases: `importlib.abc.MetaPathFinder`
 
 - **Attributes**
 
-  - **path** (_ClassVar\[List\[str\]\]_)
+  - **path** (_ClassVar\[list\[str\]\]_)
 
 ### _method_ `find_spec(self, fullname, path = None, target = None)` {#ModulePathFinder-find-spec}
 
@@ -20,7 +20,7 @@ Bases: `importlib.abc.MetaPathFinder`
 
   - **fullname** (_str_)
 
-  - **path** (_Optional\[Sequence\[str\]\]_)
+  - **path** (_Optional\[collections.abc.Sequence\[str\]\]_)
 
   - **target** (_Optional\[module\]_)
 
@@ -38,7 +38,7 @@ Bases: `importlib.abc.MetaPathFinder`
 
 - **Returns**
 
-  Type: _TypeGuard\[Type\[alicebot.config.ConfigModel\]\]_
+  Type: _TypeGuard\[type\[alicebot.config.ConfigModel\]\]_
 
   返回是否是配置类。
 
@@ -54,7 +54,7 @@ Bases: `importlib.abc.MetaPathFinder`
 
 - **Returns**
 
-  Type: _List\[~\_TypeT\]_
+  Type: _list\[~\_TypeT\]_
 
   返回符合条件的类的列表。
 
@@ -72,7 +72,7 @@ Bases: `importlib.abc.MetaPathFinder`
 
 - **Returns**
 
-  Type: _List\[Tuple\[~\_TypeT, module\]\]_
+  Type: _list\[tuple\[~\_TypeT, module\]\]_
 
   返回由符合条件的类和模块组成的元组的列表。
 
@@ -88,7 +88,23 @@ Bases: `json.encoder.JSONEncoder`
 
 ### _method_ `default(self, o)` {#PydanticEncoder-default}
 
-返回 `o` 的可序列化对象。
+Implement this method in a subclass such that it returns
+
+a serializable object for ``o``, or calls the base implementation
+(to raise a ``TypeError``).
+
+For example, to support arbitrary iterators, you could
+implement default like this::
+
+    def default(self, o):
+        try:
+            iterable = iter(o)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+        # Let the base class default method raise the TypeError
+        return super().default(o)
 
 - **Arguments**
 
@@ -126,7 +142,7 @@ Bases: `json.encoder.JSONEncoder`
 
 - **Returns**
 
-  Type: _Callable\[~\_P, Coroutine\[NoneType, NoneType, ~\_R\]\]_
+  Type: _Callable\[~\_P, collections.abc.Coroutine\[None, None, ~\_R\]\]_
 
   异步函数。
 
@@ -136,26 +152,30 @@ Bases: `json.encoder.JSONEncoder`
 
 - **Arguments**
 
-  - **cm** (_ContextManager\[~\_T\]_) - 待包装的同步上下文管理器。
+  - **cm** (_contextlib.AbstractContextManager\[~\_T\]_) - 待包装的同步上下文管理器。
 
   - **to\_thread** (_bool_) - 是否在独立的线程中运行同步函数。默认为 `False`。
 
 - **Returns**
 
-  Type: _AsyncGenerator\[~\_T, NoneType\]_
+  Type: _collections.abc.AsyncGenerator\[~\_T, None\]_
 
   异步上下文管理器。
 
-## _function_ `wrap_get_func(func)` {#wrap-get-func}
+## _function_ `wrap_get_func(func, *, event_type = None, adapter_type = None)` {#wrap-get-func}
 
 将 `get()` 函数接受的参数包装为一个异步函数。
 
 - **Arguments**
 
-  - **func** (_Optional\[Callable\[\[~EventT\], Union\[bool, Awaitable\[bool\]\]\]\]_) - `get()` 函数接受的参数。
+  - **func** (_Optional\[Callable\[\[~EventT\], Union\[bool, collections.abc.Awaitable\[bool\]\]\]\]_) - `get()` 函数接受的参数。
+
+  - **event\_type** (_Optional\[type\['Event\[Any\]'\]\]_) - 事件类型。
+
+  - **adapter\_type** (_Optional\[type\['Adapter\[Any, Any\]'\]\]_) - 适配器类型。
 
 - **Returns**
 
-  Type: _Callable\[\[~EventT\], Awaitable\[bool\]\]_
+  Type: _Callable\[\[~EventT\], collections.abc.Awaitable\[bool\]\]_
 
   异步函数。

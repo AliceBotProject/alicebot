@@ -194,7 +194,7 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
 
         Returns:
             检查结果。
-        """  # noqa: D402
+        """
         if isinstance(prefix, str):
             return str(self).startswith(prefix, start, end)
         if isinstance(prefix, self.get_segment_class()):
@@ -224,7 +224,7 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
 
         Returns:
             检查结果。
-        """  # noqa: D402
+        """
         if isinstance(suffix, str):
             return str(self).endswith(suffix, start, end)
         if isinstance(suffix, self.get_segment_class()):
@@ -262,7 +262,7 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
 
         Returns:
             替换后的消息对象。
-        """  # noqa: D402
+        """
         if isinstance(old, str):
             if not isinstance(new, str):
                 raise TypeError("when type of old is str, type of new must be str.")

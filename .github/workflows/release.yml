@@ -36,6 +36,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     environment: release
+    permissions:
+      id-token: write
     steps:
       - uses: actions/checkout@v4
 
@@ -60,25 +62,8 @@ jobs:
       - run: uv build -o dist --package alicebot-adapter-mirai
         shell: bash
 
-      - name: upload windows dists
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
+      - run: uv build -o dist --package alicebot-adapter-telegram
+        shell: bash
 
-  publish:
-    runs-on: ubuntu-latest
-    environment: release
-    needs:
-      - build
-    permissions:
-      id-token: write
-    steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
-
-      - name: Publish release distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+      - run: uv publish
+        shell: bash

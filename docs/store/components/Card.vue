@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
 import type { MetaData, PyPIData } from './types'
+import { onMounted, ref } from 'vue'
 
 const props = defineProps<{ item: MetaData }>()
 

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from 'vue'
-import Pagination from './Pagination.vue'
-import Card from './Card.vue'
 import type { MetaData } from './types'
+import { computed, ref, watchEffect } from 'vue'
+import Card from './Card.vue'
+import Pagination from './Pagination.vue'
 
 enum StoreType {
   Plugins = 'plugins',

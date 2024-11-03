@@ -1,6 +1,6 @@
 [project]
 name = "alicebot-adapter-dingtalk"
-version = "0.10.0"
+version = "0.11.0"
 description = "DingTalk adapter for AliceBot."
 authors = [{ name = "st1020", email = "stone_1020@qq.com" }]
 license = { text = "MIT" }
@@ -17,7 +17,7 @@ classifiers = [
     "Topic :: Communications :: Chat",
 ]
 requires-python = ">=3.9"
-dependencies = ["alicebot==0.10.0"]
+dependencies = ["alicebot==0.11.0"]
 
 [project.urls]
 Homepage = "https://docs.alicebot.dev/"

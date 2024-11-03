@@ -133,7 +133,7 @@ wheels = [
 
 [[package]]
 name = "alicebot"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
@@ -238,7 +238,7 @@ dev = [
 
 [[package]]
 name = "alicebot-adapter-apscheduler"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "packages/alicebot-adapter-apscheduler" }
 dependencies = [
     { name = "alicebot" },
@@ -253,7 +253,7 @@ requires-dist = [
 
 [[package]]
 name = "alicebot-adapter-cqhttp"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "packages/alicebot-adapter-cqhttp" }
 dependencies = [
     { name = "alicebot" },
@@ -264,7 +264,7 @@ requires-dist = [{ name = "alicebot", editable = "." }]
 
 [[package]]
 name = "alicebot-adapter-dingtalk"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "packages/alicebot-adapter-dingtalk" }
 dependencies = [
     { name = "alicebot" },
@@ -275,7 +275,7 @@ requires-dist = [{ name = "alicebot", editable = "." }]
 
 [[package]]
 name = "alicebot-adapter-mirai"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "packages/alicebot-adapter-mirai" }
 dependencies = [
     { name = "alicebot" },
@@ -286,7 +286,7 @@ requires-dist = [{ name = "alicebot", editable = "." }]
 
 [[package]]
 name = "alicebot-adapter-onebot"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "packages/alicebot-adapter-onebot" }
 dependencies = [
     { name = "alicebot" },
@@ -297,7 +297,7 @@ requires-dist = [{ name = "alicebot", editable = "." }]
 
 [[package]]
 name = "alicebot-adapter-telegram"
-version = "0.10.0"
+version = "0.11.0"
 source = { editable = "packages/alicebot-adapter-telegram" }
 dependencies = [
     { name = "alicebot" },

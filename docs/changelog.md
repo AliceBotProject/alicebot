@@ -4,6 +4,29 @@ sidebar: auto
 
 # 更新日志
 
+## [0.11.0](https://github.com/AliceBotProject/alicebot/compare/v0.10.0...v0.11.0) (2024-11-03)
+
+### Bug Fixes
+
+- 修复部分类型错误 ([#131](https://github.com/AliceBotProject/alicebot/issues/131)) ([35d85b0](https://github.com/AliceBotProject/alicebot/commit/35d85b0bb9e4ef628f31d3d35775fc452cd50c06))
+- **onebot:** 修复 OneBot 适配器 typo ([#132](https://github.com/AliceBotProject/alicebot/issues/132)) ([5a23f51](https://github.com/AliceBotProject/alicebot/commit/5a23f519a4c4e70e69557610b70ad3aa00990cf6))
+
+### Features
+
+- 使用 AnyIO 重构 ([#138](https://github.com/AliceBotProject/alicebot/issues/138)) ([c518c2b](https://github.com/AliceBotProject/alicebot/commit/c518c2b489332bfb482cff65db967722079e65c1))
+- 添加 override 装饰器 ([#130](https://github.com/AliceBotProject/alicebot/issues/130)) ([7b2a9b6](https://github.com/AliceBotProject/alicebot/commit/7b2a9b6b9cb8e1f8a6d34f84f5a2eb918e013be0))
+- 移除 Python 3.8 支持 ([#129](https://github.com/AliceBotProject/alicebot/issues/129)) ([1813a64](https://github.com/AliceBotProject/alicebot/commit/1813a6446cadb002475f4d475d5c5e0f206af972))
+- **bot:** 为 Bot 类的 \_\_init\_\_ 添加用于控制是否处理系统信号的 handle_signals 参数 ([#140](https://github.com/AliceBotProject/alicebot/issues/140)) ([a0e175f](https://github.com/AliceBotProject/alicebot/commit/a0e175f4cece5b6304c10dd972a17b4241142862))
+- **bot:** Bot 类新增用于安全退出的 exit() 方法 ([#139](https://github.com/AliceBotProject/alicebot/issues/139)) ([7a58d41](https://github.com/AliceBotProject/alicebot/commit/7a58d41b81048365ce98df552e84370add9b2394))
+- **cqhttp:** 修改 CQHTTP 适配器事件的 detail_type 判断方式 ([#146](https://github.com/AliceBotProject/alicebot/issues/146)) ([ffa2c40](https://github.com/AliceBotProject/alicebot/commit/ffa2c40a42ce36fed563d4f84701a84ab8474cd3))
+- **telegram:** 新增 Telegram 协议适配器 ([#147](https://github.com/AliceBotProject/alicebot/issues/147)) ([77ea80b](https://github.com/AliceBotProject/alicebot/commit/77ea80bac9071a76c93c3e21fbdd2360d005d31e))
+- **telegram:** 优化 API 和 Event 的代码生成 ([#150](https://github.com/AliceBotProject/alicebot/issues/150)) ([42e3174](https://github.com/AliceBotProject/alicebot/commit/42e3174c0350cba8a2a897cc72e197d4a89df188))
+
+### BREAKING CHANGES
+
+- **bot:** 移除 Bot 类型的 should_exit 公开属性
+- 移除 Python 3.8 支持
+
 ## [0.10.0](https://github.com/AliceBotProject/alicebot/compare/v0.9.0...v0.10.0) (2024-03-22)
 
 ### Bug Fixes

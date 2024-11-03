@@ -1,7 +1,7 @@
 {
   "name": "alicebot",
   "type": "module",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "private": true,
   "description": "A simple asynchronous python chat bot framework.",
   "author": "st1020 <stone_1020@qq.com>",

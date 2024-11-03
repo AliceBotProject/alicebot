@@ -14,7 +14,7 @@ CQHTTP 消息。
 
 - **Returns**
 
-  Type: _Type\[CQHTTPMessageSegment\]_
+  Type: _type\['CQHTTPMessageSegment'\]_
 
   消息字段类。
 
@@ -86,7 +86,7 @@ QQ 表情
 
 ### _method_ `from_str(msg)` {#CQHTTPMessageSegment-from-str}
 
-用于将 `str` 转换为消息字段。
+用于将 `str` 转换为消息字段，子类应重写此方法。
 
 - **Returns**
 
@@ -110,7 +110,7 @@ QQ 表情
 
 - **Returns**
 
-  Type: _Type\[alicebot.adapter.cqhttp.message.CQHTTPMessage\]_
+  Type: _type\[alicebot.adapter.cqhttp.message.CQHTTPMessage\]_
 
   消息类。
 

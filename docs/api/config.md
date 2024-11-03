@@ -34,11 +34,11 @@ Bot 配置。
 
 - **Attributes**
 
-  - **plugins** (_Set\[str\]_) - 将被加载的插件列表，将被 `Bot` 类的 `load_plugins()` 方法加载。
+  - **plugins** (_set\[str\]_) - 将被加载的插件列表，将被 `Bot` 类的 `load_plugins()` 方法加载。
 
-  - **plugin\_dirs** (_Set\[Annotated\[pathlib.Path, PathType\(path\_type='dir'\)\]\]_) - 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dirs()` 方法加载。
+  - **plugin\_dirs** (_set\[typing.Annotated\[pathlib.Path, PathType\(path\_type='dir'\)\]\]_) - 将被加载的插件目录列表，将被 `Bot` 类的 `load_plugins_from_dirs()` 方法加载。
 
-  - **adapters** (_Set\[str\]_) - 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
+  - **adapters** (_set\[str\]_) - 将被加载的适配器列表，将依次被 `Bot` 类的 `load_adapters()` 方法加载。
 
   - **log** (_Optional\[alicebot.config.LogConfig\]_) - AliceBot 日志相关设置。
 

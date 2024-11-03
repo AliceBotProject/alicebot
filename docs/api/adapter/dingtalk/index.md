@@ -69,7 +69,9 @@ DingTalk 配置类，将在适配器被加载时被混入到机器人主配置�
 
 ### _async method_ `run(self)` {#DingTalkAdapter-run}
 
-运行 aiohttp 服务器。
+适配器运行方法，适配器开发者必须实现该方法。
+
+适配器运行过程中保持保持运行，当此方法结束后， AliceBot 不会自动重新启动适配器。
 
 - **Returns**
 
@@ -85,13 +87,13 @@ DingTalk 配置类，将在适配器被加载时被混入到机器人主配置�
 
   - **conversation\_type** (_Literal\['1', '2'\]_) - 聊天类型，"1" 表示单聊，"2" 表示群聊。
 
-  - **msg** (_Union\[str, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 消息。
+  - **msg** (_Union\[str, dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - 消息。
 
-  - **at** (_Union\[NoneType, Dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - At 对象，仅在群聊时生效，默认为空。
+  - **at** (_Union\[NoneType, dict\[str, Any\], alicebot.adapter.dingtalk.message.DingTalkMessage\]_) - At 对象，仅在群聊时生效，默认为空。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   钉钉服务器的响应。
 
@@ -105,7 +107,11 @@ DingTalk 配置类，将在适配器被加载时被混入到机器人主配置�
 
 ### _async method_ `shutdown(self)` {#DingTalkAdapter-shutdown}
 
-清理 aiohttp AppRunner。
+在适配器结束运行时运行的方法，用于安全地关闭适配器。
+
+AliceBot 在接收到系统的结束信号后先发送 cancel 请求给 run 任务。
+在所有适配器都停止运行后，会依次运行并等待所有适配器的 `shutdown()` 方法。
+当强制退出时此方法可能未被执行。
 
 - **Returns**
 
@@ -113,7 +119,9 @@ DingTalk 配置类，将在适配器被加载时被混入到机器人主配置�
 
 ### _async method_ `startup(self)` {#DingTalkAdapter-startup}
 
-创建 aiohttp Application。
+在适配器开始运行前运行的方法，用于初始化适配器。
+
+AliceBot 依次运行并等待所有适配器的 `startup()` 方法，待运行完毕后再创建 `run()` 任务。
 
 - **Returns**
 

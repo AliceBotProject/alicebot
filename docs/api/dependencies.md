@@ -10,7 +10,7 @@ AliceBot 依赖注入。
 
 - **Arguments**
 
-  - **dependency** (_Union\[Type\[Union\[~\_T, AsyncContextManager\[~\_T\], ContextManager\[~\_T\]\]\], Callable\[\[\], AsyncGenerator\[~\_T, NoneType\]\], Callable\[\[\], Generator\[~\_T, NoneType, NoneType\]\], NoneType\]_) - 依赖类。如果不指定则根据字段的类型注释自动判断。
+  - **dependency** (_Union\[type\[Union\[~\_T, contextlib.AbstractAsyncContextManager\[~\_T\], contextlib.AbstractContextManager\[~\_T\]\]\], Callable\[\[\], collections.abc.AsyncGenerator\[~\_T, None\]\], Callable\[\[\], collections.abc.Generator\[~\_T, None, None\]\], NoneType\]_) - 依赖类。如果不指定则根据字段的类型注释自动判断。
 
   - **use\_cache** (_bool_) - 是否使用缓存。默认为 `True`。
 

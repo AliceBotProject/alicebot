@@ -22,7 +22,7 @@ Bases: `abc.ABC`, `typing.Generic`
 
   - **block** (_ClassVar\[bool\]_) - 插件执行结束后是否阻止事件的传播。`True` 表示阻止。
 
-  - **Config** (_Type\[~ConfigT\]_)
+  - **Config** (_type\[~ConfigT\]_)
 
   - **event** - 当前正在被此插件处理的事件。
 

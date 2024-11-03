@@ -16,7 +16,7 @@ Bases: `typing.Generic`, `abc.ABC`
 
   - **bot** (_Bot_) - 当前的机器人对象。
 
-  - **Config** (_Type\[~ConfigT\]_)
+  - **Config** (_type\[~ConfigT\]_)
 
 ### _method_ `__init__(self, bot)` {#Adapter---init--}
 
@@ -45,7 +45,7 @@ Type: _~ConfigT_
 
 - **Arguments**
 
-  - **func** (_Optional\[Callable\[\[Any\], Union\[bool, Awaitable\[bool\]\]\]\]_) - 协程或者函数，函数会被自动包装为协程执行。
+  - **func** (_Optional\[Callable\[\[Any\], Union\[bool, collections.abc.Awaitable\[bool\]\]\]\]_) - 协程或者函数，函数会被自动包装为协程执行。
   要求接受一个事件作为参数，返回布尔值。
   当协程返回 `True` 时返回当前事件。
   当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
@@ -88,7 +88,8 @@ Type: _~ConfigT_
 
 在适配器结束运行时运行的方法，用于安全地关闭适配器。
 
-AliceBot 在接收到系统的结束信号后依次运行并等待所有适配器的 `shutdown()` 方法。
+AliceBot 在接收到系统的结束信号后先发送 cancel 请求给 run 任务。
+在所有适配器都停止运行后，会依次运行并等待所有适配器的 `shutdown()` 方法。
 当强制退出时此方法可能未被执行。
 
 - **Returns**

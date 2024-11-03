@@ -92,7 +92,7 @@ CQHTTP 事件基类
 
 - **Returns**
 
-  Type: _Tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\]_
+  Type: _tuple\[typing.Optional\[str\], typing.Optional\[str\], typing.Optional\[str\]\]_
 
   事件类型。
 
@@ -154,11 +154,11 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`, `alicebot.event.MessageEvent
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -180,11 +180,11 @@ Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -210,11 +210,11 @@ Bases: `alicebot.adapter.cqhttp.event.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.cqhttp.message.CQHTTPMessageSegment\], alicebot.adapter.cqhttp.message.CQHTTPMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -374,8 +374,6 @@ Bases: `alicebot.adapter.cqhttp.event.NoticeEvent`
 
   - **sub\_type** (_str_)
 
-  - **group\_id** (_Optional\[int\]_)
-
   - **user\_id** (_int_)
 
 ## _class_ `PokeNotifyEvent` {#PokeNotifyEvent}
@@ -438,7 +436,7 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -448,7 +446,7 @@ Bases: `alicebot.adapter.cqhttp.event.CQHTTPEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -478,7 +476,7 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -488,7 +486,7 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -518,7 +516,7 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -532,7 +530,7 @@ Bases: `alicebot.adapter.cqhttp.event.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 

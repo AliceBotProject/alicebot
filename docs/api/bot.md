@@ -16,17 +16,15 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
   - **config** (_alicebot.config.MainConfig_) - 机器人配置。
 
-  - **should\_exit** (_asyncio.locks.Event_) - 机器人是否应该进入准备退出状态。
+  - **adapters** (_list\[alicebot.adapter.Adapter\[typing.Any, typing.Any\]\]_) - 当前已经加载的适配器的列表。
 
-  - **adapters** (_List\[alicebot.adapter.Adapter\[Any, Any\]\]_) - 当前已经加载的适配器的列表。
+  - **plugins\_priority\_dict** (_dict\[int, list\[type\[alicebot.plugin.Plugin\[typing.Any, typing.Any, typing.Any\]\]\]\]_) - 插件优先级字典。
 
-  - **plugins\_priority\_dict** (_Dict\[int, List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]\]_) - 插件优先级字典。
+  - **plugin\_state** (_dict\[str, typing.Any\]_) - 插件状态。
 
-  - **plugin\_state** (_Dict\[str, Any\]_) - 插件状态。
+  - **global\_state** (_dict\[typing.Any, typing.Any\]_) - 全局状态。
 
-  - **global\_state** (_Dict\[Any, Any\]_) - 全局状态。
-
-### _method_ `__init__(self, *, config_file = 'config.toml', config_dict = None, hot_reload = False)` {#Bot---init--}
+### _method_ `__init__(self, *, config_file = 'config.toml', config_dict = None, hot_reload = False, handle_signals = True)` {#Bot---init--}
 
 初始化 AliceBot，读取配置文件，创建配置，加载适配器和插件。
 
@@ -35,11 +33,13 @@ AliceBot 机器人对象，定义了机器人的基本方法。
   - **config\_file** (_Optional\[str\]_) - 配置文件，如不指定则使用默认的 `config.toml`。
   若指定为 `None`，则不加载配置文件。
 
-  - **config\_dict** (_Optional\[Dict\[str, Any\]\]_) - 配置字典，默认为 `None。`
+  - **config\_dict** (_Optional\[dict\[str, Any\]\]_) - 配置字典，默认为 `None。`
   若指定字典，则会忽略 `config_file` 配置，不再读取配置文件。
 
   - **hot\_reload** (_bool_) - 热重载。
   启用后将自动检查 `plugin_dir` 中的插件文件更新，并在更新时自动重新加载。
+
+  - **handle\_signals** (_bool_) - 是否处理系统信号，默认为 `True`。
 
 - **Returns**
 
@@ -51,11 +51,11 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Adapter\[Any, Any\]\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Adapter\[Any, Any\]\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
 
@@ -65,11 +65,11 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Adapter\[Any, Any\]\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Adapter\[Any, Any\]\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
 
@@ -79,11 +79,11 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Adapter\[Any, Any\]\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Adapter\[Any, Any\]\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Adapter\[Any, Any\]\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
 
@@ -93,11 +93,11 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Bot\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Bot\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Bot\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Bot\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
 
@@ -107,11 +107,11 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Bot\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Bot\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Bot\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Bot\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
 
@@ -121,11 +121,11 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Event\[Any\]\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Event\[Any\]\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
 
@@ -135,13 +135,21 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_) - 被注册的函数。
+  - **func** (_Callable\[\[Event\[Any\]\], collections.abc.Awaitable\[None\]\]_) - 被注册的函数。
 
 - **Returns**
 
-  Type: _Callable\[\[Event\[Any\]\], Awaitable\[NoneType\]\]_
+  Type: _Callable\[\[Event\[Any\]\], collections.abc.Awaitable\[None\]\]_
 
   被注册的函数。
+
+### _method_ `exit(self)` {#Bot-exit}
+
+退出 AliceBot。
+
+- **Returns**
+
+  Type: _None_
 
 ### _async method_ `get(self, func = None, *, event_type = None, adapter_type = None, max_try_times = None, timeout = None)` {#Bot-get}
 
@@ -149,13 +157,13 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **func** (_Optional\[Callable\[\[Any\], Union\[bool, Awaitable\[bool\]\]\]\]_) - 协程或者函数，函数会被自动包装为协程执行。
+  - **func** (_Optional\[Callable\[\[Any\], Union\[bool, collections.abc.Awaitable\[bool\]\]\]\]_) - 协程或者函数，函数会被自动包装为协程执行。
   要求接受一个事件作为参数，返回布尔值。当协程返回 `True` 时返回当前事件。
   当为 `None` 时相当于输入对于任何事件均返回真的协程，即返回适配器接收到的下一个事件。
 
-  - **event\_type** (_Optional\[Type\[alicebot.event.Event\[Any\]\]\]_) - 当指定时，只接受指定类型的事件，先于 func 条件生效。默认为 `None`。
+  - **event\_type** (_Optional\[type\[alicebot.event.Event\[Any\]\]\]_) - 当指定时，只接受指定类型的事件，先于 func 条件生效。默认为 `None`。
 
-  - **adapter\_type** (_Optional\[Type\[alicebot.adapter.Adapter\[Any, Any\]\]\]_) - 当指定时，只接受指定适配器产生的事件，先于 func 条件生效。默认为 `None`。
+  - **adapter\_type** (_Optional\[type\[alicebot.adapter.Adapter\[Any, Any\]\]\]_) - 当指定时，只接受指定适配器产生的事件，先于 func 条件生效。默认为 `None`。
 
   - **max\_try\_times** (_Optional\[int\]_) - 最大事件数。
 
@@ -177,7 +185,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **adapter** (_Union\[str, Type\[~AdapterT\]\]_) - 适配器名称或适配器类。
+  - **adapter** (_Union\[str, type\[~AdapterT\]\]_) - 适配器名称或适配器类。
 
 - **Returns**
 
@@ -199,7 +207,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Returns**
 
-  Type: _Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]_
+  Type: _type\[alicebot.plugin.Plugin\[typing.Any, typing.Any, typing.Any\]\]_
 
   获取到的插件类。
 
@@ -231,7 +239,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **\*adapters** (_Union\[Type\[alicebot.adapter.Adapter\[Any, Any\]\], str\]_) - 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
+  - **\*adapters** (_Union\[type\[alicebot.adapter.Adapter\[Any, Any\]\], str\]_) - 适配器类或适配器名称，类型可以是 `Type[Adapter]` 或 `str`。
   如果为 `Type[Adapter]` 类型时，将作为适配器类进行加载。
   如果为 `str` 类型时，将作为适配器模块名称进行加载，格式和 Python `import` 语句相同。
       例如：`path.of.adapter`。
@@ -246,7 +254,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 - **Arguments**
 
-  - **\*plugins** (_Union\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\], str, pathlib.Path\]_) - 插件类、插件模块名称或者插件模块文件路径。
+  - **\*plugins** (_Union\[type\[alicebot.plugin.Plugin\[Any, Any, Any\]\], str, pathlib.Path\]_) - 插件类、插件模块名称或者插件模块文件路径。
   类型可以是 `Type[Plugin]`, `str` 或 `pathlib.Path`。
   如果为 `Type[Plugin]` 类型时，将作为插件类进行加载。
   如果为 `str` 类型时，将作为插件模块名称进行加载，格式和 Python `import` 语句相同。
@@ -273,7 +281,7 @@ AliceBot 机器人对象，定义了机器人的基本方法。
 
 ### _readonly property_ `plugins` {#Bot-plugins}
 
-Type: _List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]_
+Type: _list\[type\[alicebot.plugin.Plugin\[typing.Any, typing.Any, typing.Any\]\]\]_
 
 当前已经加载的插件的列表。
 
@@ -296,6 +304,14 @@ Type: _List\[Type\[alicebot.plugin.Plugin\[Any, Any, Any\]\]\]_
 ### _method_ `run(self)` {#Bot-run}
 
 运行 AliceBot，监听并拦截系统退出信号，更新机器人配置。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `run_async(self)` {#Bot-run-async}
+
+异步运行 AliceBot。
 
 - **Returns**
 

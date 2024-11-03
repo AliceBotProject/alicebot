@@ -14,7 +14,7 @@ OneBot 消息。
 
 - **Returns**
 
-  Type: _Type\[OneBotMessageSegment\]_
+  Type: _type\['OneBotMessageSegment'\]_
 
   消息字段类。
 
@@ -42,7 +42,7 @@ OneBot 消息字段。
 
 ### _method_ `from_str(msg)` {#OneBotMessageSegment-from-str}
 
-用于将 `str` 转换为消息字段。
+用于将 `str` 转换为消息字段，子类应重写此方法。
 
 - **Returns**
 
@@ -56,7 +56,7 @@ OneBot 消息字段。
 
 - **Returns**
 
-  Type: _Type\[OneBotMessage\]_
+  Type: _type\['OneBotMessage'\]_
 
   消息类。
 

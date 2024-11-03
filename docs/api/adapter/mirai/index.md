@@ -19,7 +19,7 @@ Mirai 协议适配器。
 
   - **name** (_str_)
 
-  - **event\_models** (_ClassVar\[Dict\[str, Type\[alicebot.adapter.mirai.event.base.MiraiEvent\]\]\]_)
+  - **event\_models** (_ClassVar\[dict\[str, type\[alicebot.adapter.mirai.event.base.MiraiEvent\]\]\]_)
 
 ### _class_ `Config` {#Config}
 
@@ -77,7 +77,7 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Returns**
 
-  Type: _Type\[alicebot.adapter.mirai.event.base.MiraiEvent\]_
+  Type: _type\[alicebot.adapter.mirai.event.base.MiraiEvent\]_
 
   对应的事件类。
 
@@ -87,7 +87,15 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Arguments**
 
-  - **msg** (_Dict\[str, Any\]_) - 接收到的信息。
+  - **msg** (_dict\[str, typing.Any\]_) - 接收到的信息。
+
+- **Returns**
+
+  Type: _None_
+
+### _async method_ `handle_websocket(self)` {#MiraiAdapter-handle-websocket}
+
+处理 WebSocket。
 
 - **Returns**
 
@@ -105,21 +113,13 @@ Mirai 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   Type: _None_
 
-### _async method_ `reverse_ws_connection_hook(self)` {#MiraiAdapter-reverse-ws-connection-hook}
-
-反向 WebSocket 连接建立时的钩子函数。
-
-- **Returns**
-
-  Type: _None_
-
 ### _async method_ `send(self, message_, message_type, target, quote = None)` {#MiraiAdapter-send}
 
 调用 Mirai API 发送消息。
 
 - **Arguments**
 
-  - **message\_** (_Union\[List\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
+  - **message\_** (_Union\[list\[alicebot.adapter.mirai.message.MiraiMessageSegment\], alicebot.adapter.mirai.message.MiraiMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
   `MiraiMessageSegment`, `MiraiMessage`。
   将使用 `MiraiMessage` 进行封装。
 

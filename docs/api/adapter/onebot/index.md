@@ -13,7 +13,7 @@ OneBot 协议适配器。
 
 - **Attributes**
 
-  - **event\_models** (_ClassVar\[Dict\[Tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\], Type\[alicebot.adapter.onebot.event.OntBotEvent\]\]\]_)
+  - **event\_models** (_ClassVar\[dict\[tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\], type\[alicebot.adapter.onebot.event.OneBotEvent\]\]\]_)
 
 ### _class_ `Config` {#Config}
 
@@ -39,7 +39,7 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 ### _method_ `add_event_model(event_model)` {#OneBotAdapter-add-event-model}
 
-添加自定义事件模型，事件模型类必须继承于 `OntBotEvent`。
+添加自定义事件模型，事件模型类必须继承于 `OneBotEvent`。
 
 - **Returns**
 
@@ -85,7 +85,7 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Returns**
 
-  Type: _Type\[alicebot.adapter.onebot.event.OntBotEvent\]_
+  Type: _type\[alicebot.adapter.onebot.event.OneBotEvent\]_
 
   对应的事件类。
 
@@ -95,7 +95,7 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Arguments**
 
-  - **msg** (_Dict\[str, Any\]_) - 接收到的信息。
+  - **msg** (_dict\[str, typing.Any\]_) - 接收到的信息。
 
 - **Returns**
 
@@ -127,7 +127,7 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
 - **Arguments**
 
-  - **message\_** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
+  - **message\_** (_Union\[list\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
   `OneBotMessageSegment`, `OneBotMessage`。
   将使用 `OneBotMessage` 进行封装。
 

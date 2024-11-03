@@ -18,6 +18,26 @@ Bases: `abc.ABC`, `pydantic.main.BaseModel`, `typing.Generic`
 
   - **\_\_handled\_\_** - 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
 
+## _class_ `EventHandleOption` {#EventHandleOption}
+
+Bases: `tuple`
+
+事件处理选项。
+
+- **Attributes**
+
+  - **event** (_Event\[Any\]_) - 当前事件。
+
+  - **handle\_get** (_bool_) - 当前事件是否可以被 get 方法捕获。
+
+### _data descriptor_ `event` {#EventHandleOption-event}
+
+Alias for field number 0
+
+### _data descriptor_ `handle_get` {#EventHandleOption-handle-get}
+
+Alias for field number 1
+
 ## _abstract class_ `MessageEvent` {#MessageEvent}
 
 Bases: `alicebot.event.Event`, `typing.Generic`

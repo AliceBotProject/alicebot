@@ -18,7 +18,7 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -32,7 +32,7 @@ Bases: `alicebot.adapter.mirai.event.base.MiraiEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -66,7 +66,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -82,7 +82,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -118,7 +118,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -134,7 +134,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -150,7 +150,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -186,7 +186,7 @@ Bot 被邀请入群申请
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -200,6 +200,6 @@ Bot 被邀请入群申请
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。

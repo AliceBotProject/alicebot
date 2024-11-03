@@ -84,4 +84,4 @@ Bases: `alicebot.adapter.mirai.event.meta.MetaEvent`
 
   - **member** (_Optional\[alicebot.adapter.mirai.event.base.GroupMemberInfo\]_)
 
-  - **args** (_List\[Any\]_)
+  - **args** (_list\[typing.Any\]_)

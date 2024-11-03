@@ -14,7 +14,7 @@ Mirai 消息
 
 - **Returns**
 
-  Type: _List\[Dict\[str, Any\]\]_
+  Type: _list\[dict\[str, typing.Any\]\]_
 
   messageChain 数组。
 
@@ -24,7 +24,7 @@ Mirai 消息
 
 - **Returns**
 
-  Type: _Type\[MiraiMessageSegment\]_
+  Type: _type\['MiraiMessageSegment'\]_
 
   消息字段类。
 
@@ -108,7 +108,7 @@ FlashImage 消息
 
 ### _method_ `from_str(msg)` {#MiraiMessageSegment-from-str}
 
-用于将 `str` 转换为消息字段。
+用于将 `str` 转换为消息字段，子类应重写此方法。
 
 - **Returns**
 
@@ -122,7 +122,7 @@ FlashImage 消息
 
 - **Returns**
 
-  Type: _Type\[MiraiMessage\]_
+  Type: _type\['MiraiMessage'\]_
 
   消息类。
 
@@ -220,7 +220,7 @@ Quote 消息
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   符合 Mirai-api-http 标准的消息字段字典。
 

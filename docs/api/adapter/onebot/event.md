@@ -1,6 +1,6 @@
 # alicebot.adapter.onebot.event
 
-OntBot 适配器事件。
+OneBot 适配器事件。
 
 ## _class_ `BotSelf` {#BotSelf}
 
@@ -50,9 +50,9 @@ Bases: `pydantic.main.BaseModel`
 
   - **good** (_bool_)
 
-  - **bots** (_List\[alicebot.adapter.onebot.event.BotStatus\]_)
+  - **bots** (_list\[alicebot.adapter.onebot.event.BotStatus\]_)
 
-## _class_ `OntBotEvent` {#OntBotEvent}
+## _class_ `OneBotEvent` {#OneBotEvent}
 
 Bases: `alicebot.event.Event[OneBotAdapter]`
 
@@ -70,19 +70,19 @@ OneBot 事件基类
 
   - **sub\_type** (_str_)
 
-### _method_ `get_event_type()` {#OntBotEvent-get-event-type}
+### _method_ `get_event_type()` {#OneBotEvent-get-event-type}
 
 获取事件类型。
 
 - **Returns**
 
-  Type: _Tuple\[Optional\[str\], Optional\[str\], Optional\[str\]\]_
+  Type: _tuple\[typing.Optional\[str\], typing.Optional\[str\], typing.Optional\[str\]\]_
 
   事件类型。
 
 ## _class_ `BotEvent` {#BotEvent}
 
-Bases: `alicebot.adapter.onebot.event.OntBotEvent`
+Bases: `alicebot.adapter.onebot.event.OneBotEvent`
 
 包含 self 字段的机器人事件
 
@@ -98,7 +98,7 @@ Type: _bool_
 
 ## _class_ `MetaEvent` {#MetaEvent}
 
-Bases: `alicebot.adapter.onebot.event.OntBotEvent`
+Bases: `alicebot.adapter.onebot.event.OneBotEvent`
 
 元事件
 
@@ -186,11 +186,11 @@ Bases: `alicebot.adapter.onebot.event.BotEvent`, `alicebot.event.MessageEvent[On
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -210,11 +210,11 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -236,11 +236,11 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 
@@ -264,11 +264,11 @@ Bases: `alicebot.adapter.onebot.event.MessageEvent`
 
 - **Arguments**
 
-  - **message** (_Union\[List\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
+  - **message** (_Union\[list\[alicebot.adapter.onebot.message.OneBotMessageSegment\], alicebot.adapter.onebot.message.OneBotMessageSegment, str, collections.abc.Mapping\[str, Any\]\]_) - 回复消息的内容，同 `call_api()` 方法。
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   API 请求响应。
 

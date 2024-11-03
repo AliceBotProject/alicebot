@@ -6,21 +6,21 @@ Telegram Media 模型。
 
 Bases: `pydantic.main.BaseModel`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
 - **Attributes**
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -34,24 +34,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Photo` {#Photo}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -65,15 +65,15 @@ A base class for creating Pydantic models.
 
   - **has\_spoiler** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -87,24 +87,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Audio` {#Audio}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -122,15 +122,15 @@ A base class for creating Pydantic models.
 
   - **thumbnail** (_Union\[bytes, tuple\[str, bytes\], str, NoneType\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -144,24 +144,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Document` {#Document}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -175,15 +175,15 @@ A base class for creating Pydantic models.
 
   - **disable\_content\_type\_detection** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -197,24 +197,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Video` {#Video}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -238,15 +238,15 @@ A base class for creating Pydantic models.
 
   - **supports\_streaming** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -260,24 +260,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Animation` {#Animation}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -299,15 +299,15 @@ A base class for creating Pydantic models.
 
   - **has\_spoiler** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -321,24 +321,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Voice` {#Voice}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -350,15 +350,15 @@ A base class for creating Pydantic models.
 
   - **duration** (_Optional\[int\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -372,24 +372,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `VideoNote` {#VideoNote}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -403,15 +403,15 @@ A base class for creating Pydantic models.
 
   - **thumbnail** (_Union\[bytes, tuple\[str, bytes\], str, NoneType\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -425,24 +425,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `PaidMedia` {#PaidMedia}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -458,15 +458,15 @@ A base class for creating Pydantic models.
 
   - **show\_caption\_above\_media** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -480,24 +480,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `MediaGroup` {#MediaGroup}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -505,15 +505,15 @@ A base class for creating Pydantic models.
 
   - **media** (_Union\[list\[alicebot.adapter.telegram.model.InputMediaAudio\], list\[alicebot.adapter.telegram.model.InputMediaDocument\], list\[alicebot.adapter.telegram.model.InputMediaPhoto\], list\[alicebot.adapter.telegram.model.InputMediaVideo\]\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -527,24 +527,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Location` {#Location}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -562,15 +562,15 @@ A base class for creating Pydantic models.
 
   - **proximity\_alert\_radius** (_Optional\[int\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -584,24 +584,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Venue` {#Venue}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -623,15 +623,15 @@ A base class for creating Pydantic models.
 
   - **google\_place\_type** (_Optional\[str\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -645,24 +645,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Contact` {#Contact}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -676,15 +676,15 @@ A base class for creating Pydantic models.
 
   - **vcard** (_Optional\[str\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -698,24 +698,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Poll` {#Poll}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -741,15 +741,15 @@ A base class for creating Pydantic models.
 
   - **is\_closed** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -763,24 +763,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Dice` {#Dice}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -788,15 +788,15 @@ A base class for creating Pydantic models.
 
   - **emoji** (_Optional\[str\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -810,24 +810,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `ChatAction` {#ChatAction}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -835,15 +835,15 @@ A base class for creating Pydantic models.
 
   - **action** (_str_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -857,24 +857,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Sticker` {#Sticker}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -884,15 +884,15 @@ A base class for creating Pydantic models.
 
   - **emoji** (_Optional\[str\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -906,24 +906,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Invoice` {#Invoice}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -971,15 +971,15 @@ A base class for creating Pydantic models.
 
   - **is\_flexible** (_Optional\[bool\]_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -993,24 +993,24 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.
 
 ## _class_ `Game` {#Game}
 
 Bases: `alicebot.adapter.telegram.media.TelegramMedia`
 
-Usage docs: https://docs.pydantic.dev/2.8/concepts/models/
+Usage docs: https://docs.pydantic.dev/2.9/concepts/models/
 
 A base class for creating Pydantic models.
 
@@ -1018,15 +1018,15 @@ A base class for creating Pydantic models.
 
   - **game\_short\_name** (_str_)
 
-  - **\_\_class\_vars\_\_** - The names of classvars defined on the model.
+  - **\_\_class\_vars\_\_** - The names of the class variables defined on the model.
 
   - **\_\_private\_attributes\_\_** - Metadata about the private attributes of the model.
 
-  - **\_\_signature\_\_** - The signature for instantiating the model.
+  - **\_\_signature\_\_** - The synthesized `__init__` [`Signature`][inspect.Signature] of the model.
 
   - **\_\_pydantic\_complete\_\_** - Whether model building is completed, or if there are still undefined fields.
 
-  - **\_\_pydantic\_core\_schema\_\_** - The pydantic-core schema used to build the SchemaValidator and SchemaSerializer.
+  - **\_\_pydantic\_core\_schema\_\_** - The core schema of the model.
 
   - **\_\_pydantic\_custom\_init\_\_** - Whether the model has a custom `__init__` function.
 
@@ -1040,15 +1040,15 @@ A base class for creating Pydantic models.
 
   - **\_\_pydantic\_post\_init\_\_** - The name of the post-init method for the model, if defined.
 
-  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a `RootModel`.
+  - **\_\_pydantic\_root\_model\_\_** - Whether the model is a [`RootModel`][pydantic.root_model.RootModel].
 
-  - **\_\_pydantic\_serializer\_\_** - The pydantic-core SchemaSerializer used to dump instances of the model.
+  - **\_\_pydantic\_serializer\_\_** - The `pydantic-core` `SchemaSerializer` used to dump instances of the model.
 
-  - **\_\_pydantic\_validator\_\_** - The pydantic-core SchemaValidator used to validate instances of the model.
+  - **\_\_pydantic\_validator\_\_** - The `pydantic-core` `SchemaValidator` used to validate instances of the model.
 
-  - **\_\_pydantic\_extra\_\_** - An instance attribute with the values of extra fields from validation when
-  `model_config['extra'] == 'allow'`.
+  - **\_\_pydantic\_extra\_\_** - A dictionary containing extra values, if [`extra`][pydantic.config.ConfigDict.extra]
+  is set to `'allow'`.
 
-  - **\_\_pydantic\_fields\_set\_\_** - An instance attribute with the names of fields explicitly set.
+  - **\_\_pydantic\_fields\_set\_\_** - The names of fields explicitly set during instantiation.
 
-  - **\_\_pydantic\_private\_\_** - Instance attribute with the values of private attributes set on the model instance.
+  - **\_\_pydantic\_private\_\_** - Values of private attributes set on the model instance.

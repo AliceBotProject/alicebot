@@ -16,7 +16,7 @@ DingTalk 独立跳转 actionCard 消息
 
   - **text** (_str_)
 
-  - **btns** (_List\[Any\]_)
+  - **btns** (_list\[typing.Any\]_)
 
   - **btn\_orientation** (_str_)
 
@@ -48,7 +48,7 @@ DingTalk At 信息
 
 - **Arguments**
 
-  - **at\_user\_ids** (_Optional\[List\[str\]\]_)
+  - **at\_user\_ids** (_Optional\[list\[str\]\]_)
 
   - **is\_at\_all** (_bool_)
 
@@ -64,6 +64,16 @@ DingTalk feedCard 消息
 
   Type: _DingTalkMessage_
 
+### _method_ `get_message_class()` {#DingTalkMessage-get-message-class}
+
+获取消息类。
+
+- **Returns**
+
+  Type: _None_
+
+  消息类。
+
 ### _method_ `get_plain_text(self)` {#DingTalkMessage-get-plain-text}
 
 获取消息中的纯文本部分。
@@ -73,16 +83,6 @@ DingTalk feedCard 消息
   Type: _str_
 
   消息中的纯文本部分。
-
-### _method_ `get_segment_class()` {#DingTalkMessage-get-segment-class}
-
-获取消息字段类。
-
-- **Returns**
-
-  Type: _None_
-
-  消息字段类。
 
 ### _method_ `link(text, title, message_url, pic_url = None)` {#DingTalkMessage-link}
 
@@ -126,7 +126,7 @@ DingTalk 原始消息
 
 - **Returns**
 
-  Type: _Dict\[str, Any\]_
+  Type: _dict\[str, typing.Any\]_
 
   符合钉钉消息标准的消息字段字典。
 

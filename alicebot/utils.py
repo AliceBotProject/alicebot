@@ -249,8 +249,8 @@ def wrap_get_func(
     async def _func(event: EventT) -> bool:
         return (
             (event_type is None or isinstance(event, event_type))
-            and (adapter_type is None or isinstance(event.adapter, adapter_type))  # pyright: ignore[reportUnknownMemberType]
-            and await func(event)  # pyright: ignore[reportUnknownArgumentType]
+            and (adapter_type is None or isinstance(event.adapter, adapter_type))
+            and await func(event)
         )
 
     return _func

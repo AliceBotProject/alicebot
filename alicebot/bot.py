@@ -912,7 +912,7 @@ class Bot:
                 if _adapter.name == adapter:
                     return _adapter
             elif isinstance(_adapter, adapter):
-                return _adapter  # pyright: ignore[reportUnknownVariableType]
+                return _adapter
         raise LookupError(f'Can not find adapter named "{adapter}"')
 
     def get_plugin(self, name: str) -> type[Plugin[Any, Any, Any]]:

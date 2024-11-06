@@ -8,7 +8,7 @@ pip install alicebot-adapter-telegram
 
 ## 配置协议端
 
-Telegram 协议适配器是 Telegram Bot 协议的适配器，你需要根据 [Telegram Bots 文档](https://core.telegram.org/bots) 创建机器人并且获得一个类似 `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11` 这样的的 token。
+Telegram 协议适配器是 Telegram Bot 协议的适配器，你需要根据 [Telegram Bots 文档](https://core.telegram.org/bots)创建机器人并且获得一个类似 `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11` 这样的的 token。
 
 ## 配置 AliceBot
 
@@ -27,7 +27,7 @@ bot_token = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
 proxy = "http://127.0.0.1:1234"
 ```
 
-如果你部署 AliceBot 的服务器具有公网 IP 或者域名，则可以使用 Webhook 获取事件（不推荐）。
+如果你部署 AliceBot 的服务器具有公网 IP 或者域名，则可以使用 Webhook 获取事件 (不推荐)。
 
 ```toml
 [adapter.telegram]

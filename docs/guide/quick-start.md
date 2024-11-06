@@ -106,7 +106,7 @@ AliceBot 推荐的目录结构如下：
 
 ## 配置协议端
 
-上面的例子中使用了 `alicebot.adapter.cqhttp` 协议适配器，它是 OneBot v11 协议 (原 CKYU 平台的 CQHTTP 协议) 的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，你可以参考 [OneBot 官网](https://onebot.dev/ecosystem.html) 寻找支持 OneBot v11 协议的协议端。
+上面的例子中使用了 `alicebot.adapter.cqhttp` 协议适配器，它是 OneBot v11 协议 (原 CKYU 平台的 CQHTTP 协议) 的适配器，需要一个兼容 OneBot 协议的协议端进行通讯，你可以参考 [OneBot 官网](https://onebot.dev/ecosystem.html)寻找支持 OneBot v11 协议的协议端。
 
 更多信息详见 [CQHTTP 协议使用指南](/guide/adapters/cqhttp-adapter.md)。
 

@@ -31,3 +31,13 @@ jobs:
         uses: ./.github/actions/setup-node
 
       - run: pnpm run eslint
+
+  zhlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: ./.github/actions/setup-node
+
+      - run: pnpm run zhlint

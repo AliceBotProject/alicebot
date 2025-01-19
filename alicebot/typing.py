@@ -3,6 +3,8 @@
 此模块定义了部分 AliceBot 使用的类型。
 """
 
+# ruff: noqa: A005
+
 from collections.abc import Awaitable
 from typing import TYPE_CHECKING, Callable, Optional, TypeVar
 
@@ -18,17 +20,17 @@ if TYPE_CHECKING:
     from alicebot.plugin import Plugin
 
 __all__ = [
-    "StateT",
-    "EventT",
-    "PluginT",
-    "AdapterT",
-    "ConfigT",
-    "MessageT",
-    "MessageSegmentT",
-    "BuildMessageType",
-    "BotHook",
     "AdapterHook",
+    "AdapterT",
+    "BotHook",
+    "BuildMessageType",
+    "ConfigT",
     "EventHook",
+    "EventT",
+    "MessageSegmentT",
+    "MessageT",
+    "PluginT",
+    "StateT",
 ]
 
 StateT = TypeVar("StateT")

@@ -5,11 +5,11 @@ from typing import Any, ClassVar
 from alicebot.exceptions import AdapterException
 
 __all__ = [
-    "CQHTTPException",
-    "NetworkError",
     "ActionFailed",
     "ApiNotAvailable",
     "ApiTimeout",
+    "CQHTTPException",
+    "NetworkError",
 ]
 
 

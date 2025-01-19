@@ -22,11 +22,11 @@ from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import core_schema
 
 __all__ = [
-    "MessageT",
-    "MessageSegmentT",
     "BuildMessageType",
     "Message",
     "MessageSegment",
+    "MessageSegmentT",
+    "MessageT",
 ]
 
 MessageT = TypeVar("MessageT", bound="Message[Any]")

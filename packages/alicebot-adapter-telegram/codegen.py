@@ -317,7 +317,7 @@ class APIDescription(BaseModel):
         result = "\n\n".join(
             f"""
 class {snake_to_camel_case(field.name)}Event(TelegramEvent):
-    \"\"\"{field.description.removeprefix('Optional. ').split('. ')[0] + '.'}\"\"\"
+    \"\"\"{field.description.removeprefix("Optional. ").split(". ")[0] + "."}\"\"\"
 
     __event_type__ = "{field.name}"
 

@@ -14,7 +14,7 @@ from .message import DingTalkMessage
 if TYPE_CHECKING:
     from . import DingTalkAdapter
 
-__all__ = ["UserInfo", "Text", "DingTalkEvent"]
+__all__ = ["DingTalkEvent", "Text", "UserInfo"]
 
 
 class UserInfo(BaseModel):

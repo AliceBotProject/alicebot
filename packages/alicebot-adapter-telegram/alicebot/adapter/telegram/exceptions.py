@@ -4,7 +4,7 @@ from typing import Any
 
 from alicebot.exceptions import AdapterException
 
-__all__ = ["TelegramException", "NetworkError", "ActionFailed"]
+__all__ = ["ActionFailed", "NetworkError", "TelegramException"]
 
 
 class TelegramException(AdapterException):

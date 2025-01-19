@@ -22,10 +22,16 @@ export default defineConfig({
     ['link', { rel: 'manifest', href: '/manifest.json' }],
     ['meta', { name: 'theme-color', content: '#ffffff' }],
     ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
-    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'black' }],
+    [
+      'meta',
+      { name: 'apple-mobile-web-app-status-bar-style', content: 'black' },
+    ],
     ['link', { rel: 'apple-touch-icon', href: '/icons/apple-touch-icon.png' }],
     ['link', { rel: 'mask-icon', href: '/icons/safari-pinned-tab.svg' }],
-    ['meta', { name: 'msapplication-TileImage', content: '/icons/mstile-150x150.png' }],
+    [
+      'meta',
+      { name: 'msapplication-TileImage', content: '/icons/mstile-150x150.png' },
+    ],
     ['meta', { name: 'msapplication-TileColor', content: '#2d89ef' }],
   ],
 
@@ -48,7 +54,8 @@ export default defineConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/AliceBotProject/alicebot/edit/master/docs/:path',
+      pattern:
+        'https://github.com/AliceBotProject/alicebot/edit/master/docs/:path',
       text: '在 GitHub 上编辑此页',
     },
 
@@ -65,9 +72,7 @@ export default defineConfig({
   },
 
   vite: {
-    plugins: [
-      Unocss(),
-    ],
+    plugins: [Unocss()],
   },
 })
 
@@ -95,15 +100,13 @@ function getSidebarChildrenItems(dir: string): DefaultTheme.SidebarItem[] {
         return false
       }
       return (
-        !name.startsWith('.')
-        && fs.statSync(path.join(baseDir, dir, name)).isFile()
+        !name.startsWith('.') &&
+        fs.statSync(path.join(baseDir, dir, name)).isFile()
       )
     })
-    if (readme_flag)
-      temp.unshift('index.md')
-    return temp.map(item => getSidebarItem(path.join(dir, item)))
-  }
-  catch {
+    if (readme_flag) temp.unshift('index.md')
+    return temp.map((item) => getSidebarItem(path.join(dir, item)))
+  } catch {
     return []
   }
 }
@@ -161,10 +164,9 @@ function sidebarDevelop(): DefaultTheme.SidebarItem[] {
     {
       text: '开发者指南',
       collapsed: false,
-      items: [
-        '/develop/plugin.md',
-        '/develop/contributing.md',
-      ].map(getSidebarItem),
+      items: ['/develop/plugin.md', '/develop/contributing.md'].map(
+        getSidebarItem,
+      ),
     },
   ]
 }

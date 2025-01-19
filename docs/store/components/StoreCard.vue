@@ -1,20 +1,21 @@
 <script setup lang="ts">
-import type { MetaData, PyPIData } from './types'
 import { onMounted, ref } from 'vue'
+import type { MetaData, PyPIData } from './types'
 
 const props = defineProps<{ item: MetaData }>()
 
 const pypiJson = ref<PyPIData | undefined>(undefined)
-const description = ref<string >()
-const author = ref<string >('')
-const homepage = ref<string >('')
-const tags = ref<string[] >([])
+const description = ref<string>()
+const author = ref<string>('')
+const homepage = ref<string>('')
+const tags = ref<string[]>([])
 
 const openHomepageLink = () => window.open(homepage.value)
 
 async function copyInstallLink() {
-  if ('pypi_name' in props.item)
+  if ('pypi_name' in props.item) {
     await navigator.clipboard.writeText(`pip install ${props.item.pypi_name}`)
+  }
 }
 
 onMounted(async () => {
@@ -22,7 +23,7 @@ onMounted(async () => {
     description.value = props.item.description
     author.value = props.item.author
     homepage.value = props.item.homepage
-    tags.value = props.item.tags.split(/[,\s]/).filter(tag => tag !== '')
+    tags.value = props.item.tags.split(/[,\s]/).filter((tag) => tag !== '')
     return
   }
 
@@ -31,14 +32,20 @@ onMounted(async () => {
   ).json()
   if (pypiJson.value != null) {
     description.value = pypiJson.value.info.summary
-    if (pypiJson.value.info.author?.length)
+    if (pypiJson.value.info.author?.length) {
       author.value = pypiJson.value.info.author
-    else
-      author.value = pypiJson.value.info.author_email.match(/([^<>]*)<.*?>/)?.[1].trim() ?? ''
-    homepage.value = pypiJson.value.info.project_urls.Repository ?? pypiJson.value.info.project_urls.Homepage ?? ''
-    tags.value = pypiJson.value.info.keywords
-      .split(/[,\s]/)
-      .filter(tag => tag !== '') ?? []
+    } else {
+      author.value =
+        pypiJson.value.info.author_email.match(/([^<>]*)<.*?>/)?.[1].trim() ??
+        ''
+    }
+    homepage.value =
+      pypiJson.value.info.project_urls.Repository ??
+      pypiJson.value.info.project_urls.Homepage ??
+      ''
+    tags.value =
+      pypiJson.value.info.keywords.split(/[,\s]/).filter((tag) => tag !== '') ??
+      []
   }
 })
 </script>
@@ -50,15 +57,25 @@ onMounted(async () => {
     <div class="flex justify-between">
       <div class="flex items-center font-bold">
         {{ item.name }}
-        <div v-if="item.is_official" class="i-mdi-check-decagram ml-1 h-5 w-5 text-vp-brand-1" />
+        <div
+          v-if="item.is_official"
+          class="i-mdi-check-decagram ml-1 h-5 w-5 text-vp-brand-1"
+        />
       </div>
-      <div class="i-mdi-github h-8 w-8 cursor-pointer text-vp-neutral hover:text-vp-brand-1" @click="openHomepageLink" />
+      <div
+        class="i-mdi-github h-8 w-8 cursor-pointer text-vp-neutral hover:text-vp-brand-1"
+        @click="openHomepageLink"
+      />
     </div>
     <div class="my-1 text-sm text-vp-text-2">
       {{ description }}
     </div>
     <div v-if="tags?.length" class="mt-2 flex flex-wrap gap-2 text-sm">
-      <div v-for="(tag, index) in tags" :key="index" class="rounded bg-vp-default-soft px-2 py-0.5">
+      <div
+        v-for="(tag, index) in tags"
+        :key="index"
+        class="rounded bg-vp-default-soft px-2 py-0.5"
+      >
         {{ tag }}
       </div>
     </div>

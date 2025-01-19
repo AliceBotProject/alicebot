@@ -202,7 +202,9 @@ class Bot:
         self._should_exit = anyio.Event()
         self._condition = anyio.Condition()
         self._event_send_stream, self._event_receive_stream = (
-            anyio.create_memory_object_stream()
+            anyio.create_memory_object_stream(
+                max_buffer_size=self.config.bot.event_queue_size
+            )
         )
 
         # 加载配置文件

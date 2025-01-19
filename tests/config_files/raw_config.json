@@ -1,5 +1,6 @@
 {
   "bot": {
+    "event_queue_size": 0,
     "plugins": [],
     "plugin_dirs": ["plugins"],
     "adapters": [],

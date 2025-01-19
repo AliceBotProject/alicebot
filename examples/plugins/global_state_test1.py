@@ -6,7 +6,7 @@ class GlobalStateTest1(Plugin):
         if self.bot.global_state.get("count") is None:
             self.bot.global_state["count"] = 0
         self.bot.global_state["count"] += 1
-        await self.event.reply(f'add: {self.bot.global_state["count"]}')
+        await self.event.reply(f"add: {self.bot.global_state['count']}")
 
     async def rule(self) -> bool:
         if self.event.adapter.name != "cqhttp":

@@ -5,13 +5,13 @@
 """
 
 __all__ = [
+    "AdapterException",
+    "AliceBotException",
     "EventException",
+    "GetEventTimeout",
+    "LoadModuleError",
     "SkipException",
     "StopException",
-    "AliceBotException",
-    "GetEventTimeout",
-    "AdapterException",
-    "LoadModuleError",
 ]
 
 

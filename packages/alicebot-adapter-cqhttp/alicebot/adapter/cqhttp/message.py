@@ -48,7 +48,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         params = ",".join(
             [f"{k}={escape(str(v))}" for k, v in self.data.items() if v is not None]
         )
-        return f'[CQ:{self.type}{"," if params else ""}{params}]'
+        return f"[CQ:{self.type}{',' if params else ''}{params}]"
 
     @classmethod
     def text(cls, text: str) -> Self:

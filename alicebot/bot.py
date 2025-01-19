@@ -709,7 +709,7 @@ class Bot:
         else:
             for plugin_class, module in plugin_classes:
                 self._load_plugin_class(
-                    plugin_class,  # type: ignore
+                    plugin_class,  # type: ignore[type-abstract]
                     plugin_load_type,
                     module.__file__,
                 )

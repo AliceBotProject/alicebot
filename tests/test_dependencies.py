@@ -82,9 +82,9 @@ async def test_depends_context_manager() -> None:
 
         def __exit__(
             self,
-            __exc_type: Optional[type[BaseException]],
-            __exc_value: Optional[BaseException],
-            __traceback: Optional[TracebackType],
+            _exc_type: Optional[type[BaseException]],
+            _exc_value: Optional[BaseException],
+            _traceback: Optional[TracebackType],
         ) -> None:
             nonlocal exit_flag
             exit_flag = True
@@ -125,9 +125,9 @@ async def test_depends_async_context_manager() -> None:
 
         async def __aexit__(
             self,
-            __exc_type: Optional[type[BaseException]],
-            __exc_value: Optional[BaseException],
-            __traceback: Optional[TracebackType],
+            _exc_type: Optional[type[BaseException]],
+            _exc_value: Optional[BaseException],
+            _traceback: Optional[TracebackType],
         ) -> None:
             nonlocal exit_flag
             exit_flag = True

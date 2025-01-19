@@ -4,7 +4,7 @@ from typing import Any
 
 from alicebot.exceptions import AdapterException
 
-__all__ = ["OneBotException", "NetworkError", "ActionFailed", "ApiTimeout"]
+__all__ = ["ActionFailed", "ApiTimeout", "NetworkError", "OneBotException"]
 
 
 class OneBotException(AdapterException):

@@ -1,11 +1,29 @@
-import antfu from '@antfu/eslint-config'
+import eslint from '@eslint/js'
+import unocss from '@unocss/eslint-config/flat'
+import eslintConfigPrettier from 'eslint-config-prettier'
+import eslintPluginVue from 'eslint-plugin-vue'
+import globals from 'globals'
+import typescriptEslint from 'typescript-eslint'
 
-export default antfu(
+export default typescriptEslint.config(
+  { ignores: ['*.d.ts', '**/coverage', '**/dist'] },
   {
-    typescript: true,
-    vue: true,
-    unocss: true,
-    toml: false,
-    markdown: false,
+    extends: [
+      eslint.configs.recommended,
+      ...typescriptEslint.configs.recommended,
+      ...eslintPluginVue.configs['flat/recommended'],
+    ],
+    files: ['**/*.{ts,vue}'],
+    languageOptions: {
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+      globals: globals.browser,
+      parserOptions: {
+        parser: typescriptEslint.parser,
+      },
+    },
+    rules: {},
   },
+  unocss,
+  eslintConfigPrettier,
 )

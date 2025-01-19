@@ -37,8 +37,5 @@ export default defineConfig({
       },
     },
   },
-  presets: [
-    presetUno(),
-    presetIcons(),
-  ],
+  presets: [presetUno(), presetIcons()],
 })

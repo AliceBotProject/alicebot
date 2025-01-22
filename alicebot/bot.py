@@ -601,7 +601,7 @@ class Bot:
         func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: type[EventT],
-        adapter_type: Optional[type[AdapterT]] = None,
+        adapter_type: Optional[type[Adapter[Any, Any]]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
     ) -> EventT: ...

@@ -30,7 +30,6 @@ def test_adapter_raise_error(bot: Bot) -> None:
     class TestAdapter(Adapter[Event[Any], None]):
         @override
         async def run(self) -> None:
-            """运行适配器。"""
             self.bot.exit()
             raise RuntimeError
 

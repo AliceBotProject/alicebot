@@ -4,6 +4,7 @@ from typing_extensions import override
 import anyio
 import pytest
 from fake_adapter import FakeAdapter, FakeMessageEvent
+from pytest_mock import MockerFixture
 
 from alicebot import Bot, MessageEvent, Plugin
 from alicebot.exceptions import GetEventTimeout
@@ -29,12 +30,7 @@ def test_plugin_get(bot: Bot) -> None:
     bot.run()
 
 
-def test_plugin_ask(bot: Bot) -> None:
-    class TestEvent(FakeMessageEvent):
-        @override
-        async def reply(self, message: str) -> None:
-            assert message == "Hello"
-
+def test_plugin_ask(bot: Bot, mocker: MockerFixture) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
         @override
         async def handle(self) -> None:
@@ -45,13 +41,15 @@ def test_plugin_ask(bot: Bot) -> None:
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
+    spy = mocker.spy(FakeMessageEvent, "reply")
     FakeAdapter.set_event_factories(
-        lambda self: TestEvent(adapter=self, type="message", message="test_0"),
-        lambda self: TestEvent(adapter=self, type="message", message="test_1"),
+        lambda self: FakeMessageEvent(adapter=self, type="message", message="test_0"),
+        lambda self: FakeMessageEvent(adapter=self, type="message", message="test_1"),
     )
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin)
     bot.run()
+    spy.assert_awaited_once_with(mocker.ANY, "Hello")
 
 
 def test_plugin_get_timeout(bot: Bot) -> None:
@@ -168,14 +166,13 @@ def test_plugin_get_try_times_error(bot: Bot) -> None:
     bot.run()
 
 
-def test_plugin_get_no_handle(bot: Bot) -> None:
-    flag = 0
+def test_plugin_get_no_handle(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
         @override
         async def handle(self) -> None:
-            nonlocal flag
-            flag += 1
+            await mock(self.event.get_plain_text())
             with pytest.raises(GetEventTimeout):
                 await self.event.get()
 
@@ -191,4 +188,4 @@ def test_plugin_get_no_handle(bot: Bot) -> None:
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin)
     bot.run()
-    assert flag == 2
+    assert mock.await_args_list == [mocker.call("test_0"), mocker.call("test_1")]

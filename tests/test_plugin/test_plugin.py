@@ -4,6 +4,7 @@ from typing_extensions import override
 
 import pytest
 from fake_adapter import FakeAdapter, FakeMessageEvent
+from pytest_mock import MockerFixture
 
 from alicebot import Bot, MessageEvent, Plugin
 
@@ -11,14 +12,11 @@ if sys.version_info < (3, 11):
     from exceptiongroup import ExceptionGroup
 
 
-def test_plugin_rule(bot: Bot) -> None:
-    flag = False
+def test_plugin_rule(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
-        @override
-        async def handle(self) -> None:
-            nonlocal flag
-            flag = True
+        handle = mock
 
         @override
         async def rule(self) -> bool:
@@ -33,15 +31,10 @@ def test_plugin_rule(bot: Bot) -> None:
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin)
     bot.run()
-    assert flag
+    mock.assert_awaited_once()
 
 
-def test_plugin_reply(bot: Bot) -> None:
-    class TestEvent(FakeMessageEvent):
-        @override
-        async def reply(self, message: str) -> None:
-            assert message == "Hello"
-
+def test_plugin_reply(bot: Bot, mocker: MockerFixture) -> None:
     class TestPlugin(Plugin[MessageEvent[Any], None, None]):
         @override
         async def handle(self) -> None:
@@ -51,23 +44,23 @@ def test_plugin_reply(bot: Bot) -> None:
         async def rule(self) -> bool:
             return isinstance(self.event, FakeMessageEvent)
 
+    spy = mocker.spy(FakeMessageEvent, "reply")
     FakeAdapter.set_event_factories(
-        lambda self: TestEvent(adapter=self, type="message")
+        lambda self: FakeMessageEvent(adapter=self, type="message")
     )
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin)
     bot.run()
+    spy.assert_awaited_once_with(mocker.ANY, "Hello")
 
 
-def test_plugin_priority(bot: Bot) -> None:
-    flag = 0
+def test_plugin_priority(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class TestPriorityPlugin(Plugin[MessageEvent[Any], None, None]):
         @override
         async def handle(self) -> None:
-            nonlocal flag
-            assert flag == self.priority
-            flag += 1
+            await mock(self.name)
 
         @override
         async def rule(self) -> bool:
@@ -88,6 +81,11 @@ def test_plugin_priority(bot: Bot) -> None:
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin0, TestPlugin1, TestPlugin2)
     bot.run()
+    assert mock.await_args_list == [
+        mocker.call("TestPlugin0"),
+        mocker.call("TestPlugin1"),
+        mocker.call("TestPlugin2"),
+    ]
 
 
 def test_plugin_name(bot: Bot) -> None:
@@ -108,18 +106,16 @@ def test_plugin_name(bot: Bot) -> None:
     bot.run()
 
 
-def test_plugin_skip(bot: Bot) -> None:
-    test_plugin_1_flag = False
-    test_plugin_2_flag = False
+def test_plugin_skip(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class TestPlugin1(Plugin[MessageEvent[Any], None, None]):
         priority = 0
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_1_flag
             await self.do_something()
-            test_plugin_1_flag = True
+            await mock(self.name)
 
         async def do_something(self) -> None:
             self.skip()
@@ -133,8 +129,7 @@ def test_plugin_skip(bot: Bot) -> None:
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_2_flag
-            test_plugin_2_flag = True
+            await mock(self.name)
 
         @override
         async def rule(self) -> bool:
@@ -146,23 +141,19 @@ def test_plugin_skip(bot: Bot) -> None:
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin1, TestPlugin2)
     bot.run()
-    assert not test_plugin_1_flag
-    assert test_plugin_2_flag
+    mock.assert_awaited_once_with("TestPlugin2")
 
 
-def test_plugin_stop(bot: Bot) -> None:
-    test_plugin_1_flag = False
-    test_plugin_2_flag = False
-    test_plugin_3_flag = False
+def test_plugin_stop(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class TestPlugin1(Plugin[MessageEvent[Any], None, None]):
         priority = 0
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_1_flag
             await self.do_something()
-            test_plugin_1_flag = True
+            await mock(self.name)
 
         async def do_something(self) -> None:
             self.stop()
@@ -176,8 +167,7 @@ def test_plugin_stop(bot: Bot) -> None:
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_2_flag
-            test_plugin_2_flag = True
+            await mock(self.name)
 
         @override
         async def rule(self) -> bool:
@@ -188,8 +178,7 @@ def test_plugin_stop(bot: Bot) -> None:
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_3_flag
-            test_plugin_3_flag = True
+            await mock(self.name)
 
         @override
         async def rule(self) -> bool:
@@ -201,14 +190,11 @@ def test_plugin_stop(bot: Bot) -> None:
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin1, TestPlugin2, TestPlugin3)
     bot.run()
-    assert not test_plugin_1_flag
-    assert test_plugin_2_flag
-    assert not test_plugin_3_flag
+    mock.assert_awaited_once_with("TestPlugin2")
 
 
-def test_plugin_block(bot: Bot) -> None:
-    test_plugin_1_flag = False
-    test_plugin_2_flag = False
+def test_plugin_block(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class TestPlugin1(Plugin[MessageEvent[Any], None, None]):
         priority = 0
@@ -216,8 +202,7 @@ def test_plugin_block(bot: Bot) -> None:
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_1_flag
-            test_plugin_1_flag = True
+            await mock(self.name)
 
         @override
         async def rule(self) -> bool:
@@ -228,8 +213,7 @@ def test_plugin_block(bot: Bot) -> None:
 
         @override
         async def handle(self) -> None:
-            nonlocal test_plugin_2_flag
-            test_plugin_2_flag = True
+            await mock(self.name)
 
         @override
         async def rule(self) -> bool:
@@ -241,8 +225,7 @@ def test_plugin_block(bot: Bot) -> None:
     bot.load_adapters(FakeAdapter)
     bot.load_plugins(TestPlugin1, TestPlugin2)
     bot.run()
-    assert test_plugin_1_flag
-    assert not test_plugin_2_flag
+    mock.assert_awaited_once_with("TestPlugin1")
 
 
 def test_plugin_error(bot: Bot) -> None:

@@ -5,6 +5,7 @@ from typing import Optional
 from typing_extensions import Self
 
 import pytest
+from pytest_mock import MockerFixture
 
 from alicebot.dependencies import Depends, solve_dependencies
 
@@ -70,14 +71,9 @@ async def test_sub_depends() -> None:
 
 
 @pytest.mark.anyio
-async def test_depends_context_manager() -> None:
-    enter_flag = False
-    exit_flag = False
-
+async def test_depends_context_manager(mocker: MockerFixture) -> None:
     class DepA:
         def __enter__(self) -> Self:
-            nonlocal enter_flag
-            enter_flag = True
             return self
 
         def __exit__(
@@ -86,8 +82,7 @@ async def test_depends_context_manager() -> None:
             _exc_value: Optional[BaseException],
             _traceback: Optional[TracebackType],
         ) -> None:
-            nonlocal exit_flag
-            exit_flag = True
+            pass
 
     class DepB:
         a: DepA = Depends()
@@ -95,6 +90,9 @@ async def test_depends_context_manager() -> None:
     class Dependent:
         a: DepA = Depends()
         b: DepB = Depends()
+
+    enter_spy = mocker.spy(DepA, "__enter__")
+    exit_spy = mocker.spy(DepA, "__exit__")
 
     obj = None
 
@@ -110,17 +108,14 @@ async def test_depends_context_manager() -> None:
     assert isinstance(obj.a, DepA)
     assert isinstance(obj.b, DepB)
     assert obj.b.a is obj.a
+    enter_spy.assert_called_once()
+    exit_spy.assert_called_once()
 
 
 @pytest.mark.anyio
-async def test_depends_async_context_manager() -> None:
-    enter_flag = False
-    exit_flag = False
-
+async def test_depends_async_context_manager(mocker: MockerFixture) -> None:
     class DepA:
         async def __aenter__(self) -> Self:
-            nonlocal enter_flag
-            enter_flag = True
             return self
 
         async def __aexit__(
@@ -129,8 +124,7 @@ async def test_depends_async_context_manager() -> None:
             _exc_value: Optional[BaseException],
             _traceback: Optional[TracebackType],
         ) -> None:
-            nonlocal exit_flag
-            exit_flag = True
+            pass
 
     class DepB:
         a: DepA = Depends()
@@ -138,6 +132,9 @@ async def test_depends_async_context_manager() -> None:
     class Dependent:
         a: DepA = Depends()
         b: DepB = Depends()
+
+    aenter_spy = mocker.spy(DepA, "__aenter__")
+    aexit_spy = mocker.spy(DepA, "__aexit__")
 
     obj = None
 
@@ -153,23 +150,20 @@ async def test_depends_async_context_manager() -> None:
     assert isinstance(obj.a, DepA)
     assert isinstance(obj.b, DepB)
     assert obj.b.a is obj.a
-
-    assert enter_flag
-    assert exit_flag
+    aenter_spy.assert_called_once()
+    aexit_spy.assert_called_once()
 
 
 @pytest.mark.anyio
-async def test_depends_generator() -> None:
-    enter_flag = False
-    exit_flag = False
+async def test_depends_generator(mocker: MockerFixture) -> None:
+    mock = mocker.MagicMock()
 
     class DepA: ...
 
     def dep_a() -> Generator[DepA, None, None]:
-        nonlocal enter_flag, exit_flag
-        enter_flag = True
+        mock("enter")
         yield DepA()
-        exit_flag = True
+        mock("exit")
 
     class DepB:
         a = Depends(dep_a)
@@ -192,23 +186,19 @@ async def test_depends_generator() -> None:
     assert isinstance(obj.a, DepA)
     assert isinstance(obj.b, DepB)
     assert obj.b.a is obj.a
-
-    assert enter_flag
-    assert exit_flag
+    assert mock.call_args_list == [mocker.call("enter"), mocker.call("exit")]
 
 
 @pytest.mark.anyio
-async def test_depends_async_generator() -> None:
-    enter_flag = False
-    exit_flag = False
+async def test_depends_async_generator(mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
 
     class DepA: ...
 
     async def dep_a() -> AsyncGenerator[DepA, None]:
-        nonlocal enter_flag, exit_flag
-        enter_flag = True
+        await mock("enter")
         yield DepA()
-        exit_flag = True
+        await mock("exit")
 
     class DepB:
         a = Depends(dep_a)
@@ -231,9 +221,7 @@ async def test_depends_async_generator() -> None:
     assert isinstance(obj.a, DepA)
     assert isinstance(obj.b, DepB)
     assert obj.b.a is obj.a
-
-    assert enter_flag
-    assert exit_flag
+    assert mock.call_args_list == [mocker.call("enter"), mocker.call("exit")]
 
 
 @pytest.mark.anyio

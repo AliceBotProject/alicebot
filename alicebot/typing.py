@@ -6,7 +6,8 @@
 # ruff: noqa: A005
 
 from collections.abc import Awaitable
-from typing import TYPE_CHECKING, Callable, Optional, TypeVar
+from typing import TYPE_CHECKING, Callable, Optional
+from typing_extensions import TypeVar
 
 from alicebot.message import BuildMessageType, MessageSegmentT, MessageT
 
@@ -33,11 +34,11 @@ __all__ = [
     "StateT",
 ]
 
-StateT = TypeVar("StateT")
-EventT = TypeVar("EventT", bound="Event[Any]")
+EventT = TypeVar("EventT", bound="Event[Any]", default="Event[Any]")
+StateT = TypeVar("StateT", default=None)
+ConfigT = TypeVar("ConfigT", bound=Optional["ConfigModel"], default=None)
 PluginT = TypeVar("PluginT", bound="Plugin[Any, Any, Any]")
 AdapterT = TypeVar("AdapterT", bound="Adapter[Any, Any]")
-ConfigT = TypeVar("ConfigT", bound=Optional["ConfigModel"])
 
 BotHook = Callable[["Bot"], Awaitable[None]]
 AdapterHook = Callable[["Adapter[Any, Any]"], Awaitable[None]]

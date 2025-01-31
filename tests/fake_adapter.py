@@ -1,27 +1,29 @@
 import inspect
 from collections.abc import Awaitable
-from typing import Any, Callable, ClassVar, Optional, Union
+from typing import Any, Callable, Generic, Optional, Union
 from typing_extensions import override
 
 from anyio.lowlevel import checkpoint
 
 from alicebot import Adapter, Event, MessageEvent
+from alicebot.plugin import Plugin
+from alicebot.typing import ConfigT, StateT
+
+EventFactory = Callable[
+    ["FakeAdapter"],
+    Union[
+        Optional[Event["FakeAdapter"]],
+        Awaitable[Optional[Event["FakeAdapter"]]],
+    ],
+]
 
 
 class FakeAdapter(Adapter[Event[Any], None]):
     """用于测试的适配器。"""
 
-    EventFactory = Callable[
-        ["FakeAdapter"],
-        Union[
-            Optional[Event["FakeAdapter"]],
-            Awaitable[Optional[Event["FakeAdapter"]]],
-        ],
-    ]
-
     name: str = "fake_adapter"
-    event_factories: ClassVar[tuple[EventFactory, ...]] = ()
-    handle_get: ClassVar[bool] = True
+    event_factories: tuple[EventFactory, ...] = ()
+    handle_get: bool = True
 
     @override
     async def run(self) -> None:
@@ -42,10 +44,15 @@ class FakeAdapter(Adapter[Event[Any], None]):
 
         self.bot.exit()
 
-    @classmethod
-    def set_event_factories(cls, *event_factories: EventFactory) -> None:
-        """设置适配器运行后将要产生的事件。"""
-        cls.event_factories = event_factories
+
+def fake_adapter_class_factory(
+    *event_factories: EventFactory, handle_get: bool = True
+) -> type[FakeAdapter]:
+    return type(
+        "FakeAdapter",
+        (FakeAdapter,),
+        {"event_factories": event_factories, "handle_get": handle_get},
+    )
 
 
 class FakeMessageEvent(MessageEvent[FakeAdapter]):
@@ -62,3 +69,22 @@ class FakeMessageEvent(MessageEvent[FakeAdapter]):
     @override
     async def reply(self, message: str) -> None:
         pass
+
+
+def fake_message_event_factor(
+    adapter: FakeAdapter, message: str = "test"
+) -> FakeMessageEvent:
+    return FakeMessageEvent(adapter=adapter, type="message", message=message)
+
+
+class BaseTestPlugin(
+    Generic[StateT, ConfigT],
+    Plugin[FakeMessageEvent, StateT, ConfigT],
+):
+    @override
+    async def handle(self) -> None:
+        pass
+
+    @override
+    async def rule(self) -> bool:
+        return isinstance(self.event, FakeMessageEvent)

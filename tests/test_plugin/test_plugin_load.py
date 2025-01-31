@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import Any, NoReturn
 
 import pytest
+from pytest_mock import MockerFixture
 from structlog.testing import capture_logs
 
 from alicebot import Bot, Plugin
@@ -23,7 +23,7 @@ def test_plugin_load() -> None:
 
 
 def test_plugin_load_error(bot: Bot) -> None:
-    class TestPlugin(Plugin[Any, None, None]):
+    class TestPlugin(Plugin):
         priority = -1
 
     bot = Bot()
@@ -117,17 +117,14 @@ def test_plugin_load_from_dir_then_from_file() -> None:
 
 
 def test_plugin_load_from_dir_then_from_file_error(
-    bot: Bot, monkeypatch: pytest.MonkeyPatch
+    bot: Bot, mocker: MockerFixture
 ) -> None:
     bot.load_plugins_from_dirs(Path("plugins"))
 
-    def raise_oserror(*_args: Any) -> NoReturn:
-        raise OSError
-
-    with monkeypatch.context() as m:
-        m.setattr(Path, "resolve", raise_oserror)
-        with pytest.raises(OSError):  # noqa: PT011
-            bot.load_plugins(Path("plugins/plugin1.py"))
+    mock = mocker.patch.object(Path, "resolve")
+    mock.side_effect = OSError
+    with pytest.raises(OSError):  # noqa: PT011
+        bot.load_plugins(Path("plugins/plugin1.py"))
 
 
 def test_reload_plugin() -> None:

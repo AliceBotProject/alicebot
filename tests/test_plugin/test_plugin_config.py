@@ -5,14 +5,19 @@ from typing import Any
 from typing_extensions import override
 
 import pytest
-from fake_adapter import FakeAdapter, FakeMessageEvent
+from fake_adapter import (
+    BaseTestPlugin,
+    FakeMessageEvent,
+    fake_adapter_class_factory,
+    fake_message_event_factor,
+)
 from pydantic import ValidationError
 
-from alicebot import Bot, ConfigModel, MessageEvent, Plugin
+from alicebot import Bot, ConfigModel, Plugin
 
 
 def test_plugin_config(bot: Bot) -> None:
-    class TestPlugin(Plugin[MessageEvent[Any], int, Any]):
+    class TestPlugin(BaseTestPlugin[None, Any]):
         class Config(ConfigModel):
             __config_name__ = "test_plugin"
             a: int = 0
@@ -23,13 +28,6 @@ def test_plugin_config(bot: Bot) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
-        @override
-        async def rule(self) -> bool:
-            return isinstance(self.event, MessageEvent)
-
-    FakeAdapter.set_event_factories(
-        lambda self: FakeMessageEvent(adapter=self, type="message")
-    )
     bot._config_dict = {
         "plugin": {
             "test_plugin": {
@@ -38,25 +36,18 @@ def test_plugin_config(bot: Bot) -> None:
             },
         },
     }
-    bot.load_adapters(FakeAdapter)
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.load_plugins(TestPlugin)
     bot.run()
 
 
 def test_plugin_no_config(bot: Bot) -> None:
-    class TestPlugin(Plugin[MessageEvent[Any], int, None]):
+    class TestPlugin(BaseTestPlugin):
         @override
         async def handle(self) -> None:
             assert self.config is None
 
-        @override
-        async def rule(self) -> bool:
-            return isinstance(self.event, MessageEvent)
-
-    FakeAdapter.set_event_factories(
-        lambda self: FakeMessageEvent(adapter=self, type="message")
-    )
-    bot.load_adapters(FakeAdapter)
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.load_plugins(TestPlugin)
     bot.run()
 
@@ -67,19 +58,12 @@ def test_plugin_config_subclass(bot: Bot) -> None:
         a: int = 0
         b: str = ""
 
-    class TestPlugin(Plugin[MessageEvent[Any], int, Config], config=Config):
+    class TestPlugin(BaseTestPlugin[None, Config], config=Config):
         @override
         async def handle(self) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
-        @override
-        async def rule(self) -> bool:
-            return isinstance(self.event, MessageEvent)
-
-    FakeAdapter.set_event_factories(
-        lambda self: FakeMessageEvent(adapter=self, type="message")
-    )
     bot._config_dict = {
         "plugin": {
             "test_plugin": {
@@ -88,13 +72,13 @@ def test_plugin_config_subclass(bot: Bot) -> None:
             },
         },
     }
-    bot.load_adapters(FakeAdapter)
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.load_plugins(TestPlugin)
     bot.run()
 
 
 def test_plugin_config_error(bot: Bot) -> None:
-    class TestPlugin(Plugin[MessageEvent[Any], int, Any]):
+    class TestPlugin(BaseTestPlugin[None, Any]):
         class Config(ConfigModel):
             __config_name__ = "test_plugin"
             a: int
@@ -105,14 +89,7 @@ def test_plugin_config_error(bot: Bot) -> None:
             assert self.config.a == 1
             assert self.config.b == "test"
 
-        @override
-        async def rule(self) -> bool:
-            return isinstance(self.event, MessageEvent)
-
-    FakeAdapter.set_event_factories(
-        lambda self: FakeMessageEvent(adapter=self, type="message")
-    )
-    bot.load_adapters(FakeAdapter)
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.load_plugins(TestPlugin)
     with pytest.raises(ValidationError):
         bot.run()
@@ -124,7 +101,7 @@ def test_plugin_config_subclass_generic(bot: Bot) -> None:
         a: int = 0
         b: str = ""
 
-    class TestPlugin(Plugin[MessageEvent[Any], int, Config]):
+    class TestPlugin(Plugin[FakeMessageEvent, int, Config]):
         @override
         async def handle(self) -> None:
             assert self.config.a == 1
@@ -132,11 +109,8 @@ def test_plugin_config_subclass_generic(bot: Bot) -> None:
 
         @override
         async def rule(self) -> bool:
-            return isinstance(self.event, MessageEvent)
+            return isinstance(self.event, FakeMessageEvent)
 
-    FakeAdapter.set_event_factories(
-        lambda self: FakeMessageEvent(adapter=self, type="message")
-    )
     bot._config_dict = {
         "plugin": {
             "test_plugin": {
@@ -145,6 +119,6 @@ def test_plugin_config_subclass_generic(bot: Bot) -> None:
             },
         },
     }
-    bot.load_adapters(FakeAdapter)
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.load_plugins(TestPlugin)
     bot.run()

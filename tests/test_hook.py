@@ -1,6 +1,6 @@
 from typing import Any, Callable
 
-from fake_adapter import FakeAdapter, FakeMessageEvent
+from fake_adapter import fake_adapter_class_factory, fake_message_event_factor
 
 from alicebot import Adapter, Bot, Event
 
@@ -37,10 +37,7 @@ def test_bot_run_hook() -> None:
     async def event_postprocessor_hook(_event: Event[Any]) -> None:
         hook_call_list.append(event_postprocessor_hook)
 
-    FakeAdapter.set_event_factories(
-        lambda self: FakeMessageEvent(adapter=self, type="message")
-    )
-    bot.load_adapters(FakeAdapter)
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.run()
 
     assert hook_call_list == [

@@ -31,6 +31,7 @@
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@eslint/js": "^9.18.0",
     "@types/node": "^22.10.7",
     "@unocss/eslint-config": "^65.4.2",
     "conventional-changelog-cli": "^5.0.0",

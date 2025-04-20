@@ -68,7 +68,7 @@ Telegram 适配器配置
 
   - **NetworkError** - 网络错误。
 
-  - **ActionFailed** - API 请求响应 failed， API 操作失败。
+  - **ActionFailed** - API 请求响应 failed，API 操作失败。
 
 ### _async method_ `handle_response(self, request)` {#TelegramAdapter-handle-response}
 
@@ -106,7 +106,7 @@ Telegram 适配器配置
 
 适配器运行方法，适配器开发者必须实现该方法。
 
-适配器运行过程中保持保持运行，当此方法结束后， AliceBot 不会自动重新启动适配器。
+适配器运行过程中保持保持运行，当此方法结束后，AliceBot 不会自动重新启动适配器。
 
 - **Returns**
 

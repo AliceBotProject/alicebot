@@ -220,8 +220,8 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         Raises:
             NetworkError: 网络错误。
-            ApiNotAvailable: API 请求响应 404， API 不可用。
-            ActionFailed: API 请求响应 failed， API 操作失败。
+            ApiNotAvailable: API 请求响应 404，API 不可用。
+            ActionFailed: API 请求响应 failed，API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
         assert self.websocket is not None
@@ -268,10 +268,10 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
 
         Args:
             message_: 消息内容，可以是 `str`, `Mapping`, `Iterable[Mapping]`,
-                `CQHTTPMessageSegment`, `CQHTTPMessage。`
+                `CQHTTPMessageSegment`, `CQHTTPMessage`。
                 将使用 `CQHTTPMessage` 进行封装。
             message_type: 消息类型。应该是 "private" 或者 "group"。
-            id_: 发送对象的 ID， QQ 号码或者群号码。
+            id_: 发送对象的 ID，QQ 号码或者群号码。
 
         Returns:
             API 响应。

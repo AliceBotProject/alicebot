@@ -478,7 +478,7 @@ class Bot:
         handle_get: bool = True,
         show_log: bool = True,
     ) -> None:
-        """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop` 、 `skip` 等信号。
+        """被适配器对象调用，根据优先级分发事件给所有插件，并处理插件的 `stop`、`skip` 等信号。
 
         此方法不应该被用户手动调用。
 
@@ -812,7 +812,7 @@ class Bot:
 
         Args:
             *dirs: 储存包含插件的模块的模块路径。
-                例如：`pathlib.Path("path/of/plugins/")` 。
+                例如：`pathlib.Path("path/of/plugins/")`。
         """
         dir_list = [str(x.resolve()) for x in dirs]
         logger.info("Loading plugins from dirs", dirs=", ".join(map(str, dir_list)))
@@ -828,7 +828,7 @@ class Bot:
 
         Args:
             *dirs: 储存包含插件的模块的模块路径。
-                例如：`pathlib.Path("path/of/plugins/")` 。
+                例如：`pathlib.Path("path/of/plugins/")`。
         """
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)

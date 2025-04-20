@@ -213,7 +213,7 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
 
         Raises:
             NetworkError: 网络错误。
-            ActionFailed: API 请求响应 failed， API 操作失败。
+            ActionFailed: API 请求响应 failed，API 操作失败。
         """
         if response_type is None:
             return_type_adapter = TypeAdapter(Response[Any])

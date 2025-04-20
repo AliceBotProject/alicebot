@@ -483,7 +483,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
 
     @override
     def items(self) -> ItemsView[str, Any]:
-        """返回由 `data` 字典项 (`(键, 值)` 对) 组成的一个新视图。"""
+        """返回由 `data` 字典项 (`(键，值)` 对) 组成的一个新视图。"""
         return self.data.items()
 
     def is_text(self) -> bool:

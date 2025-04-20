@@ -216,7 +216,7 @@ sidebar: auto
 ### Features
 
 - **bot:** 修改热更新文件修改相关日志 ([3d587b3](https://github.com/AliceBotProject/alicebot/commit/3d587b3d7557956b5e46a6475e11888c6b88e8c6))
-- **utils:** 修改 load_module_from_name() 函数的行为，保证只会引发 ImportError、 LoadModuleError 和 KeyboardInterrupt 异常 ([54af514](https://github.com/AliceBotProject/alicebot/commit/54af514144236adad80e62953a311011fb784755))
+- **utils:**修改 load_module_from_name() 函数的行为，保证只会引发 ImportError、LoadModuleError 和 KeyboardInterrupt 异常 ([54af514](https://github.com/AliceBotProject/alicebot/commit/54af514144236adad80e62953a311011fb784755))
 
 ## [0.5.0](https://github.com/AliceBotProject/alicebot/compare/v0.4.0...v0.5.0) (2022-08-21)
 

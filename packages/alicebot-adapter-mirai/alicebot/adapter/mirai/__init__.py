@@ -255,7 +255,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 `MiraiMessageSegment`, `MiraiMessage`。
                 将使用 `MiraiMessage` 进行封装。
             message_type: 消息类型。应该是 "private", "friend" 或者 "group"。其中 "private" 和 "friend" 相同。
-            target: 发送对象的 ID， QQ 号码或者群号码。
+            target: 发送对象的 ID，QQ 号码或者群号码。
             quote: 引用的消息的 `messageId`。默认为 `None`，不引用任何消息。
 
         Returns:

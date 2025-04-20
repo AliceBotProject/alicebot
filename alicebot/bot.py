@@ -14,7 +14,7 @@ from collections.abc import Awaitable
 from contextlib import AsyncExitStack
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Optional, Union, overload
+from typing import Any, Callable, Optional, Union, cast, overload
 
 import anyio
 import structlog
@@ -366,7 +366,7 @@ class Bot:
                     try:
                         default_value = config_class()
                     except ValidationError:
-                        default_value = ...
+                        default_value = cast("Any", ...)
                     config_update_dict[config_class.__config_name__] = (
                         config_class,
                         default_value,

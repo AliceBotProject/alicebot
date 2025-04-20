@@ -109,13 +109,13 @@ async def solve_dependencies(
                     raise TypeError("can not solve dependent")
                 sub_dependent.dependency = dependent_ann
             values[name] = await solve_dependencies(
-                cast(Dependency[_T], sub_dependent.dependency),
+                cast("Dependency[_T]", sub_dependent.dependency),
                 use_cache=sub_dependent.use_cache,
                 stack=stack,
                 dependency_cache=dependency_cache,
             )
         depend_obj = cast(
-            Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]],
+            "Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]]",
             dependent.__new__(dependent),  # type: ignore
         )
         for key, value in values.items():
@@ -124,22 +124,22 @@ async def solve_dependencies(
 
         if isinstance(depend_obj, AbstractAsyncContextManager):
             depend = await stack.enter_async_context(
-                cast(AbstractAsyncContextManager[_T], depend_obj)
+                cast("AbstractAsyncContextManager[_T]", depend_obj)
             )
         elif isinstance(depend_obj, AbstractContextManager):
             depend = await stack.enter_async_context(
-                sync_ctx_manager_wrapper(cast(AbstractContextManager[_T], depend_obj))
+                sync_ctx_manager_wrapper(cast("AbstractContextManager[_T]", depend_obj))
             )
         else:
             depend = depend_obj
     elif inspect.isasyncgenfunction(dependent):
         # type of dependent is Callable[[], AsyncGenerator[T, None]]
         cm = asynccontextmanager(dependent)()
-        depend = cast(_T, await stack.enter_async_context(cm))
+        depend = cast("_T", await stack.enter_async_context(cm))
     elif inspect.isgeneratorfunction(dependent):
         # type of dependent is Callable[[], Generator[T, None, None]]
         cm = sync_ctx_manager_wrapper(contextmanager(dependent)())
-        depend = cast(_T, await stack.enter_async_context(cm))
+        depend = cast("_T", await stack.enter_async_context(cm))
     else:
         raise TypeError("dependent is not a class or generator function")
 

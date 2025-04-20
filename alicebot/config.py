@@ -53,9 +53,9 @@ class BotConfig(ConfigModel):
     """
 
     event_queue_size: int = Field(default=0, ge=0)
-    plugins: set[str] = Field(default_factory=set)
-    plugin_dirs: set[DirectoryPath] = Field(default_factory=set)
-    adapters: set[str] = Field(default_factory=set)
+    plugins: set[str] = Field(default_factory=set[str])
+    plugin_dirs: set[DirectoryPath] = Field(default_factory=set[DirectoryPath])
+    adapters: set[str] = Field(default_factory=set[str])
     log: Optional[LogConfig] = None
 
 

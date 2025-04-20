@@ -91,7 +91,7 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
             if inspect.isclass(origin_class) and issubclass(origin_class, Plugin):
                 try:
                     _event_t, state_t, config_t = cast(
-                        tuple[EventT, StateT, ConfigT], get_args(orig_base)
+                        "tuple[EventT, StateT, ConfigT]", get_args(orig_base)
                     )
                 except ValueError:  # pragma: no cover
                     continue

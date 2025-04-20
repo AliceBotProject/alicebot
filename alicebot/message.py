@@ -328,7 +328,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
     """
 
     type: str
-    data: dict[str, Any] = Field(default_factory=dict)
+    data: dict[str, Any] = Field(default_factory=dict[str, Any])
 
     @classmethod
     @abstractmethod

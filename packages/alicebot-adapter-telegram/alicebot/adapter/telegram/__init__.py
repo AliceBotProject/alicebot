@@ -8,7 +8,7 @@ import inspect
 import json
 import uuid
 from typing import Any, Optional, TypeVar, Union
-from typing_extensions import TypeGuard, override
+from typing_extensions import TypeIs, override
 
 import aiohttp
 import structlog
@@ -162,7 +162,7 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
     ) -> Union[aiohttp.FormData, dict[str, Any]]:
         file_type_adapter: TypeAdapter[InputFile] = TypeAdapter(InputFile)
 
-        def is_file(v: Any) -> TypeGuard[InputFile]:
+        def is_file(v: Any) -> TypeIs[InputFile]:
             try:
                 file_type_adapter.validate_python(v, strict=True)
             except ValidationError:

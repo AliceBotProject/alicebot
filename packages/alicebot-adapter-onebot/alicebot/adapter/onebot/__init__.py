@@ -218,8 +218,8 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
 
         Raises:
             NetworkError: 网络错误。
-            ApiNotAvailable: API 请求响应 404， API 不可用。
-            ActionFailed: API 请求响应 failed， API 操作失败。
+            ApiNotAvailable: API 请求响应 404，API 不可用。
+            ActionFailed: API 请求响应 failed，API 操作失败。
             ApiTimeout: API 请求响应超时。
         """
         assert self.websocket is not None
@@ -276,7 +276,7 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
                 将使用 `OneBotMessage` 进行封装。
             message_type: 消息类型。
                 可以为 "private", "group" 或扩展的类型，和消息事件的 `detail_type` 字段对应。
-            id_: 发送对象的 ID， QQ 号码或者群号码。
+            id_: 发送对象的 ID，QQ 号码或者群号码。
 
         Returns:
             API 响应。

@@ -76,7 +76,7 @@ class NewFriendRequestEvent(RequestEvent):
 
 
 class MemberJoinRequestEvent(RequestEvent):
-    """用户入群申请 (Bot需要有管理员权限)"""
+    """用户入群申请 (Bot 需要有管理员权限)"""
 
     type: Literal["MemberJoinRequestEvent"]
     eventId: int

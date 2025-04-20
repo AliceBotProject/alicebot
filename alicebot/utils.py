@@ -163,8 +163,8 @@ def samefile(path1: StrOrBytesPath, path2: StrOrBytesPath) -> bool:
     """一个 `os.path.samefile` 的简单包装。
 
     Args:
-        path1: 路径1。
-        path2: 路径2。
+        path1: 路径 1。
+        path2: 路径 2。
 
     Returns:
         如果两个路径是否指向相同的文件或目录。

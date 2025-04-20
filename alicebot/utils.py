@@ -24,7 +24,7 @@ from typing import (
     Union,
     cast,
 )
-from typing_extensions import ParamSpec, TypeAlias, TypeGuard, override
+from typing_extensions import ParamSpec, TypeAlias, TypeIs, override
 
 import anyio
 import anyio.to_thread
@@ -78,7 +78,7 @@ class ModulePathFinder(MetaPathFinder):
         return PathFinder.find_spec(fullname, self.path + list(path), target)
 
 
-def is_config_class(config_class: Any) -> TypeGuard[type[ConfigModel]]:
+def is_config_class(config_class: Any) -> TypeIs[type[ConfigModel]]:
     """判断一个对象是否是配置类。
 
     Args:

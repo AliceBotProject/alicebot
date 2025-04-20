@@ -90,7 +90,7 @@ Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
 Bases: `alicebot.adapter.mirai.event.request.RequestEvent`
 
-用户入群申请 (Bot需要有管理员权限)
+用户入群申请 (Bot 需要有管理员权限)
 
 - **Attributes**
 

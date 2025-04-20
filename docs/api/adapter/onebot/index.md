@@ -67,9 +67,9 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
 
   - **NetworkError** - 网络错误。
 
-  - **ApiNotAvailable** - API 请求响应 404， API 不可用。
+  - **ApiNotAvailable** - API 请求响应 404，API 不可用。
 
-  - **ActionFailed** - API 请求响应 failed， API 操作失败。
+  - **ActionFailed** - API 请求响应 failed，API 操作失败。
 
   - **ApiTimeout** - API 请求响应超时。
 
@@ -134,7 +134,7 @@ OneBot 配置类，将在适配器被加载时被混入到机器人主配置中�
   - **message\_type** (_Union\[Literal\['private', 'group'\], str\]_) - 消息类型。
   可以为 "private", "group" 或扩展的类型，和消息事件的 `detail_type` 字段对应。
 
-  - **id\_** (_str_) - 发送对象的 ID， QQ 号码或者群号码。
+  - **id\_** (_str_) - 发送对象的 ID，QQ 号码或者群号码。
 
 - **Returns**
 

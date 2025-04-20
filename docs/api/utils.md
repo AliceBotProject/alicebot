@@ -120,9 +120,9 @@ implement default like this::
 
 - **Arguments**
 
-  - **path1** (_Union\[str, bytes, PathLike\[str\], PathLike\[bytes\]\]_) - 路径1。
+  - **path1** (_Union\[str, bytes, PathLike\[str\], PathLike\[bytes\]\]_) - 路径 1。
 
-  - **path2** (_Union\[str, bytes, PathLike\[str\], PathLike\[bytes\]\]_) - 路径2。
+  - **path2** (_Union\[str, bytes, PathLike\[str\], PathLike\[bytes\]\]_) - 路径 2。
 
 - **Returns**
 

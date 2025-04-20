@@ -98,7 +98,7 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupEvent`
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
-Bot 在群里的权限被改变. 操作人一定是群主
+Bot 在群里的权限被改变。操作人一定是群主
 
 - **Attributes**
 
@@ -138,7 +138,7 @@ Bot 被取消禁言
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupBotEvent`
 
-Bot加入了一个新群
+Bot 加入了一个新群
 
 - **Attributes**
 
@@ -340,7 +340,7 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-成员被踢出群 (该成员不是Bot)
+成员被踢出群 (该成员不是 Bot)
 
 - **Attributes**
 
@@ -352,7 +352,7 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-成员主动离群 (该成员不是Bot)
+成员主动离群 (该成员不是 Bot)
 
 - **Attributes**
 
@@ -390,7 +390,7 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-成员权限改变的事件 (该成员不是Bot)
+成员权限改变的事件 (该成员不是 Bot)
 
 - **Attributes**
 
@@ -404,7 +404,7 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-群成员被禁言事件 (该成员不是Bot)
+群成员被禁言事件 (该成员不是 Bot)
 
 - **Attributes**
 
@@ -418,7 +418,7 @@ Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
 Bases: `alicebot.adapter.mirai.event.notice.GroupMemberEvent`
 
-群成员被取消禁言事件 (该成员不是Bot)
+群成员被取消禁言事件 (该成员不是 Bot)
 
 - **Attributes**
 

@@ -151,8 +151,8 @@ class MethodDescription(BaseModel):
     name: str
     href: str
     description: Optional[list[str]] = None
-    returns: list[str] = Field(default_factory=list)
-    fields: list[FieldDescription] = Field(default_factory=list)
+    returns: list[str] = Field(default_factory=list[str])
+    fields: list[FieldDescription] = Field(default_factory=list[FieldDescription])
 
     def to_api_method(self) -> str:
         """生成 API 方法字符串。"""
@@ -225,9 +225,9 @@ class TypeDescription(BaseModel):
     name: str
     href: str
     description: Optional[list[str]] = None
-    fields: list[FieldDescription] = Field(default_factory=list)
-    subtypes: list[str] = Field(default_factory=list)
-    subtype_of: list[str] = Field(default_factory=list)
+    fields: list[FieldDescription] = Field(default_factory=list[FieldDescription])
+    subtypes: list[str] = Field(default_factory=list[str])
+    subtype_of: list[str] = Field(default_factory=list[str])
 
     def to_model(self) -> str:
         """生成模型代码。"""

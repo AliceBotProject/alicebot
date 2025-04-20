@@ -137,7 +137,7 @@ async def test_wrap_get_func() -> None:
     async_wrap_func = wrap_get_func(async_func)
     sync_wrap_func = wrap_get_func(sync_func)
 
-    fake_event = cast(Event[Any], object())
+    fake_event = cast("Event[Any]", object())
 
     assert inspect.iscoroutinefunction(none_wrap_func)
     assert inspect.iscoroutinefunction(async_wrap_func)

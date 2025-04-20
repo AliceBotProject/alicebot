@@ -115,7 +115,7 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> list[_Ty
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            classes.append(cast(_TypeT, module_attr))
+            classes.append(cast("_TypeT", module_attr))
     return classes
 
 
@@ -244,7 +244,7 @@ def wrap_get_func(
     if func is None:
         func = sync_func_wrapper(lambda _: True)
     elif not inspect.iscoroutinefunction(func):
-        func = sync_func_wrapper(cast(Callable[[EventT], bool], func))
+        func = sync_func_wrapper(cast("Callable[[EventT], bool]", func))
 
     async def _func(event: EventT) -> bool:
         return (

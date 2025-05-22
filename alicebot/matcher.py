@@ -5,7 +5,7 @@
 
 import inspect
 import time
-from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
+from typing import TYPE_CHECKING, Any, Optional, Union, cast
 
 import anyio
 import anyio.to_thread
@@ -16,6 +16,8 @@ from alicebot.exceptions import GetEventTimeout
 from alicebot.typing import GetFunction
 
 if TYPE_CHECKING:
+    from typing import Callable
+
     from alicebot.bot import Bot
 
 __all__ = ["EventMatcher"]
@@ -116,8 +118,7 @@ class EventMatcher:
         except BaseException as e:  # noqa: BLE001
             self.exception = e
             return None
-        else:
-            return False
+        return False
 
     async def match(self, event: Event[Any]) -> bool:
         """检查当前事件是否被匹配。

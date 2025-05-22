@@ -277,3 +277,60 @@ def test_plugin_get_raise_error(bot: Bot) -> None:
     )
     bot.load_plugins(TestPlugin)
     bot.run()
+
+
+def test_plugin_get_func(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
+
+    class TestPlugin(BaseTestPlugin):
+        @override
+        async def handle(self) -> None:
+            await mock(self.event)
+            assert (
+                await self.event.adapter.get(
+                    lambda event: event.get_plain_text() == "test_2",
+                    event_type=FakeMessageEvent,
+                )
+            ).get_plain_text() == "test_2"
+
+    bot.load_adapters(
+        fake_adapter_class_factory(
+            lambda self: fake_message_event_factor(adapter=self, message="test_0"),
+            lambda self: fake_message_event_factor(adapter=self, message="test_1"),
+            lambda self: fake_message_event_factor(adapter=self, message="test_2"),
+        )
+    )
+    bot.load_plugins(TestPlugin)
+    bot.run()
+    assert len(mock.await_args_list) == 2
+    assert mock.await_args_list[0][0][0].get_plain_text() == "test_0"
+    assert mock.await_args_list[1][0][0].get_plain_text() == "test_1"
+
+
+def test_plugin_get_func_to_thread(bot: Bot, mocker: MockerFixture) -> None:
+    mock = mocker.AsyncMock()
+
+    class TestPlugin(BaseTestPlugin):
+        @override
+        async def handle(self) -> None:
+            await mock(self.event)
+            assert (
+                await self.event.adapter.get(
+                    lambda event: event.get_plain_text() == "test_2",
+                    event_type=FakeMessageEvent,
+                    to_thread=True,
+                )
+            ).get_plain_text() == "test_2"
+
+    bot.load_adapters(
+        fake_adapter_class_factory(
+            lambda self: fake_message_event_factor(adapter=self, message="test_0"),
+            lambda self: fake_message_event_factor(adapter=self, message="test_1"),
+            lambda self: fake_message_event_factor(adapter=self, message="test_2"),
+        )
+    )
+    bot.load_plugins(TestPlugin)
+    bot.run()
+    assert len(mock.await_args_list) == 2
+    assert mock.await_args_list[0][0][0].get_plain_text() == "test_0"
+    assert mock.await_args_list[1][0][0].get_plain_text() == "test_1"

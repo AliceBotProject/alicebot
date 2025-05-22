@@ -5,7 +5,8 @@
 
 import inspect
 import time
-from typing import TYPE_CHECKING, Any, Optional, Union, cast
+from collections.abc import Awaitable
+from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
 
 import anyio
 import anyio.to_thread
@@ -13,11 +14,8 @@ import anyio.to_thread
 from alicebot.adapter import Adapter
 from alicebot.event import Event
 from alicebot.exceptions import GetEventTimeout
-from alicebot.typing import GetFunction
 
 if TYPE_CHECKING:
-    from typing import Callable
-
     from alicebot.bot import Bot
 
 __all__ = ["EventMatcher"]
@@ -26,7 +24,7 @@ __all__ = ["EventMatcher"]
 class EventMatcher:
     """事件匹配器。"""
 
-    func: GetFunction
+    func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]]
     bot: "Bot"
     event_type: Optional[type[Event[Any]]]
     adapter_type: Optional[type[Adapter[Any, Any]]]
@@ -42,7 +40,7 @@ class EventMatcher:
 
     def __init__(
         self,
-        func: GetFunction,
+        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]],
         *,
         bot: "Bot",
         event_type: Optional[type[Event[Any]]],

@@ -9,10 +9,11 @@ import signal
 import sys
 import threading
 from collections import defaultdict
+from collections.abc import Awaitable
 from contextlib import AsyncExitStack
 from itertools import chain
 from pathlib import Path
-from typing import Any, Optional, Union, cast, overload
+from typing import Any, Callable, Optional, Union, cast, overload
 
 import anyio
 import structlog
@@ -26,14 +27,7 @@ from alicebot.event import Event, EventHandleOption
 from alicebot.exceptions import LoadModuleError, SkipException, StopException
 from alicebot.matcher import EventMatcher
 from alicebot.plugin import Plugin, PluginLoadType
-from alicebot.typing import (
-    AdapterHook,
-    AdapterT,
-    BotHook,
-    EventHook,
-    EventT,
-    GetFunction,
-)
+from alicebot.typing import AdapterHook, AdapterT, BotHook, EventHook, EventT
 from alicebot.utils import (
     ModulePathFinder,
     async_map,
@@ -584,39 +578,42 @@ class Bot:
     @overload
     async def get(
         self,
-        func: GetFunction = None,
+        func: Optional[Callable[[Event[Any]], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
         adapter_type: None = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
+        to_thread: bool = False,
     ) -> Event[Any]: ...
 
     @overload
     async def get(
         self,
-        func: GetFunction = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: None = None,
         adapter_type: type[Adapter[EventT, Any]],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
+        to_thread: bool = False,
     ) -> EventT: ...
 
     @overload
     async def get(
         self,
-        func: GetFunction = None,
+        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: type[EventT],
         adapter_type: Optional[type[Adapter[Any, Any]]] = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
+        to_thread: bool = False,
     ) -> EventT: ...
 
     async def get(
         self,
-        func: GetFunction = None,
+        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]] = None,
         *,
         event_type: Optional[type[Event[Any]]] = None,
         adapter_type: Optional[type[Adapter[Any, Any]]] = None,

@@ -6,12 +6,14 @@
 # ruff: noqa: A005
 
 from collections.abc import Awaitable
-from typing import TYPE_CHECKING, Any, Callable, Optional, Union
+from typing import TYPE_CHECKING, Callable, Optional
 from typing_extensions import TypeVar
 
 from alicebot.message import BuildMessageType, MessageSegmentT, MessageT
 
 if TYPE_CHECKING:
+    from typing import Any
+
     from alicebot.adapter import Adapter
     from alicebot.bot import Bot
     from alicebot.config import ConfigModel
@@ -41,5 +43,3 @@ AdapterT = TypeVar("AdapterT", bound="Adapter[Any, Any]")
 BotHook = Callable[["Bot"], Awaitable[None]]
 AdapterHook = Callable[["Adapter[Any, Any]"], Awaitable[None]]
 EventHook = Callable[["Event[Any]"], Awaitable[None]]
-
-GetFunction = Optional[Callable[[Any], Union[bool, Awaitable[bool]]]]

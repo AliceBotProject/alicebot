@@ -1,9 +1,7 @@
-import inspect
 import json
 from abc import ABC
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Any, cast
 
 import get_classes_test_module
 import pytest
@@ -11,15 +9,12 @@ from get_classes_test_module import SubClass1, SubClass2, SuperClass
 from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
-from alicebot.event import Event
 from alicebot.utils import (
     get_classes_from_module,
     get_classes_from_module_name,
     is_config_class,
     samefile,
     sync_ctx_manager_wrapper,
-    sync_func_wrapper,
-    wrap_get_func,
 )
 
 
@@ -93,20 +88,6 @@ def test_samefile() -> None:
 
 
 @pytest.mark.anyio
-async def test_sync_func_wrapper() -> None:
-    def sync_func(a: int, b: int) -> int:
-        return a + b
-
-    async_func = sync_func_wrapper(sync_func)
-    assert inspect.iscoroutinefunction(async_func)
-    assert await async_func(1, 2) == 3
-
-    async_func = sync_func_wrapper(sync_func, to_thread=True)
-    assert inspect.iscoroutinefunction(async_func)
-    assert await async_func(1, 2) == 3
-
-
-@pytest.mark.anyio
 async def test_sync_ctx_manager_wrapper() -> None:
     @contextmanager
     def sync_context_manager() -> Generator[str, None, None]:
@@ -123,25 +104,3 @@ async def test_sync_ctx_manager_wrapper() -> None:
     with pytest.raises(TypeError):
         async with sync_ctx_manager_wrapper(error_context_manager()) as result:
             assert result == "test"
-
-
-@pytest.mark.anyio
-async def test_wrap_get_func() -> None:
-    async def async_func(_event: Event[Any]) -> bool:
-        return True
-
-    def sync_func(_event: Event[Any]) -> bool:
-        return True
-
-    none_wrap_func: Any = wrap_get_func(None)
-    async_wrap_func = wrap_get_func(async_func)
-    sync_wrap_func = wrap_get_func(sync_func)
-
-    fake_event = cast("Event[Any]", object())
-
-    assert inspect.iscoroutinefunction(none_wrap_func)
-    assert inspect.iscoroutinefunction(async_wrap_func)
-    assert inspect.iscoroutinefunction(sync_wrap_func)
-    assert await none_wrap_func(fake_event)
-    assert await async_wrap_func(fake_event)
-    assert await sync_wrap_func(fake_event)

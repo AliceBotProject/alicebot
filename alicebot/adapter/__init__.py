@@ -113,6 +113,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         event_type: None = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
+        to_thread: bool = False,
     ) -> EventT: ...
 
     @overload
@@ -123,6 +124,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         event_type: type[_EventT],
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
+        to_thread: bool = False,
     ) -> _EventT: ...
 
     @final
@@ -133,6 +135,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         event_type: Any = None,
         max_try_times: Optional[int] = None,
         timeout: Optional[Union[int, float]] = None,
+        to_thread: bool = False,
     ) -> Event[Any]:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
@@ -147,6 +150,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
             event_type: 当指定时，只接受指定类型的事件，先于 func 条件生效。默认为 `None`。
             max_try_times: 最大事件数。
             timeout: 超时时间。
+            to_thread: 是否在独立的线程中运行同步函数。仅当 func 为同步函数时生效。默认为 `False`。
 
         Returns:
             返回满足 func 条件的事件。
@@ -160,4 +164,5 @@ class Adapter(Generic[EventT, ConfigT], ABC):
             adapter_type=type(self),
             max_try_times=max_try_times,
             timeout=timeout,
+            to_thread=to_thread,
         )

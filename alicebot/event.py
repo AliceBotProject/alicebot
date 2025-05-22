@@ -20,7 +20,6 @@ class Event(ABC, BaseModel, Generic[AdapterT]):
     Attributes:
         adapter: 产生当前事件的适配器对象。
         type: 事件类型。
-        __handled__: 表示事件是否被处理过了，用于适配器处理。警告：请勿手动更改此属性的值。
     """
 
     model_config = ConfigDict(extra="allow")
@@ -30,7 +29,6 @@ class Event(ABC, BaseModel, Generic[AdapterT]):
     else:
         adapter: Any
     type: Optional[str]
-    __handled__: bool = False
 
     @override
     def __str__(self) -> str:

@@ -5,23 +5,13 @@
 
 import os
 from abc import ABC, abstractmethod
-from collections.abc import Awaitable
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    Generic,
-    Optional,
-    Union,
-    final,
-    overload,
-)
+from typing import TYPE_CHECKING, Any, Generic, Optional, Union, final, overload
 from typing_extensions import TypeVar
 
 import structlog
 
 from alicebot.event import Event
-from alicebot.typing import ConfigT, EventT
+from alicebot.typing import ConfigT, EventT, GetFunction
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
@@ -108,7 +98,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
     @overload
     async def get(
         self,
-        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
+        func: GetFunction = None,
         *,
         event_type: None = None,
         max_try_times: Optional[int] = None,
@@ -118,7 +108,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
     @overload
     async def get(
         self,
-        func: Optional[Callable[[_EventT], Union[bool, Awaitable[bool]]]] = None,
+        func: GetFunction = None,
         *,
         event_type: type[_EventT],
         max_try_times: Optional[int] = None,
@@ -128,7 +118,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
     @final
     async def get(
         self,
-        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]] = None,
+        func: GetFunction = None,
         *,
         event_type: Any = None,
         max_try_times: Optional[int] = None,

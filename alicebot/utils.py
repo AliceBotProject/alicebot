@@ -8,56 +8,39 @@ import os.path
 import sys
 import traceback
 from abc import ABC
-from collections.abc import AsyncGenerator, Awaitable, Coroutine, Sequence
+from collections.abc import AsyncGenerator, Awaitable, Iterable, Sequence
 from contextlib import AbstractContextManager, asynccontextmanager
-from functools import partial
 from importlib.abc import MetaPathFinder
 from importlib.machinery import ModuleSpec, PathFinder
+from os import PathLike
 from types import GetSetDescriptorType, ModuleType
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Callable,
-    ClassVar,
-    Optional,
-    TypeVar,
-    Union,
-    cast,
-)
-from typing_extensions import ParamSpec, TypeAlias, TypeIs, override
+from typing import Any, Callable, ClassVar, Optional, TypeVar, Union, cast
+from typing_extensions import TypeAlias, TypeIs, override
 
 import anyio
 import anyio.to_thread
+from anyio.abc import TaskGroup
 from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
-from alicebot.typing import EventT
-
-if TYPE_CHECKING:
-    from os import PathLike
-
-    from alicebot.adapter import Adapter
-    from alicebot.event import Event
 
 __all__ = [
     "ModulePathFinder",
     "PydanticEncoder",
+    "async_map",
     "get_annotations",
     "get_classes_from_module",
     "get_classes_from_module_name",
     "is_config_class",
     "samefile",
     "sync_ctx_manager_wrapper",
-    "sync_func_wrapper",
-    "wrap_get_func",
 ]
 
 _T = TypeVar("_T")
-_P = ParamSpec("_P")
 _R = TypeVar("_R")
 _TypeT = TypeVar("_TypeT", bound=type[Any])
 
-StrOrBytesPath: TypeAlias = Union[str, bytes, "PathLike[str]", "PathLike[bytes]"]
+StrOrBytesPath: TypeAlias = Union[str, bytes, PathLike[str], PathLike[bytes]]
 
 
 class ModulePathFinder(MetaPathFinder):
@@ -175,35 +158,9 @@ def samefile(path1: StrOrBytesPath, path2: StrOrBytesPath) -> bool:
         return False
 
 
-def sync_func_wrapper(
-    func: Callable[_P, _R], *, to_thread: bool = False
-) -> Callable[_P, Coroutine[None, None, _R]]:
-    """包装一个同步函数为异步函数。
-
-    Args:
-        func: 待包装的同步函数。
-        to_thread: 是否在独立的线程中运行同步函数。默认为 `False`。
-
-    Returns:
-        异步函数。
-    """
-    if to_thread:
-
-        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
-            func_call = partial(func, *args, **kwargs)
-            return await anyio.to_thread.run_sync(func_call)
-
-    else:
-
-        async def _wrapper(*args: _P.args, **kwargs: _P.kwargs) -> _R:
-            return func(*args, **kwargs)
-
-    return _wrapper
-
-
 @asynccontextmanager
 async def sync_ctx_manager_wrapper(
-    cm: AbstractContextManager[_T], *, to_thread: bool = False
+    cm: AbstractContextManager[_T],
 ) -> AsyncGenerator[_T, None]:
     """将同步上下文管理器包装为异步上下文管理器。
 
@@ -215,45 +172,47 @@ async def sync_ctx_manager_wrapper(
         异步上下文管理器。
     """
     try:
-        yield await sync_func_wrapper(cm.__enter__, to_thread=to_thread)()
+        yield await anyio.to_thread.run_sync(cm.__enter__)
     except Exception as e:
-        if not await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(
-            type(e), e, e.__traceback__
-        ):
+        if not await anyio.to_thread.run_sync(cm.__exit__, type(e), e, e.__traceback__):
             raise
     else:
-        await sync_func_wrapper(cm.__exit__, to_thread=to_thread)(None, None, None)
+        await anyio.to_thread.run_sync(cm.__exit__, None, None, None)
 
 
-def wrap_get_func(
-    func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]],
-    *,
-    event_type: Optional[type["Event[Any]"]] = None,
-    adapter_type: Optional[type["Adapter[Any, Any]"]] = None,
-) -> Callable[[EventT], Awaitable[bool]]:
-    """将 `get()` 函数接受的参数包装为一个异步函数。
+async def async_map(
+    tg: TaskGroup,
+    func: Callable[[_T], Awaitable[_R]],
+    iterable: Iterable[_T],
+) -> AsyncGenerator[tuple[_T, _R]]:
+    """在 TaskGroup 中并行运行多个任务并且获取其结果。
+
+    注意：结果将不会按照参数给出的顺序返回，而是按照实际执行结束的顺序返回。
+    为了将结果和参数对应起来，这个函数返回的生成器的每一项将是一个由参数和结果组成的元组。
 
     Args:
-        func: `get()` 函数接受的参数。
-        event_type: 事件类型。
-        adapter_type: 适配器类型。
+        tg: 运行任务的 TaskGroup。
+        func: 并行运行的函数。
+        iterable: 并行运行的函数的参数。
 
     Returns:
-        异步函数。
+        由参数和结果组成元组的生成器。
     """
-    if func is None:
-        func = sync_func_wrapper(lambda _: True)
-    elif not inspect.iscoroutinefunction(func):
-        func = sync_func_wrapper(cast("Callable[[EventT], bool]", func))
+    send_stream, receive_stream = anyio.create_memory_object_stream[tuple[_T, _R]]()
 
-    async def _func(event: EventT) -> bool:
-        return (
-            (event_type is None or isinstance(event, event_type))
-            and (adapter_type is None or isinstance(event.adapter, adapter_type))
-            and await func(event)
-        )
+    async def _run_wrapper(item: _T) -> None:
+        result = await func(item)
+        await send_stream.send((item, result))
 
-    return _func
+    count = 0
+    for item in iterable:
+        count += 1
+        tg.start_soon(_run_wrapper, item)
+
+    for _ in range(count):
+        yield await receive_stream.receive()
+
+    await send_stream.aclose()
 
 
 if sys.version_info >= (3, 10):  # pragma: no cover

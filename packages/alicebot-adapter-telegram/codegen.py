@@ -72,7 +72,7 @@ class TelegramAPIBase(ABC):
         self,
         api: str,
         *,
-        response_type: Optional[type[_T]] = None,
+        response_type: Union[type[_T], Any, None] = None,
         **params: Any,
     ) -> Any: ...
 
@@ -109,6 +109,7 @@ ENTITY_CODE_PREFIX = """\"\"\"Telegram Entity 模型。\"\"\"
 # ruff: noqa: D101, D102
 # pylint: disable=missing-class-docstring
 
+from abc import ABC
 from typing import Optional
 from typing_extensions import Self
 
@@ -294,7 +295,7 @@ class APIDescription(BaseModel):
     def gen_api(self) -> str:
         """生成 API 类的代码。"""
         USED_MODELS.clear()
-        api_code = "class TelegramAPI(TelegramAPIBase):\n" + indent(
+        api_code = "class TelegramAPI(TelegramAPIBase, ABC):\n" + indent(
             "\n\n".join(method.to_api_method() for method in self.methods.values())
         )
         return API_CODE_PREFIX.format(", ".join(USED_MODELS)) + api_code
@@ -343,7 +344,7 @@ class {snake_to_camel_case(field.name)}Event(TelegramEvent):
                 type_field = field
                 break
         assert type_field is not None
-        result = "class Entity(MessageSegment[MessageT]):\n"
+        result = "class Entity(MessageSegment[MessageT], ABC):\n"
         for entity_name in re.findall(r'"(.*?)" \(.*?\)', type_field.description):
             fields = [
                 field

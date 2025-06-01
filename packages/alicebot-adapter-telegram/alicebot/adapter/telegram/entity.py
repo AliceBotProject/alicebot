@@ -3,6 +3,7 @@
 # ruff: noqa: D101, D102
 # pylint: disable=missing-class-docstring
 
+from abc import ABC
 from typing import Optional
 from typing_extensions import Self
 
@@ -11,7 +12,7 @@ from alicebot.message import MessageSegment, MessageT
 from .model import User
 
 
-class Entity(MessageSegment[MessageT]):
+class Entity(MessageSegment[MessageT], ABC):
     @classmethod
     def mention(cls, text: str) -> Self:
         return cls(type="mention", data={"text": text})

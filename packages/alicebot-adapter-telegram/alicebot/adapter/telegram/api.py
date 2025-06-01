@@ -8,6 +8,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Optional, TypeVar, Union
 
 from .model import (
+    AcceptedGiftTypes,
     BotCommand,
     BotCommandScope,
     BotDescription,
@@ -23,6 +24,7 @@ from .model import (
     ForceReply,
     ForumTopic,
     GameHighScore,
+    Gifts,
     InlineKeyboardMarkup,
     InlineQueryResult,
     InlineQueryResultsButton,
@@ -34,7 +36,9 @@ from .model import (
     InputMediaVideo,
     InputPaidMedia,
     InputPollOption,
+    InputProfilePhoto,
     InputSticker,
+    InputStoryContent,
     LabeledPrice,
     LinkPreviewOptions,
     MaskPosition,
@@ -42,17 +46,22 @@ from .model import (
     Message,
     MessageEntity,
     MessageId,
+    OwnedGifts,
     PassportElementError,
     Poll,
+    PreparedInlineMessage,
     ReactionType,
     ReplyKeyboardMarkup,
     ReplyKeyboardRemove,
     ReplyParameters,
     SentWebAppMessage,
     ShippingOption,
+    StarAmount,
     StarTransactions,
     Sticker,
     StickerSet,
+    Story,
+    StoryArea,
     Update,
     User,
     UserChatBoosts,
@@ -69,12 +78,12 @@ class TelegramAPIBase(ABC):
         self,
         api: str,
         *,
-        response_type: Optional[type[_T]] = None,
+        response_type: Union[type[_T], Any, None] = None,
         **params: Any,
     ) -> Any: ...
 
 
-class TelegramAPI(TelegramAPIBase):
+class TelegramAPI(TelegramAPIBase, ABC):
     async def get_updates(
         self,
         *,
@@ -148,6 +157,7 @@ class TelegramAPI(TelegramAPIBase):
         link_preview_options: Optional[LinkPreviewOptions] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -171,6 +181,7 @@ class TelegramAPI(TelegramAPIBase):
             link_preview_options=link_preview_options,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -183,6 +194,7 @@ class TelegramAPI(TelegramAPIBase):
         from_chat_id: Union[int, str],
         message_id: int,
         message_thread_id: Optional[int] = None,
+        video_start_timestamp: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
     ) -> Message:
@@ -192,6 +204,7 @@ class TelegramAPI(TelegramAPIBase):
             chat_id=chat_id,
             message_thread_id=message_thread_id,
             from_chat_id=from_chat_id,
+            video_start_timestamp=video_start_timestamp,
             disable_notification=disable_notification,
             protect_content=protect_content,
             message_id=message_id,
@@ -225,12 +238,14 @@ class TelegramAPI(TelegramAPIBase):
         from_chat_id: Union[int, str],
         message_id: int,
         message_thread_id: Optional[int] = None,
+        video_start_timestamp: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
         caption_entities: Optional[list[MessageEntity]] = None,
         show_caption_above_media: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[
@@ -248,12 +263,14 @@ class TelegramAPI(TelegramAPIBase):
             message_thread_id=message_thread_id,
             from_chat_id=from_chat_id,
             message_id=message_id,
+            video_start_timestamp=video_start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
             show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
         )
@@ -295,6 +312,7 @@ class TelegramAPI(TelegramAPIBase):
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -320,6 +338,7 @@ class TelegramAPI(TelegramAPIBase):
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -341,6 +360,7 @@ class TelegramAPI(TelegramAPIBase):
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -368,6 +388,7 @@ class TelegramAPI(TelegramAPIBase):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -387,6 +408,7 @@ class TelegramAPI(TelegramAPIBase):
         disable_content_type_detection: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -412,6 +434,7 @@ class TelegramAPI(TelegramAPIBase):
             disable_content_type_detection=disable_content_type_detection,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -428,6 +451,8 @@ class TelegramAPI(TelegramAPIBase):
         width: Optional[int] = None,
         height: Optional[int] = None,
         thumbnail: Optional[Union[InputFile, str]] = None,
+        cover: Optional[Union[InputFile, str]] = None,
+        start_timestamp: Optional[int] = None,
         caption: Optional[str] = None,
         parse_mode: Optional[str] = None,
         caption_entities: Optional[list[MessageEntity]] = None,
@@ -436,6 +461,7 @@ class TelegramAPI(TelegramAPIBase):
         supports_streaming: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -458,6 +484,8 @@ class TelegramAPI(TelegramAPIBase):
             width=width,
             height=height,
             thumbnail=thumbnail,
+            cover=cover,
+            start_timestamp=start_timestamp,
             caption=caption,
             parse_mode=parse_mode,
             caption_entities=caption_entities,
@@ -466,6 +494,7 @@ class TelegramAPI(TelegramAPIBase):
             supports_streaming=supports_streaming,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -489,6 +518,7 @@ class TelegramAPI(TelegramAPIBase):
         has_spoiler: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -518,6 +548,7 @@ class TelegramAPI(TelegramAPIBase):
             has_spoiler=has_spoiler,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -536,6 +567,7 @@ class TelegramAPI(TelegramAPIBase):
         duration: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -560,6 +592,7 @@ class TelegramAPI(TelegramAPIBase):
             duration=duration,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -577,6 +610,7 @@ class TelegramAPI(TelegramAPIBase):
         thumbnail: Optional[Union[InputFile, str]] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -600,6 +634,7 @@ class TelegramAPI(TelegramAPIBase):
             thumbnail=thumbnail,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -619,6 +654,7 @@ class TelegramAPI(TelegramAPIBase):
         show_caption_above_media: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
             Union[
@@ -643,6 +679,7 @@ class TelegramAPI(TelegramAPIBase):
             show_caption_above_media=show_caption_above_media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
         )
@@ -661,6 +698,7 @@ class TelegramAPI(TelegramAPIBase):
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
     ) -> list[Message]:
@@ -673,6 +711,7 @@ class TelegramAPI(TelegramAPIBase):
             media=media,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
         )
@@ -691,6 +730,7 @@ class TelegramAPI(TelegramAPIBase):
         proximity_alert_radius: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -716,6 +756,7 @@ class TelegramAPI(TelegramAPIBase):
             proximity_alert_radius=proximity_alert_radius,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -737,6 +778,7 @@ class TelegramAPI(TelegramAPIBase):
         google_place_type: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -764,6 +806,7 @@ class TelegramAPI(TelegramAPIBase):
             google_place_type=google_place_type,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -781,6 +824,7 @@ class TelegramAPI(TelegramAPIBase):
         vcard: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -804,6 +848,7 @@ class TelegramAPI(TelegramAPIBase):
             vcard=vcard,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -831,6 +876,7 @@ class TelegramAPI(TelegramAPIBase):
         is_closed: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -864,6 +910,7 @@ class TelegramAPI(TelegramAPIBase):
             is_closed=is_closed,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -878,6 +925,7 @@ class TelegramAPI(TelegramAPIBase):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -898,6 +946,7 @@ class TelegramAPI(TelegramAPIBase):
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -946,6 +995,21 @@ class TelegramAPI(TelegramAPIBase):
             user_id=user_id,
             offset=offset,
             limit=limit,
+        )
+
+    async def set_user_emoji_status(
+        self,
+        *,
+        user_id: int,
+        emoji_status_custom_emoji_id: Optional[str] = None,
+        emoji_status_expiration_date: Optional[int] = None,
+    ) -> bool:
+        return await self.call_api(
+            "setUserEmojiStatus",
+            response_type=bool,
+            user_id=user_id,
+            emoji_status_custom_emoji_id=emoji_status_custom_emoji_id,
+            emoji_status_expiration_date=emoji_status_expiration_date,
         )
 
     async def get_file(self, *, file_id: str) -> File:
@@ -1762,6 +1826,327 @@ class TelegramAPI(TelegramAPIBase):
             message_ids=message_ids,
         )
 
+    async def get_available_gifts(self) -> Gifts:
+        return await self.call_api("getAvailableGifts", response_type=Gifts)
+
+    async def send_gift(
+        self,
+        *,
+        gift_id: str,
+        user_id: Optional[int] = None,
+        chat_id: Optional[Union[int, str]] = None,
+        pay_for_upgrade: Optional[bool] = None,
+        text: Optional[str] = None,
+        text_parse_mode: Optional[str] = None,
+        text_entities: Optional[list[MessageEntity]] = None,
+    ) -> bool:
+        return await self.call_api(
+            "sendGift",
+            response_type=bool,
+            user_id=user_id,
+            chat_id=chat_id,
+            gift_id=gift_id,
+            pay_for_upgrade=pay_for_upgrade,
+            text=text,
+            text_parse_mode=text_parse_mode,
+            text_entities=text_entities,
+        )
+
+    async def gift_premium_subscription(
+        self,
+        *,
+        user_id: int,
+        month_count: int,
+        star_count: int,
+        text: Optional[str] = None,
+        text_parse_mode: Optional[str] = None,
+        text_entities: Optional[list[MessageEntity]] = None,
+    ) -> bool:
+        return await self.call_api(
+            "giftPremiumSubscription",
+            response_type=bool,
+            user_id=user_id,
+            month_count=month_count,
+            star_count=star_count,
+            text=text,
+            text_parse_mode=text_parse_mode,
+            text_entities=text_entities,
+        )
+
+    async def verify_user(
+        self, *, user_id: int, custom_description: Optional[str] = None
+    ) -> bool:
+        return await self.call_api(
+            "verifyUser",
+            response_type=bool,
+            user_id=user_id,
+            custom_description=custom_description,
+        )
+
+    async def verify_chat(
+        self, *, chat_id: Union[int, str], custom_description: Optional[str] = None
+    ) -> bool:
+        return await self.call_api(
+            "verifyChat",
+            response_type=bool,
+            chat_id=chat_id,
+            custom_description=custom_description,
+        )
+
+    async def remove_user_verification(self, *, user_id: int) -> bool:
+        return await self.call_api(
+            "removeUserVerification", response_type=bool, user_id=user_id
+        )
+
+    async def remove_chat_verification(self, *, chat_id: Union[int, str]) -> bool:
+        return await self.call_api(
+            "removeChatVerification", response_type=bool, chat_id=chat_id
+        )
+
+    async def read_business_message(
+        self, *, business_connection_id: str, chat_id: int, message_id: int
+    ) -> bool:
+        return await self.call_api(
+            "readBusinessMessage",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            chat_id=chat_id,
+            message_id=message_id,
+        )
+
+    async def delete_business_messages(
+        self, *, business_connection_id: str, message_ids: list[int]
+    ) -> bool:
+        return await self.call_api(
+            "deleteBusinessMessages",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            message_ids=message_ids,
+        )
+
+    async def set_business_account_name(
+        self,
+        *,
+        business_connection_id: str,
+        first_name: str,
+        last_name: Optional[str] = None,
+    ) -> bool:
+        return await self.call_api(
+            "setBusinessAccountName",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+    async def set_business_account_username(
+        self, *, business_connection_id: str, username: Optional[str] = None
+    ) -> bool:
+        return await self.call_api(
+            "setBusinessAccountUsername",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            username=username,
+        )
+
+    async def set_business_account_bio(
+        self, *, business_connection_id: str, bio: Optional[str] = None
+    ) -> bool:
+        return await self.call_api(
+            "setBusinessAccountBio",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            bio=bio,
+        )
+
+    async def set_business_account_profile_photo(
+        self,
+        *,
+        business_connection_id: str,
+        photo: InputProfilePhoto,
+        is_public: Optional[bool] = None,
+    ) -> bool:
+        return await self.call_api(
+            "setBusinessAccountProfilePhoto",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            photo=photo,
+            is_public=is_public,
+        )
+
+    async def remove_business_account_profile_photo(
+        self, *, business_connection_id: str, is_public: Optional[bool] = None
+    ) -> bool:
+        return await self.call_api(
+            "removeBusinessAccountProfilePhoto",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            is_public=is_public,
+        )
+
+    async def set_business_account_gift_settings(
+        self,
+        *,
+        business_connection_id: str,
+        show_gift_button: bool,
+        accepted_gift_types: AcceptedGiftTypes,
+    ) -> bool:
+        return await self.call_api(
+            "setBusinessAccountGiftSettings",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            show_gift_button=show_gift_button,
+            accepted_gift_types=accepted_gift_types,
+        )
+
+    async def get_business_account_star_balance(
+        self, *, business_connection_id: str
+    ) -> StarAmount:
+        return await self.call_api(
+            "getBusinessAccountStarBalance",
+            response_type=StarAmount,
+            business_connection_id=business_connection_id,
+        )
+
+    async def transfer_business_account_stars(
+        self, *, business_connection_id: str, star_count: int
+    ) -> bool:
+        return await self.call_api(
+            "transferBusinessAccountStars",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            star_count=star_count,
+        )
+
+    async def get_business_account_gifts(
+        self,
+        *,
+        business_connection_id: str,
+        exclude_unsaved: Optional[bool] = None,
+        exclude_saved: Optional[bool] = None,
+        exclude_unlimited: Optional[bool] = None,
+        exclude_limited: Optional[bool] = None,
+        exclude_unique: Optional[bool] = None,
+        sort_by_price: Optional[bool] = None,
+        offset: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> OwnedGifts:
+        return await self.call_api(
+            "getBusinessAccountGifts",
+            response_type=OwnedGifts,
+            business_connection_id=business_connection_id,
+            exclude_unsaved=exclude_unsaved,
+            exclude_saved=exclude_saved,
+            exclude_unlimited=exclude_unlimited,
+            exclude_limited=exclude_limited,
+            exclude_unique=exclude_unique,
+            sort_by_price=sort_by_price,
+            offset=offset,
+            limit=limit,
+        )
+
+    async def convert_gift_to_stars(
+        self, *, business_connection_id: str, owned_gift_id: str
+    ) -> bool:
+        return await self.call_api(
+            "convertGiftToStars",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            owned_gift_id=owned_gift_id,
+        )
+
+    async def upgrade_gift(
+        self,
+        *,
+        business_connection_id: str,
+        owned_gift_id: str,
+        keep_original_details: Optional[bool] = None,
+        star_count: Optional[int] = None,
+    ) -> bool:
+        return await self.call_api(
+            "upgradeGift",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            owned_gift_id=owned_gift_id,
+            keep_original_details=keep_original_details,
+            star_count=star_count,
+        )
+
+    async def transfer_gift(
+        self,
+        *,
+        business_connection_id: str,
+        owned_gift_id: str,
+        new_owner_chat_id: int,
+        star_count: Optional[int] = None,
+    ) -> bool:
+        return await self.call_api(
+            "transferGift",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            owned_gift_id=owned_gift_id,
+            new_owner_chat_id=new_owner_chat_id,
+            star_count=star_count,
+        )
+
+    async def post_story(
+        self,
+        *,
+        business_connection_id: str,
+        content: InputStoryContent,
+        active_period: int,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
+        areas: Optional[list[StoryArea]] = None,
+        post_to_chat_page: Optional[bool] = None,
+        protect_content: Optional[bool] = None,
+    ) -> Story:
+        return await self.call_api(
+            "postStory",
+            response_type=Story,
+            business_connection_id=business_connection_id,
+            content=content,
+            active_period=active_period,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            areas=areas,
+            post_to_chat_page=post_to_chat_page,
+            protect_content=protect_content,
+        )
+
+    async def edit_story(
+        self,
+        *,
+        business_connection_id: str,
+        story_id: int,
+        content: InputStoryContent,
+        caption: Optional[str] = None,
+        parse_mode: Optional[str] = None,
+        caption_entities: Optional[list[MessageEntity]] = None,
+        areas: Optional[list[StoryArea]] = None,
+    ) -> Story:
+        return await self.call_api(
+            "editStory",
+            response_type=Story,
+            business_connection_id=business_connection_id,
+            story_id=story_id,
+            content=content,
+            caption=caption,
+            parse_mode=parse_mode,
+            caption_entities=caption_entities,
+            areas=areas,
+        )
+
+    async def delete_story(self, *, business_connection_id: str, story_id: int) -> bool:
+        return await self.call_api(
+            "deleteStory",
+            response_type=bool,
+            business_connection_id=business_connection_id,
+            story_id=story_id,
+        )
+
     async def send_sticker(
         self,
         *,
@@ -1772,6 +2157,7 @@ class TelegramAPI(TelegramAPIBase):
         emoji: Optional[str] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[
@@ -1793,6 +2179,7 @@ class TelegramAPI(TelegramAPIBase):
             emoji=emoji,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -1971,6 +2358,27 @@ class TelegramAPI(TelegramAPIBase):
             result=result,
         )
 
+    async def save_prepared_inline_message(
+        self,
+        *,
+        user_id: int,
+        result: InlineQueryResult,
+        allow_user_chats: Optional[bool] = None,
+        allow_bot_chats: Optional[bool] = None,
+        allow_group_chats: Optional[bool] = None,
+        allow_channel_chats: Optional[bool] = None,
+    ) -> PreparedInlineMessage:
+        return await self.call_api(
+            "savePreparedInlineMessage",
+            response_type=PreparedInlineMessage,
+            user_id=user_id,
+            result=result,
+            allow_user_chats=allow_user_chats,
+            allow_bot_chats=allow_bot_chats,
+            allow_group_chats=allow_group_chats,
+            allow_channel_chats=allow_channel_chats,
+        )
+
     async def send_invoice(
         self,
         *,
@@ -1999,6 +2407,7 @@ class TelegramAPI(TelegramAPIBase):
         is_flexible: Optional[bool] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2031,6 +2440,7 @@ class TelegramAPI(TelegramAPIBase):
             is_flexible=is_flexible,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,
@@ -2044,7 +2454,9 @@ class TelegramAPI(TelegramAPIBase):
         payload: str,
         currency: str,
         prices: list[LabeledPrice],
+        business_connection_id: Optional[str] = None,
         provider_token: Optional[str] = None,
+        subscription_period: Optional[int] = None,
         max_tip_amount: Optional[int] = None,
         suggested_tip_amounts: Optional[list[int]] = None,
         provider_data: Optional[str] = None,
@@ -2063,12 +2475,14 @@ class TelegramAPI(TelegramAPIBase):
         return await self.call_api(
             "createInvoiceLink",
             response_type=str,
+            business_connection_id=business_connection_id,
             title=title,
             description=description,
             payload=payload,
             provider_token=provider_token,
             currency=currency,
             prices=prices,
+            subscription_period=subscription_period,
             max_tip_amount=max_tip_amount,
             suggested_tip_amounts=suggested_tip_amounts,
             provider_data=provider_data,
@@ -2137,6 +2551,17 @@ class TelegramAPI(TelegramAPIBase):
             telegram_payment_charge_id=telegram_payment_charge_id,
         )
 
+    async def edit_user_star_subscription(
+        self, *, user_id: int, telegram_payment_charge_id: str, is_canceled: bool
+    ) -> bool:
+        return await self.call_api(
+            "editUserStarSubscription",
+            response_type=bool,
+            user_id=user_id,
+            telegram_payment_charge_id=telegram_payment_charge_id,
+            is_canceled=is_canceled,
+        )
+
     async def set_passport_data_errors(
         self, *, user_id: int, errors: list[PassportElementError]
     ) -> bool:
@@ -2153,6 +2578,7 @@ class TelegramAPI(TelegramAPIBase):
         message_thread_id: Optional[int] = None,
         disable_notification: Optional[bool] = None,
         protect_content: Optional[bool] = None,
+        allow_paid_broadcast: Optional[bool] = None,
         message_effect_id: Optional[str] = None,
         reply_parameters: Optional[ReplyParameters] = None,
         reply_markup: Optional[InlineKeyboardMarkup] = None,
@@ -2166,6 +2592,7 @@ class TelegramAPI(TelegramAPIBase):
             game_short_name=game_short_name,
             disable_notification=disable_notification,
             protect_content=protect_content,
+            allow_paid_broadcast=allow_paid_broadcast,
             message_effect_id=message_effect_id,
             reply_parameters=reply_parameters,
             reply_markup=reply_markup,

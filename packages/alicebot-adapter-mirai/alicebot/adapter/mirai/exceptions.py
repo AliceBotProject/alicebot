@@ -25,6 +25,7 @@ class ActionFailed(MiraiException):
             code: 错误代码。
             resp: 返回的响应。
         """
+        super().__init__()
         self.code = code
         self.resp = resp
 

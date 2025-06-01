@@ -184,6 +184,6 @@ def test_plugin_error(bot: Bot) -> None:
 
     bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
     bot.load_plugins(TestPlugin)
-    with pytest.raises(ExceptionGroup) as exc_info:  # pyright: ignore[reportUnknownVariableType]
+    with pytest.raises(ExceptionGroup) as exc_info:
         bot.run()
     assert exc_info.group_contains(HandleError)

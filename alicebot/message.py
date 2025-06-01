@@ -4,18 +4,10 @@
 适配器开发者可以根据需要实现此模块中消息类的子类或定义与此不同的消息类型，但建议若可行的话应尽量使用此模块中消息类的子类。
 """
 
+import builtins
 from abc import ABC, abstractmethod
 from collections.abc import ItemsView, Iterator, KeysView, Mapping, ValuesView
-from typing import (  # noqa: UP035
-    Any,
-    Generic,
-    Optional,
-    SupportsIndex,
-    Type,
-    TypeVar,
-    Union,
-    overload,
-)
+from typing import Any, Generic, Optional, SupportsIndex, TypeVar, Union, overload
 from typing_extensions import Self, override
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
@@ -51,6 +43,7 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
         Args:
             *messages: 可以被转化为消息的数据。
         """
+        super().__init__()
         segment_class = self.get_segment_class()
         for message in messages:
             if isinstance(message, list):
@@ -315,7 +308,7 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
         return temp_msg
 
 
-class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
+class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):  # pyright: ignore[reportUnsafeMultipleInheritance]
     """消息字段。
 
     本类实现了所有 `Mapping` 类型的方法，这些方法全部是对 `data` 属性的操作。
@@ -332,7 +325,7 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):
 
     @classmethod
     @abstractmethod
-    def get_message_class(cls) -> Type[MessageT]:  # noqa: UP006
+    def get_message_class(cls) -> builtins.type[MessageT]:
         """获取消息类。
 
         Returns:

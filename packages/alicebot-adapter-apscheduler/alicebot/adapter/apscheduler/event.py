@@ -1,7 +1,7 @@
 """APScheduler 适配器事件。"""
 
 # pyright: reportMissingTypeStubs = false
-from typing import TYPE_CHECKING, Any, Optional, Type, Union  # noqa: UP035
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from apscheduler.job import Job
 from apscheduler.triggers.base import BaseTrigger
@@ -9,6 +9,8 @@ from apscheduler.triggers.base import BaseTrigger
 from alicebot.event import Event
 
 if TYPE_CHECKING:
+    import builtins
+
     from alicebot.plugin import Plugin
 
     from . import APSchedulerAdapter
@@ -22,7 +24,7 @@ class APSchedulerEvent(Event["APSchedulerAdapter"]):
 
     type: Optional[str] = "apscheduler"
     if TYPE_CHECKING:
-        plugin_class: Type[Plugin[Any, Any, Any]]  # noqa: UP006
+        plugin_class: "builtins.type[Plugin[Any, Any, Any]]"
     else:
         plugin_class: Any
 

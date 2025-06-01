@@ -59,7 +59,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         """
         if not hasattr(self, "name"):
             self.name = self.__class__.__name__
-        self.bot: Bot = bot
+        self.bot = bot
         self.handle_event = self.bot.handle_event
 
     @property

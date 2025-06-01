@@ -64,7 +64,7 @@ class HelloWorld(Plugin[MessageEvent, None, None]):
 
 向机器人发送 `/hello`，你将收到 `Hello, I am Alice.` 的回复。
 
-更多示例可以参考 <https://github.com/AliceBotProject/alicebot/tree/master/packages/alicebot-adapter-telegram/examples>。
+更多示例可以参考 <https://github.com/AliceBotProject/alicebot/tree/main/packages/alicebot-adapter-telegram/examples>。
 
 ## 调用 Telegram API
 

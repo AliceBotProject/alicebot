@@ -1,7 +1,7 @@
 """CQHTTP 协议适配器。
 
 本适配器适配了 OneBot v11 协议。
-协议详情请参考：[OneBot](https://github.com/howmanybots/onebot/blob/master/README.md)。
+协议详情请参考：[OneBot](https://github.com/botuniverse/onebot-11/blob/master/README.md)。
 """
 
 import inspect

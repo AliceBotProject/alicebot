@@ -35,7 +35,7 @@ jobs:
           title: 'docs: 更新 API 文档'
           body: 自动更新 API 文档
           branch: docs/update-api-docs
-          base: master
+          base: main
 
   build:
     runs-on: ubuntu-latest

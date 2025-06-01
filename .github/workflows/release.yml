@@ -16,6 +16,10 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/setup-python
 
+      - name: Install the project
+        run: uv sync --all-extras --all-packages --group dev --group docs
+        shell: bash
+
       - name: Remove API Doc
         run: rm -rf docs/api
       - name: Build API Doc
@@ -43,6 +47,10 @@ jobs:
 
       - name: Setup Python
         uses: ./.github/actions/setup-python
+
+      - name: Install the project
+        run: uv sync --all-extras --all-packages --group dev
+        shell: bash
 
       - run: uv build -o dist
         shell: bash

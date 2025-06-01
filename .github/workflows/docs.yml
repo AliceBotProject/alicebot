@@ -21,6 +21,10 @@ jobs:
       - name: Setup Python
         uses: ./.github/actions/setup-python
 
+      - name: Install the project
+        run: uv sync --all-extras --all-packages --group dev --group docs
+        shell: bash
+
       - name: Build API Doc
         run: uv run sophia-doc alicebot -o docs/dev-api --anchor-extend --ignore-data --overwrite --exclude-module-name --init-file-name index.md
         shell: bash

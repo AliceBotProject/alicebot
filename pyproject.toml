@@ -51,22 +51,24 @@ Documentation = "https://docs.alicebot.dev/"
 Repository = "https://github.com/AliceBotProject/alicebot"
 Changelog = "https://docs.alicebot.dev/changelog.html"
 
-[tool.uv]
-dev-dependencies = [
-    # dev
+[dependency-groups]
+dev = [
     "setuptools>=74",
     "trio>=0.26",
     "exceptiongroup>=1",
     "tomli>=2",
-    # lint
+]
+lint = [
     "ruff>=0.6",
     "mypy>=1",
     "pylint>=3",
     "pylint-pydantic>=0.3",
-    # docs
+]
+docs = [
     "sophia-doc>=0.1",
     "tomlkit>=0.13",
-    # test
+]
+test = [
     "pytest>=8",
     "pytest-mock>=3",
     "pytest-xdist>=3",
@@ -83,10 +85,6 @@ alicebot-adapter-apscheduler = { workspace = true }
 
 [tool.uv.workspace]
 members = ["packages/*"]
-
-[tool.ruff]
-line-length = 88
-target-version = "py39"
 
 [tool.ruff.lint]
 select = ["ALL"]

@@ -20,7 +20,7 @@ EventFactory = Callable[
 
 async def allow_schedule_other_tasks() -> None:
     """让出当前任务，允许其他任务执行。"""
-    for _ in range(50):
+    for _ in range(100):
         await checkpoint()
 
 

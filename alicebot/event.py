@@ -3,7 +3,7 @@
 事件类的基类。适配器开发者应实现此事件类基类的子类。
 """
 
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import TYPE_CHECKING, Any, Generic, NamedTuple, Optional, Union
 from typing_extensions import Self, override
 
@@ -14,7 +14,7 @@ from alicebot.typing import AdapterT
 __all__ = ["Event", "EventHandleOption", "MessageEvent"]
 
 
-class Event(ABC, BaseModel, Generic[AdapterT]):
+class Event(BaseModel, Generic[AdapterT], metaclass=ABCMeta):
     """事件类的基类。
 
     Attributes:
@@ -51,7 +51,7 @@ class EventHandleOption(NamedTuple):
     handle_get: bool
 
 
-class MessageEvent(Event[AdapterT], Generic[AdapterT]):
+class MessageEvent(Event[AdapterT], Generic[AdapterT], metaclass=ABCMeta):
     """通用的消息事件类的基类。"""
 
     @abstractmethod

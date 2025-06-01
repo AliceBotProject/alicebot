@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing_extensions import override
 
 import pytest
 from pytest_mock import MockerFixture
@@ -25,6 +26,14 @@ def test_plugin_load() -> None:
 def test_plugin_load_error(bot: Bot) -> None:
     class TestPlugin(Plugin):
         priority = -1
+
+        @override
+        async def handle(self) -> None:
+            pass
+
+        @override
+        async def rule(self) -> bool:
+            return True
 
     bot = Bot()
 

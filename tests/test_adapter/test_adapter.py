@@ -21,7 +21,7 @@ def test_adapter_startup_error(bot: Bot) -> None:
             self.bot.exit()
 
     bot.load_adapters(TestAdapter)
-    with pytest.raises(ExceptionGroup) as exc_info:  # pyright: ignore[reportUnknownVariableType]
+    with pytest.raises(ExceptionGroup) as exc_info:
         bot.run()
     assert exc_info.group_contains(RuntimeError)
 
@@ -34,6 +34,6 @@ def test_adapter_raise_error(bot: Bot) -> None:
             raise RuntimeError
 
     bot.load_adapters(TestAdapter)
-    with pytest.raises(ExceptionGroup) as exc_info:  # pyright: ignore[reportUnknownVariableType]
+    with pytest.raises(ExceptionGroup) as exc_info:
         bot.run()
     assert exc_info.group_contains(RuntimeError)

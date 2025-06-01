@@ -1,5 +1,5 @@
 import json
-from abc import ABC
+from abc import ABCMeta
 from collections.abc import Generator
 from contextlib import contextmanager
 
@@ -25,7 +25,7 @@ def test_is_config_class() -> None:
     class NotConfigClass:
         pass
 
-    class AbstractConfigClass(ABC, BaseModel):
+    class AbstractConfigClass(BaseModel, metaclass=ABCMeta):
         __config_name__ = "test_config_model"
 
     class PydanticModel(BaseModel):

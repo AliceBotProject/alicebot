@@ -1,6 +1,7 @@
 """消息事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
+from abc import ABC
 from typing import TYPE_CHECKING, Any, Literal, Union
 from typing_extensions import override
 
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
     from .. import MiraiAdapter  # noqa: TID252
 
 
-class MiraiBaseMessageEvent(MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
+class MiraiBaseMessageEvent(ABC, MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
     """Mirai 消息事件基类"""
 
     messageChain: MiraiMessage

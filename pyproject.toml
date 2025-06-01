@@ -60,9 +60,10 @@ dev = [
 ]
 lint = [
     "ruff>=0.6",
-    "mypy>=1",
     "pylint>=3",
     "pylint-pydantic>=0.3",
+    "basedpyright>=1",
+    "mypy>=1",
 ]
 docs = [
     "sophia-doc>=0.1",
@@ -138,18 +139,25 @@ keep-runtime-typing = true
 "examples/plugins/*.py" = ["D", "T", "ANN"]
 "tests/*.py" = ["D", "PLR2004"]
 
-[tool.pyright]
+[tool.basedpyright]
 ignore = ["examples/plugins"]
 extraPaths = ["tests", "tests/test_utils"]
 pythonVersion = "3.9"
 pythonPlatform = "All"
-typeCheckingMode = "strict"
+typeCheckingMode = "recommended"
+reportImportCycles = false
 reportUnnecessaryIsInstance = false
-reportCallInDefaultInitializer = true
-reportImplicitOverride = true
-reportPropertyTypeMismatch = true
-reportShadowedImports = true
-reportUninitializedInstanceVariable = true
+reportImplicitStringConcatenation = false
+reportUnusedCallResult = false
+reportUnnecessaryTypeIgnoreComment = false
+# basedpyright exclusive settings
+reportUnreachable = false
+reportAny = false
+reportExplicitAny = false
+reportIgnoreCommentWithoutRule = false
+reportUnusedParameter = false
+reportUnannotatedClassAttribute = false
+enableTypeIgnoreComments = true
 
 [tool.mypy]
 python_version = "3.9"

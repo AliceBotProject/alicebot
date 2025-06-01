@@ -29,6 +29,7 @@ class Photo(TelegramMedia):
     caption: Union[None, str, TelegramMessage] = None
     show_caption_above_media: Optional[bool] = None
     has_spoiler: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Audio(TelegramMedia):
@@ -38,6 +39,7 @@ class Audio(TelegramMedia):
     performer: Optional[str] = None
     title: Optional[str] = None
     thumbnail: Optional[Union[InputFile, str]] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Document(TelegramMedia):
@@ -45,6 +47,7 @@ class Document(TelegramMedia):
     thumbnail: Optional[Union[InputFile, str]] = None
     caption: Union[None, str, TelegramMessage] = None
     disable_content_type_detection: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Video(TelegramMedia):
@@ -53,10 +56,13 @@ class Video(TelegramMedia):
     width: Optional[int] = None
     height: Optional[int] = None
     thumbnail: Optional[Union[InputFile, str]] = None
+    cover: Optional[Union[InputFile, str]] = None
+    start_timestamp: Optional[int] = None
     caption: Union[None, str, TelegramMessage] = None
     show_caption_above_media: Optional[bool] = None
     has_spoiler: Optional[bool] = None
     supports_streaming: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Animation(TelegramMedia):
@@ -68,12 +74,14 @@ class Animation(TelegramMedia):
     caption: Union[None, str, TelegramMessage] = None
     show_caption_above_media: Optional[bool] = None
     has_spoiler: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Voice(TelegramMedia):
     voice: Union[InputFile, str]
     caption: Union[None, str, TelegramMessage] = None
     duration: Optional[int] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class VideoNote(TelegramMedia):
@@ -81,6 +89,7 @@ class VideoNote(TelegramMedia):
     duration: Optional[int] = None
     length: Optional[int] = None
     thumbnail: Optional[Union[InputFile, str]] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class PaidMedia(TelegramMedia):
@@ -89,6 +98,7 @@ class PaidMedia(TelegramMedia):
     payload: Optional[str] = None
     caption: Union[None, str, TelegramMessage] = None
     show_caption_above_media: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class MediaGroup(TelegramMedia):
@@ -98,6 +108,7 @@ class MediaGroup(TelegramMedia):
         list[InputMediaPhoto],
         list[InputMediaVideo],
     ]
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Location(TelegramMedia):
@@ -107,6 +118,7 @@ class Location(TelegramMedia):
     live_period: Optional[int] = None
     heading: Optional[int] = None
     proximity_alert_radius: Optional[int] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Venue(TelegramMedia):
@@ -118,6 +130,7 @@ class Venue(TelegramMedia):
     foursquare_type: Optional[str] = None
     google_place_id: Optional[str] = None
     google_place_type: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Contact(TelegramMedia):
@@ -125,6 +138,7 @@ class Contact(TelegramMedia):
     first_name: str
     last_name: Optional[str] = None
     vcard: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Poll(TelegramMedia):
@@ -138,19 +152,29 @@ class Poll(TelegramMedia):
     open_period: Optional[int] = None
     close_date: Optional[int] = None
     is_closed: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Dice(TelegramMedia):
     emoji: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class ChatAction(TelegramMedia):
     action: str
 
 
+class Gift(TelegramMedia):
+    user_id: Optional[int] = None
+    gift_id: str
+    pay_for_upgrade: Optional[bool] = None
+    text: Union[None, str, TelegramMessage] = None
+
+
 class Sticker(TelegramMedia):
     sticker: Union[InputFile, str]
     emoji: Optional[str] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Invoice(TelegramMedia):
@@ -175,7 +199,9 @@ class Invoice(TelegramMedia):
     send_phone_number_to_provider: Optional[bool] = None
     send_email_to_provider: Optional[bool] = None
     is_flexible: Optional[bool] = None
+    allow_paid_broadcast: Optional[bool] = None
 
 
 class Game(TelegramMedia):
     game_short_name: str
+    allow_paid_broadcast: Optional[bool] = None

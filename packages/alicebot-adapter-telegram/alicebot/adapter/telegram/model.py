@@ -143,6 +143,8 @@ class Video(BaseModel):
     height: int
     duration: int
     thumbnail: Optional[PhotoSize] = None
+    cover: Optional[list[PhotoSize]] = None
+    start_timestamp: Optional[int] = None
     file_name: Optional[str] = None
     mime_type: Optional[str] = None
     file_size: Optional[int] = None
@@ -391,6 +393,9 @@ class SuccessfulPayment(BaseModel):
     currency: str
     total_amount: int
     invoice_payload: str
+    subscription_expiration_date: Optional[int] = None
+    is_recurring: Optional[bool] = None
+    is_first_recurring: Optional[bool] = None
     shipping_option_id: Optional[str] = None
     order_info: Optional[OrderInfo] = None
     telegram_payment_charge_id: str
@@ -424,6 +429,67 @@ class ChatShared(BaseModel):
     title: Optional[str] = None
     username: Optional[str] = None
     photo: Optional[list[PhotoSize]] = None
+
+
+class Gift(BaseModel):
+    id: str
+    sticker: Sticker
+    star_count: int
+    upgrade_star_count: Optional[int] = None
+    total_count: Optional[int] = None
+    remaining_count: Optional[int] = None
+
+
+class GiftInfo(BaseModel):
+    gift: Gift
+    owned_gift_id: Optional[str] = None
+    convert_star_count: Optional[int] = None
+    prepaid_upgrade_star_count: Optional[int] = None
+    can_be_upgraded: Optional[bool] = None
+    text: Optional[str] = None
+    entities: Optional[list[MessageEntity]] = None
+    is_private: Optional[bool] = None
+
+
+class UniqueGiftModel(BaseModel):
+    name: str
+    sticker: Sticker
+    rarity_per_mille: int
+
+
+class UniqueGiftSymbol(BaseModel):
+    name: str
+    sticker: Sticker
+    rarity_per_mille: int
+
+
+class UniqueGiftBackdropColors(BaseModel):
+    center_color: int
+    edge_color: int
+    symbol_color: int
+    text_color: int
+
+
+class UniqueGiftBackdrop(BaseModel):
+    name: str
+    colors: UniqueGiftBackdropColors
+    rarity_per_mille: int
+
+
+class UniqueGift(BaseModel):
+    base_name: str
+    name: str
+    number: int
+    model: UniqueGiftModel
+    symbol: UniqueGiftSymbol
+    backdrop: UniqueGiftBackdrop
+
+
+class UniqueGiftInfo(BaseModel):
+    gift: UniqueGift
+    origin: str
+    owned_gift_id: Optional[str] = None
+    transfer_star_count: Optional[int] = None
 
 
 class WriteAccessAllowed(BaseModel):
@@ -573,6 +639,10 @@ class GiveawayCompleted(BaseModel):
     is_star_giveaway: Optional[bool] = None
 
 
+class PaidMessagePriceChanged(BaseModel):
+    paid_message_star_count: int
+
+
 class VideoChatScheduled(BaseModel):
     start_date: int
 
@@ -613,6 +683,10 @@ class SwitchInlineQueryChosenChat(BaseModel):
     allow_channel_chats: Optional[bool] = None
 
 
+class CopyTextButton(BaseModel):
+    text: str
+
+
 class CallbackGame(BaseModel):
     pass
 
@@ -626,6 +700,7 @@ class InlineKeyboardButton(BaseModel):
     switch_inline_query: Optional[str] = None
     switch_inline_query_current_chat: Optional[str] = None
     switch_inline_query_chosen_chat: Optional[SwitchInlineQueryChosenChat] = None
+    copy_text: Optional[CopyTextButton] = None
     callback_game: Optional[CallbackGame] = None
     pay: Optional[bool] = None
 
@@ -657,6 +732,7 @@ class Message(BaseModel):
     is_from_offline: Optional[bool] = None
     media_group_id: Optional[str] = None
     author_signature: Optional[str] = None
+    paid_star_count: Optional[int] = None
     text: Optional[str] = None
     entities: Optional[list[MessageEntity]] = None
     link_preview_options: Optional[LinkPreviewOptions] = None
@@ -698,6 +774,8 @@ class Message(BaseModel):
     refunded_payment: Optional[RefundedPayment] = None
     users_shared: Optional[UsersShared] = None
     chat_shared: Optional[ChatShared] = None
+    gift: Optional[GiftInfo] = None
+    unique_gift: Optional[UniqueGiftInfo] = None
     connected_website: Optional[str] = None
     write_access_allowed: Optional[WriteAccessAllowed] = None
     passport_data: Optional[PassportData] = None
@@ -714,6 +792,7 @@ class Message(BaseModel):
     giveaway: Optional[Giveaway] = None
     giveaway_winners: Optional[GiveawayWinners] = None
     giveaway_completed: Optional[GiveawayCompleted] = None
+    paid_message_price_changed: Optional[PaidMessagePriceChanged] = None
     video_chat_scheduled: Optional[VideoChatScheduled] = None
     video_chat_started: Optional[VideoChatStarted] = None
     video_chat_ended: Optional[VideoChatEnded] = None
@@ -722,12 +801,29 @@ class Message(BaseModel):
     reply_markup: Optional[InlineKeyboardMarkup] = None
 
 
+class BusinessBotRights(BaseModel):
+    can_reply: Optional[bool] = None
+    can_read_messages: Optional[bool] = None
+    can_delete_sent_messages: Optional[bool] = None
+    can_delete_all_messages: Optional[bool] = None
+    can_edit_name: Optional[bool] = None
+    can_edit_bio: Optional[bool] = None
+    can_edit_profile_photo: Optional[bool] = None
+    can_edit_username: Optional[bool] = None
+    can_change_gift_settings: Optional[bool] = None
+    can_view_gifts_and_stars: Optional[bool] = None
+    can_convert_gifts_to_stars: Optional[bool] = None
+    can_transfer_and_upgrade_gifts: Optional[bool] = None
+    can_transfer_stars: Optional[bool] = None
+    can_manage_stories: Optional[bool] = None
+
+
 class BusinessConnection(BaseModel):
     id: str
     user: User
     user_chat_id: int
     date: int
-    can_reply: bool
+    rights: Optional[BusinessBotRights] = None
     is_enabled: bool
 
 
@@ -1075,6 +1171,13 @@ class ChatPermissions(BaseModel):
     can_manage_topics: Optional[bool] = None
 
 
+class AcceptedGiftTypes(BaseModel):
+    unlimited_gifts: bool
+    limited_gifts: bool
+    unique_gifts: bool
+    premium_subscription: bool
+
+
 class ChatLocation(BaseModel):
     location: Location
     address: str
@@ -1112,6 +1215,7 @@ class ChatFullInfo(BaseModel):
     invite_link: Optional[str] = None
     pinned_message: Optional[Message] = None
     permissions: Optional[ChatPermissions] = None
+    accepted_gift_types: AcceptedGiftTypes
     can_send_paid_media: Optional[bool] = None
     slow_mode_delay: Optional[int] = None
     unrestrict_boost_count: Optional[int] = None
@@ -1228,11 +1332,117 @@ class ForceReply(BaseModel):
     selective: Optional[bool] = None
 
 
+class StoryAreaPosition(BaseModel):
+    x_percentage: float
+    y_percentage: float
+    width_percentage: float
+    height_percentage: float
+    rotation_angle: float
+    corner_radius_percentage: float
+
+
+class LocationAddress(BaseModel):
+    country_code: str
+    state: Optional[str] = None
+    city: Optional[str] = None
+    street: Optional[str] = None
+
+
+class StoryAreaTypeLocation(BaseModel):
+    type: str
+    latitude: float
+    longitude: float
+    address: Optional[LocationAddress] = None
+
+
+class StoryAreaTypeSuggestedReaction(BaseModel):
+    type: str
+    reaction_type: ReactionType
+    is_dark: Optional[bool] = None
+    is_flipped: Optional[bool] = None
+
+
+class StoryAreaTypeLink(BaseModel):
+    type: str
+    url: str
+
+
+class StoryAreaTypeWeather(BaseModel):
+    type: str
+    temperature: float
+    emoji: str
+    background_color: int
+
+
+class StoryAreaTypeUniqueGift(BaseModel):
+    type: str
+    name: str
+
+
+StoryAreaType = Union[
+    StoryAreaTypeLocation,
+    StoryAreaTypeSuggestedReaction,
+    StoryAreaTypeLink,
+    StoryAreaTypeWeather,
+    StoryAreaTypeUniqueGift,
+]
+
+
+class StoryArea(BaseModel):
+    position: StoryAreaPosition
+    type: StoryAreaType
+
+
 class ForumTopic(BaseModel):
     message_thread_id: int
     name: str
     icon_color: int
     icon_custom_emoji_id: Optional[str] = None
+
+
+class Gifts(BaseModel):
+    gifts: list[Gift]
+
+
+class OwnedGiftRegular(BaseModel):
+    type: str
+    gift: Gift
+    owned_gift_id: Optional[str] = None
+    sender_user: Optional[User] = None
+    send_date: int
+    text: Optional[str] = None
+    entities: Optional[list[MessageEntity]] = None
+    is_private: Optional[bool] = None
+    is_saved: Optional[bool] = None
+    can_be_upgraded: Optional[bool] = None
+    was_refunded: Optional[bool] = None
+    convert_star_count: Optional[int] = None
+    prepaid_upgrade_star_count: Optional[int] = None
+
+
+class OwnedGiftUnique(BaseModel):
+    type: str
+    gift: UniqueGift
+    owned_gift_id: Optional[str] = None
+    sender_user: Optional[User] = None
+    send_date: int
+    is_saved: Optional[bool] = None
+    can_be_transferred: Optional[bool] = None
+    transfer_star_count: Optional[int] = None
+
+
+OwnedGift = Union[OwnedGiftRegular, OwnedGiftUnique]
+
+
+class OwnedGifts(BaseModel):
+    total_count: int
+    gifts: list[OwnedGift]
+    next_offset: Optional[str] = None
+
+
+class StarAmount(BaseModel):
+    amount: int
+    nanostar_amount: Optional[int] = None
 
 
 class BotCommand(BaseModel):
@@ -1321,13 +1531,10 @@ class ResponseParameters(BaseModel):
     retry_after: Optional[int] = None
 
 
-InputFile = Union[bytes, tuple[str, bytes]]
-
-
 class InputMediaAnimation(BaseModel):
     type: str
     media: str
-    thumbnail: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[str] = None
     caption: Optional[str] = None
     parse_mode: Optional[str] = None
     caption_entities: Optional[list[MessageEntity]] = None
@@ -1341,7 +1548,7 @@ class InputMediaAnimation(BaseModel):
 class InputMediaDocument(BaseModel):
     type: str
     media: str
-    thumbnail: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[str] = None
     caption: Optional[str] = None
     parse_mode: Optional[str] = None
     caption_entities: Optional[list[MessageEntity]] = None
@@ -1351,7 +1558,7 @@ class InputMediaDocument(BaseModel):
 class InputMediaAudio(BaseModel):
     type: str
     media: str
-    thumbnail: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[str] = None
     caption: Optional[str] = None
     parse_mode: Optional[str] = None
     caption_entities: Optional[list[MessageEntity]] = None
@@ -1373,7 +1580,9 @@ class InputMediaPhoto(BaseModel):
 class InputMediaVideo(BaseModel):
     type: str
     media: str
-    thumbnail: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[str] = None
+    cover: Optional[str] = None
+    start_timestamp: Optional[int] = None
     caption: Optional[str] = None
     parse_mode: Optional[str] = None
     caption_entities: Optional[list[MessageEntity]] = None
@@ -1394,6 +1603,9 @@ InputMedia = Union[
 ]
 
 
+InputFile = Union[bytes, tuple[str, bytes]]
+
+
 class InputPaidMediaPhoto(BaseModel):
     type: str
     media: str
@@ -1402,7 +1614,9 @@ class InputPaidMediaPhoto(BaseModel):
 class InputPaidMediaVideo(BaseModel):
     type: str
     media: str
-    thumbnail: Optional[Union[InputFile, str]] = None
+    thumbnail: Optional[str] = None
+    cover: Optional[str] = None
+    start_timestamp: Optional[int] = None
     width: Optional[int] = None
     height: Optional[int] = None
     duration: Optional[int] = None
@@ -1410,6 +1624,36 @@ class InputPaidMediaVideo(BaseModel):
 
 
 InputPaidMedia = Union[InputPaidMediaPhoto, InputPaidMediaVideo]
+
+
+class InputProfilePhotoStatic(BaseModel):
+    type: str
+    photo: str
+
+
+class InputProfilePhotoAnimated(BaseModel):
+    type: str
+    animation: str
+    main_frame_timestamp: Optional[float] = None
+
+
+InputProfilePhoto = Union[InputProfilePhotoStatic, InputProfilePhotoAnimated]
+
+
+class InputStoryContentPhoto(BaseModel):
+    type: str
+    photo: str
+
+
+class InputStoryContentVideo(BaseModel):
+    type: str
+    video: str
+    duration: Optional[float] = None
+    cover_frame_timestamp: Optional[float] = None
+    is_animation: Optional[bool] = None
+
+
+InputStoryContent = Union[InputStoryContentPhoto, InputStoryContentVideo]
 
 
 class StickerSet(BaseModel):
@@ -1421,7 +1665,7 @@ class StickerSet(BaseModel):
 
 
 class InputSticker(BaseModel):
-    sticker: Union[InputFile, str]
+    sticker: str
     format: str
     emoji_list: list[str]
     mask_position: Optional[MaskPosition] = None
@@ -1610,7 +1854,6 @@ class InlineQueryResultArticle(BaseModel):
     input_message_content: InputMessageContent
     reply_markup: Optional[InlineKeyboardMarkup] = None
     url: Optional[str] = None
-    hide_url: Optional[bool] = None
     description: Optional[str] = None
     thumbnail_url: Optional[str] = None
     thumbnail_width: Optional[int] = None
@@ -1817,6 +2060,11 @@ class SentWebAppMessage(BaseModel):
     inline_message_id: Optional[str] = None
 
 
+class PreparedInlineMessage(BaseModel):
+    id: str
+    expiration_date: int
+
+
 class ShippingOption(BaseModel):
     id: str
     title: str
@@ -1844,12 +2092,37 @@ RevenueWithdrawalState = Union[
 ]
 
 
+class AffiliateInfo(BaseModel):
+    affiliate_user: Optional[User] = None
+    affiliate_chat: Optional[Chat] = None
+    commission_per_mille: int
+    amount: int
+    nanostar_amount: Optional[int] = None
+
+
 class TransactionPartnerUser(BaseModel):
     type: str
+    transaction_type: str
     user: User
+    affiliate: Optional[AffiliateInfo] = None
     invoice_payload: Optional[str] = None
+    subscription_period: Optional[int] = None
     paid_media: Optional[list[PaidMedia]] = None
     paid_media_payload: Optional[str] = None
+    gift: Optional[Gift] = None
+    premium_subscription_duration: Optional[int] = None
+
+
+class TransactionPartnerChat(BaseModel):
+    type: str
+    chat: Chat
+    gift: Optional[Gift] = None
+
+
+class TransactionPartnerAffiliateProgram(BaseModel):
+    type: str
+    sponsor_user: Optional[User] = None
+    commission_per_mille: int
 
 
 class TransactionPartnerFragment(BaseModel):
@@ -1861,14 +2134,22 @@ class TransactionPartnerTelegramAds(BaseModel):
     type: str
 
 
+class TransactionPartnerTelegramApi(BaseModel):
+    type: str
+    request_count: int
+
+
 class TransactionPartnerOther(BaseModel):
     type: str
 
 
 TransactionPartner = Union[
     TransactionPartnerUser,
+    TransactionPartnerChat,
+    TransactionPartnerAffiliateProgram,
     TransactionPartnerFragment,
     TransactionPartnerTelegramAds,
+    TransactionPartnerTelegramApi,
     TransactionPartnerOther,
 ]
 
@@ -1876,6 +2157,7 @@ TransactionPartner = Union[
 class StarTransaction(BaseModel):
     id: str
     amount: int
+    nanostar_amount: Optional[int] = None
     date: int
     source: Optional[TransactionPartner] = None
     receiver: Optional[TransactionPartner] = None

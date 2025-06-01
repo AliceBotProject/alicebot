@@ -24,4 +24,5 @@ class ActionFailed(TelegramException):
         Args:
             resp: 返回的响应。
         """
+        super().__init__()
         self.resp = resp

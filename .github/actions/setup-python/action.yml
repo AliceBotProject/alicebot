@@ -19,7 +19,3 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-
-    - name: Install the project
-      run: uv sync --all-extras --dev
-      shell: bash

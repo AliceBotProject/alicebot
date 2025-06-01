@@ -28,9 +28,9 @@ pnpm install
 
 ### 编辑器配置
 
-虽然并非强制，但建议使用 VSCode 作为编辑器对 AliceBot 项目的代码进行编辑，因为 AliceBot 具有完全的类型注解，VSCode 的 Pylance 插件具有相对较好的静态类型检查效果。
+虽然并非强制，但建议使用 VSCode 作为编辑器对 AliceBot 项目的代码进行编辑，因为 AliceBot 具有完全的类型注解，VSCode 的 BasedPyright 插件具有相对较好的静态类型检查效果。
 
-如果你使用 VSCode 作为编辑器，需要安装 **Python**、**Pylance** 和 **Ruff** 插件，并进行以下配置：
+如果你使用 VSCode 作为编辑器，需要安装 **Python**、**BasedPyright** 和 **Ruff** 插件，并进行以下配置：
 
 ```json
 {
@@ -58,7 +58,7 @@ AliceBot 使用 [Ruff](https://docs.astral.sh/ruff/) 作为格式化工具，如
 
 AliceBot 具有完全的类型注解。
 
-在 [pyproject.toml](https://github.com/AliceBotProject/alicebot/blob/main/pyproject.toml) 文件中已经提供了针对 Pyright (Pylance 背后的类型检查器) 和 MyPy 的配置，请确保你的代码能够通过这种严格程度的类型检查。
+在 [pyproject.toml](https://github.com/AliceBotProject/alicebot/blob/main/pyproject.toml) 文件中已经提供了针对 BasedPyright 和 MyPy 的配置，请确保你的代码能够通过这种严格程度的类型检查。
 
 如果必要，你可以在代码中使用 `# type: ignore` 注释来抑制类型检查，但请注意，请将此作为最后手段，不要轻易使用。
 

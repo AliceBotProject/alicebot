@@ -3,7 +3,7 @@ name: Lint Other Files
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - '**.py'
   pull_request:

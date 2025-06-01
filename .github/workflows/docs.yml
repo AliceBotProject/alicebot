@@ -3,7 +3,7 @@ name: Docs Web Site Deploy
 on:
   push:
     branches:
-      - master
+      - main
     paths-ignore:
       - 'examples/**'
   pull_request:

@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://docs.alicebot.dev/"><img src="https://raw.githubusercontent.com/AliceBotProject/alicebot/master/docs/public/logo.png" width="200" height="200" alt="logo"></a>
+  <a href="https://docs.alicebot.dev/"><img src="https://raw.githubusercontent.com/AliceBotProject/alicebot/main/docs/public/logo.png" width="200" height="200" alt="logo"></a>
 
 # AliceBot
 
@@ -8,11 +8,11 @@
 </div>
 
 <div align="center">
-  <a href="https://raw.githubusercontent.com/AliceBotProject/alicebot/master/LICENSE">
+  <a href="https://raw.githubusercontent.com/AliceBotProject/alicebot/main/LICENSE">
     <img src="https://img.shields.io/github/license/AliceBotProject/alicebot" alt="license">
   </a>
   <a href="https://pypi.python.org/pypi/alicebot">
-    <img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fgithub.com%2FAliceBotProject%2Falicebot%2Fraw%2Fmaster%2Fpyproject.toml" alt="pypi">
+    <img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fgithub.com%2FAliceBotProject%2Falicebot%2Fraw%2Fmain%2Fpyproject.toml" alt="pypi">
   </a>
   <a href="https://pypi.python.org/pypi/alicebot">
     <img src="https://img.shields.io/pypi/v/alicebot" alt="pypi">
@@ -41,13 +41,13 @@
     <img src="https://codecov.io/gh/AliceBotProject/alicebot/graph/badge.svg?token=3H6ZU6NN0J" alt="codecov">
   </a>
   <a href="https://github.com/AliceBotProject/alicebot/actions/workflows/test.yml">
-    <img src="https://github.com/AliceBotProject/alicebot/actions/workflows/test.yml/badge.svg?branch=master&event=push" alt="github">
+    <img src="https://github.com/AliceBotProject/alicebot/actions/workflows/test.yml/badge.svg?branch=main&event=push" alt="github">
   </a>
   <a href="https://github.com/AliceBotProject/alicebot/actions/workflows/lint.yml">
-    <img src="https://github.com/AliceBotProject/alicebot/actions/workflows/lint.yml/badge.svg?branch=master&event=push" alt="github">
+    <img src="https://github.com/AliceBotProject/alicebot/actions/workflows/lint.yml/badge.svg?branch=main&event=push" alt="github">
   </a>
   <a href="https://github.com/AliceBotProject/alicebot/actions/workflows/docs.yml">
-    <img src="https://github.com/AliceBotProject/alicebot/actions/workflows/docs.yml/badge.svg?branch=master&event=push" alt="github">
+    <img src="https://github.com/AliceBotProject/alicebot/actions/workflows/docs.yml/badge.svg?branch=main&event=push" alt="github">
   </a>
   <br />
   <a href="https://jq.qq.com/?_wv=1027&k=ZbE3p6tq">

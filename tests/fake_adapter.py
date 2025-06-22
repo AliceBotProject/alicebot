@@ -1,6 +1,6 @@
 import inspect
-from collections.abc import Awaitable
-from typing import Any, Callable, Generic, Optional, Union
+from collections.abc import Awaitable, Callable
+from typing import Any, Generic
 from typing_extensions import override
 
 from anyio.lowlevel import checkpoint
@@ -11,10 +11,7 @@ from alicebot.typing import ConfigT, StateT
 
 EventFactory = Callable[
     ["FakeAdapter"],
-    Union[
-        Optional[Event["FakeAdapter"]],
-        Awaitable[Optional[Event["FakeAdapter"]]],
-    ],
+    Event["FakeAdapter"] | None | Awaitable[Event["FakeAdapter"] | None],
 ]
 
 

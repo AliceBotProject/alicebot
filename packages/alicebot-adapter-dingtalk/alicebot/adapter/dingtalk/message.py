@@ -1,6 +1,6 @@
 """DingTalk 适配器消息。"""
 
-from typing import Any, Optional
+from typing import Any
 from typing_extensions import override
 
 from pydantic import model_serializer
@@ -57,7 +57,7 @@ class DingTalkMessage(MessageSegment):  # type: ignore
 
     @classmethod
     def link(
-        cls, text: str, title: str, message_url: str, pic_url: Optional[str] = None
+        cls, text: str, title: str, message_url: str, pic_url: str | None = None
     ) -> "DingTalkMessage":
         """DingTalk link 消息"""
         return cls(
@@ -119,8 +119,8 @@ class DingTalkMessage(MessageSegment):  # type: ignore
     @classmethod
     def at(
         cls,
-        at_mobiles: Optional[list[str]] = None,
-        at_user_ids: Optional[list[str]] = None,
+        at_mobiles: list[str] | None = None,
+        at_user_ids: list[str] | None = None,
         is_at_all: bool = False,
     ) -> "DingTalkMessage":
         """DingTalk At 信息"""

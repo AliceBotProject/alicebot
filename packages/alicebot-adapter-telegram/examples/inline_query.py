@@ -1,6 +1,5 @@
 """处理 Inline Query。"""
 
-from typing import Union
 from typing_extensions import override
 
 from alicebot import Plugin
@@ -13,7 +12,7 @@ from alicebot.adapter.telegram.model import (
 )
 
 
-class InlineQuery(Plugin[Union[InlineQueryEvent, CallbackQueryEvent], None, None]):
+class InlineQuery(Plugin[InlineQueryEvent | CallbackQueryEvent, None, None]):
     """处理 Inline Query。"""
 
     @override

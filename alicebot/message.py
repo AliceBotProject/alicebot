@@ -7,8 +7,8 @@
 import builtins
 from abc import ABC, abstractmethod
 from collections.abc import ItemsView, Iterator, KeysView, Mapping, ValuesView
-from typing import Any, Generic, Optional, SupportsIndex, TypeVar, Union, overload
-from typing_extensions import Self, override
+from typing import Any, Generic, Self, SupportsIndex, TypeAlias, TypeVar, overload
+from typing_extensions import override
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import core_schema
@@ -25,7 +25,9 @@ MessageT = TypeVar("MessageT", bound="Message[Any]")
 MessageSegmentT = TypeVar("MessageSegmentT", bound="MessageSegment[Any]")
 
 # 可以转化为 Message 的类型
-BuildMessageType = Union[list[MessageSegmentT], MessageSegmentT, str, Mapping[str, Any]]
+BuildMessageType: TypeAlias = (
+    list[MessageSegmentT] | MessageSegmentT | str | Mapping[str, Any]
+)
 
 
 class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
@@ -170,9 +172,9 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
 
     def startswith(
         self,
-        prefix: Union[str, MessageSegmentT],
-        start: Optional[SupportsIndex] = None,
-        end: Optional[SupportsIndex] = None,
+        prefix: str | MessageSegmentT,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
     ) -> bool:
         """实现类似字符串的 `startswith()` 方法。
 
@@ -200,9 +202,9 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
 
     def endswith(
         self,
-        suffix: Union[str, MessageSegmentT],
-        start: Optional[SupportsIndex] = None,
-        end: Optional[SupportsIndex] = None,
+        suffix: str | MessageSegmentT,
+        start: SupportsIndex | None = None,
+        end: SupportsIndex | None = None,
     ) -> bool:
         """实现类似字符串的 `endswith()` 方法。
 
@@ -233,13 +235,13 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
 
     @overload
     def replace(
-        self, old: MessageSegmentT, new: Optional[MessageSegmentT], count: int = -1
+        self, old: MessageSegmentT, new: MessageSegmentT | None, count: int = -1
     ) -> Self: ...
 
     def replace(
         self,
-        old: Union[str, MessageSegmentT],
-        new: Optional[Union[str, MessageSegmentT]],
+        old: str | MessageSegmentT,
+        new: str | MessageSegmentT | None,
         count: int = -1,
     ) -> Self:
         """实现类似字符串的 `replace()` 方法。
@@ -357,6 +359,8 @@ class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):  # p
             由 Mapping 转换的消息字段。
         """
         return cls(**msg)
+
+    __hash__: Any = None
 
     @override
     def __str__(self) -> str:

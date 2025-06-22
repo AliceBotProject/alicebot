@@ -8,12 +8,13 @@ import pkgutil
 import signal
 import sys
 import threading
+import tomllib
 from collections import defaultdict
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from contextlib import AsyncExitStack
 from itertools import chain
 from pathlib import Path
-from typing import Any, Callable, Optional, Union, cast, overload
+from typing import Any, cast, overload
 
 import anyio
 import structlog
@@ -35,12 +36,6 @@ from alicebot.utils import (
     is_config_class,
     samefile,
 )
-
-if sys.version_info >= (3, 11):  # pragma: no cover
-    import tomllib
-else:  # pragma: no cover
-    import tomli as tomllib
-
 
 __all__ = ["Bot"]
 
@@ -81,19 +76,19 @@ class Bot:
     _raw_config_dict: dict[str, Any]  # 原始配置字典
 
     # 以下属性不会在重启时清除
-    _config_file: Optional[str]  # 配置文件
-    _config_dict: Optional[dict[str, Any]]  # 配置字典
+    _config_file: str | None  # 配置文件
+    _config_dict: dict[str, Any] | None  # 配置字典
     _hot_reload: bool  # 热重载
     _handle_signals: bool  # 处理信号
 
     _extend_plugins: list[
-        Union[type[Plugin[Any, Any, Any]], str, Path]
+        type[Plugin[Any, Any, Any]] | str | Path
     ]  # 使用 load_plugins() 方法程序化加载的插件列表
     _extend_plugin_dirs: list[
         Path
     ]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
     _extend_adapters: list[
-        Union[type[Adapter[Any, Any]], str]
+        type[Adapter[Any, Any]] | str
     ]  # 使用 load_adapter() 方法程序化加载的适配器列表
     _bot_run_hooks: list[BotHook]
     _bot_exit_hooks: list[BotHook]
@@ -106,8 +101,8 @@ class Bot:
     def __init__(
         self,
         *,
-        config_file: Optional[str] = "config.toml",
-        config_dict: Optional[dict[str, Any]] = None,
+        config_file: str | None = "config.toml",
+        config_dict: dict[str, Any] | None = None,
         hot_reload: bool = False,
         handle_signals: bool = True,
     ) -> None:
@@ -269,7 +264,7 @@ class Bot:
     async def _run_hot_reload(self) -> None:  # pragma: no cover
         """热重载。"""
         try:
-            from watchfiles import Change, awatch
+            from watchfiles import Change, awatch  # noqa: PLC0415
         except ImportError:
             logger.warning(
                 'Hot reload needs to install "watchfiles", try "pip install watchfiles"'
@@ -346,7 +341,7 @@ class Bot:
         """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
-            source: Union[list[type[Plugin[Any, Any, Any]]], list[Adapter[Any, Any]]],
+            source: list[type[Plugin[Any, Any, Any]]] | list[Adapter[Any, Any]],
             name: str,
             base: type[ConfigModel],
         ) -> tuple[type[ConfigModel], ConfigModel]:
@@ -578,47 +573,47 @@ class Bot:
     @overload
     async def get(
         self,
-        func: Optional[Callable[[Event[Any]], Union[bool, Awaitable[bool]]]] = None,
+        func: Callable[[Event[Any]], bool | Awaitable[bool]] | None = None,
         *,
         event_type: None = None,
         adapter_type: None = None,
-        max_try_times: Optional[int] = None,
-        timeout: Optional[Union[int, float]] = None,
+        max_try_times: int | None = None,
+        timeout: float | None = None,
         to_thread: bool = False,
     ) -> Event[Any]: ...
 
     @overload
     async def get(
         self,
-        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
+        func: Callable[[EventT], bool | Awaitable[bool]] | None = None,
         *,
         event_type: None = None,
         adapter_type: type[Adapter[EventT, Any]],
-        max_try_times: Optional[int] = None,
-        timeout: Optional[Union[int, float]] = None,
+        max_try_times: int | None = None,
+        timeout: float | None = None,
         to_thread: bool = False,
     ) -> EventT: ...
 
     @overload
     async def get(
         self,
-        func: Optional[Callable[[EventT], Union[bool, Awaitable[bool]]]] = None,
+        func: Callable[[EventT], bool | Awaitable[bool]] | None = None,
         *,
         event_type: type[EventT],
-        adapter_type: Optional[type[Adapter[Any, Any]]] = None,
-        max_try_times: Optional[int] = None,
-        timeout: Optional[Union[int, float]] = None,
+        adapter_type: type[Adapter[Any, Any]] | None = None,
+        max_try_times: int | None = None,
+        timeout: float | None = None,
         to_thread: bool = False,
     ) -> EventT: ...
 
     async def get(
         self,
-        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]] = None,
+        func: Callable[[Any], bool | Awaitable[bool]] | None = None,
         *,
-        event_type: Optional[type[Event[Any]]] = None,
-        adapter_type: Optional[type[Adapter[Any, Any]]] = None,
-        max_try_times: Optional[int] = None,
-        timeout: Optional[Union[int, float]] = None,
+        event_type: type[Event[Any]] | None = None,
+        adapter_type: type[Adapter[Any, Any]] | None = None,
+        max_try_times: int | None = None,
+        timeout: float | None = None,
         to_thread: bool = False,
     ) -> Event[Any]:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
@@ -655,7 +650,7 @@ class Bot:
         self,
         plugin_class: type[Plugin[Any, Any, Any]],
         plugin_load_type: PluginLoadType,
-        plugin_file_path: Optional[str],
+        plugin_file_path: str | None,
     ) -> None:
         """加载插件类。"""
         priority = getattr(plugin_class, "priority", None)
@@ -703,8 +698,8 @@ class Bot:
 
     def _load_plugins(
         self,
-        *plugins: Union[type[Plugin[Any, Any, Any]], str, Path],
-        plugin_load_type: Optional[PluginLoadType] = None,
+        *plugins: type[Plugin[Any, Any, Any]] | str | Path,
+        plugin_load_type: PluginLoadType | None = None,
         reload: bool = False,
     ) -> None:
         """加载插件。
@@ -762,7 +757,7 @@ class Bot:
                             plugin_module_name = ".".join(rel_path.parts[:-1])
                         else:
                             plugin_module_name = ".".join(
-                                rel_path.parts[:-1] + (rel_path.stem,)
+                                (*rel_path.parts[:-1], rel_path.stem)
                             )
 
                     self._load_plugins_from_module_name(
@@ -777,9 +772,7 @@ class Bot:
             except Exception:
                 logger.exception("Load plugin failed:", plugin=plugin_)
 
-    def load_plugins(
-        self, *plugins: Union[type[Plugin[Any, Any, Any]], str, Path]
-    ) -> None:
+    def load_plugins(self, *plugins: type[Plugin[Any, Any, Any]] | str | Path) -> None:
         """加载插件。
 
         Args:
@@ -820,7 +813,7 @@ class Bot:
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)
 
-    def _load_adapters(self, *adapters: Union[type[Adapter[Any, Any]], str]) -> None:
+    def _load_adapters(self, *adapters: type[Adapter[Any, Any]] | str) -> None:
         """加载适配器。
 
         Args:
@@ -864,7 +857,7 @@ class Bot:
             else:
                 self.adapters.append(adapter_object)
 
-    def load_adapters(self, *adapters: Union[type[Adapter[Any, Any]], str]) -> None:
+    def load_adapters(self, *adapters: type[Adapter[Any, Any]] | str) -> None:
         """加载适配器。
 
         Args:
@@ -883,8 +876,8 @@ class Bot:
     def get_adapter(self, adapter: type[AdapterT]) -> AdapterT: ...
 
     def get_adapter(
-        self, adapter: Union[str, type[AdapterT]]
-    ) -> Union[Adapter[Any, Any], AdapterT]:
+        self, adapter: str | type[AdapterT]
+    ) -> Adapter[Any, Any] | AdapterT:
         """按照名称或适配器类获取已经加载的适配器。
 
         Args:

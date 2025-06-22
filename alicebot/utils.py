@@ -5,17 +5,16 @@ import inspect
 import json
 import os
 import os.path
-import sys
 import traceback
 from abc import ABC
-from collections.abc import AsyncGenerator, Awaitable, Iterable, Sequence
+from collections.abc import AsyncGenerator, Awaitable, Callable, Iterable, Sequence
 from contextlib import AbstractContextManager, asynccontextmanager
 from importlib.abc import MetaPathFinder
 from importlib.machinery import ModuleSpec, PathFinder
 from os import PathLike
-from types import GetSetDescriptorType, ModuleType
-from typing import Any, Callable, ClassVar, Optional, TypeVar, Union, cast
-from typing_extensions import TypeAlias, TypeIs, override
+from types import ModuleType
+from typing import Any, ClassVar, TypeAlias, TypeVar, cast
+from typing_extensions import TypeIs, override
 
 import anyio
 import anyio.to_thread
@@ -28,7 +27,6 @@ __all__ = [
     "ModulePathFinder",
     "PydanticEncoder",
     "async_map",
-    "get_annotations",
     "get_classes_from_module",
     "get_classes_from_module_name",
     "is_config_class",
@@ -40,7 +38,7 @@ _T = TypeVar("_T")
 _R = TypeVar("_R")
 _TypeT = TypeVar("_TypeT", bound=type[Any])
 
-StrOrBytesPath: TypeAlias = Union[str, bytes, PathLike[str], PathLike[bytes]]
+StrOrBytesPath: TypeAlias = str | bytes | PathLike[str] | PathLike[bytes]
 
 
 class ModulePathFinder(MetaPathFinder):
@@ -52,9 +50,9 @@ class ModulePathFinder(MetaPathFinder):
     def find_spec(
         self,
         fullname: str,
-        path: Optional[Sequence[str]] = None,
-        target: Optional[ModuleType] = None,
-    ) -> Union[ModuleSpec, None]:
+        path: Sequence[str] | None = None,
+        target: ModuleType | None = None,
+    ) -> ModuleSpec | None:
         """用于查找指定模块的 `spec`。"""
         if path is None:
             path = []
@@ -213,55 +211,3 @@ async def async_map(
         yield await receive_stream.receive()
 
     await send_stream.aclose()
-
-
-if sys.version_info >= (3, 10):  # pragma: no cover
-    from inspect import get_annotations
-else:  # pragma: no cover
-
-    def get_annotations(
-        obj: Union[Callable[..., object], type[Any], ModuleType],
-    ) -> dict[str, Any]:
-        """计算一个对象的标注字典。
-
-        Args:
-            obj: 一个可调用对象、类或模块。
-
-        Raises:
-            TypeError: `obj` 不是一个可调用对象、类或模块。
-            ValueError: 对象的 `__annotations__` 不是一个字典或 `None`。
-
-        Returns:
-            对象的标注字典。
-        """
-        ann: Union[dict[str, Any], None]
-
-        if isinstance(obj, type):
-            # class
-            obj_dict = getattr(obj, "__dict__", None)
-            if obj_dict and hasattr(obj_dict, "get"):
-                ann = obj_dict.get("__annotations__")
-                if isinstance(ann, GetSetDescriptorType):
-                    ann = None
-            else:
-                ann = None
-        elif isinstance(obj, ModuleType) or callable(obj):
-            # this includes types.ModuleType, types.Function, types.BuiltinFunctionType,
-            # types.BuiltinMethodType, functools.partial, functools.singledispatch,
-            # "class funclike" from Lib/test/test_inspect... on and on it goes.
-            ann = getattr(obj, "__annotations__", None)
-        else:
-            raise TypeError(f"{obj!r} is not a module, class, or callable.")
-
-        if ann is None:
-            return {}
-
-        if not isinstance(ann, dict):
-            raise ValueError(  # noqa: TRY004
-                f"{obj!r}.__annotations__ is neither a dict nor None"
-            )
-
-        if not ann:
-            return {}
-
-        return dict(ann)

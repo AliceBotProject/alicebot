@@ -5,8 +5,8 @@
 
 import inspect
 import time
-from collections.abc import Awaitable
-from typing import TYPE_CHECKING, Any, Callable, Optional, Union, cast
+from collections.abc import Awaitable, Callable
+from typing import TYPE_CHECKING, Any, cast
 
 import anyio
 import anyio.to_thread
@@ -24,29 +24,29 @@ __all__ = ["EventMatcher"]
 class EventMatcher:
     """事件匹配器。"""
 
-    func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]]
+    func: Callable[[Any], bool | Awaitable[bool]] | None
     bot: "Bot"
-    event_type: Optional[type[Event[Any]]]
-    adapter_type: Optional[type[Adapter[Any, Any]]]
-    max_try_times: Optional[int]
-    timeout: Optional[Union[int, float]]
+    event_type: type[Event[Any]] | None
+    adapter_type: type[Adapter[Any, Any]] | None
+    max_try_times: int | None
+    timeout: int | float | None
     to_thread: bool
 
     event: anyio.Event
     try_times: int
     start_time: float
-    result: Optional[Event[Any]]
-    exception: Optional[BaseException]
+    result: Event[Any] | None
+    exception: BaseException | None
 
     def __init__(
         self,
-        func: Optional[Callable[[Any], Union[bool, Awaitable[bool]]]],
+        func: Callable[[Any], bool | Awaitable[bool]] | None,
         *,
         bot: "Bot",
-        event_type: Optional[type[Event[Any]]],
-        adapter_type: Optional[type[Adapter[Any, Any]]],
-        max_try_times: Optional[int],
-        timeout: Optional[Union[int, float]],
+        event_type: type[Event[Any]] | None,
+        adapter_type: type[Adapter[Any, Any]] | None,
+        max_try_times: int | None,
+        timeout: float | None,
         to_thread: bool,
     ) -> None:
         """实例化一个 `EventMatcher` 对象。
@@ -97,7 +97,7 @@ class EventMatcher:
 
         raise RuntimeError("Event has no result.")  # pragma: no cover
 
-    async def run(self, event: Event[Any]) -> Optional[bool]:
+    async def run(self, event: Event[Any]) -> bool | None:
         """运行 `get()` 函数，检查当前 `get()` 是否成功。
 
         Args:

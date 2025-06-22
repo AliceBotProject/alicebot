@@ -10,6 +10,7 @@ from pydantic import BaseModel
 
 from alicebot.config import ConfigModel
 from alicebot.utils import (
+    PydanticEncoder,
     get_classes_from_module,
     get_classes_from_module_name,
     is_config_class,
@@ -64,8 +65,6 @@ def test_get_classes_from_module_name() -> None:
 
 
 def test_json_encoder_default() -> None:
-    from alicebot.utils import PydanticEncoder
-
     class User(BaseModel):
         id: int
         name: str

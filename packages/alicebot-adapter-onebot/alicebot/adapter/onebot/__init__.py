@@ -8,9 +8,9 @@ import inspect
 import json
 import sys
 import time
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from functools import partial
-from typing import Any, Callable, ClassVar, Literal, Optional, Union
+from typing import Any, ClassVar, Literal
 from typing_extensions import override
 
 import aiohttp
@@ -40,9 +40,7 @@ __all__ = ["OneBotAdapter"]
 
 logger = structlog.stdlib.get_logger()
 
-EventModels = dict[
-    tuple[Optional[str], Optional[str], Optional[str]], type[OneBotEvent]
-]
+EventModels = dict[tuple[str | None, str | None, str | None], type[OneBotEvent]]
 
 DEFAULT_EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
@@ -148,9 +146,9 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
     @classmethod
     def get_event_model(
         cls,
-        post_type: Optional[str],
-        detail_type: Optional[str],
-        sub_type: Optional[str],
+        post_type: str | None,
+        detail_type: str | None,
+        sub_type: str | None,
     ) -> type[OneBotEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
@@ -265,7 +263,7 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
     async def send(
         self,
         message_: BuildMessageType[OneBotMessageSegment],
-        message_type: Union[Literal["private", "group"], str],  # noqa: PYI051
+        message_type: Literal["private", "group"] | str,  # noqa: PYI051
         id_: str,
     ) -> Any:
         """发送消息，调用 `send_message` API 发送消息。

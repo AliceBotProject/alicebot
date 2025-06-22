@@ -13,7 +13,6 @@ from typing import (
     ClassVar,
     Generic,
     NoReturn,
-    Optional,
     cast,
     final,
     get_args,
@@ -61,20 +60,20 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
     Config: type[ConfigT]
 
     __plugin_load_type__: ClassVar[PluginLoadType]
-    __plugin_file_path__: ClassVar[Optional[str]]
+    __plugin_file_path__: ClassVar[str | None]
 
     if TYPE_CHECKING:
         event: EventT
     else:
         event = Depends(Event)
 
-    def __init_state__(self) -> Optional[StateT]:
+    def __init_state__(self) -> StateT | None:
         """初始化插件状态。"""
 
     def __init_subclass__(
         cls,
-        config: Optional[type[ConfigT]] = None,
-        init_state: Optional[StateT] = None,
+        config: type[ConfigT] | None = None,
+        init_state: StateT | None = None,
         **_kwargs: Any,
     ) -> None:
         """初始化子类。

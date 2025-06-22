@@ -4,8 +4,8 @@
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Any, Generic, NamedTuple, Optional, Union
-from typing_extensions import Self, override
+from typing import TYPE_CHECKING, Any, Generic, NamedTuple, Self
+from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict
 
@@ -28,7 +28,7 @@ class Event(BaseModel, Generic[AdapterT], metaclass=ABCMeta):
         adapter: AdapterT
     else:
         adapter: Any
-    type: Optional[str]
+    type: str | None
 
     @override
     def __str__(self) -> str:
@@ -55,7 +55,7 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT], metaclass=ABCMeta):
     """通用的消息事件类的基类。"""
 
     @abstractmethod
-    def get_sender_id(self) -> Union[None, int, str]:
+    def get_sender_id(self) -> None | int | str:
         """获取消息的发送者的唯一标识符。
 
         Returns:
@@ -95,8 +95,8 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT], metaclass=ABCMeta):
     async def get(
         self,
         *,
-        max_try_times: Optional[int] = None,
-        timeout: Optional[Union[int, float]] = None,
+        max_try_times: int | None = None,
+        timeout: float | None = None,
     ) -> Self:
         """获取用户回复消息。
 
@@ -122,8 +122,8 @@ class MessageEvent(Event[AdapterT], Generic[AdapterT], metaclass=ABCMeta):
     async def ask(
         self,
         message: str,
-        max_try_times: Optional[int] = None,
-        timeout: Optional[Union[int, float]] = None,
+        max_try_times: int | None = None,
+        timeout: float | None = None,
     ) -> Self:
         """询问消息。
 

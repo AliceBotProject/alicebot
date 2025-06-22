@@ -9,9 +9,9 @@ import inspect
 import json
 import sys
 import time
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from functools import partial
-from typing import Any, Callable, ClassVar, Literal, Optional
+from typing import Any, ClassVar, Literal
 from typing_extensions import override
 
 import aiohttp
@@ -186,7 +186,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
                 return
 
     async def call_api(
-        self, command: str, sub_command: Optional[str] = None, **content: Any
+        self, command: str, sub_command: str | None = None, **content: Any
     ) -> Any:
         """调用 Mirai API，协程会等待直到获得 API 响应。
 
@@ -246,7 +246,7 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         message_: BuildMessageType[MiraiMessageSegment],
         message_type: Literal["private", "friend", "group"],
         target: int,
-        quote: Optional[int] = None,
+        quote: int | None = None,
     ) -> Any:
         """调用 Mirai API 发送消息。
 

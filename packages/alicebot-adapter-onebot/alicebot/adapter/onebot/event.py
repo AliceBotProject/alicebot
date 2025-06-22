@@ -1,7 +1,7 @@
 """OneBot 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, get_args, get_origin
+from typing import TYPE_CHECKING, Any, Literal, get_args, get_origin
 from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict
@@ -48,7 +48,7 @@ class Status(BaseModel):
     bots: list[BotStatus]
 
 
-def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
+def _get_literal_field(field: FieldInfo | None) -> str | None:
     if field is None:
         return None
     annotation = field.annotation
@@ -70,7 +70,7 @@ class OneBotEvent(Event["OneBotAdapter"]):
     sub_type: str
 
     @classmethod
-    def get_event_type(cls) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    def get_event_type(cls) -> tuple[str | None, str | None, str | None]:
         """获取事件类型。
 
         Returns:

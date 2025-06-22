@@ -1,7 +1,7 @@
 """CQHTTP 适配器消息。"""
 
-from typing import Literal, Optional, Union
-from typing_extensions import Self, override
+from typing import Literal, Self
+from typing_extensions import override
 
 from alicebot.message import Message, MessageSegment
 
@@ -64,10 +64,10 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
     def image(
         cls,
         file: str,
-        type_: Optional[Literal["flash"]] = None,
+        type_: Literal["flash"] | None = None,
         cache: bool = True,
         proxy: bool = True,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> Self:
         """图片"""
         return cls(
@@ -88,7 +88,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         magic: bool = False,
         cache: bool = True,
         proxy: bool = True,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> Self:
         """语音"""
         return cls(
@@ -108,7 +108,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         file: str,
         cache: bool = True,
         proxy: bool = True,
-        timeout: Optional[int] = None,
+        timeout: int | None = None,
     ) -> Self:
         """短视频"""
         return cls(
@@ -117,7 +117,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         )
 
     @classmethod
-    def at(cls, qq: Union[int, Literal["all"]]) -> Self:  # pylint: disable=invalid-name
+    def at(cls, qq: int | Literal["all"]) -> Self:  # pylint: disable=invalid-name
         """@某人"""
         return cls(type="at", data={"qq": str(qq)})
 
@@ -142,7 +142,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         return cls(type="poke", data={"type": type_, "id": str(id_)})
 
     @classmethod
-    def anonymous(cls, ignore: Optional[bool] = None) -> Self:
+    def anonymous(cls, ignore: bool | None = None) -> Self:
         """匿名发消息"""
         return cls(type="anonymous", data={"ignore": ignore})
 
@@ -151,8 +151,8 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         cls,
         url: str,
         title: str,
-        content: Optional[str] = None,
-        image: Optional[str] = None,
+        content: str | None = None,
+        image: str | None = None,
     ) -> Self:
         """链接分享"""
         return cls(
@@ -177,7 +177,7 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
 
     @classmethod
     def location(
-        cls, lat: float, lon: float, title: Optional[str], content: Optional[str] = None
+        cls, lat: float, lon: float, title: str | None, content: str | None = None
     ) -> Self:
         """位置"""
         return cls(
@@ -196,8 +196,8 @@ class CQHTTPMessageSegment(MessageSegment["CQHTTPMessage"]):
         url: str,
         audio: str,
         title: str,
-        content: Optional[str] = None,
-        image: Optional[str] = None,
+        content: str | None = None,
+        image: str | None = None,
     ) -> Self:
         """音乐自定义分享"""
         return cls(

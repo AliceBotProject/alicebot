@@ -2,7 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Literal, Union
+from typing import TYPE_CHECKING, Any, Literal
 from typing_extensions import override
 
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -54,7 +54,7 @@ class MiraiBaseMessageEvent(ABC, MiraiEvent, BaseMessageEvent["MiraiAdapter"]):
 class MessageEvent(MiraiBaseMessageEvent):
     """消息事件"""
 
-    sender: Union[FriendInfo, GroupMemberInfo, OtherClientSender]
+    sender: FriendInfo | GroupMemberInfo | OtherClientSender
 
     @override
     def get_sender_id(self) -> int:
@@ -192,7 +192,7 @@ class OtherClientMessage(MessageEvent):
 class SyncMessage(MiraiBaseMessageEvent):
     """同步消息"""
 
-    subject: Union[FriendInfo, GroupMemberInfo]
+    subject: FriendInfo | GroupMemberInfo
 
     @override
     def get_sender_id(self) -> None:

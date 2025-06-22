@@ -1,8 +1,8 @@
 """Mirai 适配器消息。"""
 
 import json
-from typing import Any, Optional
-from typing_extensions import Self, override
+from typing import Any, Self
+from typing_extensions import override
 
 from pydantic import model_serializer
 
@@ -109,7 +109,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return cls(type="AtAll")
 
     @classmethod
-    def face(cls, face_id: Optional[int] = None, name: Optional[str] = None) -> Self:
+    def face(cls, face_id: int | None = None, name: str | None = None) -> Self:
         """Face 消息"""
         return cls(type="Face", faceId=face_id, name=name)
 
@@ -121,9 +121,9 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     @classmethod
     def image(
         cls,
-        image_id: Optional[str] = None,
-        url: Optional[str] = None,
-        path: Optional[str] = None,
+        image_id: str | None = None,
+        url: str | None = None,
+        path: str | None = None,
     ) -> Self:
         """Image 消息"""
         return cls(type="Image", imageId=image_id, url=url, path=path)
@@ -131,9 +131,9 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     @classmethod
     def flash_image(
         cls,
-        image_id: Optional[str] = None,
-        url: Optional[str] = None,
-        path: Optional[str] = None,
+        image_id: str | None = None,
+        url: str | None = None,
+        path: str | None = None,
     ) -> Self:
         """FlashImage 消息"""
         return cls(type="FlashImage", imageId=image_id, url=url, path=path)
@@ -141,9 +141,9 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
     @classmethod
     def voice(
         cls,
-        voice_id: Optional[str] = None,
-        url: Optional[str] = None,
-        path: Optional[str] = None,
+        voice_id: str | None = None,
+        url: str | None = None,
+        path: str | None = None,
     ) -> Self:
         """Voice 消息"""
         return cls(type="Voice", imageId=voice_id, url=url, path=path)

@@ -1,11 +1,7 @@
-import sys
 from typing import Any
 from typing_extensions import override
 
 import pytest
-
-if sys.version_info < (3, 11):
-    from exceptiongroup import ExceptionGroup
 
 from alicebot import Adapter, Bot, Event
 

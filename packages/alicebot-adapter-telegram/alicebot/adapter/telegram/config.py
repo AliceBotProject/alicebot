@@ -1,6 +1,6 @@
 """Telegram 适配器配置"""
 
-from typing import Literal, Optional
+from typing import Literal
 
 from alicebot.config import ConfigModel
 
@@ -26,8 +26,8 @@ class Config(ConfigModel):
     adapter_type: Literal["polling", "webhook"] = "polling"
     bot_token: str = ""
     api_server: str = "https://api.telegram.org/"
-    webhook_host: Optional[str] = "127.0.0.1"
-    webhook_port: Optional[int] = 443
-    webhook_url: Optional[str] = "/telegram"
-    proxy: Optional[str] = None
+    webhook_host: str | None = "127.0.0.1"
+    webhook_port: int | None = 443
+    webhook_url: str | None = "/telegram"
+    proxy: str | None = None
     api_timeout: int = 2000

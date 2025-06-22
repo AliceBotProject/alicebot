@@ -8,9 +8,9 @@ import inspect
 import json
 import sys
 import time
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from functools import partial
-from typing import Any, Callable, ClassVar, Literal, Optional
+from typing import Any, ClassVar, Literal
 from typing_extensions import override
 
 import aiohttp
@@ -33,9 +33,7 @@ __all__ = ["CQHTTPAdapter"]
 
 logger = structlog.stdlib.get_logger()
 
-EventModels = dict[
-    tuple[Optional[str], Optional[str], Optional[str]], type[CQHTTPEvent]
-]
+EventModels = dict[tuple[str | None, str | None, str | None], type[CQHTTPEvent]]
 
 DETAIL_TYPE_KEYS = ("message_type", "notice_type", "request_type", "meta_event_type")
 DEFAULT_EVENT_MODELS: EventModels = {}
@@ -142,9 +140,9 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
     @classmethod
     def get_event_model(
         cls,
-        post_type: Optional[str],
-        detail_type: Optional[str],
-        sub_type: Optional[str],
+        post_type: str | None,
+        detail_type: str | None,
+        sub_type: str | None,
     ) -> type[CQHTTPEvent]:
         """根据接收到的消息类型返回对应的事件类。
 
@@ -173,7 +171,7 @@ class CQHTTPAdapter(WebSocketAdapter[CQHTTPEvent, Config]):
         if post_type is None:
             event_class = self.get_event_model(None, None, None)
         else:
-            detail_type: Optional[str] = None
+            detail_type: str | None = None
             for key in DETAIL_TYPE_KEYS:
                 detail_type = msg.get(key)
                 if detail_type is not None:

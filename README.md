@@ -128,6 +128,14 @@ AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种
 
 更多信息请参阅 AliceBot [文档](https://docs.alicebot.dev/)。
 
+# 支持的 Python 版本
+
+AliceBot 的最新版本仅支持最近的三个 Python 主要版本。
+
+当前支持的最低 Python 版本为：
+
+<img src="https://img.shields.io/python/required-version-toml?tomlFilePath=https%3A%2F%2Fgithub.com%2FAliceBotProject%2Falicebot%2Fraw%2Fmain%2Fpyproject.toml" alt="pypi">
+
 ## 对比
 
 本项目受到了 [NoneBot](https://github.com/nonebot/nonebot2) 项目的启发，以下简单介绍两者的异同。

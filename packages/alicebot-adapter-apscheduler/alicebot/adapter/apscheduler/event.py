@@ -1,7 +1,7 @@
 """APScheduler 适配器事件。"""
 
 # pyright: reportMissingTypeStubs = false
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from apscheduler.job import Job
 from apscheduler.triggers.base import BaseTrigger
@@ -22,7 +22,7 @@ __all__ = ["APSchedulerEvent"]
 class APSchedulerEvent(Event["APSchedulerAdapter"]):
     """APSchedulerEvent 事件基类。"""
 
-    type: Optional[str] = "apscheduler"
+    type: str | None = "apscheduler"
     if TYPE_CHECKING:
         plugin_class: "builtins.type[Plugin[Any, Any, Any]]"
     else:
@@ -34,11 +34,11 @@ class APSchedulerEvent(Event["APSchedulerAdapter"]):
         return self.adapter.plugin_class_to_job[self.plugin_class]
 
     @property
-    def trigger(self) -> Union[str, BaseTrigger, None]:
+    def trigger(self) -> str | BaseTrigger | None:
         """当前事件对应的 Plugin 的 `trigger`。"""
         return getattr(self.plugin_class, "trigger", None)
 
     @property
-    def trigger_args(self) -> Optional[dict[str, Any]]:
+    def trigger_args(self) -> dict[str, Any] | None:
         """当前事件对应的 Plugin 的 `trigger_args`。"""
         return getattr(self.plugin_class, "trigger_args", None)

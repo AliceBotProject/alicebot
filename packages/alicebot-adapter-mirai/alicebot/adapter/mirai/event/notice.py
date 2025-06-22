@@ -1,7 +1,7 @@
 """通知事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import Any, Literal, Optional
+from typing import Any, Literal
 
 from pydantic import create_model
 
@@ -143,7 +143,7 @@ class GroupRecallEvent(GroupNoticeEvent):
     messageId: int
     time: int
     group: GroupInfo
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class GroupNameChangeEvent(GroupNoticeEvent):
@@ -153,7 +153,7 @@ class GroupNameChangeEvent(GroupNoticeEvent):
     origin: str
     current: str
     group: GroupInfo
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
@@ -163,7 +163,7 @@ class GroupEntranceAnnouncementChangeEvent(GroupNoticeEvent):
     origin: str
     current: str
     group: GroupInfo
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class GroupMuteAllEvent(GroupNoticeEvent):
@@ -173,7 +173,7 @@ class GroupMuteAllEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
@@ -183,7 +183,7 @@ class GroupAllowAnonymousChatEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class GroupAllowConfessTalkEvent(GroupNoticeEvent):
@@ -203,7 +203,7 @@ class GroupAllowMemberInviteEvent(GroupNoticeEvent):
     origin: bool
     current: bool
     group: GroupInfo
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class GroupMemberEvent(GroupEvent):
@@ -222,7 +222,7 @@ class MemberLeaveEventKick(GroupMemberEvent):
     """成员被踢出群 (该成员不是 Bot)"""
 
     type: Literal["MemberLeaveEventKick"]
-    operator: Optional[GroupMemberInfo]
+    operator: GroupMemberInfo | None
 
 
 class MemberLeaveEventQuit(GroupMemberEvent):
@@ -260,14 +260,14 @@ class MemberMuteEvent(GroupMemberEvent):
 
     type: Literal["MemberMuteEvent"]
     durationSeconds: int
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class MemberUnmuteEvent(GroupMemberEvent):
     """群成员被取消禁言事件 (该成员不是 Bot)"""
 
     type: Literal["MemberUnmuteEvent"]
-    operator: Optional[GroupMemberInfo] = None
+    operator: GroupMemberInfo | None = None
 
 
 class MemberHonorChangeEvent(GroupMemberEvent):
@@ -287,7 +287,7 @@ class OtherClientOnlineEvent(OtherClientEvent):
     """其他客户端上线"""
 
     type: Literal["OtherClientOnlineEvent"]
-    kind: Optional[int] = None
+    kind: int | None = None
 
 
 class OtherClientOfflineEvent(OtherClientEvent):

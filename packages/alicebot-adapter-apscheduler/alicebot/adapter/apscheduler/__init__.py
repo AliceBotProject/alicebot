@@ -7,9 +7,9 @@ APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedoc
 # pyright: reportUnknownMemberType=false, reportMissingTypeStubs = false
 # ruff: noqa: B009, B010
 import inspect
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any, Callable, Union
+from typing import TYPE_CHECKING, Any
 from typing_extensions import override
 
 import structlog
@@ -58,7 +58,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
                 )
                 continue
 
-            trigger: Union[str, BaseTrigger] = getattr(plugin, "trigger")
+            trigger: str | BaseTrigger = getattr(plugin, "trigger")
             trigger_args: dict[str, Any] = getattr(plugin, "trigger_args")
 
             if not isinstance(trigger, str) or not isinstance(trigger_args, dict):

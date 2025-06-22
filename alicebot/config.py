@@ -3,8 +3,6 @@
 AliceBot 使用 [pydantic](https://pydantic-docs.helpmanual.io/) 来读取配置。
 """
 
-from typing import Optional, Union
-
 from pydantic import BaseModel, ConfigDict, DirectoryPath, Field
 
 __all__ = [
@@ -37,7 +35,7 @@ class LogConfig(ConfigModel):
         verbose_exception: 详细的异常记录，设置为 `True` 时会在日志中添加异常的 Traceback。
     """
 
-    level: Union[str, int] = "DEBUG"
+    level: str | int = "DEBUG"
     verbose_exception: bool = False
 
 
@@ -56,7 +54,7 @@ class BotConfig(ConfigModel):
     plugins: set[str] = Field(default_factory=set[str])
     plugin_dirs: set[DirectoryPath] = Field(default_factory=set[DirectoryPath])
     adapters: set[str] = Field(default_factory=set[str])
-    log: Optional[LogConfig] = None
+    log: LogConfig | None = None
 
 
 class PluginConfig(ConfigModel):

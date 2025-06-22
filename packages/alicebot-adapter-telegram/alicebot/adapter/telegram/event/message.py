@@ -1,7 +1,7 @@
 """Telegram 适配器事件。"""
 
 # ruff: noqa: TID252
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 from typing_extensions import override
 
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -45,7 +45,7 @@ class MessageEvent(TelegramEvent, BaseMessageEvent["TelegramAdapter"]):
         )
 
     @override
-    def get_sender_id(self) -> Union[None, int, str]:
+    def get_sender_id(self) -> None | int | str:
         if self.message.from_ is None:
             return None
         return self.message.from_.id
@@ -57,19 +57,16 @@ class MessageEvent(TelegramEvent, BaseMessageEvent["TelegramAdapter"]):
     @override
     async def reply(
         self,
-        message: Union[str, TelegramMessage, TelegramMedia],
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[
-                InlineKeyboardMarkup,
-                ReplyKeyboardMarkup,
-                ReplyKeyboardRemove,
-                ForceReply,
-            ]
-        ] = None,
+        message: str | TelegramMessage | TelegramMedia,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup
+        | ReplyKeyboardMarkup
+        | ReplyKeyboardRemove
+        | ForceReply
+        | None = None,
         **kwargs: Any,
     ) -> Any:
         return await self.adapter.send(

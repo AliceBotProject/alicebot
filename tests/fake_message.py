@@ -1,4 +1,5 @@
-from typing_extensions import Self, override
+from typing import Self
+from typing_extensions import override
 
 from alicebot.message import Message, MessageSegment
 

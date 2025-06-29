@@ -1,18 +1,16 @@
 from collections.abc import AsyncGenerator, Generator
 from contextlib import AsyncExitStack
 from types import TracebackType
-from typing import Optional
-from typing_extensions import Self
+from typing import Self
 
 import pytest
 from pytest_mock import MockerFixture
 
+from alicebot import Bot
 from alicebot.dependencies import Depends, solve_dependencies
 
 
 def test_repr_inner_depends() -> None:
-    from alicebot import Bot
-
     assert repr(Depends()) == "InnerDepends(NoneType)"
     assert repr(Depends(use_cache=False)) == "InnerDepends(NoneType, use_cache=False)"
     assert repr(Depends(Bot)) == "InnerDepends(Bot)"
@@ -78,9 +76,9 @@ async def test_depends_context_manager(mocker: MockerFixture) -> None:
 
         def __exit__(
             self,
-            _exc_type: Optional[type[BaseException]],
-            _exc_value: Optional[BaseException],
-            _traceback: Optional[TracebackType],
+            _exc_type: type[BaseException] | None,
+            _exc_value: BaseException | None,
+            _traceback: TracebackType | None,
         ) -> None:
             pass
 
@@ -120,9 +118,9 @@ async def test_depends_async_context_manager(mocker: MockerFixture) -> None:
 
         async def __aexit__(
             self,
-            _exc_type: Optional[type[BaseException]],
-            _exc_value: Optional[BaseException],
-            _traceback: Optional[TracebackType],
+            _exc_type: type[BaseException] | None,
+            _exc_value: BaseException | None,
+            _traceback: TracebackType | None,
         ) -> None:
             pass
 

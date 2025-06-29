@@ -4,8 +4,7 @@
 # pylint: disable=missing-class-docstring
 
 from abc import ABC
-from typing import Optional
-from typing_extensions import Self
+from typing import Self
 
 from alicebot.message import MessageSegment, MessageT
 
@@ -74,19 +73,19 @@ class Entity(MessageSegment[MessageT], ABC):
         return cls(type="code", data={"text": text})
 
     @classmethod
-    def pre(cls, text: str, language: Optional[str] = None) -> Self:
+    def pre(cls, text: str, language: str | None = None) -> Self:
         return cls(type="pre", data={"text": text, "language": language})
 
     @classmethod
-    def text_link(cls, text: str, url: Optional[str] = None) -> Self:
+    def text_link(cls, text: str, url: str | None = None) -> Self:
         return cls(type="text_link", data={"text": text, "url": url})
 
     @classmethod
-    def text_mention(cls, text: str, user: Optional[User] = None) -> Self:
+    def text_mention(cls, text: str, user: User | None = None) -> Self:
         return cls(type="text_mention", data={"text": text, "user": user})
 
     @classmethod
-    def custom_emoji(cls, text: str, custom_emoji_id: Optional[str] = None) -> Self:
+    def custom_emoji(cls, text: str, custom_emoji_id: str | None = None) -> Self:
         return cls(
             type="custom_emoji", data={"text": text, "custom_emoji_id": custom_emoji_id}
         )

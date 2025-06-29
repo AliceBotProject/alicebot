@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 from typing_extensions import override
 
 import anyio
@@ -178,7 +178,7 @@ def test_plugin_get_event_type(bot: Bot, mocker: MockerFixture) -> None:
     mock = mocker.AsyncMock()
 
     class FakeOtherEvent(Event[FakeAdapter]):
-        type: Optional[str] = "other"
+        type: str | None = "other"
 
     class TestPlugin(Plugin):
         @override

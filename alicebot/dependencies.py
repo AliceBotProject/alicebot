@@ -4,7 +4,7 @@
 """
 
 import inspect
-from collections.abc import AsyncGenerator, Generator
+from collections.abc import AsyncGenerator, Callable, Generator
 from contextlib import (
     AbstractAsyncContextManager,
     AbstractContextManager,
@@ -12,19 +12,20 @@ from contextlib import (
     asynccontextmanager,
     contextmanager,
 )
-from typing import Any, Callable, Optional, TypeVar, Union, cast
+from inspect import get_annotations
+from typing import Any, TypeVar, cast
 from typing_extensions import override
 
-from alicebot.utils import get_annotations, sync_ctx_manager_wrapper
+from alicebot.utils import sync_ctx_manager_wrapper
 
 _T = TypeVar("_T")
-Dependency = Union[
+Dependency = (
     # Class
-    type[Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]]],
+    type[_T | AbstractAsyncContextManager[_T] | AbstractContextManager[_T]]
     # GeneratorContextManager
-    Callable[[], AsyncGenerator[_T, None]],
-    Callable[[], Generator[_T, None, None]],
-]
+    | Callable[[], AsyncGenerator[_T, None]]
+    | Callable[[], Generator[_T, None, None]]
+)
 
 
 __all__ = ["Depends"]
@@ -40,11 +41,11 @@ class InnerDepends:
         use_cache: 是否使用缓存。默认为 `True`。
     """
 
-    dependency: Optional[Dependency[Any]]
+    dependency: Dependency[Any] | None
     use_cache: bool
 
     def __init__(
-        self, dependency: Optional[Dependency[Any]] = None, *, use_cache: bool = True
+        self, dependency: Dependency[Any] | None = None, *, use_cache: bool = True
     ) -> None:
         self.dependency = dependency
         self.use_cache = use_cache
@@ -57,7 +58,7 @@ class InnerDepends:
 
 
 def Depends(  # noqa: N802 # pylint: disable=invalid-name
-    dependency: Optional[Dependency[_T]] = None, *, use_cache: bool = True
+    dependency: Dependency[_T] | None = None, *, use_cache: bool = True
 ) -> _T:
     """子依赖装饰器。
 
@@ -115,7 +116,7 @@ async def solve_dependencies(
                 dependency_cache=dependency_cache,
             )
         depend_obj = cast(
-            "Union[_T, AbstractAsyncContextManager[_T], AbstractContextManager[_T]]",
+            "_T | AbstractAsyncContextManager[_T] | AbstractContextManager[_T]",
             dependent.__new__(dependent),  # type: ignore
         )
         for key, value in values.items():

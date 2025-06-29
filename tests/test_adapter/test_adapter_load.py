@@ -5,8 +5,8 @@ from alicebot.exceptions import LoadModuleError
 
 
 def test_adapter_load() -> None:
-    from adapters.adapter1 import Adapter1
-    from adapters.adapter2 import Adapter2
+    from adapters.adapter1 import Adapter1  # noqa: PLC0415
+    from adapters.adapter2 import Adapter2  # noqa: PLC0415
 
     bot = Bot()
     bot.load_adapters(Adapter1, Adapter2)

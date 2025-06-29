@@ -8,7 +8,7 @@ import base64
 import hashlib
 import hmac
 import time
-from typing import Any, Literal, Union
+from typing import Any, Literal
 from typing_extensions import override
 
 import aiohttp
@@ -102,8 +102,8 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
         self,
         webhook: str,
         conversation_type: Literal["1", "2"],
-        msg: Union[str, dict[str, Any], DingTalkMessage],
-        at: Union[None, dict[str, Any], DingTalkMessage] = None,
+        msg: str | dict[str, Any] | DingTalkMessage,
+        at: None | dict[str, Any] | DingTalkMessage = None,
     ) -> dict[str, Any]:
         """发送消息。
 
@@ -143,7 +143,7 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
             else:
                 raise TypeError(f"at must be Dict or DingTalkMessage, not {type(at)!r}")
 
-        data: Union[dict[str, Any], DingTalkMessage]
+        data: dict[str, Any] | DingTalkMessage
         if conversation_type == "1":
             data = msg
         elif conversation_type == "2":

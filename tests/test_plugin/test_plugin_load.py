@@ -10,8 +10,8 @@ from alicebot.exceptions import LoadModuleError
 
 
 def test_plugin_load() -> None:
-    from plugins.plugin1 import Plugin1
-    from plugins.plugin2 import Plugin2
+    from plugins.plugin1 import Plugin1  # noqa: PLC0415
+    from plugins.plugin2 import Plugin2  # noqa: PLC0415
 
     bot = Bot()
     bot.load_plugins(Plugin1, Plugin2)

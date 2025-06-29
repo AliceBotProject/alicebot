@@ -1,7 +1,7 @@
 """CQHTTP 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import TYPE_CHECKING, Any, Literal, Optional, get_args, get_origin
+from typing import TYPE_CHECKING, Any, Literal, get_args, get_origin
 from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -20,15 +20,15 @@ if TYPE_CHECKING:
 class Sender(BaseModel):
     """发送人信息"""
 
-    user_id: Optional[int] = None
-    nickname: Optional[str] = None
-    card: Optional[str] = None
-    sex: Optional[Literal["male", "female", "unknown"]] = None
-    age: Optional[int] = None
-    area: Optional[str] = None
-    level: Optional[str] = None
-    role: Optional[str] = None
-    title: Optional[str] = None
+    user_id: int | None = None
+    nickname: str | None = None
+    card: str | None = None
+    sex: Literal["male", "female", "unknown"] | None = None
+    age: int | None = None
+    area: str | None = None
+    level: str | None = None
+    role: str | None = None
+    title: str | None = None
 
 
 class Anonymous(BaseModel):
@@ -57,7 +57,7 @@ class Status(BaseModel):
     good: bool
 
 
-def _get_literal_field(field: Optional[FieldInfo]) -> Optional[str]:
+def _get_literal_field(field: FieldInfo | None) -> str | None:
     if field is None:
         return None
     annotation = field.annotation
@@ -73,7 +73,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
     """CQHTTP 事件基类"""
 
     __event__ = ""
-    type: Optional[str] = Field(alias="post_type")
+    type: str | None = Field(alias="post_type")
     time: int
     self_id: int
     post_type: str
@@ -84,7 +84,7 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
         return getattr(self, "user_id", None) == self.self_id
 
     @classmethod
-    def get_event_type(cls) -> tuple[Optional[str], Optional[str], Optional[str]]:
+    def get_event_type(cls) -> tuple[str | None, str | None, str | None]:
         """获取事件类型。
 
         Returns:
@@ -119,7 +119,7 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
         return f'Event<{self.type}>: "{self.message}"'
 
     @override
-    def get_sender_id(self) -> Optional[int]:
+    def get_sender_id(self) -> int | None:
         return self.sender.user_id
 
     @override
@@ -164,7 +164,7 @@ class GroupMessageEvent(MessageEvent):
     message_type: Literal["group"]
     sub_type: Literal["normal", "anonymous", "notice"]
     group_id: int
-    anonymous: Optional[Anonymous] = None
+    anonymous: Anonymous | None = None
 
     @override
     async def reply(
@@ -280,7 +280,7 @@ class PokeNotifyEvent(NotifyEvent):
     __event__ = "notice.notify.poke"
     sub_type: Literal["poke"]
     target_id: int
-    group_id: Optional[int] = None
+    group_id: int | None = None
 
 
 class GroupLuckyKingNotifyEvent(NotifyEvent):

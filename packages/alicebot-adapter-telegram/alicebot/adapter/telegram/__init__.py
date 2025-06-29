@@ -7,7 +7,7 @@
 import inspect
 import json
 import uuid
-from typing import Any, Optional, TypeVar, Union
+from typing import Any, TypeVar
 from typing_extensions import TypeIs, override
 
 import aiohttp
@@ -58,12 +58,12 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
     Config = Config
 
     session: aiohttp.ClientSession
-    app: Optional[web.Application]
-    runner: Optional[web.AppRunner]
-    site: Optional[web.TCPSite]
+    app: web.Application | None
+    runner: web.AppRunner | None
+    site: web.TCPSite | None
 
-    _secret_token: Optional[str]
-    _update_offset: Optional[int] = None
+    _secret_token: str | None
+    _update_offset: int | None = None
 
     @override
     async def startup(self) -> None:
@@ -159,7 +159,7 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
 
     def _format_telegram_api_params(
         self, **params: Any
-    ) -> Union[aiohttp.FormData, dict[str, Any]]:
+    ) -> aiohttp.FormData | dict[str, Any]:
         file_type_adapter: TypeAdapter[InputFile] = TypeAdapter(InputFile)
 
         def is_file(v: Any) -> TypeIs[InputFile]:
@@ -198,9 +198,9 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
         self,
         api: str,
         *,
-        response_type: Optional[type[_T]] = None,
+        response_type: type[_T] | None = None,
         **params: Any,
-    ) -> Optional[_T]:
+    ) -> _T | None:
         """调用 Telegram Bot API，协程会等待直到获得 API 响应。
 
         Args:
@@ -248,20 +248,17 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
 
     async def send(
         self,
-        message: Union[str, TelegramMessage, TelegramMedia],
-        chat_id: Union[int, str],
-        disable_notification: Optional[bool] = None,
-        protect_content: Optional[bool] = None,
-        message_effect_id: Optional[str] = None,
-        reply_parameters: Optional[ReplyParameters] = None,
-        reply_markup: Optional[
-            Union[
-                InlineKeyboardMarkup,
-                ReplyKeyboardMarkup,
-                ReplyKeyboardRemove,
-                ForceReply,
-            ]
-        ] = None,
+        message: str | TelegramMessage | TelegramMedia,
+        chat_id: int | str,
+        disable_notification: bool | None = None,
+        protect_content: bool | None = None,
+        message_effect_id: str | None = None,
+        reply_parameters: ReplyParameters | None = None,
+        reply_markup: InlineKeyboardMarkup
+        | ReplyKeyboardMarkup
+        | ReplyKeyboardRemove
+        | ForceReply
+        | None = None,
         **kwargs: Any,
     ) -> Any:
         """Call `seedMessage` etc. APIs to send message.

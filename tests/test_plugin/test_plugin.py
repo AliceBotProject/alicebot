@@ -1,4 +1,3 @@
-import sys
 from typing_extensions import override
 
 import pytest
@@ -11,9 +10,6 @@ from fake_adapter import (
 from pytest_mock import MockerFixture
 
 from alicebot import Bot, Plugin
-
-if sys.version_info < (3, 11):
-    from exceptiongroup import ExceptionGroup
 
 
 def test_plugin_rule(bot: Bot, mocker: MockerFixture) -> None:

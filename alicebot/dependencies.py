@@ -117,7 +117,7 @@ async def solve_dependencies(
                 )
                 if inspected_ann.type == UNKNOWN:
                     raise TypeError("can not solve dependent")
-                sub_dependent.dependency = inspected_ann.type
+                sub_dependent.dependency = inspected_ann.type  # type: ignore
             assert sub_dependent.dependency is not None
             values[name] = await solve_dependencies(
                 sub_dependent.dependency,

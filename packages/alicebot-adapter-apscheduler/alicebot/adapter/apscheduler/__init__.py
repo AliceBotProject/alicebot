@@ -140,6 +140,6 @@ def scheduler_decorator(
                 return _wrapper
 
             cls.rule = _rule_decorator(cls.rule)  # type: ignore[method-assign]
-        return cls  # type: ignore[return-value]
+        return cls
 
     return _decorator

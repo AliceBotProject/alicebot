@@ -12,9 +12,14 @@ from contextlib import (
     asynccontextmanager,
     contextmanager,
 )
-from inspect import get_annotations
-from typing import Any, TypeVar, cast
+from typing import Any, TypeVar, cast, get_type_hints
 from typing_extensions import override
+
+from typing_inspection.introspection import (
+    UNKNOWN,
+    AnnotationSource,
+    inspect_annotation,
+)
 
 from alicebot.utils import sync_ctx_manager_wrapper
 
@@ -31,10 +36,8 @@ Dependency = (
 __all__ = ["Depends"]
 
 
-class InnerDepends:
+class _InnerDepends:
     """子依赖的内部实现。
-
-    用户无需关注此内部实现。
 
     Attributes:
         dependency: 依赖类。如果不指定则根据字段的类型注释自动判断。
@@ -69,7 +72,7 @@ def Depends(  # noqa: N802 # pylint: disable=invalid-name
     Returns:
         返回内部子依赖对象。
     """
-    return InnerDepends(dependency=dependency, use_cache=use_cache)  # type: ignore
+    return _InnerDepends(dependency=dependency, use_cache=use_cache)  # type: ignore
 
 
 async def solve_dependencies(
@@ -99,22 +102,30 @@ async def solve_dependencies(
     if isinstance(dependent, type):
         # type of dependent is Type[T]
         values: dict[str, Any] = {}
-        ann = get_annotations(dependent)
+        ann = get_type_hints(dependent)
         for name, sub_dependent in inspect.getmembers(
-            dependent, lambda x: isinstance(x, InnerDepends)
+            dependent, lambda x: isinstance(x, _InnerDepends)
         ):
-            assert isinstance(sub_dependent, InnerDepends)
+            assert isinstance(sub_dependent, _InnerDepends)
             if sub_dependent.dependency is None:
                 dependent_ann = ann.get(name)
                 if dependent_ann is None:
                     raise TypeError("can not solve dependent")
-                sub_dependent.dependency = dependent_ann
+                inspected_ann = inspect_annotation(
+                    dependent_ann,
+                    annotation_source=AnnotationSource.CLASS,
+                )
+                if inspected_ann.type == UNKNOWN:
+                    raise TypeError("can not solve dependent")
+                sub_dependent.dependency = inspected_ann.type  # type: ignore
+            assert sub_dependent.dependency is not None
             values[name] = await solve_dependencies(
-                cast("Dependency[_T]", sub_dependent.dependency),
+                sub_dependent.dependency,
                 use_cache=sub_dependent.use_cache,
                 stack=stack,
                 dependency_cache=dependency_cache,
             )
+
         depend_obj = cast(
             "_T | AbstractAsyncContextManager[_T] | AbstractContextManager[_T]",
             dependent.__new__(dependent),  # type: ignore

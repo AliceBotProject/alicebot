@@ -1,11 +1,13 @@
 """OneBot 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import TYPE_CHECKING, Any, Literal, get_args, get_origin
+from typing import TYPE_CHECKING, Any, Literal, get_origin
 from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo
+from typing_inspection import typing_objects
+from typing_inspection.introspection import get_literal_values
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -52,9 +54,9 @@ def _get_literal_field(field: FieldInfo | None) -> str | None:
     if field is None:
         return None
     annotation = field.annotation
-    if annotation is None or get_origin(annotation) is not Literal:
+    if annotation is None or not typing_objects.is_literal(get_origin(annotation)):
         return None
-    literal_values = get_args(annotation)
+    literal_values = list(get_literal_values(annotation))
     if len(literal_values) != 1:
         return None
     return literal_values[0]

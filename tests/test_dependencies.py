@@ -1,7 +1,7 @@
 from collections.abc import AsyncGenerator, Generator
 from contextlib import AsyncExitStack
 from types import TracebackType
-from typing import Self
+from typing import Final, Self
 
 import pytest
 from pytest_mock import MockerFixture
@@ -241,6 +241,21 @@ async def test_depends_solve_error() -> None:
 async def test_depends_type_error() -> None:
     class Dependent:
         a = Depends(1)  # type: ignore
+
+    with pytest.raises(TypeError):
+        async with AsyncExitStack() as stack:
+            await solve_dependencies(
+                Dependent,
+                use_cache=True,
+                stack=stack,
+                dependency_cache={},
+            )
+
+
+@pytest.mark.anyio
+async def test_depends_type_unknown() -> None:
+    class Dependent:
+        a: Final = Depends()  # type: ignore
 
     with pytest.raises(TypeError):
         async with AsyncExitStack() as stack:

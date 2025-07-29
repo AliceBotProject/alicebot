@@ -1,11 +1,13 @@
 """CQHTTP 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import TYPE_CHECKING, Any, Literal, get_args, get_origin
+from typing import TYPE_CHECKING, Any, Literal, get_origin
 from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict, Field
 from pydantic.fields import FieldInfo
+from typing_inspection import typing_objects
+from typing_inspection.introspection import get_literal_values
 
 from alicebot.event import Event
 from alicebot.event import MessageEvent as BaseMessageEvent
@@ -61,9 +63,9 @@ def _get_literal_field(field: FieldInfo | None) -> str | None:
     if field is None:
         return None
     annotation = field.annotation
-    if annotation is None or get_origin(annotation) is not Literal:
+    if annotation is None or not typing_objects.is_literal(get_origin(annotation)):
         return None
-    literal_values = get_args(annotation)
+    literal_values = list(get_literal_values(annotation))
     if len(literal_values) != 1:
         return None
     return literal_values[0]
@@ -72,7 +74,6 @@ def _get_literal_field(field: FieldInfo | None) -> str | None:
 class CQHTTPEvent(Event["CQHTTPAdapter"]):
     """CQHTTP 事件基类"""
 
-    __event__ = ""
     type: str | None = Field(alias="post_type")
     time: int
     self_id: int
@@ -103,7 +104,6 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
 class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
     """消息事件"""
 
-    __event__ = "message"
     post_type: Literal["message"]
     message_type: Literal["private", "group"]
     sub_type: str
@@ -144,7 +144,6 @@ class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):
 class PrivateMessageEvent(MessageEvent):
     """私聊消息"""
 
-    __event__ = "message.private"
     message_type: Literal["private"]
     sub_type: Literal["friend", "group", "other"]
 
@@ -160,7 +159,6 @@ class PrivateMessageEvent(MessageEvent):
 class GroupMessageEvent(MessageEvent):
     """群消息"""
 
-    __event__ = "message.group"
     message_type: Literal["group"]
     sub_type: Literal["normal", "anonymous", "notice"]
     group_id: int
@@ -178,7 +176,6 @@ class GroupMessageEvent(MessageEvent):
 class NoticeEvent(CQHTTPEvent):
     """通知事件"""
 
-    __event__ = "notice"
     post_type: Literal["notice"]
     notice_type: str
 
@@ -186,7 +183,6 @@ class NoticeEvent(CQHTTPEvent):
 class GroupUploadNoticeEvent(NoticeEvent):
     """群文件上传"""
 
-    __event__ = "notice.group_upload"
     notice_type: Literal["group_upload"]
     user_id: int
     group_id: int
@@ -196,7 +192,6 @@ class GroupUploadNoticeEvent(NoticeEvent):
 class GroupAdminNoticeEvent(NoticeEvent):
     """群管理员变动"""
 
-    __event__ = "notice.group_admin"
     notice_type: Literal["group_admin"]
     sub_type: Literal["set", "unset"]
     user_id: int
@@ -206,7 +201,6 @@ class GroupAdminNoticeEvent(NoticeEvent):
 class GroupDecreaseNoticeEvent(NoticeEvent):
     """群成员减少"""
 
-    __event__ = "notice.group_decrease"
     notice_type: Literal["group_decrease"]
     sub_type: Literal["leave", "kick", "kick_me"]
     group_id: int
@@ -217,7 +211,6 @@ class GroupDecreaseNoticeEvent(NoticeEvent):
 class GroupIncreaseNoticeEvent(NoticeEvent):
     """群成员增加"""
 
-    __event__ = "notice.group_increase"
     notice_type: Literal["group_increase"]
     sub_type: Literal["approve", "invite"]
     group_id: int
@@ -228,7 +221,6 @@ class GroupIncreaseNoticeEvent(NoticeEvent):
 class GroupBanNoticeEvent(NoticeEvent):
     """群禁言"""
 
-    __event__ = "notice.group_ban"
     notice_type: Literal["group_ban"]
     sub_type: Literal["ban", "lift_ban"]
     group_id: int
@@ -240,7 +232,6 @@ class GroupBanNoticeEvent(NoticeEvent):
 class FriendAddNoticeEvent(NoticeEvent):
     """好友添加"""
 
-    __event__ = "notice.friend_add"
     notice_type: Literal["friend_add"]
     user_id: int
 
@@ -248,7 +239,6 @@ class FriendAddNoticeEvent(NoticeEvent):
 class GroupRecallNoticeEvent(NoticeEvent):
     """群消息撤回"""
 
-    __event__ = "notice.group_recall"
     notice_type: Literal["group_recall"]
     group_id: int
     operator_id: int
@@ -259,7 +249,6 @@ class GroupRecallNoticeEvent(NoticeEvent):
 class FriendRecallNoticeEvent(NoticeEvent):
     """好友消息撤回"""
 
-    __event__ = "notice.friend_recall"
     notice_type: Literal["friend_recall"]
     user_id: int
     message_id: int
@@ -268,7 +257,6 @@ class FriendRecallNoticeEvent(NoticeEvent):
 class NotifyEvent(NoticeEvent):
     """提醒事件"""
 
-    __event__ = "notice.notify"
     notice_type: Literal["notify"]
     sub_type: str
     user_id: int
@@ -277,7 +265,6 @@ class NotifyEvent(NoticeEvent):
 class PokeNotifyEvent(NotifyEvent):
     """戳一戳"""
 
-    __event__ = "notice.notify.poke"
     sub_type: Literal["poke"]
     target_id: int
     group_id: int | None = None
@@ -286,7 +273,6 @@ class PokeNotifyEvent(NotifyEvent):
 class GroupLuckyKingNotifyEvent(NotifyEvent):
     """群红包运气王"""
 
-    __event__ = "notice.notify.lucky_king"
     sub_type: Literal["lucky_king"]
     group_id: int
     target_id: int
@@ -295,7 +281,6 @@ class GroupLuckyKingNotifyEvent(NotifyEvent):
 class GroupHonorNotifyEvent(NotifyEvent):
     """群成员荣誉变更"""
 
-    __event__ = "notice.notify.honor"
     sub_type: Literal["honor"]
     group_id: int
     honor_type: Literal["talkative", "performer", "emotion"]
@@ -304,7 +289,6 @@ class GroupHonorNotifyEvent(NotifyEvent):
 class RequestEvent(CQHTTPEvent):
     """请求事件"""
 
-    __event__ = "request"
     post_type: Literal["request"]
     request_type: str
 
@@ -328,7 +312,6 @@ class RequestEvent(CQHTTPEvent):
 class FriendRequestEvent(RequestEvent):
     """加好友请求"""
 
-    __event__ = "request.friend"
     request_type: Literal["friend"]
     user_id: int
     comment: str
@@ -356,7 +339,6 @@ class FriendRequestEvent(RequestEvent):
 class GroupRequestEvent(RequestEvent):
     """加群请求 / 邀请"""
 
-    __event__ = "request.group"
     request_type: Literal["group"]
     sub_type: Literal["add", "invite"]
     group_id: int
@@ -388,7 +370,6 @@ class GroupRequestEvent(RequestEvent):
 class MetaEvent(CQHTTPEvent):
     """元事件"""
 
-    __event__ = "meta_event"
     post_type: Literal["meta_event"]
     meta_event_type: str
 
@@ -396,7 +377,6 @@ class MetaEvent(CQHTTPEvent):
 class LifecycleMetaEvent(MetaEvent):
     """生命周期"""
 
-    __event__ = "meta_event.lifecycle"
     meta_event_type: Literal["lifecycle"]
     sub_type: Literal["enable", "disable", "connect"]
 
@@ -404,7 +384,6 @@ class LifecycleMetaEvent(MetaEvent):
 class HeartbeatMetaEvent(MetaEvent):
     """心跳"""
 
-    __event__ = "meta_event.heartbeat"
     meta_event_type: Literal["heartbeat"]
     status: Status
     interval: int

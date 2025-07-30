@@ -9,7 +9,7 @@ from typing_extensions import override
 
 from pydantic import BaseModel, ConfigDict
 
-from alicebot.typing import AdapterT
+from alicebot.typing import AdapterT, AnyEvent
 
 __all__ = ["Event", "EventHandleOption", "MessageEvent"]
 
@@ -47,7 +47,7 @@ class EventHandleOption(NamedTuple):
         handle_get: 当前事件是否可以被 get 方法捕获。
     """
 
-    event: Event[Any]
+    event: AnyEvent
     handle_get: bool
 
 

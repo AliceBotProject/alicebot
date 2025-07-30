@@ -3,7 +3,7 @@ from collections.abc import Awaitable, Callable
 from typing import Generic
 from typing_extensions import override
 
-import anyio
+from anyio.lowlevel import checkpoint
 
 from alicebot import Adapter, Event, MessageEvent
 from alicebot.plugin import Plugin
@@ -13,6 +13,12 @@ EventFactory = Callable[
     ["FakeAdapter"],
     Event["FakeAdapter"] | None | Awaitable[Event["FakeAdapter"] | None],
 ]
+
+
+async def allow_schedule_other_tasks() -> None:
+    """让出当前任务，允许其他任务执行。"""
+    for _ in range(1000):
+        await checkpoint()
 
 
 class FakeAdapter(Adapter[AnyEvent, None]):
@@ -37,10 +43,10 @@ class FakeAdapter(Adapter[AnyEvent, None]):
                 await self.handle_event(event, handle_get=self.handle_get)
 
             # 发送一个事件后，等待完成必要的处理再发送下一个
-            await anyio.sleep(0.01)
+            await allow_schedule_other_tasks()
 
         # 尽可能让其他任务执行完毕后再退出
-        await anyio.sleep(0.01)
+        await allow_schedule_other_tasks()
 
         self.bot.exit()
 

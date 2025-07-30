@@ -11,7 +11,7 @@ from alicebot.event import Event
 if TYPE_CHECKING:
     import builtins
 
-    from alicebot.plugin import Plugin
+    from alicebot.typing import AnyPlugin
 
     from . import APSchedulerAdapter
 
@@ -24,7 +24,7 @@ class APSchedulerEvent(Event["APSchedulerAdapter"]):
 
     type: str | None = "apscheduler"
     if TYPE_CHECKING:
-        plugin_class: "builtins.type[Plugin[Any, Any, Any]]"
+        plugin_class: "builtins.type[AnyPlugin]"
     else:
         plugin_class: Any
 

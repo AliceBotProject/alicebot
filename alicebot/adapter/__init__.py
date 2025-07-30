@@ -17,8 +17,7 @@ from typing_extensions import TypeVar
 
 import structlog
 
-from alicebot.event import Event
-from alicebot.typing import ConfigT, EventT
+from alicebot.typing import AnyEvent, ConfigT, EventT
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
@@ -33,7 +32,7 @@ if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover
     __import__("pkg_resources").declare_namespace(__name__)
 
 
-_EventT = TypeVar("_EventT", bound="Event[Any]", default="Event[Any]")
+_EventT = TypeVar("_EventT", bound=AnyEvent, default=AnyEvent)
 
 
 class Adapter(Generic[EventT, ConfigT], ABC):
@@ -133,7 +132,7 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         max_try_times: int | None = None,
         timeout: float | None = None,
         to_thread: bool = False,
-    ) -> Event[Any]:
+    ) -> AnyEvent:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         类似 `Bot` 类的 `get()` 方法，但是隐含了判断产生事件的适配器是本适配器。

@@ -18,7 +18,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin
-from alicebot.typing import PluginT
+from alicebot.typing import AnyPlugin, PluginT
 
 from .config import Config
 from .event import APSchedulerEvent
@@ -38,7 +38,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     Config = Config
 
     scheduler: AsyncIOScheduler
-    plugin_class_to_job: dict[type[Plugin[Any, Any, Any]], Job]
+    plugin_class_to_job: dict[type[AnyPlugin], Job]
 
     @override
     async def startup(self) -> None:
@@ -83,7 +83,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
     async def shutdown(self) -> None:
         self.scheduler.shutdown()
 
-    async def create_event(self, plugin_class: type[Plugin[Any, Any, Any]]) -> None:
+    async def create_event(self, plugin_class: type[AnyPlugin]) -> None:
         """创建 `APSchedulerEvent` 事件。
 
         Args:

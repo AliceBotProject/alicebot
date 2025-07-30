@@ -4,7 +4,7 @@
 """
 
 from collections.abc import Awaitable, Callable
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, TypeAlias
 from typing_extensions import TypeVar
 
 from alicebot.message import BuildMessageType, MessageSegmentT, MessageT
@@ -21,6 +21,9 @@ if TYPE_CHECKING:
 __all__ = [
     "AdapterHook",
     "AdapterT",
+    "AnyAdapter",
+    "AnyEvent",
+    "AnyPlugin",
     "BotHook",
     "BuildMessageType",
     "ConfigT",
@@ -32,12 +35,16 @@ __all__ = [
     "StateT",
 ]
 
-EventT = TypeVar("EventT", bound="Event[Any]", default="Event[Any]")
+AnyEvent: TypeAlias = "Event[Any]"
+AnyPlugin: TypeAlias = "Plugin[Any, Any, Any]"
+AnyAdapter: TypeAlias = "Adapter[Any, Any]"
+
+EventT = TypeVar("EventT", bound=AnyEvent, default=AnyEvent)
 StateT = TypeVar("StateT", default=None)
 ConfigT = TypeVar("ConfigT", bound="ConfigModel | None", default=None)
-PluginT = TypeVar("PluginT", bound="Plugin[Any, Any, Any]")
-AdapterT = TypeVar("AdapterT", bound="Adapter[Any, Any]")
+PluginT = TypeVar("PluginT", bound=AnyPlugin)
+AdapterT = TypeVar("AdapterT", bound=AnyAdapter)
 
-BotHook = Callable[["Bot"], Awaitable[None]]
-AdapterHook = Callable[["Adapter[Any, Any]"], Awaitable[None]]
-EventHook = Callable[["Event[Any]"], Awaitable[None]]
+BotHook: TypeAlias = Callable[["Bot"], Awaitable[None]]
+AdapterHook: TypeAlias = Callable[[AnyAdapter], Awaitable[None]]
+EventHook: TypeAlias = Callable[[AnyEvent], Awaitable[None]]

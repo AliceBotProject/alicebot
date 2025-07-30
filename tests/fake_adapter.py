@@ -1,13 +1,13 @@
 import inspect
 from collections.abc import Awaitable, Callable
-from typing import Any, Generic
+from typing import Generic
 from typing_extensions import override
 
 from anyio.lowlevel import checkpoint
 
 from alicebot import Adapter, Event, MessageEvent
 from alicebot.plugin import Plugin
-from alicebot.typing import ConfigT, StateT
+from alicebot.typing import AnyEvent, ConfigT, StateT
 
 EventFactory = Callable[
     ["FakeAdapter"],
@@ -21,7 +21,7 @@ async def allow_schedule_other_tasks() -> None:
         await checkpoint()
 
 
-class FakeAdapter(Adapter[Event[Any], None]):
+class FakeAdapter(Adapter[AnyEvent, None]):
     """用于测试的适配器。"""
 
     name: str = "fake_adapter"

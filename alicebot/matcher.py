@@ -11,9 +11,8 @@ from typing import TYPE_CHECKING, Any, cast
 import anyio
 import anyio.to_thread
 
-from alicebot.adapter import Adapter
-from alicebot.event import Event
 from alicebot.exceptions import GetEventTimeout
+from alicebot.typing import AnyAdapter, AnyEvent
 
 if TYPE_CHECKING:
     from alicebot.bot import Bot
@@ -26,8 +25,8 @@ class EventMatcher:
 
     func: Callable[[Any], bool | Awaitable[bool]] | None
     bot: "Bot"
-    event_type: type[Event[Any]] | None
-    adapter_type: type[Adapter[Any, Any]] | None
+    event_type: type[AnyEvent] | None
+    adapter_type: type[AnyAdapter] | None
     max_try_times: int | None
     timeout: int | float | None
     to_thread: bool
@@ -35,7 +34,7 @@ class EventMatcher:
     event: anyio.Event
     try_times: int
     start_time: float
-    result: Event[Any] | None
+    result: "AnyEvent | None"
     exception: BaseException | None
 
     def __init__(
@@ -43,8 +42,8 @@ class EventMatcher:
         func: Callable[[Any], bool | Awaitable[bool]] | None,
         *,
         bot: "Bot",
-        event_type: type[Event[Any]] | None,
-        adapter_type: type[Adapter[Any, Any]] | None,
+        event_type: type[AnyEvent] | None,
+        adapter_type: type[AnyAdapter] | None,
         max_try_times: int | None,
         timeout: float | None,
         to_thread: bool,
@@ -74,7 +73,7 @@ class EventMatcher:
         self.result = None
         self.exception = None
 
-    async def wait(self) -> Event[Any]:
+    async def wait(self) -> AnyEvent:
         """等待当前事件匹配器直到满足条件或者超时。
 
         Raises:
@@ -97,7 +96,7 @@ class EventMatcher:
 
         raise RuntimeError("Event has no result.")  # pragma: no cover
 
-    async def run(self, event: Event[Any]) -> bool | None:
+    async def run(self, event: AnyEvent) -> bool | None:
         """运行 `get()` 函数，检查当前 `get()` 是否成功。
 
         Args:
@@ -118,7 +117,7 @@ class EventMatcher:
             return None
         return False
 
-    async def match(self, event: Event[Any]) -> bool:
+    async def match(self, event: AnyEvent) -> bool:
         """检查当前事件是否被匹配。
 
         Args:
@@ -147,7 +146,7 @@ class EventMatcher:
         if self.func is None:
             return True
         if not inspect.iscoroutinefunction(self.func):
-            func = cast("Callable[[Event[Any]], bool]", self.func)
+            func = cast("Callable[[AnyEvent], bool]", self.func)
             if self.to_thread:
                 return await anyio.to_thread.run_sync(func, event)
             return func(event)

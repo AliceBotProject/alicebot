@@ -28,7 +28,16 @@ from alicebot.event import Event, EventHandleOption
 from alicebot.exceptions import LoadModuleError, SkipException, StopException
 from alicebot.matcher import EventMatcher
 from alicebot.plugin import Plugin, PluginLoadType
-from alicebot.typing import AdapterHook, AdapterT, BotHook, EventHook, EventT
+from alicebot.typing import (
+    AdapterHook,
+    AdapterT,
+    AnyAdapter,
+    AnyEvent,
+    AnyPlugin,
+    BotHook,
+    EventHook,
+    EventT,
+)
 from alicebot.utils import (
     ModulePathFinder,
     async_map,
@@ -61,8 +70,8 @@ class Bot:
     """
 
     config: MainConfig
-    adapters: list[Adapter[Any, Any]]
-    plugins_priority_dict: dict[int, list[type[Plugin[Any, Any, Any]]]]
+    adapters: list[AnyAdapter]
+    plugins_priority_dict: dict[int, list[type[AnyPlugin]]]
     plugin_state: dict[str, Any]
     global_state: dict[Any, Any]
 
@@ -82,13 +91,13 @@ class Bot:
     _handle_signals: bool  # 处理信号
 
     _extend_plugins: list[
-        type[Plugin[Any, Any, Any]] | str | Path
+        type[AnyPlugin] | str | Path
     ]  # 使用 load_plugins() 方法程序化加载的插件列表
     _extend_plugin_dirs: list[
         Path
     ]  # 使用 load_plugins_from_dirs() 方法程序化加载的插件路径列表
     _extend_adapters: list[
-        type[Adapter[Any, Any]] | str
+        type[AnyAdapter] | str
     ]  # 使用 load_adapter() 方法程序化加载的适配器列表
     _bot_run_hooks: list[BotHook]
     _bot_exit_hooks: list[BotHook]
@@ -146,7 +155,7 @@ class Bot:
         sys.meta_path.insert(0, self._module_path_finder)
 
     @property
-    def plugins(self) -> list[type[Plugin[Any, Any, Any]]]:
+    def plugins(self) -> list[type[AnyPlugin]]:
         """当前已经加载的插件的列表。"""
         return list(chain(*self.plugins_priority_dict.values()))
 
@@ -241,9 +250,9 @@ class Bot:
 
     def _remove_plugin_by_path(
         self, file: Path
-    ) -> list[type[Plugin[Any, Any, Any]]]:  # pragma: no cover
+    ) -> list[type[AnyPlugin]]:  # pragma: no cover
         """根据路径删除已加载的插件。"""
-        removed_plugins: list[type[Plugin[Any, Any, Any]]] = []
+        removed_plugins: list[type[AnyPlugin]] = []
         for plugins in self.plugins_priority_dict.values():
             _removed_plugins = list(
                 filter(
@@ -341,7 +350,7 @@ class Bot:
         """更新 config，合并入来自 Plugin 和 Adapter 的 Config。"""
 
         def update_config(
-            source: list[type[Plugin[Any, Any, Any]]] | list[Adapter[Any, Any]],
+            source: list[type[AnyPlugin]] | list[AnyAdapter],
             name: str,
             base: type[ConfigModel],
         ) -> tuple[type[ConfigModel], ConfigModel]:
@@ -460,7 +469,7 @@ class Bot:
 
     async def handle_event(
         self,
-        current_event: Event[Any],
+        current_event: AnyEvent,
         *,
         handle_get: bool = True,
         show_log: bool = True,
@@ -493,7 +502,7 @@ class Bot:
             async for current_event, handle_get in self._event_receive_stream:
                 tg.start_soon(self._handle_event, current_event, handle_get)
 
-    async def _handle_event(self, current_event: Event[Any], handle_get: bool) -> None:
+    async def _handle_event(self, current_event: AnyEvent, handle_get: bool) -> None:
         async with anyio.create_task_group() as tg:
             if handle_get:
                 event_handled = False
@@ -536,9 +545,7 @@ class Bot:
 
             logger.info("Event Finished")
 
-    async def _run_plugin(
-        self, plugin_class: type[Plugin[Any, Any, Any]], event: Event[Any]
-    ) -> bool:
+    async def _run_plugin(self, plugin_class: type[AnyPlugin], event: AnyEvent) -> bool:
         try:
             async with AsyncExitStack() as stack:
                 plugin_instance = await solve_dependencies(
@@ -573,14 +580,14 @@ class Bot:
     @overload
     async def get(
         self,
-        func: Callable[[Event[Any]], bool | Awaitable[bool]] | None = None,
+        func: Callable[[AnyEvent], bool | Awaitable[bool]] | None = None,
         *,
         event_type: None = None,
         adapter_type: None = None,
         max_try_times: int | None = None,
         timeout: float | None = None,
         to_thread: bool = False,
-    ) -> Event[Any]: ...
+    ) -> AnyEvent: ...
 
     @overload
     async def get(
@@ -600,7 +607,7 @@ class Bot:
         func: Callable[[EventT], bool | Awaitable[bool]] | None = None,
         *,
         event_type: type[EventT],
-        adapter_type: type[Adapter[Any, Any]] | None = None,
+        adapter_type: type[AnyAdapter] | None = None,
         max_try_times: int | None = None,
         timeout: float | None = None,
         to_thread: bool = False,
@@ -610,12 +617,12 @@ class Bot:
         self,
         func: Callable[[Any], bool | Awaitable[bool]] | None = None,
         *,
-        event_type: type[Event[Any]] | None = None,
-        adapter_type: type[Adapter[Any, Any]] | None = None,
+        event_type: type[AnyEvent] | None = None,
+        adapter_type: type[AnyAdapter] | None = None,
         max_try_times: int | None = None,
         timeout: float | None = None,
         to_thread: bool = False,
-    ) -> Event[Any]:
+    ) -> AnyEvent:
         """获取满足指定条件的的事件，协程会等待直到适配器接收到满足条件的事件、超过最大事件数或超时。
 
         Args:
@@ -648,7 +655,7 @@ class Bot:
 
     def _load_plugin_class(
         self,
-        plugin_class: type[Plugin[Any, Any, Any]],
+        plugin_class: type[AnyPlugin],
         plugin_load_type: PluginLoadType,
         plugin_file_path: str | None,
     ) -> None:
@@ -698,7 +705,7 @@ class Bot:
 
     def _load_plugins(
         self,
-        *plugins: type[Plugin[Any, Any, Any]] | str | Path,
+        *plugins: type[AnyPlugin] | str | Path,
         plugin_load_type: PluginLoadType | None = None,
         reload: bool = False,
     ) -> None:
@@ -772,7 +779,7 @@ class Bot:
             except Exception:
                 logger.exception("Load plugin failed:", plugin=plugin_)
 
-    def load_plugins(self, *plugins: type[Plugin[Any, Any, Any]] | str | Path) -> None:
+    def load_plugins(self, *plugins: type[AnyPlugin] | str | Path) -> None:
         """加载插件。
 
         Args:
@@ -813,7 +820,7 @@ class Bot:
         self._extend_plugin_dirs.extend(dirs)
         self._load_plugins_from_dirs(*dirs)
 
-    def _load_adapters(self, *adapters: type[Adapter[Any, Any]] | str) -> None:
+    def _load_adapters(self, *adapters: type[AnyAdapter] | str) -> None:
         """加载适配器。
 
         Args:
@@ -823,7 +830,7 @@ class Bot:
                     例如：`path.of.adapter`。
         """
         for adapter_ in adapters:
-            adapter_object: Adapter[Any, Any]
+            adapter_object: AnyAdapter
             try:
                 if isinstance(adapter_, type) and issubclass(adapter_, Adapter):
                     adapter_object = adapter_(self)
@@ -857,7 +864,7 @@ class Bot:
             else:
                 self.adapters.append(adapter_object)
 
-    def load_adapters(self, *adapters: type[Adapter[Any, Any]] | str) -> None:
+    def load_adapters(self, *adapters: type[AnyAdapter] | str) -> None:
         """加载适配器。
 
         Args:
@@ -870,14 +877,12 @@ class Bot:
         self._load_adapters(*adapters)
 
     @overload
-    def get_adapter(self, adapter: str) -> Adapter[Any, Any]: ...
+    def get_adapter(self, adapter: str) -> AnyAdapter: ...
 
     @overload
     def get_adapter(self, adapter: type[AdapterT]) -> AdapterT: ...
 
-    def get_adapter(
-        self, adapter: str | type[AdapterT]
-    ) -> Adapter[Any, Any] | AdapterT:
+    def get_adapter(self, adapter: str | type[AdapterT]) -> AnyAdapter | AdapterT:
         """按照名称或适配器类获取已经加载的适配器。
 
         Args:
@@ -897,7 +902,7 @@ class Bot:
                 return _adapter
         raise LookupError(f'Can not find adapter named "{adapter}"')
 
-    def get_plugin(self, name: str) -> type[Plugin[Any, Any, Any]]:
+    def get_plugin(self, name: str) -> type[AnyPlugin]:
         """按照名称获取已经加载的插件类。
 
         Args:

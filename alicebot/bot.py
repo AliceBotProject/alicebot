@@ -236,17 +236,18 @@ class Bot:
 
             await self._should_exit.wait()
         finally:
-            for _adapter in self.adapters:
-                for adapter_shutdown_hook_func in self._adapter_shutdown_hooks:
-                    await adapter_shutdown_hook_func(_adapter)
-                await _adapter.shutdown()
+            with anyio.CancelScope(shield=True):
+                for _adapter in self.adapters:
+                    for adapter_shutdown_hook_func in self._adapter_shutdown_hooks:
+                        await adapter_shutdown_hook_func(_adapter)
+                    await _adapter.shutdown()
 
-            for bot_exit_hook_func in self._bot_exit_hooks:
-                await bot_exit_hook_func(self)
+                for bot_exit_hook_func in self._bot_exit_hooks:
+                    await bot_exit_hook_func(self)
 
-            self.adapters.clear()
-            self.plugins_priority_dict.clear()
-            self._module_path_finder.path.clear()
+                self.adapters.clear()
+                self.plugins_priority_dict.clear()
+                self._module_path_finder.path.clear()
 
     def _remove_plugin_by_path(
         self, file: Path

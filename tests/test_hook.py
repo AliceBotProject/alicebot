@@ -2,7 +2,9 @@
 
 from typing import Any
 
+from anyio.lowlevel import checkpoint
 from fake_adapter import fake_adapter_class_factory, fake_message_event_factor
+from pytest_mock import MockerFixture
 
 from alicebot import Adapter, Bot, Event
 
@@ -51,3 +53,23 @@ def test_bot_run_hook() -> None:
         "adapter_shutdown_hook",
         "bot_exit_hook",
     ]
+
+
+def test_multiple_bot_exit_hook(mocker: MockerFixture) -> None:
+    bot = Bot()
+    mock = mocker.AsyncMock()
+
+    @bot.bot_exit_hook
+    async def bot_exit_hook1(_bot: Bot) -> None:
+        await checkpoint()
+        await mock()
+
+    @bot.bot_exit_hook
+    async def bot_exit_hook2(_bot: Bot) -> None:
+        await checkpoint()
+        await mock()
+
+    bot.load_adapters(fake_adapter_class_factory(fake_message_event_factor))
+    bot.run()
+
+    assert mock.call_count == 2

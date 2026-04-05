@@ -2,11 +2,12 @@ import eslint from '@eslint/js'
 import unocss from '@unocss/eslint-config/flat'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import eslintPluginVue from 'eslint-plugin-vue'
+import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import typescriptEslint from 'typescript-eslint'
 
-export default typescriptEslint.config(
-  { ignores: ['*.d.ts', '**/coverage', '**/dist'] },
+export default defineConfig(
+  { ignores: ['*.d.ts', '**/coverage', '**/dist', '.venv'] },
   {
     extends: [
       eslint.configs.recommended,

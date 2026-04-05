@@ -1,4 +1,6 @@
 name: Lint
+permissions:
+  contents: read
 
 on:
   push:
@@ -15,9 +17,8 @@ jobs:
   ruff:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: ./.github/actions/setup-python
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-python
       - run: uv sync --all-extras --all-packages --group dev --group lint
       - run: |
           uv run ruff check --output-format=github .
@@ -26,26 +27,23 @@ jobs:
   pylint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: ./.github/actions/setup-python
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-python
       - run: uv sync --all-extras --all-packages --group dev --group lint
       - run: uv run pylint alicebot packages/*
 
   pyright:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: ./.github/actions/setup-python
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-python
       - run: uv sync --all-extras --all-packages --all-groups
       - run: uv run basedpyright
 
   mypy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: ./.github/actions/setup-python
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-python
       - run: uv sync --all-extras --all-packages --all-groups
       - run: uv run mypy .

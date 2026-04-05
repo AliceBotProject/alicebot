@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Python
         uses: ./.github/actions/setup-python
@@ -31,13 +31,13 @@ jobs:
         env:
           ALICEBOT_DEV: '1'
 
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
+      - name: Setup Bun
+        uses: ./.github/actions/setup-bun
 
       - name: Build VitePress site
-        run: pnpm run docs:build
+        run: bun run docs:build
 
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v4
         if: github.event_name != 'pull_request'
         with:
           path: docs/.vitepress/dist
@@ -61,4 +61,4 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5

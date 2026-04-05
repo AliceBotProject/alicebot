@@ -1,4 +1,6 @@
 name: Lint Other Files
+permissions:
+  contents: read
 
 on:
   push:
@@ -15,36 +17,20 @@ jobs:
   prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
-
-      - run: pnpm run prettier
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-bun
+      - run: bun run prettier
 
   eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
-
-      - run: pnpm run eslint
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-bun
+      - run: bun run eslint
 
   markdownlint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: ./.github/actions/setup-node
-
-      - run: pnpm run markdownlint
-
-  autocorrect:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: huacnlee/autocorrect-action@main
+      - uses: actions/checkout@v6
+      - uses: ./.github/actions/setup-bun
+      - run: bun run markdownlint

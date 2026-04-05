@@ -9,8 +9,6 @@ on:
   pull_request:
     paths:
       - '**.py'
-      - '!docs/**'
-      - '!examples/**'
 
 jobs:
   test:

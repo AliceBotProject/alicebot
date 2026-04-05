@@ -76,7 +76,7 @@ class Count(Plugin[MessageEvent, int, Config], init_state=0, config=Config):
 在 AliceBot 0.9 以上版本中，当你使用泛型类时，可以不必额外指定创建子类时的 `init_state` 和 `config` 参数，AliceBot 将自动从泛型参数中读取：
 
 ```python {12}
-from typing_extensions import Annotated
+from typing import Annotated
 
 from alicebot import ConfigModel, Plugin
 from alicebot.adapter.cqhttp.event import MessageEvent

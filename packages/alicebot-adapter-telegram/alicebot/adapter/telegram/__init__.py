@@ -7,8 +7,7 @@
 import inspect
 import json
 import uuid
-from typing import Any, TypeVar
-from typing_extensions import TypeIs, override
+from typing import Any, TypeIs, overload, override
 
 import aiohttp
 import structlog
@@ -47,8 +46,6 @@ EVENT_MODELS: EventModels = {}
 for _, model in inspect.getmembers(event, inspect.isclass):
     if issubclass(model, TelegramEvent):
         EVENT_MODELS[model.__event_type__] = model
-
-_T = TypeVar("_T")
 
 
 class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
@@ -193,14 +190,33 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
             if v is not None
         }
 
+    # use PEP 747 TypeForm instead of overload
+    @overload
+    async def call_api[T](
+        self,
+        api: str,
+        *,
+        response_type: type[T],
+        **params: Any,
+    ) -> T: ...
+
+    @overload
+    async def call_api(
+        self,
+        api: str,
+        *,
+        response_type: Any | None = None,
+        **params: Any,
+    ) -> Any: ...
+
     @override
     async def call_api(
         self,
         api: str,
         *,
-        response_type: type[_T] | None = None,
+        response_type: Any = None,
         **params: Any,
-    ) -> _T | None:
+    ) -> Any:
         """调用 Telegram Bot API，协程会等待直到获得 API 响应。
 
         Args:
@@ -218,7 +234,7 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
         if response_type is None:
             return_type_adapter = TypeAdapter(Response[Any])
         else:
-            return_type_adapter = TypeAdapter(Response[response_type])  # type: ignore[valid-type]
+            return_type_adapter = TypeAdapter(Response[response_type])
 
         data = self._format_telegram_api_params(**params)
         if isinstance(data, aiohttp.FormData):

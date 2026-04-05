@@ -12,6 +12,7 @@ from ..model import (
     ChatMemberUpdated,
     ChosenInlineResult,
     InlineQuery,
+    ManagedBotUpdated,
     Message,
     MessageReactionCountUpdated,
     MessageReactionUpdated,
@@ -286,3 +287,15 @@ class RemovedChatBoostEvent(TelegramEvent):
         """The removed_chat_boost object."""
         assert self.update.removed_chat_boost is not None
         return self.update.removed_chat_boost
+
+
+class ManagedBotEvent(TelegramEvent):
+    """A new bot was created to be managed by the bot or token of a bot was changed."""
+
+    __event_type__ = "managed_bot"
+
+    @property
+    def managed_bot(self) -> ManagedBotUpdated:
+        """The managed_bot object."""
+        assert self.update.managed_bot is not None
+        return self.update.managed_bot

@@ -1,4 +1,4 @@
-from typing_extensions import override
+from typing import override
 
 import pytest
 from fake_adapter import (

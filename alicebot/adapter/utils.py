@@ -4,8 +4,7 @@
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import Literal
-from typing_extensions import override
+from typing import Literal, override
 
 import aiohttp
 import anyio
@@ -14,7 +13,8 @@ from aiohttp import web
 from anyio.lowlevel import checkpoint
 
 from alicebot.adapter import Adapter
-from alicebot.typing import ConfigT, EventT
+from alicebot.config import ConfigModel
+from alicebot.typing import AnyEvent
 
 __all__ = [
     "HttpClientAdapter",
@@ -28,7 +28,10 @@ __all__ = [
 logger = structlog.stdlib.get_logger()
 
 
-class PollingAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
+class PollingAdapter[
+    EventT: AnyEvent = AnyEvent,
+    ConfigT: ConfigModel | None = None,
+](Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """轮询式适配器示例。"""
 
     @override
@@ -42,7 +45,10 @@ class PollingAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
         """当轮询发生。"""
 
 
-class HttpClientAdapter(PollingAdapter[EventT, ConfigT], metaclass=ABCMeta):
+class HttpClientAdapter[
+    EventT: AnyEvent = AnyEvent,
+    ConfigT: ConfigModel | None = None,
+](PollingAdapter[EventT, ConfigT], metaclass=ABCMeta):
     """HTTP 客户端适配器示例。"""
 
     session: aiohttp.ClientSession
@@ -56,7 +62,10 @@ class HttpClientAdapter(PollingAdapter[EventT, ConfigT], metaclass=ABCMeta):
         await self.session.close()
 
 
-class WebSocketClientAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
+class WebSocketClientAdapter[
+    EventT: AnyEvent = AnyEvent,
+    ConfigT: ConfigModel | None = None,
+](Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """WebSocket 客户端适配器示例。"""
 
     url: str
@@ -79,7 +88,10 @@ class WebSocketClientAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
         """处理响应。"""
 
 
-class HttpServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
+class HttpServerAdapter[
+    EventT: AnyEvent = AnyEvent,
+    ConfigT: ConfigModel | None = None,
+](Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """HTTP 服务端适配器示例。"""
 
     app: web.Application
@@ -116,7 +128,10 @@ class HttpServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
         """处理响应。"""
 
 
-class WebSocketServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
+class WebSocketServerAdapter[
+    EventT: AnyEvent = AnyEvent,
+    ConfigT: ConfigModel | None = None,
+](Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """WebSocket 服务端适配器示例。"""
 
     app: web.Application
@@ -165,7 +180,10 @@ class WebSocketServerAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
         """处理 WebSocket 响应。"""
 
 
-class WebSocketAdapter(Adapter[EventT, ConfigT], metaclass=ABCMeta):
+class WebSocketAdapter[
+    EventT: AnyEvent = AnyEvent,
+    ConfigT: ConfigModel | None = None,
+](Adapter[EventT, ConfigT], metaclass=ABCMeta):
     """WebSocket 适配器示例。
 
     同时支持 WebSocket 客户端和服务端。

@@ -30,13 +30,11 @@ from alicebot.matcher import EventMatcher
 from alicebot.plugin import Plugin, PluginLoadType
 from alicebot.typing import (
     AdapterHook,
-    AdapterT,
     AnyAdapter,
     AnyEvent,
     AnyPlugin,
     BotHook,
     EventHook,
-    EventT,
 )
 from alicebot.utils import (
     ModulePathFinder,
@@ -257,9 +255,11 @@ class Bot:
         for plugins in self.plugins_priority_dict.values():
             _removed_plugins = list(
                 filter(
-                    lambda x: x.__plugin_load_type__ != PluginLoadType.CLASS
-                    and x.__plugin_file_path__ is not None
-                    and samefile(x.__plugin_file_path__, file),
+                    lambda x: (
+                        x.__plugin_load_type__ != PluginLoadType.CLASS
+                        and x.__plugin_file_path__ is not None
+                        and samefile(x.__plugin_file_path__, file)
+                    ),
                     plugins,
                 )
             )
@@ -591,7 +591,7 @@ class Bot:
     ) -> AnyEvent: ...
 
     @overload
-    async def get(
+    async def get[EventT: AnyEvent](
         self,
         func: Callable[[EventT], bool | Awaitable[bool]] | None = None,
         *,
@@ -603,7 +603,7 @@ class Bot:
     ) -> EventT: ...
 
     @overload
-    async def get(
+    async def get[EventT: AnyEvent](
         self,
         func: Callable[[EventT], bool | Awaitable[bool]] | None = None,
         *,
@@ -881,9 +881,13 @@ class Bot:
     def get_adapter(self, adapter: str) -> AnyAdapter: ...
 
     @overload
-    def get_adapter(self, adapter: type[AdapterT]) -> AdapterT: ...
+    def get_adapter[AdapterT: AnyAdapter](
+        self, adapter: type[AdapterT]
+    ) -> AdapterT: ...
 
-    def get_adapter(self, adapter: str | type[AdapterT]) -> AnyAdapter | AdapterT:
+    def get_adapter[AdapterT: AnyAdapter](
+        self, adapter: str | type[AdapterT]
+    ) -> AnyAdapter | AdapterT:
         """按照名称或适配器类获取已经加载的适配器。
 
         Args:

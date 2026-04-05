@@ -1,7 +1,6 @@
 """DingTalk 适配器消息。"""
 
-from typing import Any
-from typing_extensions import override
+from typing import Any, override
 
 from pydantic import model_serializer
 

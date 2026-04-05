@@ -12,7 +12,7 @@ AliceBot 内置了 `Message` 和 `MessageSegment` 类，即消息和消息字段
 
 ```python
 from typing import Type
-from typing_extensions import Self
+from typing import Self
 
 from alicebot.message import Message, MessageSegment
 

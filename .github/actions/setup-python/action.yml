@@ -4,7 +4,7 @@ description: Setup Python
 inputs:
   python-version:
     description: Python version
-    default: '3.12'
+    default: '3.14'
 
 runs:
   using: composite

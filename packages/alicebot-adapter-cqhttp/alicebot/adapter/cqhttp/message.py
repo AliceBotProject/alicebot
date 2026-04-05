@@ -1,7 +1,6 @@
 """CQHTTP 适配器消息。"""
 
-from typing import Literal, Self
-from typing_extensions import override
+from typing import Literal, Self, override
 
 from alicebot.message import Message, MessageSegment
 

@@ -1,6 +1,6 @@
 """处理 Inline Query。"""
 
-from typing_extensions import override
+from typing import override
 
 from alicebot import Plugin
 from alicebot.adapter.telegram.event import CallbackQueryEvent, InlineQueryEvent

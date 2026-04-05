@@ -1,8 +1,7 @@
 # pyright: reportPrivateUsage=false
 # ruff: noqa: SLF001
 
-from typing import Any
-from typing_extensions import override
+from typing import Any, override
 
 import pytest
 from fake_adapter import (

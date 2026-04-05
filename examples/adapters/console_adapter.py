@@ -4,7 +4,7 @@
 """
 
 import sys
-from typing_extensions import override
+from typing import override
 
 import anyio.to_thread
 

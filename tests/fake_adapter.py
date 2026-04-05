@@ -1,13 +1,12 @@
 import inspect
 from collections.abc import Awaitable, Callable
-from typing import Generic
-from typing_extensions import override
+from typing import Any, override
 
 from anyio.lowlevel import checkpoint
 
-from alicebot import Adapter, Event, MessageEvent
+from alicebot import Adapter, ConfigModel, Event, MessageEvent
 from alicebot.plugin import Plugin
-from alicebot.typing import AnyEvent, ConfigT, StateT
+from alicebot.typing import AnyEvent
 
 EventFactory = Callable[
     ["FakeAdapter"],
@@ -83,8 +82,7 @@ def fake_message_event_factor(
     return FakeMessageEvent(adapter=adapter, type="message", message=message)
 
 
-class BaseTestPlugin(
-    Generic[StateT, ConfigT],
+class BaseTestPlugin[StateT: Any = None, ConfigT: ConfigModel | None = None](
     Plugin[FakeMessageEvent, StateT, ConfigT],
 ):
     @override

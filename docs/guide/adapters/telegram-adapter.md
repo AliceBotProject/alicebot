@@ -43,7 +43,7 @@ webhook_url = "/telegram"
 ## 插件示例
 
 ```python
-from typing_extensions import override
+from typing import override
 
 from alicebot import Plugin
 from alicebot.adapter.telegram.event import MessageEvent
@@ -71,7 +71,7 @@ class HelloWorld(Plugin[MessageEvent, None, None]):
 你可以使用下面的方法调用 Telegram API：
 
 ```python
-from typing_extensions import override
+from typing import override
 
 from alicebot import Plugin
 from alicebot.adapter.telegram.event import MessageEvent

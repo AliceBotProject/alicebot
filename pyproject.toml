@@ -16,7 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Topic :: Communications :: Chat",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.13"
 dependencies = [
     "pydantic>=2.0.3,<3.0.0",
     "anyio>=4.4.0,<5.0.0",
@@ -53,7 +53,6 @@ Changelog = "https://docs.alicebot.dev/changelog.html"
 
 [dependency-groups]
 dev = [
-    "setuptools>=74",
     "trio>=0.26",
 ]
 lint = [
@@ -73,6 +72,9 @@ test = [
     "pytest-xdist>=3",
     "pytest-cov>=5",
 ]
+
+[tool.uv]
+default-groups = "all"
 
 [tool.uv.sources]
 alicebot-adapter-cqhttp = { workspace = true }
@@ -104,7 +106,6 @@ ignore = [
     "PLR0912",  # Too many branches
     "PLR0913",  # Too many arguments to function call
     "TRY003",   # Avoid specifying long messages outside the exception class
-    "PERF203",  # try-except within a loop incurs performance overhead
 ]
 allowed-confusables = ["，", "：", "！"]
 
@@ -112,8 +113,7 @@ allowed-confusables = ["，", "：", "！"]
 builtins-ignorelist = ["id", "type"]
 
 [tool.ruff.lint.isort]
-known-third-party = ["pydantic", "aiohttp", "structlog"]
-extra-standard-library = ["typing_extensions"]
+known-first-party = ["alicebot"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
@@ -140,7 +140,7 @@ keep-runtime-typing = true
 [tool.basedpyright]
 ignore = ["examples/plugins"]
 extraPaths = ["tests", "tests/test_utils"]
-pythonVersion = "3.11"
+pythonVersion = "3.13"
 pythonPlatform = "All"
 typeCheckingMode = "recommended"
 reportImportCycles = false
@@ -158,7 +158,7 @@ reportUnannotatedClassAttribute = false
 enableTypeIgnoreComments = true
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
 strict = true
 exclude = [
     '^packages/.*/alicebot/__init__\.py$',
@@ -191,7 +191,7 @@ disable = [
     "too-many-positional-arguments",
     "too-many-public-methods",
 ]
-py-version = "3.11"
+py-version = "3.13"
 load-plugins = ["pylint_pydantic"]
 source-roots = ["."]
 ignore = ["packages/alicebot-adapter-telegram/examples"]
@@ -202,9 +202,10 @@ allowed-redefined-builtins = ["id", "type"]
 [tool.pytest.ini_options]
 log_cli = true
 testpaths = "tests"
-addopts = "--cov=alicebot --cov-report=term-missing"
+addopts = "--cov"
 
 [tool.coverage.run]
+source = ["alicebot"]
 omit = ["alicebot/adapter/utils.py"]
 
 [tool.coverage.report]
@@ -215,6 +216,7 @@ exclude_also = [
     "@(abc\\.)?abstractmethod",
 ]
 omit = ["alicebot/log.py"]
+show_missing = true
 
 [tool.hatch.build.targets.sdist]
 include = ["/README.md", "/alicebot"]

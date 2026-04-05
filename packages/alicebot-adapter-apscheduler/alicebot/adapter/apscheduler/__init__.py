@@ -9,8 +9,7 @@ APScheduler 使用方法请参考：[APScheduler](https://apscheduler.readthedoc
 import inspect
 from collections.abc import Awaitable, Callable
 from functools import wraps
-from typing import TYPE_CHECKING, Any
-from typing_extensions import override
+from typing import TYPE_CHECKING, Any, override
 
 import structlog
 from apscheduler.job import Job
@@ -18,7 +17,7 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from alicebot.adapter import Adapter
 from alicebot.plugin import Plugin
-from alicebot.typing import AnyPlugin, PluginT
+from alicebot.typing import AnyPlugin
 
 from .config import Config
 from .event import APSchedulerEvent
@@ -104,7 +103,7 @@ class APSchedulerAdapter(Adapter[APSchedulerEvent, Config]):
         raise NotImplementedError
 
 
-def scheduler_decorator(
+def scheduler_decorator[PluginT: AnyPlugin](
     trigger: str, trigger_args: dict[str, Any], override_rule: bool = False
 ) -> Callable[[type[PluginT]], type[PluginT]]:
     """用于为插件类添加计划任务功能的装饰器。

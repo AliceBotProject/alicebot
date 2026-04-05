@@ -4,6 +4,12 @@
 """
 
 import os
+
+if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover
+    from pkgutil import extend_path
+
+    __path__ = extend_path(__path__, __name__)
+
 from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable
 from typing import TYPE_CHECKING, Any, final, overload
@@ -20,10 +26,6 @@ if TYPE_CHECKING:
 __all__ = ["Adapter"]
 
 logger = structlog.stdlib.get_logger()
-
-if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover
-    # 当处于开发环境时，使用 pkg_resources 风格的命名空间包
-    __import__("pkg_resources").declare_namespace(__name__)
 
 
 class Adapter[EventT: AnyEvent = AnyEvent, ConfigT: ConfigModel | None = None](ABC):

@@ -27,7 +27,7 @@ jobs:
       PYTHON_VERSION: ${{ matrix.python-version }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Python
         uses: ./.github/actions/setup-python
@@ -42,7 +42,7 @@ jobs:
         run: uv run pytest -n auto --cov-report xml
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v6
         with:
           env_vars: OS,PYTHON_VERSION
           fail_ci_if_error: true

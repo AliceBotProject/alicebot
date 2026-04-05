@@ -20,10 +20,10 @@ AliceBot 使用 [uv](https://github.com/astral-sh/uv) 管理项目的依赖。
 uv sync --all-extras --dev
 ```
 
-AliceBot 项目的文档使用 [VitePress](https://vitepress.dev/) 生成，如果你想要贡献 AliceBot 的文档，请额外安装 [pnpm](https://pnpm.io/)，并在项目目录中执行以下命令：
+AliceBot 项目的文档使用 [VitePress](https://vitepress.dev/) 生成，如果你想要贡献 AliceBot 的文档，请额外安装 [Bun](https://bun.com/)，并在项目目录中执行以下命令：
 
 ```shell
-pnpm install
+bun install
 ```
 
 ### 编辑器配置
@@ -94,10 +94,10 @@ def foo(a: int, b: float) -> str:
 
 AliceBot 使用使用 [VitePress](https://vitepress.dev/) 生成文档。API 文档则由 [Sophia-doc](https://github.com/st1020/sophia-doc) 自动生成。
 
-在你修改完 AliceBot 的文档后，可以使用 pnpm 安装依赖后在开发模式下实时预览文档：
+在你修改完 AliceBot 的文档后，可以使用 bun 安装依赖后在开发模式下实时预览文档：
 
 ```shell
-pnpm run docs:dev
+bun run docs:dev
 ```
 
 ## Commit 规范

@@ -162,7 +162,6 @@ async def sync_ctx_manager_wrapper[T](
 
     Args:
         cm: 待包装的同步上下文管理器。
-        to_thread: 是否在独立的线程中运行同步函数。默认为 `False`。
 
     Returns:
         异步上下文管理器。

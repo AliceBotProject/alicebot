@@ -1156,15 +1156,15 @@ wheels = [
 
 [[package]]
 name = "sophia-doc"
-version = "0.1.9"
+version = "0.1.10"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "docstring-parser" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/29/39/8c10ffc05fb9a2e812eba6fed38643db01c8f7fbf118ca3f6e12a816ff96/sophia_doc-0.1.9.tar.gz", hash = "sha256:3d7df0de9b112419d6491f8cb6bdf0c9d73a7a26e189ca677c01af26d3f6371e", size = 12364, upload-time = "2025-04-20T09:50:01.803Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6f/c9/bbecbbaa67ddba6958de55a35b92280c4ff71cad3a09ba7722d33734b191/sophia_doc-0.1.10.tar.gz", hash = "sha256:ffeea87ca63df1a017fcf56f96beb435879bf953073ee1a0f4b6d0380f04033e", size = 12344, upload-time = "2026-04-05T14:00:37.882Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/6d/a8/c54eb7423197ae9738520aa8009b73966c2b0beec6eca0c046efe605ec83/sophia_doc-0.1.9-py3-none-any.whl", hash = "sha256:a93af64d3c529d40c32cb756fec84eb0e5bbabe5ff33ffe2659f405751fe8ced", size = 13431, upload-time = "2025-04-20T09:49:59.825Z" },
+    { url = "https://files.pythonhosted.org/packages/f5/7c/115e8c7efa2f44c17fa6cf17274c183823f702fa474fc40d5380d932e15a/sophia_doc-0.1.10-py3-none-any.whl", hash = "sha256:bdc3aa5980915e6194fd5537848ab436b66f61fe1b0a1a38af1a5b0c0192451a", size = 13441, upload-time = "2026-04-05T14:00:39.057Z" },
 ]
 
 [[package]]

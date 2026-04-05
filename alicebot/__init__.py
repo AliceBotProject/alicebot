@@ -12,6 +12,8 @@
 - `Depends` => [`alicebot.dependencies.Depends`](./dependencies#Depends)
 """
 
+# pylint: disable=wrong-import-position
+
 import os
 
 if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover

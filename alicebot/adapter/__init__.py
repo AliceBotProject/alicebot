@@ -3,6 +3,8 @@
 所有协议适配器都必须继承自 `Adapter` 基类。
 """
 
+# pylint: disable=wrong-import-position
+
 import os
 
 if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover

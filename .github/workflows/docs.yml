@@ -4,16 +4,15 @@ on:
   push:
     branches:
       - main
-    paths-ignore:
-      - 'examples/**'
   pull_request:
-    paths-ignore:
-      - 'examples/**'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v6

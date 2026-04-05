@@ -1,8 +1,7 @@
 """Telegram 适配器事件。"""
 
 # ruff: noqa: TID252
-from typing import TYPE_CHECKING, Any
-from typing_extensions import override
+from typing import TYPE_CHECKING, Any, override
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 

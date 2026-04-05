@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing_extensions import override
+from typing import override
 
 import pytest
 from pytest_mock import MockerFixture

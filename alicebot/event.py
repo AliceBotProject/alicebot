@@ -4,17 +4,16 @@
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Any, Generic, NamedTuple, Self
-from typing_extensions import override
+from typing import TYPE_CHECKING, Any, NamedTuple, Self, override
 
 from pydantic import BaseModel, ConfigDict
 
-from alicebot.typing import AdapterT, AnyEvent
+from alicebot.typing import AnyAdapter, AnyEvent
 
 __all__ = ["Event", "EventHandleOption", "MessageEvent"]
 
 
-class Event(BaseModel, Generic[AdapterT], metaclass=ABCMeta):
+class Event[AdapterT: AnyAdapter](BaseModel, metaclass=ABCMeta):
     """事件类的基类。
 
     Attributes:
@@ -51,7 +50,7 @@ class EventHandleOption(NamedTuple):
     handle_get: bool
 
 
-class MessageEvent(Event[AdapterT], Generic[AdapterT], metaclass=ABCMeta):
+class MessageEvent[AdapterT: AnyAdapter](Event[AdapterT], metaclass=ABCMeta):
     """通用的消息事件类的基类。"""
 
     @abstractmethod

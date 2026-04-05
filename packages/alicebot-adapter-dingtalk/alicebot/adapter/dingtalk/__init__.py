@@ -8,8 +8,7 @@ import base64
 import hashlib
 import hmac
 import time
-from typing import Any, Literal
-from typing_extensions import override
+from typing import Any, Literal, override
 
 import aiohttp
 import structlog

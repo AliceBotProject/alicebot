@@ -6,18 +6,12 @@
 import os
 from abc import ABC, abstractmethod
 from collections.abc import Awaitable, Callable
-from typing import (
-    TYPE_CHECKING,
-    Any,
-    Generic,
-    final,
-    overload,
-)
-from typing_extensions import TypeVar
+from typing import TYPE_CHECKING, Any, final, overload
 
 import structlog
 
-from alicebot.typing import AnyEvent, ConfigT, EventT
+from alicebot.config import ConfigModel
+from alicebot.typing import AnyEvent
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
@@ -32,10 +26,7 @@ if os.getenv("ALICEBOT_DEV") == "1":  # pragma: no cover
     __import__("pkg_resources").declare_namespace(__name__)
 
 
-_EventT = TypeVar("_EventT", bound=AnyEvent, default=AnyEvent)
-
-
-class Adapter(Generic[EventT, ConfigT], ABC):
+class Adapter[EventT: AnyEvent = AnyEvent, ConfigT: ConfigModel | None = None](ABC):
     """协议适配器基类。
 
     Attributes:
@@ -87,13 +78,13 @@ class Adapter(Generic[EventT, ConfigT], ABC):
         """
         raise NotImplementedError
 
-    async def startup(self) -> None:
+    async def startup(self) -> None:  # noqa: B027
         """在适配器开始运行前运行的方法，用于初始化适配器。
 
         AliceBot 依次运行并等待所有适配器的 `startup()` 方法，待运行完毕后再创建 `run()` 任务。
         """
 
-    async def shutdown(self) -> None:
+    async def shutdown(self) -> None:  # noqa: B027
         """在适配器结束运行时运行的方法，用于安全地关闭适配器。
 
         AliceBot 在接收到系统的结束信号后先发送 cancel 请求给 run 任务。
@@ -113,15 +104,15 @@ class Adapter(Generic[EventT, ConfigT], ABC):
     ) -> EventT: ...
 
     @overload
-    async def get(
+    async def get[T: AnyEvent](
         self,
-        func: Callable[[_EventT], bool | Awaitable[bool]] | None = None,
+        func: Callable[[T], bool | Awaitable[bool]] | None = None,
         *,
-        event_type: type[_EventT],
+        event_type: type[T],
         max_try_times: int | None = None,
         timeout: float | None = None,
         to_thread: bool = False,
-    ) -> _EventT: ...
+    ) -> T: ...
 
     @final
     async def get(

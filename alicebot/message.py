@@ -7,30 +7,21 @@
 import builtins
 from abc import ABC, abstractmethod
 from collections.abc import ItemsView, Iterator, KeysView, Mapping, ValuesView
-from typing import Any, Generic, Self, SupportsIndex, TypeAlias, TypeVar, overload
-from typing_extensions import override
+from typing import Any, Self, SupportsIndex, overload, override
 
 from pydantic import BaseModel, Field, GetCoreSchemaHandler
 from pydantic_core import core_schema
 
-__all__ = [
-    "BuildMessageType",
-    "Message",
-    "MessageSegment",
-    "MessageSegmentT",
-    "MessageT",
-]
+__all__ = ["BuildMessageType", "Message", "MessageSegment"]
 
-MessageT = TypeVar("MessageT", bound="Message[Any]")
-MessageSegmentT = TypeVar("MessageSegmentT", bound="MessageSegment[Any]")
 
 # 可以转化为 Message 的类型
-BuildMessageType: TypeAlias = (
+type BuildMessageType[MessageSegmentT: MessageSegment[Any]] = (
     list[MessageSegmentT] | MessageSegmentT | str | Mapping[str, Any]
 )
 
 
-class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
+class Message[MessageSegmentT: MessageSegment[Any]](ABC, list[MessageSegmentT]):
     """消息。
 
     本类是 `List` 的子类，并重写了 `__init__()` 方法，
@@ -310,7 +301,7 @@ class Message(ABC, list[MessageSegmentT], Generic[MessageSegmentT]):
         return temp_msg
 
 
-class MessageSegment(ABC, BaseModel, Mapping[str, Any], Generic[MessageT]):  # pyright: ignore[reportUnsafeMultipleInheritance]
+class MessageSegment[MessageT: Message[Any]](ABC, BaseModel, Mapping[str, Any]):  # pyright: ignore[reportUnsafeMultipleInheritance]
     """消息字段。
 
     本类实现了所有 `Mapping` 类型的方法，这些方法全部是对 `data` 属性的操作。

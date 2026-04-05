@@ -13,8 +13,7 @@ from importlib.abc import MetaPathFinder
 from importlib.machinery import ModuleSpec, PathFinder
 from os import PathLike
 from types import ModuleType
-from typing import Any, ClassVar, TypeAlias, TypeVar, cast
-from typing_extensions import TypeIs, override
+from typing import Any, ClassVar, TypeIs, cast, override
 
 import anyio
 import anyio.to_thread
@@ -34,11 +33,8 @@ __all__ = [
     "sync_ctx_manager_wrapper",
 ]
 
-_T = TypeVar("_T")
-_R = TypeVar("_R")
-_TypeT = TypeVar("_TypeT", bound=type[Any])
 
-StrOrBytesPath: TypeAlias = str | bytes | PathLike[str] | PathLike[bytes]
+type StrOrBytesPath = str | bytes | PathLike[str] | PathLike[bytes]
 
 
 class ModulePathFinder(MetaPathFinder):
@@ -77,7 +73,9 @@ def is_config_class(config_class: Any) -> TypeIs[type[ConfigModel]]:
     )
 
 
-def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> list[_TypeT]:
+def get_classes_from_module[T: type[Any]](
+    module: ModuleType, super_class: T
+) -> list[T]:
     """从模块中查找指定类型的类。
 
     Args:
@@ -87,7 +85,7 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> list[_Ty
     Returns:
         返回符合条件的类的列表。
     """
-    classes: list[_TypeT] = []
+    classes: list[T] = []
     for _, module_attr in inspect.getmembers(module, inspect.isclass):
         if (
             (inspect.getmodule(module_attr) or module) is module
@@ -96,13 +94,13 @@ def get_classes_from_module(module: ModuleType, super_class: _TypeT) -> list[_Ty
             and ABC not in module_attr.__bases__
             and not inspect.isabstract(module_attr)
         ):
-            classes.append(cast("_TypeT", module_attr))
+            classes.append(cast("T", module_attr))
     return classes
 
 
-def get_classes_from_module_name(
-    name: str, super_class: _TypeT, *, reload: bool = False
-) -> list[tuple[_TypeT, ModuleType]]:
+def get_classes_from_module_name[T: type[Any]](
+    name: str, super_class: T, *, reload: bool = False
+) -> list[tuple[T, ModuleType]]:
     """从指定名称的模块中查找指定类型的类。
 
     Args:
@@ -157,9 +155,9 @@ def samefile(path1: StrOrBytesPath, path2: StrOrBytesPath) -> bool:
 
 
 @asynccontextmanager
-async def sync_ctx_manager_wrapper(
-    cm: AbstractContextManager[_T],
-) -> AsyncGenerator[_T, None]:
+async def sync_ctx_manager_wrapper[T](
+    cm: AbstractContextManager[T],
+) -> AsyncGenerator[T]:
     """将同步上下文管理器包装为异步上下文管理器。
 
     Args:
@@ -178,11 +176,11 @@ async def sync_ctx_manager_wrapper(
         await anyio.to_thread.run_sync(cm.__exit__, None, None, None)
 
 
-async def async_map(
+async def async_map[T, R](
     tg: TaskGroup,
-    func: Callable[[_T], Awaitable[_R]],
-    iterable: Iterable[_T],
-) -> AsyncGenerator[tuple[_T, _R]]:
+    func: Callable[[T], Awaitable[R]],
+    iterable: Iterable[T],
+) -> AsyncGenerator[tuple[T, R]]:
     """在 TaskGroup 中并行运行多个任务并且获取其结果。
 
     注意：结果将不会按照参数给出的顺序返回，而是按照实际执行结束的顺序返回。
@@ -196,9 +194,9 @@ async def async_map(
     Returns:
         由参数和结果组成元组的生成器。
     """
-    send_stream, receive_stream = anyio.create_memory_object_stream[tuple[_T, _R]]()
+    send_stream, receive_stream = anyio.create_memory_object_stream[tuple[T, R]]()
 
-    async def _run_wrapper(item: _T) -> None:
+    async def _run_wrapper(item: T) -> None:
         result = await func(item)
         await send_stream.send((item, result))
 

@@ -1,6 +1,6 @@
 """发送 Media 消息。"""
 
-from typing_extensions import override
+from typing import override
 
 import anyio
 

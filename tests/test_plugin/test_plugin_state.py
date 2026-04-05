@@ -1,5 +1,4 @@
-from typing import Annotated
-from typing_extensions import override
+from typing import Annotated, override
 
 from fake_adapter import (
     BaseTestPlugin,
@@ -13,10 +12,10 @@ from alicebot import Bot, Plugin
 
 
 def test_plugin_state(bot: Bot, mocker: MockerFixture) -> None:
-    class TestPlugin(BaseTestPlugin[int]):
+    class TestPlugin(BaseTestPlugin[int | None]):
         @override
         async def handle(self) -> None:
-            if self.state is None:  # pyright: ignore[reportUnnecessaryComparison]
+            if self.state is None:
                 self.state = 0
             self.state += 1
             await self.event.reply(str(self.state))

@@ -89,11 +89,11 @@ def test_samefile() -> None:
 @pytest.mark.anyio
 async def test_sync_ctx_manager_wrapper() -> None:
     @contextmanager
-    def sync_context_manager() -> Generator[str, None, None]:
+    def sync_context_manager() -> Generator[str]:
         yield "test"
 
     @contextmanager
-    def error_context_manager() -> Generator[str, None, None]:
+    def error_context_manager() -> Generator[str]:
         raise TypeError
         yield "test"
 

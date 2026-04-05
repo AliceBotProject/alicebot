@@ -2,8 +2,7 @@
 # Based on: https://github.com/nonebot/adapter-telegram/blob/beta/nonebot/adapters/telegram/message.py
 # ruff: noqa: D102
 
-from typing import Self
-from typing_extensions import override
+from typing import Self, override
 
 from alicebot.message import Message
 

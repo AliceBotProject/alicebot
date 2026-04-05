@@ -128,9 +128,9 @@ AliceBot 是一个简单的 Python 异步多后端机器人框架，支持多种
 
 更多信息请参阅 AliceBot [文档](https://docs.alicebot.dev/)。
 
-# 支持的 Python 版本
+## 支持的 Python 版本
 
-AliceBot 的最新版本仅支持最近的三个 Python 主要版本。
+AliceBot 的最新版本仅支持处于 `bugfix` 维护状态的 Python 版本，您可以在 [Python 官方文档](https://devguide.python.org/versions/) 中查看 Python 版本的维护状态，通常这意味着最新的两个 Python 主要版本。
 
 当前支持的最低 Python 版本为：
 

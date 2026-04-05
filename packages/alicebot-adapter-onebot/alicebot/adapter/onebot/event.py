@@ -1,8 +1,7 @@
 """OneBot 适配器事件。"""
 # pyright: reportIncompatibleVariableOverride=false
 
-from typing import TYPE_CHECKING, Any, Literal, get_origin
-from typing_extensions import override
+from typing import TYPE_CHECKING, Any, Literal, get_origin, override
 
 from pydantic import BaseModel, ConfigDict
 from pydantic.fields import FieldInfo

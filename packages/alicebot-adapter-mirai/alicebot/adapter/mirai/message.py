@@ -1,8 +1,7 @@
 """Mirai 适配器消息。"""
 
 import json
-from typing import Any, Self
-from typing_extensions import override
+from typing import Any, Self, override
 
 from pydantic import model_serializer
 
@@ -154,6 +153,7 @@ class MiraiMessageSegment(MessageSegment["MiraiMessage"]):
         return cls(type="Xml", xml=xml)
 
     @classmethod
+    # pylint: disable-next=arguments-renamed, arguments-differ
     def json(cls, json_: str) -> Self:  # type: ignore
         """Json 消息"""
         return cls(type="Json", json=json_)

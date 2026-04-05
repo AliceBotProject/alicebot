@@ -1,6 +1,6 @@
 """下载文件。"""
 
-from typing_extensions import override
+from typing import override
 
 import aiohttp
 import anyio

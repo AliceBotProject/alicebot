@@ -10,8 +10,7 @@ import sys
 import time
 from collections.abc import Awaitable, Callable
 from functools import partial
-from typing import Any, ClassVar, Literal
-from typing_extensions import override
+from typing import Any, ClassVar, Literal, override
 
 import aiohttp
 import anyio

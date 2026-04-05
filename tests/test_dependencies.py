@@ -158,7 +158,7 @@ async def test_depends_generator(mocker: MockerFixture) -> None:
 
     class DepA: ...
 
-    def dep_a() -> Generator[DepA, None, None]:
+    def dep_a() -> Generator[DepA]:
         mock("enter")
         yield DepA()
         mock("exit")
@@ -193,7 +193,7 @@ async def test_depends_async_generator(mocker: MockerFixture) -> None:
 
     class DepA: ...
 
-    async def dep_a() -> AsyncGenerator[DepA, None]:
+    async def dep_a() -> AsyncGenerator[DepA]:
         await mock("enter")
         yield DepA()
         await mock("exit")

@@ -1,5 +1,4 @@
-from typing import Any
-from typing_extensions import override
+from typing import Any, override
 
 import anyio
 import pytest
@@ -131,8 +130,10 @@ def test_plugin_get_try_times_error(bot: Bot) -> None:
         async def handle(self) -> None:
             with pytest.raises(GetEventTimeout):
                 await self.bot.get(
-                    lambda x: isinstance(x, FakeMessageEvent)
-                    and x.get_plain_text() == "test_3",
+                    lambda x: (
+                        isinstance(x, FakeMessageEvent)
+                        and x.get_plain_text() == "test_3"
+                    ),
                     max_try_times=1,
                 )
 

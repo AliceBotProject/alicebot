@@ -2,8 +2,7 @@
 # pyright: reportIncompatibleVariableOverride=false
 
 from abc import ABC
-from typing import TYPE_CHECKING, Any, Literal
-from typing_extensions import override
+from typing import TYPE_CHECKING, Any, Literal, override
 
 from alicebot.event import MessageEvent as BaseMessageEvent
 from alicebot.message import BuildMessageType

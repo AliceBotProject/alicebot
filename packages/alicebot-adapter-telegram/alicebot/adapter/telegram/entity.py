@@ -4,14 +4,14 @@
 # pylint: disable=missing-class-docstring
 
 from abc import ABC
-from typing import Self
+from typing import Any, Self
 
-from alicebot.message import MessageSegment, MessageT
+from alicebot.message import Message, MessageSegment
 
 from .model import User
 
 
-class Entity(MessageSegment[MessageT], ABC):
+class Entity[MessageT: Message[Any]](MessageSegment[MessageT], ABC):
     @classmethod
     def mention(cls, text: str) -> Self:
         return cls(type="mention", data={"text": text})
@@ -88,4 +88,20 @@ class Entity(MessageSegment[MessageT], ABC):
     def custom_emoji(cls, text: str, custom_emoji_id: str | None = None) -> Self:
         return cls(
             type="custom_emoji", data={"text": text, "custom_emoji_id": custom_emoji_id}
+        )
+
+    @classmethod
+    def date_time(
+        cls,
+        text: str,
+        unix_time: int | None = None,
+        date_time_format: str | None = None,
+    ) -> Self:
+        return cls(
+            type="date_time",
+            data={
+                "text": text,
+                "unix_time": unix_time,
+                "date_time_format": date_time_format,
+            },
         )

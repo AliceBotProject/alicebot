@@ -11,7 +11,6 @@ from typing import (
     Annotated,
     Any,
     ClassVar,
-    Generic,
     NoReturn,
     cast,
     final,
@@ -23,7 +22,7 @@ from alicebot.config import ConfigModel
 from alicebot.dependencies import Depends
 from alicebot.event import Event
 from alicebot.exceptions import SkipException, StopException
-from alicebot.typing import ConfigT, EventT, StateT
+from alicebot.typing import AnyEvent
 from alicebot.utils import is_config_class
 
 if TYPE_CHECKING:
@@ -41,7 +40,11 @@ class PluginLoadType(Enum):
     CLASS = "class"
 
 
-class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
+class Plugin[
+    EventT: AnyEvent = AnyEvent,
+    StateT: Any = None,
+    ConfigT: ConfigModel | None = None,
+](ABC):
     """所有 AliceBot 插件的基类。
 
     Attributes:
@@ -67,7 +70,7 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
     else:
         event = Depends(Event)
 
-    def __init_state__(self) -> StateT | None:
+    def __init_state__(self) -> StateT | None:  # noqa: B027
         """初始化插件状态。"""
 
     def __init_subclass__(
@@ -102,10 +105,10 @@ class Plugin(ABC, Generic[EventT, StateT, ConfigT]):
                     config = config_t
                 if (
                     init_state is None
-                    and get_origin(state_t) is Annotated
+                    and get_origin(state_t) is Annotated  # pyright: ignore
                     and hasattr(state_t, "__metadata__")
                 ):
-                    init_state = state_t.__metadata__[0]  # pyright: ignore
+                    init_state = state_t.__metadata__[0]
 
         if not hasattr(cls, "Config") and config is not None:
             cls.Config = config

@@ -1,6 +1,6 @@
 """富文本消息示例。"""
 
-from typing_extensions import override
+from typing import override
 
 from alicebot import Plugin
 from alicebot.adapter.telegram.event import MessageEvent

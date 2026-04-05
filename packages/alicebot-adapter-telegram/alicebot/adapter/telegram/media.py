@@ -7,6 +7,7 @@ from pydantic import BaseModel
 
 from .message import TelegramMessage
 from .model import (
+    InputChecklist,
     InputFile,
     InputMediaAudio,
     InputMediaDocument,
@@ -15,6 +16,8 @@ from .model import (
     InputPaidMedia,
     InputPollOption,
     LabeledPrice,
+    MessageEntity,
+    SuggestedPostParameters,
 )
 
 
@@ -23,32 +26,39 @@ class TelegramMedia(BaseModel):
 
 
 class Photo(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     photo: InputFile | str
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     show_caption_above_media: bool | None = None
     has_spoiler: bool | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Audio(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     audio: InputFile | str
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     duration: int | None = None
     performer: str | None = None
     title: str | None = None
     thumbnail: InputFile | str | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Document(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     document: InputFile | str
     thumbnail: InputFile | str | None = None
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     disable_content_type_detection: bool | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Video(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     video: InputFile | str
     duration: int | None = None
     width: int | None = None
@@ -56,50 +66,60 @@ class Video(TelegramMedia):
     thumbnail: InputFile | str | None = None
     cover: InputFile | str | None = None
     start_timestamp: int | None = None
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     show_caption_above_media: bool | None = None
     has_spoiler: bool | None = None
     supports_streaming: bool | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Animation(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     animation: InputFile | str
     duration: int | None = None
     width: int | None = None
     height: int | None = None
     thumbnail: InputFile | str | None = None
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     show_caption_above_media: bool | None = None
     has_spoiler: bool | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Voice(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     voice: InputFile | str
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     duration: int | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class VideoNote(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     video_note: InputFile | str
     duration: int | None = None
     length: int | None = None
     thumbnail: InputFile | str | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class PaidMedia(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     star_count: int
     media: list[InputPaidMedia]
     payload: str | None = None
-    caption: None | str | TelegramMessage = None
+    caption: TelegramMessage | str | None = None
     show_caption_above_media: bool | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class MediaGroup(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     media: (
         list[InputMediaAudio]
         | list[InputMediaDocument]
@@ -110,6 +130,7 @@ class MediaGroup(TelegramMedia):
 
 
 class Location(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     latitude: float
     longitude: float
     horizontal_accuracy: float | None = None
@@ -117,9 +138,11 @@ class Location(TelegramMedia):
     heading: int | None = None
     proximity_alert_radius: int | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Venue(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     latitude: float
     longitude: float
     title: str
@@ -129,33 +152,53 @@ class Venue(TelegramMedia):
     google_place_id: str | None = None
     google_place_type: str | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Contact(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     phone_number: str
     first_name: str
     last_name: str | None = None
     vcard: str | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Poll(TelegramMedia):
-    question: None | str | TelegramMessage = None
+    question: TelegramMessage | str | None = None
     options: list[InputPollOption]
     is_anonymous: bool | None = None
     type: str | None = None
     allows_multiple_answers: bool | None = None
-    correct_option_id: int | None = None
-    explanation: None | str | TelegramMessage = None
+    allows_revoting: bool | None = None
+    shuffle_options: bool | None = None
+    allow_adding_options: bool | None = None
+    hide_results_until_closes: bool | None = None
+    correct_option_ids: list[int] | None = None
+    explanation: TelegramMessage | str | None = None
     open_period: int | None = None
     close_date: int | None = None
     is_closed: bool | None = None
+    description: TelegramMessage | str | None = None
     allow_paid_broadcast: bool | None = None
+
+
+class Checklist(TelegramMedia):
+    checklist: InputChecklist
 
 
 class Dice(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     emoji: str | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
+
+
+class MessageDraft(TelegramMedia):
+    draft_id: int
+    text: str
+    entities: list[MessageEntity] | None = None
 
 
 class ChatAction(TelegramMedia):
@@ -166,16 +209,19 @@ class Gift(TelegramMedia):
     user_id: int | None = None
     gift_id: str
     pay_for_upgrade: bool | None = None
-    text: None | str | TelegramMessage = None
+    text: TelegramMessage | str | None = None
 
 
 class Sticker(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     sticker: InputFile | str
     emoji: str | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Invoice(TelegramMedia):
+    direct_messages_topic_id: int | None = None
     title: str
     description: str
     payload: str
@@ -198,6 +244,7 @@ class Invoice(TelegramMedia):
     send_email_to_provider: bool | None = None
     is_flexible: bool | None = None
     allow_paid_broadcast: bool | None = None
+    suggested_post_parameters: SuggestedPostParameters | None = None
 
 
 class Game(TelegramMedia):

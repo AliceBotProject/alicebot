@@ -1,8 +1,7 @@
 """DingTalk 适配器事件。"""
 
 import time
-from typing import TYPE_CHECKING, Any, Literal
-from typing_extensions import override
+from typing import TYPE_CHECKING, Any, Literal, override
 
 from pydantic import BaseModel, Field
 

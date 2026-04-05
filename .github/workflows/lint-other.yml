@@ -1,4 +1,6 @@
 name: Lint Other Files
+permissions:
+  contents: read
 
 on:
   push:

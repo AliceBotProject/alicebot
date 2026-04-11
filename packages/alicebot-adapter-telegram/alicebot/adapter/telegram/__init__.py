@@ -55,11 +55,11 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
     Config = Config
 
     session: aiohttp.ClientSession
-    app: web.Application | None
-    runner: web.AppRunner | None
-    site: web.TCPSite | None
+    app: web.Application | None = None
+    runner: web.AppRunner | None = None
+    site: web.TCPSite | None = None
 
-    _secret_token: str | None
+    _secret_token: str | None = None
     _update_offset: int | None = None
 
     @override

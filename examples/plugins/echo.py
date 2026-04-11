@@ -3,13 +3,13 @@ from typing import Any, override
 from alicebot import MessageEvent, Plugin
 
 
-class Restart(Plugin[MessageEvent[Any]]):
+class Echo(Plugin[MessageEvent[Any]]):
     @override
     async def handle(self) -> None:
-        self.bot.restart()
+        await self.event.reply(self.event.get_plain_text().replace("echo ", ""))
 
     @override
     async def rule(self) -> bool:
         if not isinstance(self.event, MessageEvent):
             return False
-        return self.event.get_plain_text() == "restart"
+        return self.event.get_plain_text().startswith("echo ")

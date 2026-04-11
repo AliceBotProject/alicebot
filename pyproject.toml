@@ -34,7 +34,7 @@ mirai = ["alicebot-adapter-mirai"]
 dingtalk = ["alicebot-adapter-dingtalk"]
 telegram = ["alicebot-adapter-telegram"]
 apscheduler = ["alicebot-adapter-apscheduler"]
-hot_reload = ["watchfiles>=0.24"]
+hot_reload = ["watchfiles>=1"]
 all = [
     "alicebot-adapter-cqhttp",
     "alicebot-adapter-onebot",
@@ -42,7 +42,7 @@ all = [
     "alicebot-adapter-dingtalk",
     "alicebot-adapter-telegram",
     "alicebot-adapter-apscheduler",
-    "watchfiles>=0.24",
+    "watchfiles>=1",
 ]
 
 [project.urls]
@@ -57,7 +57,7 @@ dev = [
 ]
 lint = [
     "ruff>=0.6",
-    "pylint>=3",
+    "pylint>=4",
     "pylint-pydantic>=0.3",
     "basedpyright>=1",
     "mypy>=1",
@@ -67,10 +67,10 @@ docs = [
     "tomlkit>=0.13",
 ]
 test = [
-    "pytest>=8",
+    "pytest>=9",
     "pytest-mock>=3",
     "pytest-xdist>=3",
-    "pytest-cov>=5",
+    "pytest-cov>=7",
 ]
 
 [tool.uv]
@@ -138,7 +138,6 @@ keep-runtime-typing = true
 "tests/*.py" = ["D", "PLR2004"]
 
 [tool.basedpyright]
-ignore = ["examples/plugins"]
 extraPaths = ["tests", "tests/test_utils"]
 pythonVersion = "3.13"
 pythonPlatform = "All"
@@ -163,7 +162,6 @@ strict = true
 exclude = [
     '^packages/.*/alicebot/__init__\.py$',
     '^packages/.*/alicebot/adapter/__init__\.py$',
-    '^examples/.*\.py$',
 ]
 warn_return_any = false
 

@@ -14,8 +14,5 @@ port = 8080
 url = "/cqhttp/ws"
 api_timeout = 100
 
-[adapter.mirai]
-adapter_type = "reverse-ws"
-verify_key = "1234567890"
-qq = 123456
-api_timeout = 100
+[adapter.telegram]
+bot_token = "YOUR_BOT_TOKEN_HERE"

@@ -1,8 +1,11 @@
-from alicebot import Plugin
+from typing import Any, override
+
+from alicebot import MessageEvent, Plugin
 from alicebot.exceptions import GetEventTimeout
 
 
-class Weather(Plugin):
+class Weather(Plugin[MessageEvent[Any]]):
+    @override
     async def handle(self) -> None:
         args = self.event.get_plain_text().split(" ")
 
@@ -17,17 +20,15 @@ class Weather(Plugin):
         else:
             await self.event.reply(await self.get_weather(city_event.get_plain_text()))
 
+    @override
     async def rule(self) -> bool:
-        if self.event.adapter.name != "cqhttp":
+        if not isinstance(self.event, MessageEvent):
             return False
-        if self.event.type != "message":
-            return False
-        return self.event.message.startswith("天气") or self.event.message.startswith(
-            "weather"
-        )
+        message = self.event.get_plain_text()
+        return message.startswith(("天气", "weather"))
 
     @staticmethod
-    async def get_weather(city):
+    async def get_weather(city: str) -> str:
         if city not in ["北京", "上海"]:
             return "你想查询的城市暂不支持！"
         return f"{city}的天气是..."

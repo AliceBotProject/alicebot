@@ -1,16 +1,18 @@
-from alicebot import Plugin
+from typing import Any, override
+
+from alicebot import MessageEvent, Plugin
 
 
-class GlobalStateTest2(Plugin):
+class GlobalStateTest2(Plugin[MessageEvent[Any]]):
+    @override
     async def handle(self) -> None:
         if self.bot.global_state.get("count") is None:
             self.bot.global_state["count"] = 0
         self.bot.global_state["count"] -= 1
         await self.event.reply(f"sub: {self.bot.global_state['count']}")
 
+    @override
     async def rule(self) -> bool:
-        if self.event.adapter.name != "cqhttp":
+        if not isinstance(self.event, MessageEvent):
             return False
-        if self.event.type != "message":
-            return False
-        return self.event.message.get_plain_text() == "sub"
+        return self.event.get_plain_text() == "sub"

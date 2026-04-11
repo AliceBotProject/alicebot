@@ -24,22 +24,22 @@
   },
   "dependencies": {
     "@iconify-json/mdi": "^1.2.3",
-    "unocss": "^66.6.7",
-    "vitepress": "^1.6.4",
+    "unocss": "^66.6.8",
+    "vitepress": "^2.0.0-alpha.17",
     "vue": "^3.5.32"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^25.5.2",
-    "@unocss/eslint-config": "^66.6.7",
+    "@types/node": "^25.6.0",
+    "@unocss/eslint-config": "^66.6.8",
     "conventional-changelog": "^7.2.0",
     "eslint": "^10.2.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.8.0",
     "globals": "^17.4.0",
     "markdownlint-cli2": "^0.22.0",
-    "prettier": "^3.8.1",
-    "typescript-eslint": "^8.58.0",
+    "prettier": "^3.8.2",
+    "typescript-eslint": "^8.58.1",
     "vue-eslint-parser": "^10.4.0"
   }
 }

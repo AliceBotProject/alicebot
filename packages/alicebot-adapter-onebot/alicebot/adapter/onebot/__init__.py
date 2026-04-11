@@ -182,7 +182,8 @@ class OneBotAdapter(WebSocketAdapter[OneBotEvent, Config]):
                 msg.get("sub_type"),
             )
 
-        onebot_event = event_class(adapter=self, **msg)
+        onebot_event = event_class(**msg)
+        onebot_event.adapter = self
 
         if onebot_event.type == "meta":
             # meta_event 不交由插件处理

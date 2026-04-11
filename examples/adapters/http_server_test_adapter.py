@@ -14,7 +14,18 @@ from alicebot.event import Event
 class HttpServerTestEvent(Event["HttpServerTestAdapter"]):
     """HTTP 服务端示例适配器事件类。"""
 
+    _adapter: "HttpServerTestAdapter"
     message: str
+
+    def __init__(self, adapter: "HttpServerTestAdapter", message: str) -> None:
+        """初始化 HttpServerTestEvent。"""
+        self._adapter = adapter
+        self.message = message
+
+    @property
+    @override
+    def adapter(self) -> "HttpServerTestAdapter":
+        return self._adapter
 
 
 class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
@@ -28,10 +39,7 @@ class HttpServerTestAdapter(HttpServerAdapter[HttpServerTestEvent, None]):
 
     @override
     async def handle_response(self, request: web.Request) -> web.StreamResponse:
-        event = HttpServerTestEvent(
-            adapter=self,
-            type="message",
-            message=await request.text(),
-        )
+        message = await request.text()
+        event = HttpServerTestEvent(adapter=self, message=message)
         await self.handle_event(event)
         return web.Response()

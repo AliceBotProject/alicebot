@@ -3,7 +3,7 @@
 import time
 from typing import TYPE_CHECKING, Any, Literal, override
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from alicebot.event import MessageEvent
 
@@ -29,11 +29,14 @@ class Text(BaseModel):
     content: str
 
 
-class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
+class DingTalkEvent(BaseModel, MessageEvent["DingTalkAdapter"]):  # pyright: ignore[reportUnsafeMultipleInheritance]
     """DingTalk 事件基类"""
 
-    type: str | None = Field(alias="msgtype")
+    model_config = ConfigDict(extra="allow")
 
+    _adapter: "DingTalkAdapter"
+
+    type: str | None = Field(alias="msgtype")
     msgtype: str
     msgId: str
     createAt: str
@@ -55,6 +58,15 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
 
     response_msg: None | str | dict[str, Any] | DingTalkMessage = None
     response_at: None | dict[str, Any] | DingTalkMessage = None
+
+    @property
+    @override
+    def adapter(self) -> "DingTalkAdapter":
+        return self._adapter
+
+    @adapter.setter
+    def adapter(self, value: "DingTalkAdapter") -> None:
+        self._adapter = value
 
     @property
     def message(self) -> DingTalkMessage:
@@ -96,3 +108,11 @@ class DingTalkEvent(MessageEvent["DingTalkAdapter"]):
                 at=at,
             )
         raise WebhookExpiredError
+
+    @override
+    def __str__(self) -> str:
+        return f"<{self.__class__.__name__} type={self.type}, time={self.createAt}, self_id={self.chatbotUserId}>"
+
+    @override
+    def __repr__(self) -> str:
+        return self.__str__()

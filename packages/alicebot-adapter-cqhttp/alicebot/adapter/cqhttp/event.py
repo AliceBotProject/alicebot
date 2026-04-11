@@ -70,13 +70,26 @@ def _get_literal_field(field: FieldInfo | None) -> str | None:
     return literal_values[0]
 
 
-class CQHTTPEvent(Event["CQHTTPAdapter"]):
+class CQHTTPEvent(BaseModel, Event["CQHTTPAdapter"]):  # pyright: ignore[reportUnsafeMultipleInheritance]
     """CQHTTP 事件基类"""
+
+    model_config = ConfigDict(extra="allow")
+
+    _adapter: "CQHTTPAdapter"
 
     type: str | None = Field(alias="post_type")
     time: int
     self_id: int
     post_type: str
+
+    @property
+    @override
+    def adapter(self) -> "CQHTTPAdapter":
+        return self._adapter
+
+    @adapter.setter
+    def adapter(self, value: "CQHTTPAdapter") -> None:
+        self._adapter = value
 
     @property
     def to_me(self) -> bool:
@@ -98,6 +111,14 @@ class CQHTTPEvent(Event["CQHTTPAdapter"]):
             _get_literal_field(cls.model_fields.get(post_type + "_type")),
             _get_literal_field(cls.model_fields.get("sub_type")),
         )
+
+    @override
+    def __str__(self) -> str:
+        return f"<{self.__class__.__name__} type={self.type}, time={self.time}, self_id={self.self_id}>"
+
+    @override
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class MessageEvent(CQHTTPEvent, BaseMessageEvent["CQHTTPAdapter"]):

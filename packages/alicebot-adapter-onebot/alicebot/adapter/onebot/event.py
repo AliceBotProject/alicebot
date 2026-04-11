@@ -61,14 +61,27 @@ def _get_literal_field(field: FieldInfo | None) -> str | None:
     return literal_values[0]
 
 
-class OneBotEvent(Event["OneBotAdapter"]):
+class OneBotEvent(BaseModel, Event["OneBotAdapter"]):  # pyright: ignore[reportUnsafeMultipleInheritance]
     """OneBot 事件基类"""
+
+    model_config = ConfigDict(extra="allow")
+
+    _adapter: "OneBotAdapter"
 
     id: str
     time: float
     type: Literal["meta", "message", "notice", "request"]
     detail_type: str
     sub_type: str
+
+    @property
+    @override
+    def adapter(self) -> "OneBotAdapter":
+        return self._adapter
+
+    @adapter.setter
+    def adapter(self, value: "OneBotAdapter") -> None:
+        self._adapter = value
 
     @classmethod
     def get_event_type(cls) -> tuple[str | None, str | None, str | None]:
@@ -82,6 +95,14 @@ class OneBotEvent(Event["OneBotAdapter"]):
             _get_literal_field(cls.model_fields.get("detail_type")),
             _get_literal_field(cls.model_fields.get("sub_type")),
         )
+
+    @override
+    def __str__(self) -> str:
+        return f"<{self.__class__.__name__} type={self.type}, detail_type={self.detail_type}, sub_type={self.sub_type}>"
+
+    @override
+    def __repr__(self) -> str:
+        return self.__str__()
 
 
 class BotEvent(OneBotEvent):

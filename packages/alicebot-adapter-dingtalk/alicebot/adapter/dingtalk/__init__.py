@@ -74,7 +74,8 @@ class DingTalkAdapter(Adapter[DingTalkEvent, Config]):
             logger.error("Illegal http header", sign=request.headers["sign"])
         else:
             try:
-                dingtalk_event = DingTalkEvent(adapter=self, **(await request.json()))
+                dingtalk_event = DingTalkEvent(**(await request.json()))
+                dingtalk_event.adapter = self
             except Exception:
                 logger.exception("Request parsing error")
                 return web.Response()

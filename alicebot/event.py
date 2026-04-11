@@ -4,16 +4,14 @@
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Any, NamedTuple, Self, override
-
-from pydantic import BaseModel, ConfigDict
+from typing import Any, NamedTuple, Self
 
 from alicebot.typing import AnyAdapter, AnyEvent
 
 __all__ = ["Event", "EventHandleOption", "MessageEvent"]
 
 
-class Event[AdapterT: AnyAdapter](BaseModel, metaclass=ABCMeta):
+class Event[AdapterT: AnyAdapter](metaclass=ABCMeta):
     """事件类的基类。
 
     Attributes:
@@ -21,21 +19,10 @@ class Event[AdapterT: AnyAdapter](BaseModel, metaclass=ABCMeta):
         type: 事件类型。
     """
 
-    model_config = ConfigDict(extra="allow")
-
-    if TYPE_CHECKING:
-        adapter: AdapterT
-    else:
-        adapter: Any
-    type: str | None
-
-    @override
-    def __str__(self) -> str:
-        return f"Event<{self.type}>"
-
-    @override
-    def __repr__(self) -> str:
-        return self.__str__()
+    @property
+    @abstractmethod
+    def adapter(self) -> AdapterT:
+        """产生当前事件的适配器对象。"""
 
 
 class EventHandleOption(NamedTuple):

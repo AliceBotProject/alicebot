@@ -19,7 +19,18 @@ class ConsoleAdapterEvent(MessageEvent["ConsoleAdapter"]):
         message: 消息内容。
     """
 
+    _adapter: "ConsoleAdapter"
     message: str
+
+    def __init__(self, adapter: "ConsoleAdapter", message: str) -> None:
+        """初始化 ConsoleAdapterEvent。"""
+        self._adapter = adapter
+        self.message = message
+
+    @property
+    @override
+    def adapter(self) -> "ConsoleAdapter":
+        return self._adapter
 
     @override
     def get_sender_id(self) -> None:
@@ -43,9 +54,8 @@ class ConsoleAdapter(PollingAdapter[ConsoleAdapterEvent, None]):
     async def on_tick(self) -> None:
         print("Please input message: ")  # noqa: T201
         message = await anyio.to_thread.run_sync(sys.stdin.readline)
-        await self.handle_event(
-            ConsoleAdapterEvent(adapter=self, type="message", message=message)
-        )
+        event = ConsoleAdapterEvent(adapter=self, message=message.strip())
+        await self.handle_event(event)
 
     async def send(self, message: str) -> None:
         """发送消息。

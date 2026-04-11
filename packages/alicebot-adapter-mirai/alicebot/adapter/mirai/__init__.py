@@ -147,7 +147,8 @@ class MiraiAdapter(WebSocketAdapter[MiraiEvent, Config]):
         Args:
             msg: 接收到的信息。
         """
-        mirai_event = self.get_event_model(msg["type"])(adapter=self, **msg)
+        mirai_event = self.get_event_model(msg["type"])(**msg)
+        mirai_event.adapter = self
 
         if isinstance(mirai_event, MetaEvent):
             # meta_event 不交由插件处理

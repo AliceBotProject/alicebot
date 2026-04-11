@@ -61,7 +61,24 @@ def fake_adapter_class_factory(
 
 
 class FakeMessageEvent(MessageEvent[FakeAdapter]):
-    message: str = "test"
+    _adapter: FakeAdapter
+    type: str
+    message: str
+
+    def __init__(
+        self,
+        adapter: FakeAdapter,
+        type: str = "message",
+        message: str = "test",
+    ) -> None:
+        self._adapter = adapter
+        self.type = type
+        self.message = message
+
+    @property
+    @override
+    def adapter(self) -> "FakeAdapter":
+        return self._adapter
 
     @override
     def get_sender_id(self) -> None:

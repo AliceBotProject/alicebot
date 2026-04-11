@@ -5,7 +5,7 @@
       "name": "AliceBot: Examples",
       "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/examples/test.py",
+      "program": "${workspaceFolder}/examples/main.py",
       "console": "integratedTerminal",
       "justMyCode": false,
       "cwd": "${workspaceFolder}/examples",

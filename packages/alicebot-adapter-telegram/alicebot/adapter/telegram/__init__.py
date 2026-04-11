@@ -151,7 +151,9 @@ class TelegramAdapter(Adapter[TelegramEvent, Config], TelegramAPI):
             )
             return
         event_class = EVENT_MODELS[event_class_name]
-        telegram_event = event_class(adapter=self, type=event_class_name, update=update)
+        telegram_event = event_class(type=event_class_name, update=update)  # type: ignore
+        telegram_event.adapter = self
+
         await self.handle_event(telegram_event)
 
     def _format_telegram_api_params(

@@ -179,7 +179,16 @@ def test_plugin_get_event_type(bot: Bot, mocker: MockerFixture) -> None:
     mock = mocker.AsyncMock()
 
     class FakeOtherEvent(Event[FakeAdapter]):
+        _adapter: FakeAdapter
         type: str | None = "other"
+
+        def __init__(self, adapter: FakeAdapter) -> None:
+            self._adapter = adapter
+
+        @property
+        @override
+        def adapter(self) -> "FakeAdapter":
+            return self._adapter
 
     class TestPlugin(Plugin):
         @override

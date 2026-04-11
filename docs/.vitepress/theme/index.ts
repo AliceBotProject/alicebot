@@ -1,3 +1,4 @@
+/// <reference types="vite/client" />
 import DefaultTheme from 'vitepress/theme'
 
 import 'virtual:uno.css'

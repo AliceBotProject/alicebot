@@ -12,6 +12,7 @@ export default defineConfig({
 
   lastUpdated: true,
   cleanUrls: true,
+  metaChunk: true,
 
   sitemap: {
     hostname: 'https://docs.alicebot.dev',
@@ -59,11 +60,17 @@ export default defineConfig({
       text: '在 GitHub 上编辑此页',
     },
 
-    lastUpdatedText: '上次更新',
+    lastUpdated: {
+      text: '最后更新于',
+    },
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/AliceBotProject/alicebot' },
     ],
+
+    search: {
+      provider: 'local',
+    },
 
     footer: {
       message: 'Released under the MIT License.',
